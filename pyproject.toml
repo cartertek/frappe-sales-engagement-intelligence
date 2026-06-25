@@ -4,7 +4,7 @@ description = "Sales engagement and outreach intelligence layer for ERPNext CRM"
 readme = "README.md"
 requires-python = ">=3.10"
 authors = [
-    { name = "Cartertek LLC" }
+    { name = "Sales Engagement and Intelligence contributors" }
 ]
 dynamic = ["version"]
 dependencies = []

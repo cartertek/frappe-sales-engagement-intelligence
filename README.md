@@ -1,6 +1,6 @@
 # Sales Engagement and Intelligence
 
-Custom Frappe/ERPNext app for Cartertek's sales engagement and outreach intelligence workflow.
+Custom Frappe/ERPNext app for a sales engagement and outreach intelligence workflow.
 
 ERPNext remains the CRM system of record. This app provides the pre-CRM intelligence layer for prospect research, signal evidence, qualification, outreach planning, touchpoint tracking, and later conversion into ERPNext CRM records.
 
