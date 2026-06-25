@@ -1,0 +1,20 @@
+[
+  {
+    "doctype": "Role",
+    "role_name": "Sales Engagement Manager",
+    "name": "Sales Engagement Manager",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1,
+    "two_factor_auth": 0
+  },
+  {
+    "doctype": "Role",
+    "role_name": "Sales Engagement User",
+    "name": "Sales Engagement User",
+    "desk_access": 1,
+    "disabled": 0,
+    "is_custom": 1,
+    "two_factor_auth": 0
+  }
+]
