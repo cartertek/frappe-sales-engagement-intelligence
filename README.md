@@ -1,8 +1,8 @@
 # Sales Engagement and Intelligence
 
-Custom Frappe/ERPNext app for a sales engagement and outreach intelligence workflow.
+Custom Frappe app for a sales engagement and outreach intelligence workflow.
 
-ERPNext remains the CRM system of record. This app provides the pre-CRM intelligence layer for prospect research, signal evidence, qualification, outreach planning, touchpoint tracking, and later conversion into ERPNext CRM records.
+Frappe CRM is the primary CRM layer. ERPNext is the downstream ERP layer.
 
 This app must not implement automatic cold email sending, AI auto-send behavior, or any scheduled outreach sender in v1.
 

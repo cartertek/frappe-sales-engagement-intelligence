@@ -1,40 +1,33 @@
-# ERPNext CRM Boundary
+# CRM Architecture Boundary
 
-ERPNext remains the CRM system of record. Sales Engagement and Intelligence is the pre-CRM intelligence layer.
+Sales Engagement and Intelligence is the pre-CRM outreach intelligence layer.
 
-## Native ERPNext Objects
+Frappe CRM is the primary sales-engagement CRM layer. ERPNext is the downstream ERP/accounting layer.
 
-The custom app should integrate with, not replace, these ERPNext objects:
+## Target Architecture
 
-- Lead
-- Contact
-- Opportunity
-- Campaign
-- Communication
-- ToDo
-- Quotation
-- Customer
+```text
+Sales Engagement and Intelligence
+→ pre-CRM outreach intelligence and qualification
+→ Frappe CRM Lead / Deal
+→ ERPNext Quotation / Customer / accounting
+```
+
+## Responsibility Split
+
+Frappe CRM owns qualified leads, deals, lead/deal pipeline views, tasks, notes, call logs, email templates, assignments, and sales engagement activity.
+
+ERPNext owns quotations, customers, items/products if needed, sales orders if needed, invoices, accounting, and downstream business records.
+
+Sales Engagement and Intelligence owns pre-CRM research, signal evidence, qualification, thesis alignment, analytics, and conversion into Frappe CRM Leads.
+
+ERPNext Lead and ERPNext Opportunity are not the primary conversion targets for this implementation.
 
 ## Boundary Rules
 
-Use ERPNext `Lead` for a prospect that is qualified, contactable, and worth entering into formal CRM tracking.
+Unqualified or half-researched companies should not immediately become Frappe CRM Leads.
 
-Use ERPNext `Contact` for a known person at the company or intermediary organization.
+They should first live in the future custom Outreach Prospect DocType.
+Conversion into Frappe CRM should happen only after qualification criteria are met.
 
-Use ERPNext `Opportunity` for a prospect that has shown commercial interest, booked a meeting, discussed a paid diagnostic, or otherwise entered a realistic sales conversation.
-
-Use ERPNext `Communication` for email or message history where appropriate.
-
-Use ERPNext `ToDo` for follow-up reminders when the custom app chooses to create native ERPNext reminders.
-
-Use ERPNext `Campaign` for broad source, campaign, or arena grouping if useful.
-
-Use ERPNext `Quotation` for formal proposals or quotes after the sales process has advanced.
-
-Use ERPNext `Customer` for won clients.
-
-## Explicit Boundary
-
-Unqualified or half-researched companies should not become ERPNext Leads merely because they were discovered.
-
-They should first live in the future custom `Outreach Prospect` DocType. Conversion into native CRM records should happen only after qualification criteria are met and a deliberate conversion action is taken.
+Formal quoting, customer creation, invoicing, and accounting should flow downstream into ERPNext.

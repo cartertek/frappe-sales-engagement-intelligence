@@ -1,6 +1,6 @@
 # Site and Environment Baseline
 
-Complete this checklist against the target ERPNext site before beginning Milestone 2 data model work.
+Complete this checklist against the target Frappe/ERPNext/Frappe CRM site before beginning Milestone 2 data model work.
 
 ## Target Site
 
@@ -8,6 +8,7 @@ Complete this checklist against the target ERPNext site before beginning Milesto
 Target site: TBD
 Bench path: TBD
 ERPNext version: TBD
+Frappe CRM version: TBD
 Frappe version: TBD
 Python version: TBD
 Node version: TBD
