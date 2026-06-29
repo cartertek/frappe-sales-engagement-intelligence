@@ -10,6 +10,6 @@ def get_data():
             "color": "grey",
             "icon": "octicon octicon-broadcast",
             "type": "module",
-            "description": _("Pre-CRM outreach intelligence and sales engagement workspace."),
+            "description": _("Pre-CRM outreach intelligence workspace for Frappe CRM qualification."),
         }
     ]

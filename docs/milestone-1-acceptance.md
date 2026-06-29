@@ -1,37 +1,21 @@
 # Milestone 1 Acceptance Checklist
 
-Milestone 1 is complete when the target ERPNext environment confirms all of the following:
+Milestone 1 is complete when the target Frappe/ERPNext/Frappe CRM environment confirms:
 
-- [ ] The app exists under `apps/sales_engagement_intelligence`.
-- [ ] The app is installed on the target ERPNext site.
-- [ ] `bench --site <site-name> list-apps` shows `sales_engagement_intelligence`.
-- [ ] `bench --site <site-name> migrate` completes successfully.
-- [ ] The module `Sales Engagement and Intelligence` exists.
-- [ ] The workspace `Sales Engagement and Intelligence` exists or imports from fixture cleanly.
-- [ ] The roles `Sales Engagement Manager` and `Sales Engagement User` exist.
-- [ ] The app scaffold is committed to Git.
-- [ ] Fixtures for roles/workspace are exported or intentionally maintained as source fixtures.
-- [ ] ERPNext CRM object boundaries are documented.
-- [ ] Backup creation has been tested with `bench --site <site-name> backup --with-files`.
-- [ ] No outbound email automation has been created or enabled.
-- [ ] The app is ready for Milestone 2 DocType implementation.
-
-## Not Included in Milestone 1
-
-Do not add these until Milestone 2 or later:
-
-- Outreach Prospect
-- Outreach Signal
-- Outreach Thesis
-- Outreach Asset
-- Outreach Touchpoint
-- Qualification engine
-- Lifecycle engine
-- CRM conversion buttons
-- CSV import workflow
-- Reports
-- API endpoints
-- Email sending automation
-- Sequence templates
-- Playbooks
-- Research task queues
+- [ ] The standalone crm app is installed.
+- [ ] list-apps shows crm.
+- [ ] sales_engagement_intelligence is installed.
+- [ ] migrate succeeds.
+- [ ] ERPNext still loads.
+- [ ] Frappe CRM loads.
+- [ ] Frappe CRM and ERPNext coexist without obvious routing or permission conflicts.
+- [ ] CRM Lead and CRM Deal exact DocType names are identified.
+- [ ] CRM task, note, call-log, email-template, and activity records are identified where present.
+- [ ] The CRM to ERPNext quotation/customer path is documented.
+- [ ] The Sales Engagement and Intelligence module exists.
+- [ ] The workspace exists and does not duplicate Frappe CRM lead/deal views.
+- [ ] Baseline custom roles exist.
+- [ ] Role/workspace fixtures are filtered to app-owned records.
+- [ ] A backup has been created and its location is known.
+- [ ] No outbound outreach automation has been enabled.
+- [ ] Milestone 2 can begin with Frappe CRM Lead / Deal as the target.

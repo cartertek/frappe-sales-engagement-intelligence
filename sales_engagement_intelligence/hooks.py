@@ -1,7 +1,7 @@
 app_name = "sales_engagement_intelligence"
 app_title = "Sales Engagement and Intelligence"
 app_publisher = "Cartertek LLC"
-app_description = "Pre-CRM sales engagement and outreach intelligence layer for ERPNext."
+app_description = "Pre-CRM outreach intelligence layer for Frappe CRM and ERPNext."
 app_email = "admin@cartertek.ai"
 app_license = "MIT"
 
