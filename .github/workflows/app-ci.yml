@@ -1,0 +1,52 @@
+name: App CI
+
+on:
+  pull_request:
+    branches:
+      - master
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: app-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  repo-checks:
+    name: Repository checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install validation tools
+        run: python -m pip install --upgrade pip ruff build
+
+      - name: Ruff
+        run: ruff check .
+
+      - name: Compile Python files
+        run: python -m compileall -q sales_engagement_intelligence
+
+      - name: Validate JSON files
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r file; do
+            python -m json.tool "$file" >/dev/null
+          done < <(find sales_engagement_intelligence -name '*.json' -type f | sort)
+
+      - name: Build Python package
+        run: python -m build --sdist --wheel
