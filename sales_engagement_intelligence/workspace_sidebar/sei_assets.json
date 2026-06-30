@@ -1,0 +1,26 @@
+{
+  "app": "sales_engagement_intelligence",
+  "docstatus": 0,
+  "doctype": "Workspace Sidebar",
+  "for_user": "",
+  "header_icon": "folder",
+  "idx": 4,
+  "items": [
+    {
+      "child": 0,
+      "collapsible": 1,
+      "icon": "home",
+      "indent": 0,
+      "keep_closed": 0,
+      "label": "Home",
+      "link_to": "SEI Assets",
+      "link_type": "Workspace",
+      "show_arrow": 0,
+      "type": "Link"
+    }
+  ],
+  "name": "Assets",
+  "owner": "Administrator",
+  "standard": 1,
+  "title": "Assets"
+}

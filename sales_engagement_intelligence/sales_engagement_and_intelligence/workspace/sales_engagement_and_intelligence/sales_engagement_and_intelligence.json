@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\":\"prospecting_section\",\"type\":\"header\",\"data\":{\"text\":\"Prospecting\",\"col\":12}},{\"id\":\"signals_section\",\"type\":\"header\",\"data\":{\"text\":\"Signals\",\"col\":12}},{\"id\":\"touchpoints_section\",\"type\":\"header\",\"data\":{\"text\":\"Touchpoints\",\"col\":12}},{\"id\":\"assets_section\",\"type\":\"header\",\"data\":{\"text\":\"Assets\",\"col\":12}},{\"id\":\"crm_conversion_section\",\"type\":\"header\",\"data\":{\"text\":\"CRM Conversion\",\"col\":12}},{\"id\":\"reports_section\",\"type\":\"header\",\"data\":{\"text\":\"Reports\",\"col\":12}},{\"id\":\"settings_section\",\"type\":\"header\",\"data\":{\"text\":\"Settings\",\"col\":12}}]",
+ "content": "[{\"id\": \"overview_section\", \"type\": \"header\", \"data\": {\"text\": \"Sales Engagement and Intelligence\", \"col\": 12}}, {\"id\": \"overview_text\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM outreach intelligence workspace shell. Use the desktop child icons for the major workflow areas.\", \"col\": 12}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -10,7 +10,7 @@
  "hide_custom": 0,
  "icon": "broadcast",
  "idx": 0,
- "indicator_color": "blue",
+ "indicator_color": "purple",
  "is_hidden": 0,
  "label": "Sales Engagement and Intelligence",
  "links": [],
