@@ -29,3 +29,8 @@ fixtures = [
         ],
     },
 ]
+
+# Desktop launcher records are maintained after migrate because Frappe
+# orphan cleanup deletes standard Desktop Icon / Workspace Sidebar resources
+# that are not part of the core desktop registry.
+after_migrate = "sales_engagement_intelligence.setup.desktop.after_migrate"
