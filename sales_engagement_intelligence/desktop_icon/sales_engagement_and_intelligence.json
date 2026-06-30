@@ -1,0 +1,17 @@
+{
+  "app": "sales_engagement_intelligence",
+  "docstatus": 0,
+  "doctype": "Desktop Icon",
+  "hidden": 0,
+  "icon": "broadcast",
+  "icon_type": "Link",
+  "idx": 20,
+  "label": "Sales Engagement and Intelligence",
+  "link_to": "Sales Engagement and Intelligence",
+  "link_type": "Workspace Sidebar",
+  "name": "Sales Engagement and Intelligence",
+  "parent_icon": "",
+  "restrict_removal": 0,
+  "roles": [],
+  "standard": 1
+}
