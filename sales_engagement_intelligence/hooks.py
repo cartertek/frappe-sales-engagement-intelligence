@@ -5,6 +5,15 @@ app_description = "Pre-CRM outreach intelligence layer for Frappe CRM and ERPNex
 app_email = "admin@cartertek.ai"
 app_license = "MIT"
 
+add_to_apps_screen = [
+    {
+        "name": "sales_engagement_intelligence",
+        "logo": "/assets/sales_engagement_intelligence/desktop_icons/sei_app.svg",
+        "title": "Sales Engagement and Intelligence",
+        "route": "/app/sales-engagement-and-intelligence",
+    }
+]
+
 # The Milestone 1 foundation intentionally avoids scheduled jobs, email senders,
 # outbound automation, and any background process that could send outreach.
 
@@ -25,7 +34,21 @@ fixtures = [
     {
         "dt": "Workspace",
         "filters": [
-            ["name", "=", "Sales Engagement and Intelligence"],
+            [
+                "name",
+                "in",
+                [
+                    "Sales Engagement and Intelligence",
+                    "Prospecting",
+                    "Signals",
+                    "Touchpoints",
+                    "Assets",
+                    "CRM Conversion",
+                    "Reports",
+                    "Settings",
+                ],
+            ],
         ],
     },
 ]
+

@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "setting",
-  "idx": 7,
+  "header_icon": "mail",
+  "idx": 3,
   "items": [
     {
       "child": 0,
@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI Settings",
+      "link_to": "Touchpoints",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "Settings",
+  "name": "Touchpoints",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Settings"
+  "title": "Touchpoints"
 }

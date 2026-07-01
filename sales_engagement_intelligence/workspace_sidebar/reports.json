@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "arrow-right",
-  "idx": 5,
+  "header_icon": "bar-chart",
+  "idx": 6,
   "items": [
     {
       "child": 0,
@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI CRM Conversion",
+      "link_to": "Reports",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "CRM Conversion",
+  "name": "Reports",
   "owner": "Administrator",
   "standard": 1,
-  "title": "CRM Conversion"
+  "title": "Reports"
 }

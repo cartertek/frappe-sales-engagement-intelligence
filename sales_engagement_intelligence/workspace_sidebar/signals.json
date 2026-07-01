@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "search",
-  "idx": 1,
+  "header_icon": "chart",
+  "idx": 2,
   "items": [
     {
       "child": 0,
@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI Prospecting",
+      "link_to": "Signals",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "Prospecting",
+  "name": "Signals",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Prospecting"
+  "title": "Signals"
 }

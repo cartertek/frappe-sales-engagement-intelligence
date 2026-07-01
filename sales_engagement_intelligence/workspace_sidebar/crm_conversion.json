@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "mail",
-  "idx": 3,
+  "header_icon": "arrow-right",
+  "idx": 5,
   "items": [
     {
       "child": 0,
@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI Touchpoints",
+      "link_to": "CRM Conversion",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "Touchpoints",
+  "name": "CRM Conversion",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Touchpoints"
+  "title": "CRM Conversion"
 }
