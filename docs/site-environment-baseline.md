@@ -1,59 +1,68 @@
 # Site and Environment Baseline
 
-Complete this checklist against the target Frappe/ERPNext/Frappe CRM site before beginning Milestone 2 data model work.
+Baseline captured from the target Dockerized Frappe/ERPNext/Frappe CRM site before beginning Milestone 2 data model work.
 
 ## Target Site
 
 ```text
-Target site: TBD
-Bench path: TBD
-ERPNext version: TBD
-Frappe CRM version: TBD
-Frappe version: TBD
-Python version: TBD
-Node version: TBD
-MariaDB version: TBD
-Redis status: TBD
+Target site: frappe.localhost
+Bench path: /home/frappe/frappe-bench
+Frappe version: 17.0.0-dev UNVERSIONED
+ERPNext version: 17.0.0-dev UNVERSIONED
+HRMS version: 17.0.0-dev UNVERSIONED
+Frappe CRM version: 2.0.0-dev UNVERSIONED
+Sales Engagement and Intelligence version: 0.0.1 UNVERSIONED
+Python version: 3.14.2
+Node version: not present on backend/frontend runtime PATH in deployed containers
+MariaDB version: 10.11.14-MariaDB
+Redis cache URL: redis://redis-cache:6379
+Redis queue/socketio URL: redis://redis-queue:6379
+Database host: db:3306
+Database name: _d784d59a1bea3422
+Scheduler status: enabled for site frappe.localhost
 ```
 
-## Discovery Commands
+## Installed Apps
 
-```bash
-bench --site all list-apps
-ls sites
-bench version
-python --version
-node --version
-mysql --version
-bench --site <site-name> doctor
+```text
+frappe                        17.0.0-dev UNVERSIONED
+erpnext                       17.0.0-dev UNVERSIONED
+hrms                          17.0.0-dev UNVERSIONED
+sales_engagement_intelligence 0.0.1      UNVERSIONED
+crm                           2.0.0-dev  UNVERSIONED
 ```
+
+## Docker Notes
+
+The stack is Dockerized. Do not assume direct supervisor or `bench restart` control. Deploy/restart should use the compose/container workflow from `frappe_docker`.
+
+The backend container finalize step runs the deploy-time migration/cache clear sequence once per recreated backend container.
 
 ## Migration Check
 
-```bash
-bench --site <site-name> migrate
-bench build
-```
-
-If the deployment runs in production mode, restart through the environment's normal process:
-
-```bash
-bench restart
-```
-
-For Dockerized deployments, use the relevant compose/container restart workflow instead of assuming direct supervisor control.
+`bench --site frappe.localhost migrate` has completed successfully during the latest deployment cycle.
 
 ## Backup Baseline
 
-```bash
-bench --site <site-name> backup --with-files
-ls -lh sites/<site-name>/private/backups/
+Known backup location:
+
+```text
+/home/frappe/frappe-bench/sites/frappe.localhost/private/backups/
+```
+
+Observed backup files:
+
+```text
+20260629_105405-frappe_localhost-database.sql.gz
+20260629_105405-frappe_localhost-files.tar
+20260629_105405-frappe_localhost-private-files.tar
+20260629_105405-frappe_localhost-site_config_backup.json
 ```
 
 Minimum confirmation before Milestone 2:
 
-- Database backup works
-- Private files backup works
-- Public files backup works
-- Backup location is known
-- Restore procedure is understood
+- Database backup exists.
+- Private files backup exists.
+- Public files backup exists.
+- Backup location is known.
+- Restore procedure still needs to be documented separately if/when needed.
