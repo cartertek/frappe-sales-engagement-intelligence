@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "Outreach Assets",
+      "link_to": "Assets",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "Outreach Assets",
+  "name": "Assets",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Outreach Assets"
+  "title": "Assets"
 }
