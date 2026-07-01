@@ -10,7 +10,7 @@
   "label": "Settings",
   "link_to": "Settings",
   "link_type": "Workspace Sidebar",
-  "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/sei_settings.svg",
+  "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/settings.svg",
   "name": "Settings",
   "parent_icon": "Sales Engagement and Intelligence",
   "restrict_removal": 0,

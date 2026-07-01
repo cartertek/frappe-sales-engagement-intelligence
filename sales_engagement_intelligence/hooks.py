@@ -8,7 +8,7 @@ app_license = "MIT"
 add_to_apps_screen = [
     {
         "name": "sales_engagement_intelligence",
-        "logo": "/assets/sales_engagement_intelligence/desktop_icons/sei_app.svg",
+        "logo": "/assets/sales_engagement_intelligence/desktop_icons/app.svg",
         "title": "Sales Engagement and Intelligence",
         "route": "/app/sales-engagement-and-intelligence",
     }
@@ -53,5 +53,5 @@ fixtures = [
 ]
 
 
-app_include_css = "/assets/sales_engagement_intelligence/css/sei_desktop.css"
-app_include_js = "/assets/sales_engagement_intelligence/js/sei_desktop_icons.js"
+app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
+app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
