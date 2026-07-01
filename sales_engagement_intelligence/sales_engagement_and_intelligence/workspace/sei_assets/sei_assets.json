@@ -12,12 +12,12 @@
  "idx": 4,
  "indicator_color": "purple",
  "is_hidden": 0,
- "label": "Outreach Assets",
+ "label": "Assets",
  "links": [],
  "modified": "2026-06-25 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Outreach Assets",
+ "name": "Assets",
  "number_cards": [],
  "owner": "Administrator",
  "parent_page": "Sales Engagement and Intelligence",
@@ -27,6 +27,6 @@
  "roles": [],
  "sequence_id": 34.0,
  "shortcuts": [],
- "title": "Outreach Assets",
+ "title": "Assets",
  "type": "Workspace"
 }
