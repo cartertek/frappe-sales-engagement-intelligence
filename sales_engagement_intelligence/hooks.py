@@ -55,3 +55,5 @@ fixtures = [
 
 app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
 app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
+
+after_migrate = "sales_engagement_intelligence.setup.desktop_layout.after_migrate"
