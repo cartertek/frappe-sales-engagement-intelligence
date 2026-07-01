@@ -1,0 +1,9 @@
+.desktop-icon .app-title,
+.desktop-icon .title,
+.desktop-icon-label {
+  max-width: 150px;
+  white-space: normal;
+  overflow-wrap: break-word;
+  text-align: center;
+  line-height: 1.2;
+}
