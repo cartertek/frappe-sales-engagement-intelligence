@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI CRM Conversion",
+      "link_to": "CRM Conversion",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "SEI CRM Conversion",
+  "name": "CRM Conversion",
   "owner": "Administrator",
   "standard": 1,
-  "title": "SEI CRM Conversion"
+  "title": "CRM Conversion"
 }

@@ -13,14 +13,14 @@
       "indent": 0,
       "keep_closed": 0,
       "label": "Home",
-      "link_to": "SEI Settings",
+      "link_to": "Outreach Settings",
       "link_type": "Workspace",
       "show_arrow": 0,
       "type": "Link"
     }
   ],
-  "name": "SEI Settings",
+  "name": "Outreach Settings",
   "owner": "Administrator",
   "standard": 1,
-  "title": "SEI Settings"
+  "title": "Outreach Settings"
 }
