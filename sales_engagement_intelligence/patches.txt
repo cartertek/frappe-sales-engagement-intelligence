@@ -1,0 +1,2 @@
+sales_engagement_intelligence.patches.v0_0_1.add_milestone_2_crm_custom_fields
+sales_engagement_intelligence.patches.v0_0_1.seed_sei_theses
