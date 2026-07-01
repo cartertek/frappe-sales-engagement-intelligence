@@ -54,3 +54,4 @@ fixtures = [
 
 
 app_include_css = "/assets/sales_engagement_intelligence/css/sei_desktop.css"
+app_include_js = "/assets/sales_engagement_intelligence/js/sei_desktop_icons.js"
