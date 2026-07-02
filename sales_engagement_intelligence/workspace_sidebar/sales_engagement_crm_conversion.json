@@ -1,0 +1,26 @@
+{
+ "app": "sales_engagement_intelligence",
+ "docstatus": 0,
+ "doctype": "Workspace Sidebar",
+ "for_user": "",
+ "header_icon": "arrow-right",
+ "idx": 5,
+ "items": [
+  {
+   "child": 0,
+   "collapsible": 1,
+   "icon": "home",
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Home",
+   "link_to": "Sales Engagement CRM Conversion",
+   "link_type": "Workspace",
+   "show_arrow": 0,
+   "type": "Link"
+  }
+ ],
+ "name": "Sales Engagement CRM Conversion",
+ "owner": "Administrator",
+ "standard": 1,
+ "title": "CRM Conversion"
+}

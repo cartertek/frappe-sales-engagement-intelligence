@@ -1,0 +1,19 @@
+{
+ "app": "sales_engagement_intelligence",
+ "bg_color": "#700da8",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "mail",
+ "icon_type": "Link",
+ "idx": 3,
+ "label": "Touchpoints",
+ "link_to": "Sales Engagement Touchpoints",
+ "link_type": "Workspace Sidebar",
+ "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/touchpoints.svg",
+ "name": "Sales Engagement Touchpoints",
+ "parent_icon": "Sales Engagement and Intelligence",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

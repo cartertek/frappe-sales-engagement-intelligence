@@ -1,0 +1,19 @@
+{
+ "app": "sales_engagement_intelligence",
+ "bg_color": "#700da8",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "bar-chart",
+ "icon_type": "Link",
+ "idx": 6,
+ "label": "Reports",
+ "link_to": "Sales Engagement Reports",
+ "link_type": "Workspace Sidebar",
+ "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/reports.svg",
+ "name": "Sales Engagement Reports",
+ "parent_icon": "Sales Engagement and Intelligence",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}

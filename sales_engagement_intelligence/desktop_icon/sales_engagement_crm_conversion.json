@@ -1,0 +1,19 @@
+{
+ "app": "sales_engagement_intelligence",
+ "bg_color": "#700da8",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "arrow-right",
+ "icon_type": "Link",
+ "idx": 5,
+ "label": "CRM Conversion",
+ "link_to": "Sales Engagement CRM Conversion",
+ "link_type": "Workspace Sidebar",
+ "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/crm_conversion.svg",
+ "name": "Sales Engagement CRM Conversion",
+ "parent_icon": "Sales Engagement and Intelligence",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}
