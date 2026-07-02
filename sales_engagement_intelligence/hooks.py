@@ -74,22 +74,10 @@ fixtures = [
 ]
 
 
-_SEI_DOCTYPE_MODULE = "sales_engagement_intelligence.sales_engagement_and_intelligence.doctype"
-
-override_doctype_class = {
-    "SEI Prospect": f"{_SEI_DOCTYPE_MODULE}.prospect.prospect.SEIProspect",
-    "SEI Signal": f"{_SEI_DOCTYPE_MODULE}.signal.signal.SEISignal",
-    "SEI Thesis": f"{_SEI_DOCTYPE_MODULE}.thesis.thesis.SEIThesis",
-    "SEI Asset": f"{_SEI_DOCTYPE_MODULE}.asset.asset.SEIAsset",
-    "SEI Interaction Attribution": (
-        f"{_SEI_DOCTYPE_MODULE}.interaction_attribution."
-        "interaction_attribution.SEIInteractionAttribution"
-    ),
-}
-
-
-
 app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
 app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
 
-after_migrate = "sales_engagement_intelligence.setup.desktop_layout.after_migrate"
+after_migrate = [
+    "sales_engagement_intelligence.setup.desktop_layout.after_migrate",
+    "sales_engagement_intelligence.patches.v0_0_1.seed_theses.execute",
+]
