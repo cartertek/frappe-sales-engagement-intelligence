@@ -79,5 +79,6 @@ app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
 
 after_migrate = [
     "sales_engagement_intelligence.setup.desktop_layout.after_migrate",
+    "sales_engagement_intelligence.setup.desktop.after_migrate",
     "sales_engagement_intelligence.patches.v0_0_1.seed_theses.execute",
 ]
