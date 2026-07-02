@@ -50,7 +50,43 @@ fixtures = [
             ],
         ],
     },
+    {
+        "dt": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "CRM Lead-sei_section",
+                    "CRM Lead-sei_prospect",
+                    "CRM Lead-sei_source_arena",
+                    "CRM Lead-sei_thesis",
+                    "CRM Lead-sei_qualification_summary",
+                    "CRM Deal-sei_section",
+                    "CRM Deal-sei_prospect",
+                    "CRM Deal-sei_source_arena",
+                    "CRM Deal-sei_thesis",
+                    "CRM Deal-sei_primary_signal",
+                ],
+            ],
+        ],
+    },
 ]
+
+
+_SEI_DOCTYPE_MODULE = "sales_engagement_intelligence.sales_engagement_and_intelligence.doctype"
+
+override_doctype_class = {
+    "SEI Prospect": f"{_SEI_DOCTYPE_MODULE}.prospect.prospect.SEIProspect",
+    "SEI Signal": f"{_SEI_DOCTYPE_MODULE}.signal.signal.SEISignal",
+    "SEI Thesis": f"{_SEI_DOCTYPE_MODULE}.thesis.thesis.SEIThesis",
+    "SEI Asset": f"{_SEI_DOCTYPE_MODULE}.asset.asset.SEIAsset",
+    "SEI Interaction Attribution": (
+        f"{_SEI_DOCTYPE_MODULE}.interaction_attribution."
+        "interaction_attribution.SEIInteractionAttribution"
+    ),
+}
+
 
 
 app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"

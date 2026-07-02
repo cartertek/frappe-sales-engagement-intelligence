@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"overview_section\", \"type\": \"header\", \"data\": {\"text\": \"Sales Engagement and Intelligence\", \"col\": 12}}, {\"id\": \"overview_text\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM outreach intelligence workspace shell. Use the desktop child icons for the major workflow areas.\", \"col\": 12}}]",
+ "content": "[{\"id\": \"overview_section\", \"type\": \"header\", \"data\": {\"text\": \"Sales Engagement and Intelligence\", \"col\": 12}}, {\"id\": \"overview_text\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM outreach intelligence for prospect research, signal evidence, thesis alignment, assets, qualification preparation, and CRM attribution. Frappe CRM remains the owner of qualified lead and deal activity.\", \"col\": 12}}, {\"id\": \"prospect_intelligence\", \"type\": \"header\", \"data\": {\"text\": \"Prospect Intelligence\", \"col\": 12}}, {\"id\": \"signals_section\", \"type\": \"header\", \"data\": {\"text\": \"Signal Evidence\", \"col\": 12}}, {\"id\": \"theses_assets\", \"type\": \"header\", \"data\": {\"text\": \"Theses and Assets\", \"col\": 12}}, {\"id\": \"crm_attribution\", \"type\": \"header\", \"data\": {\"text\": \"CRM Attribution\", \"col\": 12}}, {\"id\": \"settings_section\", \"type\": \"header\", \"data\": {\"text\": \"Settings\", \"col\": 12}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,8 +13,49 @@
  "indicator_color": "purple",
  "is_hidden": 0,
  "label": "Sales Engagement and Intelligence",
- "links": [],
- "modified": "2026-06-25 00:00:00.000000",
+ "links": [
+  {
+   "type": "DocType",
+   "label": "SEI Prospects",
+   "link_to": "SEI Prospect",
+   "link_type": "DocType",
+   "hidden": 0,
+   "onboard": 0
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Signals",
+   "link_to": "SEI Signal",
+   "link_type": "DocType",
+   "hidden": 0,
+   "onboard": 0
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Theses",
+   "link_to": "SEI Thesis",
+   "link_type": "DocType",
+   "hidden": 0,
+   "onboard": 0
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Assets",
+   "link_to": "SEI Asset",
+   "link_type": "DocType",
+   "hidden": 0,
+   "onboard": 0
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Interaction Attributions",
+   "link_to": "SEI Interaction Attribution",
+   "link_type": "DocType",
+   "hidden": 0,
+   "onboard": 0
+  }
+ ],
+ "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "Sales Engagement and Intelligence",
@@ -26,7 +67,43 @@
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 30.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "type": "DocType",
+   "label": "SEI Prospects",
+   "link_to": "SEI Prospect",
+   "doc_view": "List",
+   "color": "Blue"
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Signals",
+   "link_to": "SEI Signal",
+   "doc_view": "List",
+   "color": "Purple"
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Theses",
+   "link_to": "SEI Thesis",
+   "doc_view": "List",
+   "color": "Green"
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Assets",
+   "link_to": "SEI Asset",
+   "doc_view": "List",
+   "color": "Orange"
+  },
+  {
+   "type": "DocType",
+   "label": "SEI Interaction Attributions",
+   "link_to": "SEI Interaction Attribution",
+   "doc_view": "List",
+   "color": "Grey"
+  }
+ ],
  "title": "Sales Engagement and Intelligence",
  "type": "Workspace"
 }

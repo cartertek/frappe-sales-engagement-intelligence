@@ -1,0 +1,184 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 0,
+ "autoname": "format:SEI-SIG-.YYYY.-.#####",
+ "creation": "2026-07-01 00:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "prospect",
+  "signal_type",
+  "signal_strength",
+  "evidence_basis",
+  "confidence",
+  "source_url",
+  "source_date",
+  "evidence_notes",
+  "counts_toward_qualification",
+  "attachment",
+  "column_break_1",
+  "reviewed_by",
+  "review_date"
+ ],
+ "fields": [
+  {
+   "fieldname": "prospect",
+   "label": "Prospect",
+   "fieldtype": "Link",
+   "options": "SEI Prospect",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 1
+  },
+  {
+   "fieldname": "signal_type",
+   "label": "Signal Type",
+   "fieldtype": "Select",
+   "options": "Failed Recruitment\nTechnical Distress\nLaunch Aftermath\nAgency Overflow\nEcosystem Adjacency\nVendor/Directory Presence\nCommunity Request\nProcurement Visibility\nCredibility/Referral Signal\nReactivation Signal\nOther",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
+  },
+  {
+   "fieldname": "signal_strength",
+   "label": "Signal Strength",
+   "fieldtype": "Select",
+   "options": "Weak\nModerate\nStrong",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 3
+  },
+  {
+   "fieldname": "evidence_basis",
+   "label": "Evidence Basis",
+   "fieldtype": "Select",
+   "options": "Observed\nInferred",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 4
+  },
+  {
+   "fieldname": "confidence",
+   "label": "Confidence",
+   "fieldtype": "Percent",
+   "idx": 5
+  },
+  {
+   "fieldname": "source_url",
+   "label": "Source URL",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "idx": 6
+  },
+  {
+   "fieldname": "source_date",
+   "label": "Source Date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "idx": 7
+  },
+  {
+   "fieldname": "evidence_notes",
+   "label": "Evidence Notes",
+   "fieldtype": "Long Text",
+   "reqd": 1,
+   "idx": 8
+  },
+  {
+   "fieldname": "counts_toward_qualification",
+   "label": "Counts Toward Qualification",
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "idx": 9
+  },
+  {
+   "fieldname": "attachment",
+   "label": "Attachment",
+   "fieldtype": "Attach",
+   "idx": 10
+  },
+  {
+   "fieldname": "column_break_1",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 11
+  },
+  {
+   "fieldname": "reviewed_by",
+   "label": "Reviewed By",
+   "fieldtype": "Link",
+   "options": "User",
+   "idx": 12
+  },
+  {
+   "fieldname": "review_date",
+   "label": "Review Date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "idx": 13
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Signal",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 1,
+   "doctype": "DocPerm",
+   "parent": "SEI Signal",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 2,
+   "doctype": "DocPerm",
+   "parent": "SEI Signal",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  }
+ ],
+ "search_fields": "prospect, signal_type, signal_strength, evidence_basis, source_url",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "signal_type",
+ "track_changes": 1
+}

@@ -15,7 +15,7 @@ This app must not implement automatic cold email sending, AI auto-send behavior,
 
 ## Milestone 1 Scope
 
-This repository currently implements the Milestone 1 foundation:
+This repository implements the Milestone 1 foundation:
 
 - Installable Frappe app scaffold
 - Module shell for future outreach DocTypes
@@ -27,7 +27,22 @@ This repository currently implements the Milestone 1 foundation:
 - Backup and migration workflow documentation
 - No-auto-send policy
 
-Milestone 1 intentionally does **not** implement the outreach data model yet. `Outreach Prospect`, `Outreach Signal`, `Outreach Touchpoint`, `Outreach Thesis`, and `Outreach Asset` belong to Milestone 2.
+Milestone 1 intentionally did **not** implement the outreach data model.
+
+
+## Milestone 2 Scope
+
+This repository now includes the Milestone 2 SEI data model source files:
+
+- `SEI Prospect`
+- `SEI Signal`
+- `SEI Thesis`
+- `SEI Asset`
+- `SEI Interaction Attribution`
+- Informational SEI custom fields for `CRM Lead` and `CRM Deal`
+- Seed records for the canonical Cartertek outreach theses
+
+Milestone 2 remains schema/data-model only. It does not create CRM conversion buttons, CRM records, outreach sending, reports, API endpoints, qualification automation, or ERPNext Lead / Opportunity conversion paths.
 
 ## Install
 
@@ -110,3 +125,4 @@ ERPNext email account configuration should be left unchanged unless a later mile
 - [ERPNext CRM Boundary](docs/crm-boundary.md)
 - [Site and Environment Baseline](docs/site-environment-baseline.md)
 - [Milestone 1 Acceptance Checklist](docs/milestone-1-acceptance.md)
+- [Milestone 2 Data Model](docs/milestone-2-data-model.md)
