@@ -20,7 +20,7 @@
   "first_seen_date",
   "last_researched_date",
   "positioning_section",
-  "sei_thesis",
+  "thesis",
   "offer",
   "signal_summary",
   "contact_target_notes",
@@ -144,10 +144,10 @@
    "idx": 12
   },
   {
-   "fieldname": "sei_thesis",
-   "label": "SEI Thesis",
+   "fieldname": "thesis",
+   "label": "Thesis",
    "fieldtype": "Link",
-   "options": "SEI Thesis",
+   "options": "Thesis",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 13
@@ -408,7 +408,7 @@
  "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "SEI Prospect",
+ "name": "Prospect",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -429,7 +429,7 @@
    "email": 1,
    "idx": 1,
    "doctype": "DocPerm",
-   "parent": "SEI Prospect",
+   "parent": "Prospect",
    "parentfield": "permissions",
    "parenttype": "DocType"
   },
@@ -450,7 +450,7 @@
    "email": 1,
    "idx": 2,
    "doctype": "DocPerm",
-   "parent": "SEI Prospect",
+   "parent": "Prospect",
    "parentfield": "permissions",
    "parenttype": "DocType"
   }

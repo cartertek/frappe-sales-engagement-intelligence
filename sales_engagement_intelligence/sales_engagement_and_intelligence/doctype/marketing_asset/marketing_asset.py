@@ -1,5 +1,5 @@
 from frappe.model.document import Document
 
 
-class Thesis(Document):
+class MarketingAsset(Document):
     pass

@@ -8,11 +8,11 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
-  "sei_links_section",
-  "sei_prospect",
-  "sei_signal",
-  "sei_thesis",
-  "sei_asset",
+  "attribution_links_section",
+  "prospect",
+  "signal",
+  "thesis",
+  "marketing_asset",
   "offer",
   "source_arena",
   "frappe_crm_links_section",
@@ -31,42 +31,42 @@
  ],
  "fields": [
   {
-   "fieldname": "sei_links_section",
-   "label": "SEI Links",
+   "fieldname": "attribution_links_section",
+   "label": "Attribution Links",
    "fieldtype": "Section Break",
    "idx": 1
   },
   {
-   "fieldname": "sei_prospect",
-   "label": "SEI Prospect",
+   "fieldname": "prospect",
+   "label": "Prospect",
    "fieldtype": "Link",
-   "options": "SEI Prospect",
+   "options": "Prospect",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 2
   },
   {
-   "fieldname": "sei_signal",
-   "label": "SEI Signal",
+   "fieldname": "signal",
+   "label": "Signal",
    "fieldtype": "Link",
-   "options": "SEI Signal",
+   "options": "Signal",
    "idx": 3
   },
   {
-   "fieldname": "sei_thesis",
-   "label": "SEI Thesis",
+   "fieldname": "thesis",
+   "label": "Thesis",
    "fieldtype": "Link",
-   "options": "SEI Thesis",
+   "options": "Thesis",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 4
   },
   {
-   "fieldname": "sei_asset",
-   "label": "SEI Asset",
+   "fieldname": "marketing_asset",
+   "label": "Marketing Asset",
    "fieldtype": "Link",
-   "options": "SEI Asset",
+   "options": "Marketing Asset",
    "in_list_view": 1,
    "idx": 5
   },
@@ -184,7 +184,7 @@
  "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "SEI Interaction Attribution",
+ "name": "Interaction Attribution",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -205,7 +205,7 @@
    "email": 1,
    "idx": 1,
    "doctype": "DocPerm",
-   "parent": "SEI Interaction Attribution",
+   "parent": "Interaction Attribution",
    "parentfield": "permissions",
    "parenttype": "DocType"
   },
@@ -226,12 +226,12 @@
    "email": 1,
    "idx": 2,
    "doctype": "DocPerm",
-   "parent": "SEI Interaction Attribution",
+   "parent": "Interaction Attribution",
    "parentfield": "permissions",
    "parenttype": "DocType"
   }
  ],
- "search_fields": "sei_prospect, crm_lead, crm_deal, interaction_type, response_category",
+ "search_fields": "prospect, crm_lead, crm_deal, interaction_type, response_category",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

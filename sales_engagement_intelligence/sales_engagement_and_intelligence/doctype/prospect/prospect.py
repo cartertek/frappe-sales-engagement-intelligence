@@ -4,7 +4,7 @@ import frappe
 from frappe.model.document import Document
 
 
-class SEIProspect(Document):
+class Prospect(Document):
     def validate(self):
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()

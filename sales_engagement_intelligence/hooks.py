@@ -57,16 +57,16 @@ fixtures = [
                 "name",
                 "in",
                 [
-                    "CRM Lead-sei_section",
-                    "CRM Lead-sei_prospect",
-                    "CRM Lead-sei_source_arena",
-                    "CRM Lead-sei_thesis",
-                    "CRM Lead-sei_qualification_summary",
-                    "CRM Deal-sei_section",
-                    "CRM Deal-sei_prospect",
-                    "CRM Deal-sei_source_arena",
-                    "CRM Deal-sei_thesis",
-                    "CRM Deal-sei_primary_signal",
+                    "CRM Lead-engagement_intelligence_section",
+                    "CRM Lead-engagement_prospect",
+                    "CRM Lead-engagement_source_arena",
+                    "CRM Lead-engagement_thesis",
+                    "CRM Lead-engagement_qualification_summary",
+                    "CRM Deal-engagement_intelligence_section",
+                    "CRM Deal-engagement_prospect",
+                    "CRM Deal-engagement_source_arena",
+                    "CRM Deal-engagement_thesis",
+                    "CRM Deal-engagement_primary_signal",
                 ],
             ],
         ],
@@ -74,22 +74,10 @@ fixtures = [
 ]
 
 
-_SEI_DOCTYPE_MODULE = "sales_engagement_intelligence.sales_engagement_and_intelligence.doctype"
-
-override_doctype_class = {
-    "SEI Prospect": f"{_SEI_DOCTYPE_MODULE}.prospect.prospect.SEIProspect",
-    "SEI Signal": f"{_SEI_DOCTYPE_MODULE}.signal.signal.SEISignal",
-    "SEI Thesis": f"{_SEI_DOCTYPE_MODULE}.thesis.thesis.SEIThesis",
-    "SEI Asset": f"{_SEI_DOCTYPE_MODULE}.asset.asset.SEIAsset",
-    "SEI Interaction Attribution": (
-        f"{_SEI_DOCTYPE_MODULE}.interaction_attribution."
-        "interaction_attribution.SEIInteractionAttribution"
-    ),
-}
-
-
-
 app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
 app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
 
-after_migrate = "sales_engagement_intelligence.setup.desktop_layout.after_migrate"
+after_migrate = [
+    "sales_engagement_intelligence.setup.desktop_layout.after_migrate",
+    "sales_engagement_intelligence.patches.v0_0_1.seed_theses.execute",
+]
