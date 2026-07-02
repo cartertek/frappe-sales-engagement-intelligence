@@ -33,4 +33,6 @@ class SEIProspect(Document):
 
     def validate_manual_override_reason(self):
         if self.manual_qualification_override and not self.manual_qualification_reason:
-            frappe.throw('Manual Qualification Reason is required when Manual Qualification Override is checked.')
+            frappe.throw(
+                'Manual Qualification Reason is required when Manual Qualification Override is checked.'
+            )

@@ -7,7 +7,11 @@ def _insert_after(doctype, preferred):
     if preferred and meta.has_field(preferred):
         return preferred
 
-    visible_fields = [field.fieldname for field in meta.fields if field.fieldtype not in ('Section Break', 'Column Break', 'Tab Break')]
+    visible_fields = [
+        field.fieldname
+        for field in meta.fields
+        if field.fieldtype not in ('Section Break', 'Column Break', 'Tab Break')
+    ]
     return visible_fields[-1] if visible_fields else None
 
 
