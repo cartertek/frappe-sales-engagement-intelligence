@@ -32,14 +32,14 @@ Milestone 1 intentionally did **not** implement the outreach data model.
 
 ## Milestone 2 Scope
 
-This repository now includes the Milestone 2 SEI data model source files:
+This repository now includes the Milestone 2 engagement intelligence data model source files:
 
-- `SEI Prospect`
-- `SEI Signal`
-- `SEI Thesis`
-- `SEI Asset`
-- `SEI Interaction Attribution`
-- Informational SEI custom fields for `CRM Lead` and `CRM Deal`
+- `Prospect`
+- `Signal`
+- `Thesis`
+- `Marketing Asset`
+- `Interaction Attribution`
+- Informational engagement intelligence custom fields for `CRM Lead` and `CRM Deal`
 - Seed records for the canonical Cartertek outreach theses
 
 Milestone 2 remains schema/data-model only. It does not create CRM conversion buttons, CRM records, outreach sending, reports, API endpoints, qualification automation, or ERPNext Lead / Opportunity conversion paths.

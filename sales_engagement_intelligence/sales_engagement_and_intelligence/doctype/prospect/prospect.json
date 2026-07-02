@@ -1,0 +1,464 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:SEI-PROS-.YYYY.-.#####",
+ "creation": "2026-07-01 00:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "identity_section",
+  "prospect_name",
+  "website",
+  "normalized_domain",
+  "prospect_type",
+  "source_arena",
+  "source_url",
+  "source_notes",
+  "column_break_1",
+  "first_seen_date",
+  "last_researched_date",
+  "positioning_section",
+  "thesis",
+  "offer",
+  "signal_summary",
+  "contact_target_notes",
+  "notes",
+  "contact_path_section",
+  "primary_contact_name",
+  "primary_contact_role",
+  "primary_contact_email",
+  "primary_contact_url",
+  "primary_contact_notes",
+  "qualification_section",
+  "qualification_status",
+  "manual_qualification_override",
+  "manual_qualification_reason",
+  "column_break_2",
+  "qualified_signal_count",
+  "strong_observed_signal_count",
+  "moderate_observed_signal_count",
+  "qualification_explanation",
+  "lifecycle_/_queue_section",
+  "lifecycle_status",
+  "next_action",
+  "next_action_date",
+  "assigned_to",
+  "column_break_3",
+  "rejected_reason",
+  "do_not_contact",
+  "frappe_crm_links_section",
+  "crm_lead",
+  "crm_deal",
+  "column_break_4",
+  "crm_organization",
+  "crm_contact",
+  "conversion_preparation_section",
+  "ready_for_crm_conversion",
+  "conversion_target",
+  "crm_conversion_notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "identity_section",
+   "label": "Identity",
+   "fieldtype": "Section Break",
+   "idx": 1
+  },
+  {
+   "fieldname": "prospect_name",
+   "label": "Prospect Name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
+  },
+  {
+   "fieldname": "website",
+   "label": "Website",
+   "fieldtype": "Data",
+   "in_standard_filter": 1,
+   "idx": 3
+  },
+  {
+   "fieldname": "normalized_domain",
+   "label": "Normalized Domain",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "idx": 4
+  },
+  {
+   "fieldname": "prospect_type",
+   "label": "Prospect Type",
+   "fieldtype": "Select",
+   "options": "Agency\nStartup\nSMB\nEnterprise\nEcosystem Partner\nDirectory Lead\nCommunity Lead\nProcurement Lead\nReferral Partner\nOther",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 5
+  },
+  {
+   "fieldname": "source_arena",
+   "label": "Source Arena",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 6
+  },
+  {
+   "fieldname": "source_url",
+   "label": "Source URL",
+   "fieldtype": "Data",
+   "idx": 7
+  },
+  {
+   "fieldname": "source_notes",
+   "label": "Source Notes",
+   "fieldtype": "Small Text",
+   "idx": 8
+  },
+  {
+   "fieldname": "column_break_1",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 9
+  },
+  {
+   "fieldname": "first_seen_date",
+   "label": "First Seen Date",
+   "fieldtype": "Date",
+   "idx": 10
+  },
+  {
+   "fieldname": "last_researched_date",
+   "label": "Last Researched Date",
+   "fieldtype": "Date",
+   "idx": 11
+  },
+  {
+   "fieldname": "positioning_section",
+   "label": "Positioning",
+   "fieldtype": "Section Break",
+   "idx": 12
+  },
+  {
+   "fieldname": "thesis",
+   "label": "Thesis",
+   "fieldtype": "Link",
+   "options": "Thesis",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 13
+  },
+  {
+   "fieldname": "offer",
+   "label": "Offer",
+   "fieldtype": "Data",
+   "idx": 14
+  },
+  {
+   "fieldname": "signal_summary",
+   "label": "Signal Summary",
+   "fieldtype": "Small Text",
+   "idx": 15
+  },
+  {
+   "fieldname": "contact_target_notes",
+   "label": "Contact Target Notes",
+   "fieldtype": "Small Text",
+   "idx": 16
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Long Text",
+   "idx": 17
+  },
+  {
+   "fieldname": "contact_path_section",
+   "label": "Contact Path",
+   "fieldtype": "Section Break",
+   "idx": 18
+  },
+  {
+   "fieldname": "primary_contact_name",
+   "label": "Primary Contact Name",
+   "fieldtype": "Data",
+   "idx": 19
+  },
+  {
+   "fieldname": "primary_contact_role",
+   "label": "Primary Contact Role",
+   "fieldtype": "Data",
+   "idx": 20
+  },
+  {
+   "fieldname": "primary_contact_email",
+   "label": "Primary Contact Email",
+   "fieldtype": "Data",
+   "idx": 21
+  },
+  {
+   "fieldname": "primary_contact_url",
+   "label": "Primary Contact URL",
+   "fieldtype": "Data",
+   "idx": 22
+  },
+  {
+   "fieldname": "primary_contact_notes",
+   "label": "Primary Contact Notes",
+   "fieldtype": "Small Text",
+   "idx": 23
+  },
+  {
+   "fieldname": "qualification_section",
+   "label": "Qualification",
+   "fieldtype": "Section Break",
+   "idx": 24
+  },
+  {
+   "fieldname": "qualification_status",
+   "label": "Qualification Status",
+   "fieldtype": "Select",
+   "options": "Unqualified\nNeeds Review\nQualified\nManually Approved\nRejected\nDo Not Contact",
+   "default": "Unqualified",
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 25
+  },
+  {
+   "fieldname": "manual_qualification_override",
+   "label": "Manual Qualification Override",
+   "fieldtype": "Check",
+   "idx": 26
+  },
+  {
+   "fieldname": "manual_qualification_reason",
+   "label": "Manual Qualification Reason",
+   "fieldtype": "Small Text",
+   "idx": 27
+  },
+  {
+   "fieldname": "column_break_2",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 28
+  },
+  {
+   "fieldname": "qualified_signal_count",
+   "label": "Qualified Signal Count",
+   "fieldtype": "Int",
+   "read_only": 1,
+   "idx": 29
+  },
+  {
+   "fieldname": "strong_observed_signal_count",
+   "label": "Strong Observed Signal Count",
+   "fieldtype": "Int",
+   "read_only": 1,
+   "idx": 30
+  },
+  {
+   "fieldname": "moderate_observed_signal_count",
+   "label": "Moderate Observed Signal Count",
+   "fieldtype": "Int",
+   "read_only": 1,
+   "idx": 31
+  },
+  {
+   "fieldname": "qualification_explanation",
+   "label": "Qualification Explanation",
+   "fieldtype": "Small Text",
+   "read_only": 1,
+   "idx": 32
+  },
+  {
+   "fieldname": "lifecycle_/_queue_section",
+   "label": "Lifecycle / Queue",
+   "fieldtype": "Section Break",
+   "idx": 33
+  },
+  {
+   "fieldname": "lifecycle_status",
+   "label": "Lifecycle Status",
+   "fieldtype": "Select",
+   "options": "New\nNeeds Research\nResearch Complete\nQualified\nFind Contact\nReady for CRM Conversion\nConverted to CRM Lead\nConverted to CRM Deal\nRejected\nDo Not Contact",
+   "default": "New",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 34
+  },
+  {
+   "fieldname": "next_action",
+   "label": "Next Action",
+   "fieldtype": "Data",
+   "idx": 35
+  },
+  {
+   "fieldname": "next_action_date",
+   "label": "Next Action Date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "idx": 36
+  },
+  {
+   "fieldname": "assigned_to",
+   "label": "Assigned To",
+   "fieldtype": "Link",
+   "options": "User",
+   "in_list_view": 1,
+   "idx": 37
+  },
+  {
+   "fieldname": "column_break_3",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 38
+  },
+  {
+   "fieldname": "rejected_reason",
+   "label": "Rejected Reason",
+   "fieldtype": "Small Text",
+   "idx": 39
+  },
+  {
+   "fieldname": "do_not_contact",
+   "label": "Do Not Contact",
+   "fieldtype": "Check",
+   "idx": 40
+  },
+  {
+   "fieldname": "frappe_crm_links_section",
+   "label": "Frappe CRM Links",
+   "fieldtype": "Section Break",
+   "idx": 41
+  },
+  {
+   "fieldname": "crm_lead",
+   "label": "CRM Lead",
+   "fieldtype": "Link",
+   "options": "CRM Lead",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 42
+  },
+  {
+   "fieldname": "crm_deal",
+   "label": "CRM Deal",
+   "fieldtype": "Link",
+   "options": "CRM Deal",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 43
+  },
+  {
+   "fieldname": "column_break_4",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 44
+  },
+  {
+   "fieldname": "crm_organization",
+   "label": "CRM Organization",
+   "fieldtype": "Link",
+   "options": "CRM Organization",
+   "read_only": 1,
+   "idx": 45
+  },
+  {
+   "fieldname": "crm_contact",
+   "label": "CRM Contact",
+   "fieldtype": "Link",
+   "options": "CRM Contacts",
+   "read_only": 1,
+   "idx": 46
+  },
+  {
+   "fieldname": "conversion_preparation_section",
+   "label": "Conversion Preparation",
+   "fieldtype": "Section Break",
+   "idx": 47
+  },
+  {
+   "fieldname": "ready_for_crm_conversion",
+   "label": "Ready for CRM Conversion",
+   "fieldtype": "Check",
+   "idx": 48
+  },
+  {
+   "fieldname": "conversion_target",
+   "label": "Conversion Target",
+   "fieldtype": "Select",
+   "options": "CRM Lead Only\nCRM Lead + CRM Organization\nCRM Lead + CRM Organization + CRM Contact\nCRM Deal",
+   "idx": 49
+  },
+  {
+   "fieldname": "crm_conversion_notes",
+   "label": "CRM Conversion Notes",
+   "fieldtype": "Small Text",
+   "idx": 50
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-01 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "Prospect",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 1,
+   "doctype": "DocPerm",
+   "parent": "Prospect",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 2,
+   "doctype": "DocPerm",
+   "parent": "Prospect",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  }
+ ],
+ "search_fields": "prospect_name, website, normalized_domain, source_arena, prospect_type, lifecycle_status, qualification_status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "prospect_name",
+ "track_changes": 1
+}

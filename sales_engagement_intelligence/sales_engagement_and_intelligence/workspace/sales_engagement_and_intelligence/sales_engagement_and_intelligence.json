@@ -16,40 +16,40 @@
  "links": [
   {
    "type": "DocType",
-   "label": "SEI Prospects",
-   "link_to": "SEI Prospect",
+   "label": "Prospects",
+   "link_to": "Prospect",
    "link_type": "DocType",
    "hidden": 0,
    "onboard": 0
   },
   {
    "type": "DocType",
-   "label": "SEI Signals",
-   "link_to": "SEI Signal",
+   "label": "Signals",
+   "link_to": "Signal",
    "link_type": "DocType",
    "hidden": 0,
    "onboard": 0
   },
   {
    "type": "DocType",
-   "label": "SEI Theses",
-   "link_to": "SEI Thesis",
+   "label": "Theses",
+   "link_to": "Thesis",
    "link_type": "DocType",
    "hidden": 0,
    "onboard": 0
   },
   {
    "type": "DocType",
-   "label": "SEI Assets",
-   "link_to": "SEI Asset",
+   "label": "Marketing Assets",
+   "link_to": "Marketing Asset",
    "link_type": "DocType",
    "hidden": 0,
    "onboard": 0
   },
   {
    "type": "DocType",
-   "label": "SEI Interaction Attributions",
-   "link_to": "SEI Interaction Attribution",
+   "label": "Interaction Attributions",
+   "link_to": "Interaction Attribution",
    "link_type": "DocType",
    "hidden": 0,
    "onboard": 0
@@ -70,36 +70,36 @@
  "shortcuts": [
   {
    "type": "DocType",
-   "label": "SEI Prospects",
-   "link_to": "SEI Prospect",
+   "label": "Prospects",
+   "link_to": "Prospect",
    "doc_view": "List",
    "color": "Blue"
   },
   {
    "type": "DocType",
-   "label": "SEI Signals",
-   "link_to": "SEI Signal",
+   "label": "Signals",
+   "link_to": "Signal",
    "doc_view": "List",
    "color": "Purple"
   },
   {
    "type": "DocType",
-   "label": "SEI Theses",
-   "link_to": "SEI Thesis",
+   "label": "Theses",
+   "link_to": "Thesis",
    "doc_view": "List",
    "color": "Green"
   },
   {
    "type": "DocType",
-   "label": "SEI Assets",
-   "link_to": "SEI Asset",
+   "label": "Marketing Assets",
+   "link_to": "Marketing Asset",
    "doc_view": "List",
    "color": "Orange"
   },
   {
    "type": "DocType",
-   "label": "SEI Interaction Attributions",
-   "link_to": "SEI Interaction Attribution",
+   "label": "Interaction Attributions",
+   "link_to": "Interaction Attribution",
    "doc_view": "List",
    "color": "Grey"
   }

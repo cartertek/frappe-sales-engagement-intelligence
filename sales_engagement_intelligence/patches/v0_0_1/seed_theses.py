@@ -87,14 +87,14 @@ THESES = [
 
 def execute():
     for row in THESES:
-        if frappe.db.exists('SEI Thesis', row['thesis_name']):
-            doc = frappe.get_doc('SEI Thesis', row['thesis_name'])
+        if frappe.db.exists('Thesis', row['thesis_name']):
+            doc = frappe.get_doc('Thesis', row['thesis_name'])
             doc.update(row)
             doc.active = 1
             doc.save(ignore_permissions=True)
         else:
             doc = frappe.get_doc({
-                'doctype': 'SEI Thesis',
+                'doctype': 'Thesis',
                 **row,
                 'active': 1,
             })
