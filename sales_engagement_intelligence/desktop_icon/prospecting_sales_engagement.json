@@ -1,0 +1,19 @@
+{
+ "app": "sales_engagement_intelligence",
+ "bg_color": "#700da8",
+ "docstatus": 0,
+ "doctype": "Desktop Icon",
+ "hidden": 0,
+ "icon": "search",
+ "icon_type": "Link",
+ "idx": 1,
+ "label": "Prospecting",
+ "link_to": "Prospecting - Sales Engagement",
+ "link_type": "Workspace Sidebar",
+ "logo_url": "/assets/sales_engagement_intelligence/desktop_icons/prospecting.svg",
+ "name": "Prospecting - Sales Engagement",
+ "parent_icon": "Sales Engagement and Intelligence",
+ "restrict_removal": 0,
+ "roles": [],
+ "standard": 1
+}
