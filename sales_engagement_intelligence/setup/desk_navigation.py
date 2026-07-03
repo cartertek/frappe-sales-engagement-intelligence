@@ -166,22 +166,24 @@ def parse_layout(layout: str):
         return None
 
 
-def update_layout_row(row: dict) -> bool:
+def update_layout_row(row: dict, in_sei_app: bool = False) -> bool:
     changed = False
+    row_is_sei = in_sei_app or row.get("app") == APP_NAME or row.get("parent_icon") == APP_TITLE
     old_name = row.get("name") or row.get("label")
     new_name = LAYOUT_RENAMES.get(old_name)
 
-    if new_name:
+    if row_is_sei and new_name:
         for key in ("name", "label", "link_to", "parent_icon", "sidebar"):
             if row.get(key) == old_name:
                 row[key] = new_name
                 changed = True
 
     children = row.get("child_icons")
+    child_in_sei_app = row_is_sei or row.get("name") == APP_TITLE or row.get("label") == APP_TITLE
     if isinstance(children, list):
         for child in children:
             if isinstance(child, dict):
-                changed = update_layout_row(child) or changed
+                changed = update_layout_row(child, in_sei_app=child_in_sei_app) or changed
 
     return changed
 
