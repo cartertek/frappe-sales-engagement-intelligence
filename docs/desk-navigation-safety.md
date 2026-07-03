@@ -12,13 +12,15 @@ The restore incident showed that these records are shared site-wide and can affe
 
 ## Rules
 
-1. Keep SEI pages as source-controlled `Workspace` records only.
-2. Do not ship `Desktop Icon` fixtures.
-3. Do not ship `Workspace Sidebar` fixtures.
-4. Do not mutate `Desktop Layout` or `User Workspaces` from this app.
-5. Do not patch the global Desk sidebar/frontend renderer by matching labels.
-6. Do not create app records with generic global document names such as `Assets`, `Reports`, `Settings`, or `CRM`.
-7. Do not mechanically prefix every file or record. Use a namespace only where the Frappe document name is global or where the field is installed into another app's DocType.
+1. Keep SEI pages as source-controlled `Workspace` records.
+2. Use Frappe's generated Desk navigation pattern for installed apps: `add_to_apps_screen` plus public Workspaces.
+3. Do not ship `Desktop Icon` fixtures.
+4. Do not ship `Workspace Sidebar` fixtures.
+5. Because normal `bench migrate` does not rerun app-install navigation generation, keep a narrow `after_migrate` bridge that recreates only SEI `Desktop Icon` and `Workspace Sidebar` rows after orphan cleanup.
+6. Do not mutate `Desktop Layout` or `User Workspaces` from this app.
+7. Do not patch the global Desk sidebar/frontend renderer by matching labels.
+8. Do not create app records with generic global document names such as `Assets`, `Reports`, `Settings`, or `CRM`.
+9. Do not mechanically prefix every file or record. Use a namespace only where the Frappe document name is global or where the field is installed into another app's DocType.
 
 ## Workspace naming
 

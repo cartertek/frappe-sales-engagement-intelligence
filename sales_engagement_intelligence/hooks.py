@@ -75,5 +75,6 @@ fixtures = [
 
 
 after_migrate = [
+    "sales_engagement_intelligence.setup.desk_navigation.after_migrate",
     "sales_engagement_intelligence.patches.v0_0_1.seed_theses.execute",
 ]
