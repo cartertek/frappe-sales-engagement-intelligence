@@ -1,6 +1,6 @@
 # Frappe v17 Desk Navigation Safety
 
-This app must not maintain Frappe v17 global Desk navigation state directly.
+This app must preserve Frappe v17 Desk navigation without taking ownership of unrelated global Desk state.
 
 The restore incident showed that these records are shared site-wide and can affect every installed app:
 
@@ -17,10 +17,11 @@ The restore incident showed that these records are shared site-wide and can affe
 3. Do not ship `Desktop Icon` fixtures.
 4. Do not ship `Workspace Sidebar` fixtures.
 5. Because normal `bench migrate` does not rerun app-install navigation generation, keep a narrow `after_migrate` bridge that recreates only SEI `Desktop Icon` and `Workspace Sidebar` rows after orphan cleanup.
-6. Do not mutate `Desktop Layout` or `User Workspaces` from this app.
-7. Do not patch the global Desk sidebar/frontend renderer by matching labels.
-8. Do not create app records with generic global document names such as `Assets`, `Reports`, `Settings`, or `CRM`.
-9. Do not mechanically prefix every file or record. Use a namespace only where the Frappe document name is global or where the field is installed into another app's DocType.
+6. Preserve production saved desktop layouts by rewriting only old SEI icon labels to their renamed SEI labels during migration.
+7. Do not mutate `User Workspaces` from this app.
+8. Do not patch the global Desk sidebar/frontend renderer by matching labels.
+9. Do not create app records with generic global document names such as `Assets`, `Reports`, `Settings`, or `CRM`.
+10. Do not mechanically prefix every file or record. Use a namespace only where the Frappe document name is global or where the field is installed into another app's DocType.
 
 ## Workspace naming
 
@@ -46,11 +47,12 @@ The parent workspace remains:
 
 ## Deployment guidance
 
-If Desk navigation is broken, restore a known-good site backup before deploying app changes. Do not attempt to repair the global menu by synthesizing `Desktop Icon`, `Workspace Sidebar`, `Desktop Layout`, or `User Workspaces` rows from this app.
+If Desk navigation is broken, restore a known-good site backup before deploying app changes. Do not attempt broad global menu repair from this app. Migration repairs must be narrow, deterministic, and limited to SEI-owned generated navigation rows or old SEI saved-layout labels.
 
 After deploy, verify:
 
 - ERPNext loads.
 - Frappe CRM loads.
 - The global Desk menu is unchanged outside the Sales Engagement and Intelligence app.
+- Existing saved desktop layouts still show the SEI icons after the Workspace/icon renames.
 - The Sales Engagement and Intelligence workspace loads and shows only SEI-owned shortcuts.
