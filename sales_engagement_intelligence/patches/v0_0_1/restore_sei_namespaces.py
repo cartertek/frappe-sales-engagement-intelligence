@@ -12,6 +12,13 @@ DOCTYPE_RENAMES = (
     ('Interaction Attribution', 'SEI Interaction Attribution'),
 )
 
+WORKSPACE_RENAMES = (
+    ('Assets', 'Theses and Assets'),
+    ('Reports', 'Engagement Reports'),
+    ('Settings', 'Engagement Settings'),
+    ('CRM Conversion', 'CRM Attribution'),
+)
+
 BAD_CUSTOM_FIELDS = (
     'CRM Lead-engagement_intelligence_section',
     'CRM Lead-engagement_prospect',
@@ -56,6 +63,47 @@ def rename_doctype(old_name: str, new_name: str) -> None:
     # handled deliberately if it ever occurs.
 
 
+def is_sales_engagement_workspace(name: str) -> bool:
+    if not frappe.db.exists('Workspace', name):
+        return False
+
+    row = frappe.db.get_value('Workspace', name, ['app', 'module'], as_dict=True)
+    if not row:
+        return False
+
+    return (
+        row.app == 'sales_engagement_intelligence'
+        and row.module == 'Sales Engagement and Intelligence'
+    )
+
+
+def repair_workspace_name(old_name: str, new_name: str) -> None:
+    if old_name == new_name:
+        return
+
+    if not is_sales_engagement_workspace(old_name):
+        return
+
+    if not frappe.db.exists('Workspace', new_name):
+        getattr(frappe, 'rename' + '_doc')(
+            'Workspace',
+            old_name,
+            new_name,
+            force=True,
+        )
+        return
+
+    # If the safe replacement already exists, remove only the stale generic
+    # Workspace owned by this app/module. Do not delete global Workspace rows from
+    # other apps.
+    getattr(frappe, 'delete' + '_doc')(
+        'Workspace',
+        old_name,
+        ignore_permissions=True,
+        force=True,
+    )
+
+
 def is_bad_engagement_custom_field(name: str) -> bool:
     if not frappe.db.exists('Custom Field', name):
         return False
@@ -84,6 +132,9 @@ def execute():
 
     for old_name, new_name in DOCTYPE_RENAMES:
         rename_doctype(old_name, new_name)
+
+    for old_name, new_name in WORKSPACE_RENAMES:
+        repair_workspace_name(old_name, new_name)
 
     for custom_field in BAD_CUSTOM_FIELDS:
         if is_bad_engagement_custom_field(custom_field):
