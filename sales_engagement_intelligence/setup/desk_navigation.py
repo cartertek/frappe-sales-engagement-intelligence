@@ -1,13 +1,4 @@
-"""Migration-safe Desk navigation bridge for Sales Engagement and Intelligence.
-
-Frappe v17 generates Desktop Icon and Workspace Sidebar rows from installed app
-and public Workspace metadata when an app is installed. This app is already
-installed on production, so normal bench migrate will not rerun the install hook.
-
-This bridge recreates only this app's Desk navigation rows after Frappe's orphan
-cleanup has removed old standard file-backed rows. It intentionally does not
-mutate Desktop Layout, User Workspaces, or unrelated apps' navigation records.
-"""
+"""Migration-safe Desk navigation bridge for Sales Engagement and Intelligence."""
 
 from __future__ import annotations
 
@@ -29,6 +20,13 @@ WORKSPACES = (
     "Engagement Settings",
 )
 
+LAYOUT_RENAMES = {
+    "Assets": "Theses and Assets",
+    "CRM Conversion": "CRM Attribution",
+    "Reports": "Engagement Reports",
+    "Settings": "Engagement Settings",
+}
+
 
 def after_migrate() -> None:
     """Ensure generated Desk navigation rows exist for this installed app."""
@@ -36,6 +34,7 @@ def after_migrate() -> None:
     ensure_app_icon()
     ensure_workspace_sidebars()
     ensure_workspace_icons()
+    repair_saved_layouts()
     clear_navigation_cache()
 
 
@@ -115,9 +114,6 @@ def ensure_sidebar_items(sidebar, workspace) -> None:
 
 def ensure_workspace_icons() -> None:
     for workspace_name in WORKSPACES:
-        # The app icon already routes to the parent app Workspace. Do not create
-        # a second Desktop Icon with the same label, because Desktop Icon names
-        # are label-based and unique.
         if workspace_name == APP_TITLE:
             continue
         if not frappe.db.exists("Workspace", workspace_name):
@@ -133,7 +129,7 @@ def ensure_workspace_icons() -> None:
                 "icon_type": "Link",
                 "link_type": "Workspace Sidebar",
                 "link_to": workspace_name,
-                "parent_icon": None if workspace_name == APP_TITLE else APP_TITLE,
+                "parent_icon": APP_TITLE,
                 "icon": workspace.get("icon"),
                 "app": APP_NAME,
                 "standard": 0,
@@ -142,6 +138,52 @@ def ensure_workspace_icons() -> None:
             }
         )
         save_doc(icon)
+
+
+def repair_saved_layouts() -> None:
+    for layout_name in frappe.get_all("Desktop Layout", pluck="name"):
+        layout = frappe.db.get_value("Desktop Layout", layout_name, "layout")
+        if not layout:
+            continue
+
+        rows = parse_layout(layout)
+        if not isinstance(rows, list):
+            continue
+
+        changed = False
+        for row in rows:
+            if isinstance(row, dict):
+                changed = update_layout_row(row) or changed
+
+        if changed:
+            frappe.db.set_value("Desktop Layout", layout_name, "layout", frappe.as_json(rows))
+
+
+def parse_layout(layout: str):
+    try:
+        return frappe.parse_json(layout)
+    except Exception:
+        return None
+
+
+def update_layout_row(row: dict) -> bool:
+    changed = False
+    old_name = row.get("name") or row.get("label")
+    new_name = LAYOUT_RENAMES.get(old_name)
+
+    if new_name:
+        for key in ("name", "label", "link_to", "parent_icon", "sidebar"):
+            if row.get(key) == old_name:
+                row[key] = new_name
+                changed = True
+
+    children = row.get("child_icons")
+    if isinstance(children, list):
+        for child in children:
+            if isinstance(child, dict):
+                changed = update_layout_row(child) or changed
+
+    return changed
 
 
 def get_or_new_doc(doctype: str, name: str):
