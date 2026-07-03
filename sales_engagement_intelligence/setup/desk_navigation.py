@@ -115,6 +115,11 @@ def ensure_sidebar_items(sidebar, workspace) -> None:
 
 def ensure_workspace_icons() -> None:
     for workspace_name in WORKSPACES:
+        # The app icon already routes to the parent app Workspace. Do not create
+        # a second Desktop Icon with the same label, because Desktop Icon names
+        # are label-based and unique.
+        if workspace_name == APP_TITLE:
+            continue
         if not frappe.db.exists("Workspace", workspace_name):
             continue
         if not frappe.db.exists("Workspace Sidebar", workspace_name):

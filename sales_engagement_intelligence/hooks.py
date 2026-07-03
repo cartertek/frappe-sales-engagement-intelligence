@@ -32,25 +32,6 @@ fixtures = [
         ],
     },
     {
-        "dt": "Workspace",
-        "filters": [
-            [
-                "name",
-                "in",
-                [
-                    "Sales Engagement and Intelligence",
-                    "Prospecting",
-                    "Signals",
-                    "Touchpoints",
-                    "Theses and Assets",
-                    "CRM Attribution",
-                    "Engagement Reports",
-                    "Engagement Settings",
-                ],
-            ],
-        ],
-    },
-    {
         "dt": "Custom Field",
         "filters": [
             [
