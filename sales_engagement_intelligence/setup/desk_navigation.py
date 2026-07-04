@@ -8,7 +8,6 @@ APP_NAME = "sales_engagement_intelligence"
 APP_TITLE = "Sales Engagement and Intelligence"
 APP_LOGO = "/assets/sales_engagement_intelligence/desktop_icons/app.svg"
 APP_ROUTE = "/app/sales-engagement-and-intelligence"
-ICON_COLOR = "#700da8"
 
 APP_ICON = {
     "label": APP_TITLE,
@@ -47,7 +46,6 @@ def ensure_app_icon() -> None:
     icon.update(
         {
             "label": APP_TITLE,
-            "bg_color": ICON_COLOR,
             "icon_type": "App",
             "link_type": "External",
             "link": APP_ROUTE,
@@ -140,7 +138,6 @@ def ensure_workspace_icons() -> None:
         icon.update(
             {
                 "label": label,
-                "bg_color": ICON_COLOR,
                 "icon_type": "Link",
                 "link_type": "Workspace Sidebar",
                 "link_to": label,
