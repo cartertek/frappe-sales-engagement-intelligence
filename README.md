@@ -34,11 +34,11 @@ Milestone 1 intentionally did **not** implement the outreach data model.
 
 This repository now includes the Milestone 2 engagement intelligence data model source files:
 
-- `Prospect`
-- `Signal`
-- `Thesis`
-- `Marketing Asset`
-- `Interaction Attribution`
+- `SEI Prospect`
+- `SEI Signal`
+- `SEI Thesis`
+- `SEI Asset`
+- `SEI Interaction Attribution`
 - Informational engagement intelligence custom fields for `CRM Lead` and `CRM Deal`
 - Seed records for the canonical Cartertek outreach theses
 

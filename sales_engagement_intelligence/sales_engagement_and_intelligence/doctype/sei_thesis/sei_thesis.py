@@ -1,5 +1,5 @@
 from frappe.model.document import Document
 
 
-class Thesis(Document):
+class SEIThesis(Document):
     pass

@@ -2,7 +2,7 @@ import frappe
 from frappe.model.document import Document
 
 
-class Signal(Document):
+class SEISignal(Document):
     def validate(self):
         if self.counts_toward_qualification and self.evidence_basis == 'Inferred':
             frappe.msgprint(

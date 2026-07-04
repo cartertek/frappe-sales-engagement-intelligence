@@ -27,7 +27,7 @@
    "fieldname": "prospect",
    "label": "Prospect",
    "fieldtype": "Link",
-   "options": "Prospect",
+   "options": "SEI Prospect",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
@@ -128,7 +128,7 @@
  "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Signal",
+ "name": "SEI Signal",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -149,7 +149,7 @@
    "email": 1,
    "idx": 1,
    "doctype": "DocPerm",
-   "parent": "Signal",
+   "parent": "SEI Signal",
    "parentfield": "permissions",
    "parenttype": "DocType"
   },
@@ -170,7 +170,7 @@
    "email": 1,
    "idx": 2,
    "doctype": "DocPerm",
-   "parent": "Signal",
+   "parent": "SEI Signal",
    "parentfield": "permissions",
    "parenttype": "DocType"
   }

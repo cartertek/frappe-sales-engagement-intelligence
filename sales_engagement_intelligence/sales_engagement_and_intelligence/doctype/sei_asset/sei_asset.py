@@ -1,5 +1,5 @@
 from frappe.model.document import Document
 
 
-class MarketingAsset(Document):
+class SEIAsset(Document):
     pass

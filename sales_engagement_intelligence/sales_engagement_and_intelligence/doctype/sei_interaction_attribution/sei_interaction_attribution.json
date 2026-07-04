@@ -40,7 +40,7 @@
    "fieldname": "prospect",
    "label": "Prospect",
    "fieldtype": "Link",
-   "options": "Prospect",
+   "options": "SEI Prospect",
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
@@ -50,14 +50,14 @@
    "fieldname": "signal",
    "label": "Signal",
    "fieldtype": "Link",
-   "options": "Signal",
+   "options": "SEI Signal",
    "idx": 3
   },
   {
    "fieldname": "thesis",
    "label": "Thesis",
    "fieldtype": "Link",
-   "options": "Thesis",
+   "options": "SEI Thesis",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 4
@@ -66,7 +66,7 @@
    "fieldname": "marketing_asset",
    "label": "Marketing Asset",
    "fieldtype": "Link",
-   "options": "Marketing Asset",
+   "options": "SEI Asset",
    "in_list_view": 1,
    "idx": 5
   },
@@ -184,7 +184,7 @@
  "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Interaction Attribution",
+ "name": "SEI Interaction Attribution",
  "naming_rule": "Expression",
  "owner": "Administrator",
  "permissions": [
@@ -205,7 +205,7 @@
    "email": 1,
    "idx": 1,
    "doctype": "DocPerm",
-   "parent": "Interaction Attribution",
+   "parent": "SEI Interaction Attribution",
    "parentfield": "permissions",
    "parenttype": "DocType"
   },
@@ -226,7 +226,7 @@
    "email": 1,
    "idx": 2,
    "doctype": "DocPerm",
-   "parent": "Interaction Attribution",
+   "parent": "SEI Interaction Attribution",
    "parentfield": "permissions",
    "parenttype": "DocType"
   }

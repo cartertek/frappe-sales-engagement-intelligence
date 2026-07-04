@@ -56,7 +56,7 @@
    "fieldname": "default_asset",
    "label": "Default Asset",
    "fieldtype": "Link",
-   "options": "Marketing Asset",
+   "options": "SEI Asset",
    "idx": 6
   },
   {
@@ -79,7 +79,7 @@
  "modified": "2026-07-01 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Thesis",
+ "name": "SEI Thesis",
  "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
@@ -100,7 +100,7 @@
    "email": 1,
    "idx": 1,
    "doctype": "DocPerm",
-   "parent": "Thesis",
+   "parent": "SEI Thesis",
    "parentfield": "permissions",
    "parenttype": "DocType"
   },
@@ -121,7 +121,7 @@
    "email": 1,
    "idx": 2,
    "doctype": "DocPerm",
-   "parent": "Thesis",
+   "parent": "SEI Thesis",
    "parentfield": "permissions",
    "parenttype": "DocType"
   }
