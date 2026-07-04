@@ -1,6 +1,2 @@
-[pre_model_sync]
-
-[post_model_sync]
 sales_engagement_intelligence.patches.v0_0_1.add_milestone_2_crm_custom_fields
 sales_engagement_intelligence.patches.v0_0_1.replace_milestone_2_crm_custom_fields
-sales_engagement_intelligence.patches.v0_0_1.restore_sei_namespaces

@@ -9,7 +9,7 @@ The app stores Cartertek-specific pre-CRM intelligence:
 - Observed vs. inferred evidence distinction
 - Signal strength
 - Qualification preparation fields
-- Outreach thesis and offer alignment
+- Outreach engagement_thesis and offer alignment
 - Supporting assets
 - Thin attribution back to Frappe CRM activity records
 
@@ -19,11 +19,11 @@ ERPNext remains downstream for quotation, customer, accounting, and ERP records.
 
 ## Implemented DocTypes
 
-- `SEI Prospect`
-- `SEI Signal`
-- `SEI Thesis`
-- `SEI Asset`
-- `SEI Interaction Attribution`
+- `Prospect`
+- `Signal`
+- `Thesis`
+- `Marketing Asset`
+- `Interaction Attribution`
 
 ## Frappe CRM Link-Back Fields
 
@@ -31,23 +31,23 @@ Milestone 2 adds informational engagement intelligence context fields to Frappe 
 
 ### CRM Lead
 
-- `sei_prospect`
-- `sei_source_arena`
-- `sei_thesis`
-- `sei_qualification_summary`
+- `engagement_prospect`
+- `engagement_source_arena`
+- `engagement_thesis`
+- `engagement_qualification_summary`
 
 ### CRM Deal
 
-- `sei_prospect`
-- `sei_source_arena`
-- `sei_thesis`
-- `sei_primary_signal`
+- `engagement_prospect`
+- `engagement_source_arena`
+- `engagement_thesis`
+- `engagement_primary_signal`
 
 These fields are navigation and context fields only. They do not create conversion behavior.
 
 ## Seed Thesis Records
 
-The app seeds these canonical Cartertek outreach thesis records:
+The app seeds these canonical Cartertek outreach engagement_thesis records:
 
 - Agency Technical Reinforcement
 - Project Rescue
@@ -62,11 +62,11 @@ The app seeds these canonical Cartertek outreach thesis records:
 
 Milestone 2 only includes basic data-validity checks:
 
-- `SEI Prospect.website` populates `normalized_domain`.
-- `SEI Prospect.do_not_contact` forces lifecycle status to `Do Not Contact`.
-- `SEI Prospect.qualification_status = Do Not Contact` checks `do_not_contact` and sets lifecycle status to `Do Not Contact`.
-- `SEI Prospect.manual_qualification_override` requires `manual_qualification_reason`.
-- `SEI Signal` warns when an inferred signal is marked as counting toward qualification.
+- `Prospect.website` populates `normalized_domain`.
+- `Prospect.do_not_contact` forces lifecycle status to `Do Not Contact`.
+- `Prospect.qualification_status = Do Not Contact` checks `do_not_contact` and sets lifecycle status to `Do Not Contact`.
+- `Prospect.manual_qualification_override` requires `manual_qualification_reason`.
+- `Signal` warns when an inferred signal is marked as counting toward qualification.
 
 The qualification engine belongs to Milestone 3.
 
@@ -76,7 +76,7 @@ The qualification engine belongs to Milestone 3.
 
 Default CRM Lead status: **New**
 
-Reason: a converted SEI Prospect is entering Frappe CRM as a qualified or prepared lead, but Frappe CRM should still own the lead activity lifecycle after conversion.
+Reason: a converted Prospect is entering Frappe CRM as a qualified or prepared lead, but Frappe CRM should still own the lead activity lifecycle after conversion.
 
 ### Default CRM Deal Status
 

@@ -4,23 +4,24 @@ from sales_engagement_intelligence.patches.v0_0_1.add_milestone_2_crm_custom_fie
     execute as create_milestone_2_crm_custom_fields,
 )
 
-BAD_CUSTOM_FIELDS = (
-    'CRM Lead-engagement_intelligence_section',
-    'CRM Lead-engagement_prospect',
-    'CRM Lead-engagement_source_arena',
-    'CRM Lead-engagement_thesis',
-    'CRM Lead-engagement_qualification_summary',
-    'CRM Deal-engagement_intelligence_section',
-    'CRM Deal-engagement_prospect',
-    'CRM Deal-engagement_source_arena',
-    'CRM Deal-engagement_thesis',
-    'CRM Deal-engagement_primary_signal',
+OLD_CUSTOM_FIELDS = (
+    'CRM Lead-sei_section',
+    'CRM Lead-sei_prospect',
+    'CRM Lead-sei_source_arena',
+    'CRM Lead-sei_thesis',
+    'CRM Lead-sei_qualification_summary',
+    'CRM Deal-sei_section',
+    'CRM Deal-sei_prospect',
+    'CRM Deal-sei_source_arena',
+    'CRM Deal-sei_thesis',
+    'CRM Deal-sei_primary_signal',
 )
 
 
 def execute():
-    for custom_field in BAD_CUSTOM_FIELDS:
+    for custom_field in OLD_CUSTOM_FIELDS:
         if frappe.db.exists('Custom Field', custom_field):
             frappe.delete_doc('Custom Field', custom_field, ignore_permissions=True, force=True)
 
     create_milestone_2_crm_custom_fields()
+
