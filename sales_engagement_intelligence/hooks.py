@@ -17,10 +17,6 @@ add_to_apps_screen = [
 # The Milestone 1 foundation intentionally avoids scheduled jobs, email senders,
 # outbound automation, and any background process that could send outreach.
 
-# Preserve the current production desktop-label wrapping behavior.
-app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
-
-
 fixtures = [
     {
         "dt": "Role",
@@ -33,6 +29,25 @@ fixtures = [
                     "Sales Engagement User",
                 ],
             ]
+        ],
+    },
+    {
+        "dt": "Workspace",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "Sales Engagement and Intelligence",
+                    "Prospecting",
+                    "Signals",
+                    "Touchpoints",
+                    "Assets",
+                    "CRM Conversion",
+                    "Reports",
+                    "Settings",
+                ],
+            ],
         ],
     },
     {
@@ -59,7 +74,10 @@ fixtures = [
 ]
 
 
+app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
+app_include_js = "/assets/sales_engagement_intelligence/js/desktop_icons.js"
+
 after_migrate = [
-    "sales_engagement_intelligence.setup.desk_navigation.after_migrate",
+    "sales_engagement_intelligence.setup.desktop_layout.after_migrate",
     "sales_engagement_intelligence.patches.v0_0_1.seed_theses.execute",
 ]
