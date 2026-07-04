@@ -17,6 +17,10 @@ add_to_apps_screen = [
 # The Milestone 1 foundation intentionally avoids scheduled jobs, email senders,
 # outbound automation, and any background process that could send outreach.
 
+# Preserve the current production desktop-label wrapping behavior.
+app_include_css = "/assets/sales_engagement_intelligence/css/desktop.css"
+
+
 fixtures = [
     {
         "dt": "Role",

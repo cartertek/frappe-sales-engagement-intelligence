@@ -27,6 +27,16 @@ LAYOUT_RENAMES = {
     "Settings": "Engagement Settings",
 }
 
+WORKSPACE_LOGOS = {
+    "Prospecting": "/assets/sales_engagement_intelligence/desktop_icons/prospecting.svg",
+    "Signals": "/assets/sales_engagement_intelligence/desktop_icons/signals.svg",
+    "Touchpoints": "/assets/sales_engagement_intelligence/desktop_icons/touchpoints.svg",
+    "Theses and Assets": "/assets/sales_engagement_intelligence/desktop_icons/assets.svg",
+    "CRM Attribution": "/assets/sales_engagement_intelligence/desktop_icons/crm_conversion.svg",
+    "Engagement Reports": "/assets/sales_engagement_intelligence/desktop_icons/reports.svg",
+    "Engagement Settings": "/assets/sales_engagement_intelligence/desktop_icons/settings.svg",
+}
+
 
 def after_migrate() -> None:
     """Ensure generated Desk navigation rows exist for this installed app."""
@@ -131,6 +141,7 @@ def ensure_workspace_icons() -> None:
                 "link_to": workspace_name,
                 "parent_icon": APP_TITLE,
                 "icon": workspace.get("icon"),
+                "logo_url": WORKSPACE_LOGOS.get(workspace_name),
                 "app": APP_NAME,
                 "standard": 0,
                 "hidden": 0,
