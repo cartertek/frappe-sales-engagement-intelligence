@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "messages-square",
-  "idx": 3,
+  "header_icon": "folder",
+  "idx": 4,
   "items": [
     {
       "child": 0,
@@ -17,74 +17,61 @@
       "show_arrow": 0,
       "type": "Link",
       "icon": "house",
-      "link_to": "Touchpoints"
+      "link_to": "Theses and Assets"
     },
     {
       "child": 0,
       "collapsible": 1,
       "indent": 1,
       "keep_closed": 1,
-      "label": "Engagement",
+      "label": "Messaging Strategy",
       "link_type": "DocType",
       "open_in_new_tab": 1,
       "show_arrow": 0,
       "type": "Section Break",
-      "icon": "messages-square"
+      "icon": "lightbulb"
     },
     {
       "child": 1,
       "collapsible": 1,
       "indent": 0,
       "keep_closed": 0,
-      "label": "Interaction Attributions",
+      "label": "Theses",
       "link_type": "DocType",
       "open_in_new_tab": 1,
       "show_arrow": 0,
       "type": "Link",
       "icon": "",
-      "link_to": "SEI Interaction Attribution"
-    },
-    {
-      "child": 1,
-      "collapsible": 1,
-      "indent": 0,
-      "keep_closed": 0,
-      "label": "Prospects",
-      "link_type": "DocType",
-      "open_in_new_tab": 1,
-      "show_arrow": 0,
-      "type": "Link",
-      "icon": "",
-      "link_to": "SEI Prospect"
+      "link_to": "SEI Thesis"
     },
     {
       "child": 0,
       "collapsible": 1,
       "indent": 1,
       "keep_closed": 1,
-      "label": "Supporting Evidence",
+      "label": "Reusable Assets",
       "link_type": "DocType",
       "open_in_new_tab": 1,
       "show_arrow": 0,
       "type": "Section Break",
-      "icon": "radar"
+      "icon": "folder"
     },
     {
       "child": 1,
       "collapsible": 1,
       "indent": 0,
       "keep_closed": 0,
-      "label": "Signals",
+      "label": "Marketing Assets",
       "link_type": "DocType",
       "open_in_new_tab": 1,
       "show_arrow": 0,
       "type": "Link",
       "icon": "",
-      "link_to": "SEI Signal"
+      "link_to": "SEI Asset"
     }
   ],
-  "name": "Touchpoints",
+  "name": "Theses and Assets",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Touchpoints"
+  "title": "Theses and Assets"
 }
