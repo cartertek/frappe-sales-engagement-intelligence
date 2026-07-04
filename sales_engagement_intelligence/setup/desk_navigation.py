@@ -8,43 +8,37 @@ APP_NAME = "sales_engagement_intelligence"
 APP_TITLE = "Sales Engagement and Intelligence"
 APP_LOGO = "/assets/sales_engagement_intelligence/desktop_icons/app.svg"
 APP_ROUTE = "/app/sales-engagement-and-intelligence"
+ICON_COLOR = "#700da8"
 
-WORKSPACES = (
-    "Sales Engagement and Intelligence",
-    "Prospecting",
-    "Signals",
-    "Touchpoints",
-    "Theses and Assets",
-    "CRM Attribution",
-    "Engagement Reports",
-    "Engagement Settings",
+APP_ICON = {
+    "label": APP_TITLE,
+    "workspace": "Sales Engagement and Intelligence",
+    "icon": "broadcast",
+    "logo_url": APP_LOGO,
+    "idx": 20,
+}
+
+NAV_ITEMS = (
+    ("Prospecting", "Prospecting", "search", "prospecting.svg", 1),
+    ("Signals", "Signals", "chart", "signals.svg", 2),
+    ("Touchpoints", "Touchpoints", "mail", "touchpoints.svg", 3),
+    ("Assets", "Theses and Assets", "folder", "assets.svg", 4),
+    ("CRM Conversion", "CRM Attribution", "arrow-right", "crm_conversion.svg", 5),
+    ("Reports", "Engagement Reports", "bar-chart", "reports.svg", 6),
+    ("Settings", "Engagement Settings", "setting", "settings.svg", 7),
 )
 
-LAYOUT_RENAMES = {
-    "Assets": "Theses and Assets",
-    "CRM Conversion": "CRM Attribution",
-    "Reports": "Engagement Reports",
-    "Settings": "Engagement Settings",
-}
 
-WORKSPACE_LOGOS = {
-    "Prospecting": "/assets/sales_engagement_intelligence/desktop_icons/prospecting.svg",
-    "Signals": "/assets/sales_engagement_intelligence/desktop_icons/signals.svg",
-    "Touchpoints": "/assets/sales_engagement_intelligence/desktop_icons/touchpoints.svg",
-    "Theses and Assets": "/assets/sales_engagement_intelligence/desktop_icons/assets.svg",
-    "CRM Attribution": "/assets/sales_engagement_intelligence/desktop_icons/crm_conversion.svg",
-    "Engagement Reports": "/assets/sales_engagement_intelligence/desktop_icons/reports.svg",
-    "Engagement Settings": "/assets/sales_engagement_intelligence/desktop_icons/settings.svg",
-}
+def logo_url(filename: str) -> str:
+    return f"/assets/sales_engagement_intelligence/desktop_icons/{filename}"
 
 
 def after_migrate() -> None:
-    """Ensure generated Desk navigation rows exist for this installed app."""
+    """Ensure generated Desk navigation rows preserve production desktop display."""
 
     ensure_app_icon()
     ensure_workspace_sidebars()
     ensure_workspace_icons()
-    repair_saved_layouts()
     clear_navigation_cache()
 
 
@@ -53,10 +47,12 @@ def ensure_app_icon() -> None:
     icon.update(
         {
             "label": APP_TITLE,
+            "bg_color": ICON_COLOR,
             "icon_type": "App",
             "link_type": "External",
             "link": APP_ROUTE,
-            "logo_url": APP_LOGO,
+            "logo_url": APP_ICON["logo_url"],
+            "idx": APP_ICON["idx"],
             "app": APP_NAME,
             "standard": 0,
             "hidden": 0,
@@ -67,47 +63,60 @@ def ensure_app_icon() -> None:
 
 
 def ensure_workspace_sidebars() -> None:
-    for workspace_name in WORKSPACES:
+    ensure_parent_sidebar()
+    for label, workspace_name, icon_name, _logo, _idx in NAV_ITEMS:
         if not frappe.db.exists("Workspace", workspace_name):
             continue
-
-        workspace = frappe.get_doc("Workspace", workspace_name)
-        sidebar = get_or_new_doc("Workspace Sidebar", workspace_name)
+        sidebar = get_or_new_doc("Workspace Sidebar", label)
         sidebar.update(
             {
-                "title": workspace_name,
-                "header_icon": workspace.get("icon"),
+                "title": label,
+                "header_icon": icon_name,
                 "app": APP_NAME,
                 "standard": 0,
                 "for_user": None,
             }
         )
-        ensure_sidebar_items(sidebar, workspace)
+        set_sidebar_items(sidebar, frappe.get_doc("Workspace", workspace_name))
         save_doc(sidebar)
 
 
-def ensure_sidebar_items(sidebar, workspace) -> None:
-    existing = {(item.link_type, item.link_to) for item in sidebar.get("items", [])}
+def ensure_parent_sidebar() -> None:
+    workspace_name = APP_ICON["workspace"]
+    if not frappe.db.exists("Workspace", workspace_name):
+        return
+    sidebar = get_or_new_doc("Workspace Sidebar", APP_TITLE)
+    sidebar.update(
+        {
+            "title": APP_TITLE,
+            "header_icon": APP_ICON["icon"],
+            "app": APP_NAME,
+            "standard": 0,
+            "for_user": None,
+        }
+    )
+    set_sidebar_items(sidebar, frappe.get_doc("Workspace", workspace_name))
+    save_doc(sidebar)
 
-    if ("Workspace", workspace.name) not in existing:
-        sidebar.append(
-            "items",
-            {
-                "label": "Home",
-                "link_to": workspace.name,
-                "link_type": "Workspace",
-                "type": "Link",
-                "idx": 0,
-            },
-        )
 
-    next_idx = len(sidebar.get("items", []))
+def set_sidebar_items(sidebar, workspace) -> None:
+    sidebar.set("items", [])
+    sidebar.append(
+        "items",
+        {
+            "label": "Home",
+            "link_to": workspace.name,
+            "link_type": "Workspace",
+            "type": "Link",
+            "idx": 0,
+        },
+    )
+    idx = 1
     for shortcut in workspace.get("shortcuts", []):
         link_to = shortcut.get("link_to")
         link_type = shortcut.get("type")
-        if not link_to or not link_type or (link_type, link_to) in existing:
+        if not link_to or not link_type:
             continue
-
         sidebar.append(
             "items",
             {
@@ -115,33 +124,30 @@ def ensure_sidebar_items(sidebar, workspace) -> None:
                 "link_to": link_to,
                 "link_type": link_type,
                 "type": "Link",
-                "idx": next_idx,
+                "idx": idx,
             },
         )
-        next_idx += 1
-        existing.add((link_type, link_to))
+        idx += 1
 
 
 def ensure_workspace_icons() -> None:
-    for workspace_name in WORKSPACES:
-        if workspace_name == APP_TITLE:
-            continue
+    for label, workspace_name, icon_name, logo_file, idx in NAV_ITEMS:
         if not frappe.db.exists("Workspace", workspace_name):
             continue
-        if not frappe.db.exists("Workspace Sidebar", workspace_name):
+        if not frappe.db.exists("Workspace Sidebar", label):
             continue
-
-        workspace = frappe.get_doc("Workspace", workspace_name)
-        icon = get_or_new_doc("Desktop Icon", workspace_name)
+        icon = get_or_new_doc("Desktop Icon", label)
         icon.update(
             {
-                "label": workspace_name,
+                "label": label,
+                "bg_color": ICON_COLOR,
                 "icon_type": "Link",
                 "link_type": "Workspace Sidebar",
-                "link_to": workspace_name,
+                "link_to": label,
                 "parent_icon": APP_TITLE,
-                "icon": workspace.get("icon"),
-                "logo_url": WORKSPACE_LOGOS.get(workspace_name),
+                "icon": icon_name,
+                "logo_url": logo_url(logo_file),
+                "idx": idx,
                 "app": APP_NAME,
                 "standard": 0,
                 "hidden": 0,
@@ -149,54 +155,6 @@ def ensure_workspace_icons() -> None:
             }
         )
         save_doc(icon)
-
-
-def repair_saved_layouts() -> None:
-    for layout_name in frappe.get_all("Desktop Layout", pluck="name"):
-        layout = frappe.db.get_value("Desktop Layout", layout_name, "layout")
-        if not layout:
-            continue
-
-        rows = parse_layout(layout)
-        if not isinstance(rows, list):
-            continue
-
-        changed = False
-        for row in rows:
-            if isinstance(row, dict):
-                changed = update_layout_row(row) or changed
-
-        if changed:
-            frappe.db.set_value("Desktop Layout", layout_name, "layout", frappe.as_json(rows))
-
-
-def parse_layout(layout: str):
-    try:
-        return frappe.parse_json(layout)
-    except Exception:
-        return None
-
-
-def update_layout_row(row: dict, in_sei_app: bool = False) -> bool:
-    changed = False
-    row_is_sei = in_sei_app or row.get("app") == APP_NAME or row.get("parent_icon") == APP_TITLE
-    old_name = row.get("name") or row.get("label")
-    new_name = LAYOUT_RENAMES.get(old_name)
-
-    if row_is_sei and new_name:
-        for key in ("name", "label", "link_to", "parent_icon", "sidebar"):
-            if row.get(key) == old_name:
-                row[key] = new_name
-                changed = True
-
-    children = row.get("child_icons")
-    child_in_sei_app = row_is_sei or row.get("name") == APP_TITLE or row.get("label") == APP_TITLE
-    if isinstance(children, list):
-        for child in children:
-            if isinstance(child, dict):
-                changed = update_layout_row(child, in_sei_app=child_in_sei_app) or changed
-
-    return changed
 
 
 def get_or_new_doc(doctype: str, name: str):

@@ -17,7 +17,7 @@ The restore incident showed that these records are shared site-wide and can affe
 3. Do not ship `Desktop Icon` fixtures.
 4. Do not ship `Workspace Sidebar` fixtures.
 5. Because normal `bench migrate` does not rerun app-install navigation generation, keep a narrow `after_migrate` bridge that recreates only SEI `Desktop Icon` and `Workspace Sidebar` rows after orphan cleanup.
-6. Preserve production saved desktop layouts by rewriting only old SEI icon labels to their renamed SEI labels during migration.
+6. Preserve production desktop icon display. Keep existing visible SEI desktop icon labels, order, color, wrapping, and SVG logo URLs stable; route renamed Workspaces behind those labels when needed.
 7. Do not mutate `User Workspaces` from this app.
 8. Do not patch the global Desk sidebar/frontend renderer by matching labels.
 9. Do not create app records with generic global document names such as `Assets`, `Reports`, `Settings`, or `CRM`.
@@ -47,12 +47,12 @@ The parent workspace remains:
 
 ## Deployment guidance
 
-If Desk navigation is broken, restore a known-good site backup before deploying app changes. Do not attempt broad global menu repair from this app. Migration repairs must be narrow, deterministic, and limited to SEI-owned generated navigation rows or old SEI saved-layout labels.
+If Desk navigation is broken, restore a known-good site backup before deploying app changes. Do not attempt broad global menu repair from this app. Migration repairs must be narrow, deterministic, and limited to SEI-owned/generated navigation rows needed to preserve the existing desktop display.
 
 After deploy, verify:
 
 - ERPNext loads.
 - Frappe CRM loads.
 - The global Desk menu is unchanged outside the Sales Engagement and Intelligence app.
-- Existing saved desktop layouts still show the SEI icons after the Workspace/icon renames.
+- Existing saved desktop layouts still show the same SEI icon labels, order, color, wrapping, and SVG graphics after the Workspace document renames.
 - The Sales Engagement and Intelligence workspace loads and shows only SEI-owned shortcuts.
