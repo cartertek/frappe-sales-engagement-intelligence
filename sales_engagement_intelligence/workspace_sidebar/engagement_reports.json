@@ -3,8 +3,8 @@
   "docstatus": 0,
   "doctype": "Workspace Sidebar",
   "for_user": "",
-  "header_icon": "messages-square",
-  "idx": 3,
+  "header_icon": "chart-column",
+  "idx": 6,
   "items": [
     {
       "child": 0,
@@ -17,32 +17,19 @@
       "show_arrow": 0,
       "type": "Link",
       "icon": "house",
-      "link_to": "Touchpoints"
+      "link_to": "Engagement Reports"
     },
     {
       "child": 0,
       "collapsible": 1,
       "indent": 1,
       "keep_closed": 1,
-      "label": "Engagement",
+      "label": "Review Records",
       "link_type": "DocType",
       "open_in_new_tab": 1,
       "show_arrow": 0,
       "type": "Section Break",
-      "icon": "messages-square"
-    },
-    {
-      "child": 1,
-      "collapsible": 1,
-      "indent": 0,
-      "keep_closed": 0,
-      "label": "Interaction Attributions",
-      "link_type": "DocType",
-      "open_in_new_tab": 1,
-      "show_arrow": 0,
-      "type": "Link",
-      "icon": "",
-      "link_to": "SEI Interaction Attribution"
+      "icon": "chart-column"
     },
     {
       "child": 1,
@@ -58,18 +45,6 @@
       "link_to": "SEI Prospect"
     },
     {
-      "child": 0,
-      "collapsible": 1,
-      "indent": 1,
-      "keep_closed": 1,
-      "label": "Supporting Evidence",
-      "link_type": "DocType",
-      "open_in_new_tab": 1,
-      "show_arrow": 0,
-      "type": "Section Break",
-      "icon": "radar"
-    },
-    {
       "child": 1,
       "collapsible": 1,
       "indent": 0,
@@ -81,10 +56,61 @@
       "type": "Link",
       "icon": "",
       "link_to": "SEI Signal"
+    },
+    {
+      "child": 1,
+      "collapsible": 1,
+      "indent": 0,
+      "keep_closed": 0,
+      "label": "Interaction Attributions",
+      "link_type": "DocType",
+      "open_in_new_tab": 1,
+      "show_arrow": 0,
+      "type": "Link",
+      "icon": "",
+      "link_to": "SEI Interaction Attribution"
+    },
+    {
+      "child": 0,
+      "collapsible": 1,
+      "indent": 1,
+      "keep_closed": 1,
+      "label": "CRM Review",
+      "link_type": "DocType",
+      "open_in_new_tab": 1,
+      "show_arrow": 0,
+      "type": "Section Break",
+      "icon": "badge-dollar-sign"
+    },
+    {
+      "child": 1,
+      "collapsible": 1,
+      "indent": 0,
+      "keep_closed": 0,
+      "label": "CRM Leads",
+      "link_type": "DocType",
+      "open_in_new_tab": 1,
+      "show_arrow": 0,
+      "type": "Link",
+      "icon": "",
+      "link_to": "CRM Lead"
+    },
+    {
+      "child": 1,
+      "collapsible": 1,
+      "indent": 0,
+      "keep_closed": 0,
+      "label": "CRM Deals",
+      "link_type": "DocType",
+      "open_in_new_tab": 1,
+      "show_arrow": 0,
+      "type": "Link",
+      "icon": "",
+      "link_to": "CRM Deal"
     }
   ],
-  "name": "Touchpoints",
+  "name": "Engagement Reports",
   "owner": "Administrator",
   "standard": 1,
-  "title": "Touchpoints"
+  "title": "Engagement Reports"
 }
