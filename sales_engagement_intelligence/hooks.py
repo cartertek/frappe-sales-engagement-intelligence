@@ -40,3 +40,31 @@ after_migrate = "sales_engagement_intelligence.setup.after_migrate"
 after_app_install = "sales_engagement_intelligence.setup.after_app_install"
 before_app_uninstall = "sales_engagement_intelligence.setup.before_app_uninstall"
 before_uninstall = "sales_engagement_intelligence.uninstall.before_uninstall"
+
+fixtures = [
+    {
+        "dt": "Role",
+        "filters": [["name", "in", ["Sales Engagement Manager", "Sales Engagement User"]]],
+    },
+    {
+        "dt": "Custom Field",
+        "filters": [
+            [
+                "name",
+                "in",
+                [
+                    "CRM Lead-sei_section",
+                    "CRM Lead-sei_prospect",
+                    "CRM Lead-sei_source_arena",
+                    "CRM Lead-sei_thesis",
+                    "CRM Lead-sei_qualification_summary",
+                    "CRM Deal-sei_section",
+                    "CRM Deal-sei_prospect",
+                    "CRM Deal-sei_source_arena",
+                    "CRM Deal-sei_thesis",
+                    "CRM Deal-sei_primary_signal",
+                ],
+            ]
+        ],
+    },
+]
