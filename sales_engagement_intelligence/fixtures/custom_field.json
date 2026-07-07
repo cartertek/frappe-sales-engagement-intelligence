@@ -1,0 +1,109 @@
+[
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Lead-sei_section",
+  "dt": "CRM Lead",
+  "fieldname": "sei_section",
+  "label": "SEI",
+  "fieldtype": "Section Break",
+  "insert_after": "status",
+  "collapsible": 1,
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Lead-sei_prospect",
+  "dt": "CRM Lead",
+  "fieldname": "sei_prospect",
+  "label": "Prospect",
+  "fieldtype": "Link",
+  "options": "SEI Prospect",
+  "insert_after": "sei_section",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Lead-sei_source_arena",
+  "dt": "CRM Lead",
+  "fieldname": "sei_source_arena",
+  "label": "Source Arena",
+  "fieldtype": "Data",
+  "insert_after": "sei_prospect",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Lead-sei_thesis",
+  "dt": "CRM Lead",
+  "fieldname": "sei_thesis",
+  "label": "Thesis",
+  "fieldtype": "Link",
+  "options": "SEI Thesis",
+  "insert_after": "sei_source_arena",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Lead-sei_qualification_summary",
+  "dt": "CRM Lead",
+  "fieldname": "sei_qualification_summary",
+  "label": "Qualification Summary",
+  "fieldtype": "Small Text",
+  "insert_after": "sei_thesis",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Deal-sei_section",
+  "dt": "CRM Deal",
+  "fieldname": "sei_section",
+  "label": "SEI",
+  "fieldtype": "Section Break",
+  "insert_after": "status",
+  "collapsible": 1,
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Deal-sei_prospect",
+  "dt": "CRM Deal",
+  "fieldname": "sei_prospect",
+  "label": "Prospect",
+  "fieldtype": "Link",
+  "options": "SEI Prospect",
+  "insert_after": "sei_section",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Deal-sei_source_arena",
+  "dt": "CRM Deal",
+  "fieldname": "sei_source_arena",
+  "label": "Source Arena",
+  "fieldtype": "Data",
+  "insert_after": "sei_prospect",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Deal-sei_thesis",
+  "dt": "CRM Deal",
+  "fieldname": "sei_thesis",
+  "label": "Thesis",
+  "fieldtype": "Link",
+  "options": "SEI Thesis",
+  "insert_after": "sei_source_arena",
+  "is_system_generated": 1
+ },
+ {
+  "doctype": "Custom Field",
+  "name": "CRM Deal-sei_primary_signal",
+  "dt": "CRM Deal",
+  "fieldname": "sei_primary_signal",
+  "label": "Primary Signal",
+  "fieldtype": "Link",
+  "options": "SEI Signal",
+  "insert_after": "sei_thesis",
+  "is_system_generated": 1
+ }
+]
