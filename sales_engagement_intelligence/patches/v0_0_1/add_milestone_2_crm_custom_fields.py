@@ -21,10 +21,16 @@ def execute():
     if frappe.db.exists('DocType', 'CRM Lead'):
         custom_fields['CRM Lead'] = [
             {
-                'fieldname': 'sei_section',
+                'fieldname': 'sei_tab',
                 'label': 'SEI',
+                'fieldtype': 'Tab Break',
+                'insert_after': _insert_after('CRM Lead', 'converted'),
+            },
+            {
+                'fieldname': 'sei_section',
+                'label': 'SEI Context',
                 'fieldtype': 'Section Break',
-                'insert_after': _insert_after('CRM Lead', 'status'),
+                'insert_after': 'sei_tab',
                 'collapsible': 1,
             },
             {
@@ -58,10 +64,16 @@ def execute():
     if frappe.db.exists('DocType', 'CRM Deal'):
         custom_fields['CRM Deal'] = [
             {
-                'fieldname': 'sei_section',
+                'fieldname': 'sei_tab',
                 'label': 'SEI',
+                'fieldtype': 'Tab Break',
+                'insert_after': _insert_after('CRM Deal', 'gender'),
+            },
+            {
+                'fieldname': 'sei_section',
+                'label': 'SEI Context',
                 'fieldtype': 'Section Break',
-                'insert_after': _insert_after('CRM Deal', 'status'),
+                'insert_after': 'sei_tab',
                 'collapsible': 1,
             },
             {
