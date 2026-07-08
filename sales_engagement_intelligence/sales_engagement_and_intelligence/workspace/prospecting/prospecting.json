@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\":\"prospecting_header\",\"type\":\"header\",\"data\":{\"text\":\"Prospecting\",\"col\":12}},{\"id\":\"prospecting_intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"Pre-CRM research and qualification queues.\",\"col\":12}},{\"id\":\"prospecting_queue_1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Needs Research\",\"col\":3}},{\"id\":\"prospecting_queue_2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Research Complete\",\"col\":3}},{\"id\":\"prospecting_queue_3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Qualified\",\"col\":3}},{\"id\":\"prospecting_queue_4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Find Contact\",\"col\":3}},{\"id\":\"prospecting_queue_5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Ready for CRM Conversion\",\"col\":3}},{\"id\":\"prospecting_queue_6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Converted to CRM Lead\",\"col\":3}},{\"id\":\"prospecting_queue_7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected\",\"col\":3}},{\"id\":\"prospecting_queue_8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Do Not Contact\",\"col\":3}}]",
+ "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification queues.\", \"col\": 12}}, {\"id\": \"prospecting_queue_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Prospect Queues\", \"col\": 4}}, {\"id\": \"prospecting_core_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Records\", \"col\": 4}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,7 +13,158 @@
  "indicator_color": "purple",
  "is_hidden": 0,
  "label": "Prospecting",
- "links": [],
+ "links": [
+  {
+   "type": "Card Break",
+   "label": "SEI Prospect Queues",
+   "link_type": "DocType",
+   "link_to": null,
+   "link_count": 8,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Needs Research",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Research Complete",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Qualified",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Find Contact",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Ready for CRM Conversion",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Converted to CRM Lead",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Rejected",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Do Not Contact",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Card Break",
+   "label": "SEI Records",
+   "link_type": "DocType",
+   "link_to": null,
+   "link_count": 5,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Prospect",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Signal",
+   "link_type": "DocType",
+   "link_to": "SEI Signal",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Thesis",
+   "link_type": "DocType",
+   "link_to": "SEI Thesis",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Asset",
+   "link_type": "DocType",
+   "link_to": "SEI Asset",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Interaction Attribution",
+   "link_type": "DocType",
+   "link_to": "SEI Interaction Attribution",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  }
+ ],
  "modified": "2026-06-25 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
