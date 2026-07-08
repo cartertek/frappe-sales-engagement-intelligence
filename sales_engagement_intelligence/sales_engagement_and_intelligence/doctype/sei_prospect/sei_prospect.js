@@ -19,7 +19,7 @@ frappe.ui.form.on('SEI Prospect', {
             }, __('CRM Preparation'));
         }
 
-        if (frm.doc.ready_for_crm_conversion && !frm.doc.crm_lead) {
+        if (can_prepare_crm_lead(frm)) {
             frm.add_custom_button(__('Preview CRM Lead'), () => {
                 frappe.call({
                     method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.preview_crm_lead',
@@ -45,7 +45,7 @@ frappe.ui.form.on('SEI Prospect', {
                 });
             }, __('CRM Preparation'));
 
-            if (frappe.user_roles.includes('Sales Engagement Manager')) {
+            if (is_manager_or_admin()) {
                 frm.add_custom_button(__('Create CRM Lead'), () => {
                     frappe.confirm(
                         __('Create a CRM Lead from this SEI Prospect? Review the preview first if you have not already done so.'),
@@ -80,7 +80,7 @@ frappe.ui.form.on('SEI Prospect', {
         }
 
         if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status)
-            && frappe.user_roles.includes('Sales Engagement Manager')) {
+            && is_manager_or_admin()) {
             frm.add_custom_button(__('Reopen Prospect'), () => {
                 frappe.confirm(__('Reopen this protected prospect and recalculate qualification?'), () => {
                     call_and_reload(frm, 'reopen_prospect', { prospect: frm.doc.name });
@@ -90,6 +90,12 @@ frappe.ui.form.on('SEI Prospect', {
     }
 });
 
+function can_prepare_crm_lead(frm) {
+    return ['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
+        && !frm.doc.do_not_contact
+        && !['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status)
+        && !frm.doc.crm_lead;
+}
 function is_terminal(frm) {
     return ['Rejected', 'Do Not Contact', 'Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status);
 }
@@ -118,4 +124,10 @@ function prompt_reason(label, callback) {
         (values) => callback(values.reason),
         label
     );
+}
+
+function is_manager_or_admin() {
+    return frappe.session.user === 'Administrator'
+        || frappe.user_roles.includes('Administrator')
+        || frappe.user_roles.includes('Sales Engagement Manager');
 }

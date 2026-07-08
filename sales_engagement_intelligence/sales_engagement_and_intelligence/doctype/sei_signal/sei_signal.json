@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "prospect",
+  "prospect_name",
   "signal_type",
   "signal_strength",
   "evidence_basis",
@@ -29,9 +30,19 @@
    "fieldtype": "Link",
    "options": "SEI Prospect",
    "reqd": 1,
-   "in_list_view": 1,
+   "in_list_view": 0,
    "in_standard_filter": 1,
    "idx": 1
+  },
+  {
+   "fieldname": "prospect_name",
+   "label": "Prospect Name",
+   "fieldtype": "Data",
+   "fetch_from": "prospect.prospect_name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
   },
   {
    "fieldname": "signal_type",

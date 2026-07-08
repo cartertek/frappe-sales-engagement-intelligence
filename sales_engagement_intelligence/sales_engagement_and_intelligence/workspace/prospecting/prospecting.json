@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_placeholder\", \"type\": \"paragraph\", \"data\": {\"text\": \"Prospecting workspace for source/research workflow placeholders.\", \"col\": 12}}]",
+ "content": "[{\"id\":\"prospecting_header\",\"type\":\"header\",\"data\":{\"text\":\"Prospecting\",\"col\":12}},{\"id\":\"prospecting_intro\",\"type\":\"paragraph\",\"data\":{\"text\":\"Pre-CRM research and qualification queues.\",\"col\":12}},{\"id\":\"prospecting_queue_1\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Needs Research\",\"col\":3}},{\"id\":\"prospecting_queue_2\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Research Complete\",\"col\":3}},{\"id\":\"prospecting_queue_3\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Qualified\",\"col\":3}},{\"id\":\"prospecting_queue_4\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Find Contact\",\"col\":3}},{\"id\":\"prospecting_queue_5\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Ready for CRM Conversion\",\"col\":3}},{\"id\":\"prospecting_queue_6\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Converted to CRM Lead\",\"col\":3}},{\"id\":\"prospecting_queue_7\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Rejected\",\"col\":3}},{\"id\":\"prospecting_queue_8\",\"type\":\"shortcut\",\"data\":{\"shortcut_name\":\"Do Not Contact\",\"col\":3}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,

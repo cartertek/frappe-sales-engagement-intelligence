@@ -9,8 +9,6 @@ class SEIProspect(Document):
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()
         self.validate_manual_override_reason()
-
-    def on_update(self):
         self.apply_milestone_3_workflow_updates()
 
     def set_normalized_domain(self):
@@ -50,18 +48,17 @@ class SEIProspect(Document):
             return
 
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
-            apply_lifecycle_status,
+            apply_lifecycle_to_doc,
             is_terminal_status,
         )
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
-            apply_qualification_result,
+            apply_qualification_to_doc,
         )
 
         try:
             frappe.flags.sei_m3_recalculating = True
-            apply_qualification_result(self.name)
-            fresh_status = frappe.db.get_value('SEI Prospect', self.name, 'lifecycle_status')
-            if not is_terminal_status(fresh_status):
-                apply_lifecycle_status(self.name)
+            apply_qualification_to_doc(self)
+            if not is_terminal_status(self.lifecycle_status):
+                apply_lifecycle_to_doc(self)
         finally:
             frappe.flags.sei_m3_recalculating = False
