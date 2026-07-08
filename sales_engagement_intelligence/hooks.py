@@ -54,13 +54,11 @@ fixtures = [
                 "in",
                 [
                     "CRM Lead-sei_tab",
-                    "CRM Lead-sei_section",
                     "CRM Lead-sei_prospect",
                     "CRM Lead-sei_source_arena",
                     "CRM Lead-sei_thesis",
                     "CRM Lead-sei_qualification_summary",
                     "CRM Deal-sei_tab",
-                    "CRM Deal-sei_section",
                     "CRM Deal-sei_prospect",
                     "CRM Deal-sei_source_arena",
                     "CRM Deal-sei_thesis",
