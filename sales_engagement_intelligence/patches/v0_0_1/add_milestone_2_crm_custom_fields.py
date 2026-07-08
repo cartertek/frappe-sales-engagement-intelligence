@@ -27,18 +27,11 @@ def execute():
                 'insert_after': _insert_after('CRM Lead', 'converted'),
             },
             {
-                'fieldname': 'sei_section',
-                'label': 'SEI Context',
-                'fieldtype': 'Section Break',
-                'insert_after': 'sei_tab',
-                'collapsible': 1,
-            },
-            {
                 'fieldname': 'sei_prospect',
                 'label': 'Prospect',
                 'fieldtype': 'Link',
                 'options': 'SEI Prospect',
-                'insert_after': 'sei_section',
+                'insert_after': 'sei_tab',
             },
             {
                 'fieldname': 'sei_source_arena',
@@ -70,18 +63,11 @@ def execute():
                 'insert_after': _insert_after('CRM Deal', 'gender'),
             },
             {
-                'fieldname': 'sei_section',
-                'label': 'SEI Context',
-                'fieldtype': 'Section Break',
-                'insert_after': 'sei_tab',
-                'collapsible': 1,
-            },
-            {
                 'fieldname': 'sei_prospect',
                 'label': 'Prospect',
                 'fieldtype': 'Link',
                 'options': 'SEI Prospect',
-                'insert_after': 'sei_section',
+                'insert_after': 'sei_tab',
             },
             {
                 'fieldname': 'sei_source_arena',

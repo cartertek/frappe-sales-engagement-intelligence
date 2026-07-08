@@ -11,24 +11,13 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Lead-sei_section",
-  "dt": "CRM Lead",
-  "fieldname": "sei_section",
-  "label": "SEI Context",
-  "fieldtype": "Section Break",
-  "insert_after": "sei_tab",
-  "collapsible": 1,
-  "is_system_generated": 1
- },
- {
-  "doctype": "Custom Field",
   "name": "CRM Lead-sei_prospect",
   "dt": "CRM Lead",
   "fieldname": "sei_prospect",
   "label": "Prospect",
   "fieldtype": "Link",
   "options": "SEI Prospect",
-  "insert_after": "sei_section",
+  "insert_after": "sei_tab",
   "is_system_generated": 1
  },
  {
@@ -74,24 +63,13 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Deal-sei_section",
-  "dt": "CRM Deal",
-  "fieldname": "sei_section",
-  "label": "SEI Context",
-  "fieldtype": "Section Break",
-  "insert_after": "sei_tab",
-  "collapsible": 1,
-  "is_system_generated": 1
- },
- {
-  "doctype": "Custom Field",
   "name": "CRM Deal-sei_prospect",
   "dt": "CRM Deal",
   "fieldname": "sei_prospect",
   "label": "Prospect",
   "fieldtype": "Link",
   "options": "SEI Prospect",
-  "insert_after": "sei_section",
+  "insert_after": "sei_tab",
   "is_system_generated": 1
  },
  {
