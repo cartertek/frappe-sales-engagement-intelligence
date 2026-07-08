@@ -33,6 +33,11 @@ def has_crm_link(prospect: Document) -> bool:
     return bool(prospect.get("crm_lead") or prospect.get("crm_deal"))
 
 
+def has_signals(prospect: Document) -> bool:
+    prospect_name = prospect.get("name")
+    return bool(prospect_name and frappe.db.exists("SEI Signal", {"prospect": prospect_name}))
+
+
 def suggest_lifecycle_status(prospect_name: str) -> str:
     return suggest_lifecycle_status_for_doc(frappe.get_doc("SEI Prospect", prospect_name))
 
@@ -55,7 +60,14 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
     if prospect.qualification_status == "Needs Review":
         return "Research Complete"
 
-    if prospect.get("last_researched_date") or prospect.get("signal_summary"):
+    if prospect.qualification_status in ("Unqualified", None, ""):
+        if prospect.lifecycle_status in ("New", "Needs Research", "Research Complete"):
+            return prospect.lifecycle_status or "New"
+        if prospect.get("last_researched_date") or prospect.get("signal_summary") or has_signals(prospect):
+            return "Research Complete"
+        return "New"
+
+    if prospect.get("last_researched_date") or prospect.get("signal_summary") or has_signals(prospect):
         return "Research Complete"
 
     return prospect.lifecycle_status or "New"
