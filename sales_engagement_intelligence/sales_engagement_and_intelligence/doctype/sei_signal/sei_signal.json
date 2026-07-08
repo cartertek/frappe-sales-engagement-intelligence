@@ -52,7 +52,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 3
+   "idx": 2
   },
   {
    "fieldname": "signal_strength",
@@ -62,7 +62,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 4
+   "idx": 3
   },
   {
    "fieldname": "evidence_basis",
@@ -72,67 +72,67 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 5
+   "idx": 4
   },
   {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
-   "idx": 6
+   "idx": 5
   },
   {
    "fieldname": "source_url",
    "label": "Source URL",
    "fieldtype": "Data",
    "in_standard_filter": 1,
-   "idx": 7
+   "idx": 6
   },
   {
    "fieldname": "source_date",
    "label": "Source Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 8
+   "idx": 7
   },
   {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
    "reqd": 1,
-   "idx": 9
+   "idx": 8
   },
   {
    "fieldname": "counts_toward_qualification",
    "label": "Counts Toward Qualification",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "idx": 10
+   "idx": 9
   },
   {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
-   "idx": 11
+   "idx": 10
   },
   {
    "fieldname": "column_break_1",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 12
+   "idx": 11
   },
   {
    "fieldname": "reviewed_by",
    "label": "Reviewed By",
    "fieldtype": "Link",
    "options": "User",
-   "idx": 13
+   "idx": 12
   },
   {
    "fieldname": "review_date",
    "label": "Review Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 14
+   "idx": 13
   }
  ],
  "links": [],
