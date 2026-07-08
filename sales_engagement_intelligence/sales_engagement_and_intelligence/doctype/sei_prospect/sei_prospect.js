@@ -19,7 +19,7 @@ frappe.ui.form.on('SEI Prospect', {
             }, __('CRM Preparation'));
         }
 
-        if (frm.doc.ready_for_crm_conversion && !frm.doc.crm_lead) {
+        if (can_prepare_crm_lead(frm)) {
             frm.add_custom_button(__('Preview CRM Lead'), () => {
                 frappe.call({
                     method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.preview_crm_lead',
@@ -90,6 +90,12 @@ frappe.ui.form.on('SEI Prospect', {
     }
 });
 
+function can_prepare_crm_lead(frm) {
+    return ['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
+        && !frm.doc.do_not_contact
+        && !['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status)
+        && !frm.doc.crm_lead;
+}
 function is_terminal(frm) {
     return ['Rejected', 'Do Not Contact', 'Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status);
 }
