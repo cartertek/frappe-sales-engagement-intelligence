@@ -22,11 +22,87 @@
  "owner": "Administrator",
  "parent_page": "",
  "public": 1,
- "quick_lists": [],
+ "quick_lists": [
+  {
+   "document_type": "SEI Prospect",
+   "label": "Ready for CRM Conversion",
+   "quick_list_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Ready for CRM Conversion\"]]"
+  },
+  {
+   "document_type": "SEI Prospect",
+   "label": "Needs Research",
+   "quick_list_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Needs Research\"]]"
+  }
+ ],
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 31.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Needs Research",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Needs Research\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Research Complete",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Research Complete\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Qualified",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Qualified\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Find Contact",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Find Contact\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Ready for CRM Conversion",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Ready for CRM Conversion\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Converted to CRM Lead",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Converted to CRM Lead\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Rejected",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Rejected\"]]",
+   "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Do Not Contact",
+   "doc_view": "List",
+   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Do Not Contact\"]]",
+   "color": "Grey"
+  }
+ ],
  "title": "Prospecting",
  "type": "Workspace"
 }
