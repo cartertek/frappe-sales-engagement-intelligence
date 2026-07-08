@@ -34,8 +34,10 @@ def has_crm_link(prospect: Document) -> bool:
 
 
 def suggest_lifecycle_status(prospect_name: str) -> str:
-    prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    return suggest_lifecycle_status_for_doc(frappe.get_doc("SEI Prospect", prospect_name))
 
+
+def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
     if prospect.do_not_contact:
         return "Do Not Contact"
     if prospect.crm_deal:
@@ -59,10 +61,18 @@ def suggest_lifecycle_status(prospect_name: str) -> str:
     return prospect.lifecycle_status or "New"
 
 
+def apply_lifecycle_to_doc(prospect: Document) -> dict:
+    old_status = prospect.lifecycle_status
+    new_status = suggest_lifecycle_status_for_doc(prospect)
+    if old_status != new_status:
+        prospect.lifecycle_status = new_status
+    return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
+
+
 def apply_lifecycle_status(prospect_name: str) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     old_status = prospect.lifecycle_status
-    new_status = suggest_lifecycle_status(prospect_name)
+    new_status = suggest_lifecycle_status_for_doc(prospect)
 
     if old_status != new_status:
         frappe.db.set_value(
@@ -72,6 +82,7 @@ def apply_lifecycle_status(prospect_name: str) -> dict:
             new_status,
             update_modified=True,
         )
+        frappe.get_doc("SEI Prospect", prospect_name).notify_update()
 
     return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
 
@@ -85,6 +96,7 @@ def mark_rejected(prospect_name: str, reason: Optional[str] = None) -> dict:
     if reason:
         values["rejected_reason"] = reason
     frappe.db.set_value("SEI Prospect", prospect_name, values, update_modified=True)
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
     return {"lifecycle_status": "Rejected", "qualification_status": "Rejected"}
 
 
@@ -98,6 +110,7 @@ def mark_do_not_contact(prospect_name: str, reason: Optional[str] = None) -> dic
     if reason:
         values["rejected_reason"] = reason
     frappe.db.set_value("SEI Prospect", prospect_name, values, update_modified=True)
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
     return {
         "do_not_contact": 1,
         "lifecycle_status": "Do Not Contact",
@@ -105,14 +118,17 @@ def mark_do_not_contact(prospect_name: str, reason: Optional[str] = None) -> dic
     }
 
 
-def reopen_prospect(prospect_name: str) -> dict:
+def _has_manager_access() -> bool:
     roles = frappe.get_roles()
-    has_manager_access = (
+    return (
         frappe.session.user == "Administrator"
         or "Administrator" in roles
         or "Sales Engagement Manager" in roles
     )
-    if not has_manager_access:
+
+
+def reopen_prospect(prospect_name: str) -> dict:
+    if not _has_manager_access():
         frappe.throw(
             "Only an Administrator or Sales Engagement Manager can reopen a protected prospect."
         )
@@ -128,6 +144,7 @@ def reopen_prospect(prospect_name: str) -> dict:
         },
         update_modified=True,
     )
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
 
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
         apply_qualification_result,
@@ -154,4 +171,5 @@ def mark_ready_for_crm_conversion(prospect_name: str) -> dict:
         },
         update_modified=True,
     )
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
     return {"ready_for_crm_conversion": 1, "lifecycle_status": "Ready for CRM Conversion"}
