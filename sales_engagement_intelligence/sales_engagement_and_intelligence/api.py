@@ -12,9 +12,20 @@ def _check_prospect_permission(prospect: str, ptype: str = 'write'):
     return doc
 
 
+def _has_manager_access():
+    roles = frappe.get_roles()
+    return (
+        frappe.session.user == 'Administrator'
+        or 'Administrator' in roles
+        or 'Sales Engagement Manager' in roles
+    )
+
+
 def _require_manager():
-    if 'Sales Engagement Manager' not in frappe.get_roles():
-        frappe.throw('Sales Engagement Manager role is required for this action.')
+    if not _has_manager_access():
+        frappe.throw(
+            'Administrator or Sales Engagement Manager role is required for this action.'
+        )
 
 
 @frappe.whitelist()

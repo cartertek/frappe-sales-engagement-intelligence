@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "prospect",
+  "prospect_name",
   "signal_type",
   "signal_strength",
   "evidence_basis",
@@ -29,9 +30,19 @@
    "fieldtype": "Link",
    "options": "SEI Prospect",
    "reqd": 1,
-   "in_list_view": 1,
+   "in_list_view": 0,
    "in_standard_filter": 1,
    "idx": 1
+  },
+  {
+   "fieldname": "prospect_name",
+   "label": "Prospect Name",
+   "fieldtype": "Data",
+   "fetch_from": "prospect.prospect_name",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
   },
   {
    "fieldname": "signal_type",
@@ -41,7 +52,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 2
+   "idx": 3
   },
   {
    "fieldname": "signal_strength",
@@ -51,7 +62,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 3
+   "idx": 4
   },
   {
    "fieldname": "evidence_basis",
@@ -61,67 +72,67 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 4
+   "idx": 5
   },
   {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
-   "idx": 5
+   "idx": 6
   },
   {
    "fieldname": "source_url",
    "label": "Source URL",
    "fieldtype": "Data",
    "in_standard_filter": 1,
-   "idx": 6
+   "idx": 7
   },
   {
    "fieldname": "source_date",
    "label": "Source Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 7
+   "idx": 8
   },
   {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
    "reqd": 1,
-   "idx": 8
+   "idx": 9
   },
   {
    "fieldname": "counts_toward_qualification",
    "label": "Counts Toward Qualification",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "idx": 9
+   "idx": 10
   },
   {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
-   "idx": 10
+   "idx": 11
   },
   {
    "fieldname": "column_break_1",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 11
+   "idx": 12
   },
   {
    "fieldname": "reviewed_by",
    "label": "Reviewed By",
    "fieldtype": "Link",
    "options": "User",
-   "idx": 12
+   "idx": 13
   },
   {
    "fieldname": "review_date",
    "label": "Review Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 13
+   "idx": 14
   }
  ],
  "links": [],

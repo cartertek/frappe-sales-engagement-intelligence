@@ -45,7 +45,7 @@ frappe.ui.form.on('SEI Prospect', {
                 });
             }, __('CRM Preparation'));
 
-            if (frappe.user_roles.includes('Sales Engagement Manager')) {
+            if (is_manager_or_admin()) {
                 frm.add_custom_button(__('Create CRM Lead'), () => {
                     frappe.confirm(
                         __('Create a CRM Lead from this SEI Prospect? Review the preview first if you have not already done so.'),
@@ -80,7 +80,7 @@ frappe.ui.form.on('SEI Prospect', {
         }
 
         if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status)
-            && frappe.user_roles.includes('Sales Engagement Manager')) {
+            && is_manager_or_admin()) {
             frm.add_custom_button(__('Reopen Prospect'), () => {
                 frappe.confirm(__('Reopen this protected prospect and recalculate qualification?'), () => {
                     call_and_reload(frm, 'reopen_prospect', { prospect: frm.doc.name });
@@ -118,4 +118,10 @@ function prompt_reason(label, callback) {
         (values) => callback(values.reason),
         label
     );
+}
+
+function is_manager_or_admin() {
+    return frappe.session.user === 'Administrator'
+        || frappe.user_roles.includes('Administrator')
+        || frappe.user_roles.includes('Sales Engagement Manager');
 }

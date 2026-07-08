@@ -4,12 +4,24 @@ from frappe.model.document import Document
 
 class SEISignal(Document):
     def validate(self):
+        self.set_prospect_name()
         if self.counts_toward_qualification and self.evidence_basis == 'Inferred':
             frappe.msgprint(
                 'Inferred signals do not count toward automatic qualification. '
                 'Only observed Moderate or Strong signals are counted by the qualification engine.',
                 alert=True,
             )
+
+    def set_prospect_name(self):
+        if not self.prospect:
+            self.prospect_name = None
+            return
+
+        self.prospect_name = frappe.db.get_value(
+            'SEI Prospect',
+            self.prospect,
+            'prospect_name',
+        )
 
     def after_insert(self):
         self.recalculate_prospect()

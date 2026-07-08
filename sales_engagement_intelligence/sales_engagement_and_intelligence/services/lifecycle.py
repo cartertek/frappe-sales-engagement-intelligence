@@ -106,8 +106,16 @@ def mark_do_not_contact(prospect_name: str, reason: Optional[str] = None) -> dic
 
 
 def reopen_prospect(prospect_name: str) -> dict:
-    if "Sales Engagement Manager" not in frappe.get_roles():
-        frappe.throw("Only a Sales Engagement Manager can reopen a protected prospect.")
+    roles = frappe.get_roles()
+    has_manager_access = (
+        frappe.session.user == "Administrator"
+        or "Administrator" in roles
+        or "Sales Engagement Manager" in roles
+    )
+    if not has_manager_access:
+        frappe.throw(
+            "Only an Administrator or Sales Engagement Manager can reopen a protected prospect."
+        )
 
     frappe.db.set_value(
         "SEI Prospect",

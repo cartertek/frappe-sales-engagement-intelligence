@@ -3,6 +3,7 @@ from __future__ import annotations
 from typing import Optional
 
 import frappe
+from frappe.model.document import Document
 
 QUALIFYING_STRENGTHS = ("Moderate", "Strong")
 TERMINAL_STATUSES = ("Rejected", "Do Not Contact")
@@ -62,20 +63,18 @@ def get_primary_signal(prospect_name: str) -> Optional[str]:
     return None
 
 
-def calculate_prospect_qualification(prospect_name: str) -> dict:
-    prospect = frappe.get_doc("SEI Prospect", prospect_name)
-
+def calculate_prospect_qualification_for_doc(prospect: Document) -> dict:
     strong_count = 0
     moderate_count = 0
     qualified_signals = []
 
-    if not prospect.do_not_contact and prospect.lifecycle_status != "Rejected":
-        qualified_signals = get_qualifying_signals(prospect_name)
+    if prospect.name and not prospect.do_not_contact and prospect.lifecycle_status != "Rejected":
+        qualified_signals = get_qualifying_signals(prospect.name)
         strong_count = sum(1 for signal in qualified_signals if signal.signal_strength == "Strong")
         moderate_count = sum(1 for signal in qualified_signals if signal.signal_strength == "Moderate")
 
     qualified_count = strong_count + moderate_count
-    primary_signal = get_primary_signal(prospect_name)
+    primary_signal = get_primary_signal(prospect.name) if prospect.name else None
 
     if prospect.do_not_contact:
         status = "Do Not Contact"
@@ -113,6 +112,23 @@ def calculate_prospect_qualification(prospect_name: str) -> dict:
     }
 
 
+def calculate_prospect_qualification(prospect_name: str) -> dict:
+    return calculate_prospect_qualification_for_doc(frappe.get_doc("SEI Prospect", prospect_name))
+
+
+def apply_qualification_to_doc(prospect: Document) -> dict:
+    result = calculate_prospect_qualification_for_doc(prospect)
+    for field in (
+        "qualification_status",
+        "strong_observed_signal_count",
+        "moderate_observed_signal_count",
+        "qualified_signal_count",
+        "qualification_explanation",
+    ):
+        prospect.set(field, result[field])
+    return result
+
+
 def apply_qualification_result(prospect_name: str) -> dict:
     result = calculate_prospect_qualification(prospect_name)
     frappe.db.set_value(
@@ -127,4 +143,5 @@ def apply_qualification_result(prospect_name: str) -> dict:
         },
         update_modified=True,
     )
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
     return result
