@@ -102,8 +102,8 @@ function reload_if_cached_document_is_stale(frm) {
 
     frappe.db.get_value('SEI Prospect', frm.doc.name, 'modified')
         .then((r) => {
-            const server_modified = r?.message?.modified;
-            if (!server_modified || !frm.doc?.modified) return;
+            const server_modified = r && r.message && r.message.modified;
+            if (!server_modified || !frm.doc || !frm.doc.modified) return;
 
             const local_time = frappe.datetime.str_to_obj(frm.doc.modified);
             const server_time = frappe.datetime.str_to_obj(server_modified);
@@ -117,7 +117,7 @@ function reload_if_cached_document_is_stale(frm) {
                 return frm.reload_doc();
             }
         })
-        .finally(() => {
+        .always(() => {
             frm.__sei_freshness_check_in_progress = false;
             frm.__sei_reloading_stale_cache = false;
             frm.enable_save();
