@@ -2,6 +2,8 @@ frappe.ui.form.on('SEI Prospect', {
     refresh(frm) {
         if (frm.is_new()) return;
 
+        ensure_fresh_document(frm);
+
         frm.add_custom_button(__('Recalculate Qualification'), () => {
             call_and_reload(frm, 'recalculate_qualification', { prospect: frm.doc.name });
         }, __('SEI Actions'));
@@ -87,8 +89,60 @@ frappe.ui.form.on('SEI Prospect', {
                 });
             }, __('SEI Actions'));
         }
+    },
+
+    validate(frm) {
+        return ensure_fresh_document(frm, { block_save: true });
     }
 });
+
+
+function ensure_fresh_document(frm, opts = {}) {
+    if (frm.is_new() || !frm.doc?.name || !frm.doc?.modified) {
+        return Promise.resolve();
+    }
+
+    if (frm.__sei_reloading_for_freshness) {
+        if (opts.block_save) frappe.validated = false;
+        return Promise.resolve();
+    }
+
+    if (frm.__sei_refresh_check_in_progress && !opts.block_save) {
+        return Promise.resolve();
+    }
+
+    frm.__sei_refresh_check_in_progress = true;
+    return frappe.db.get_value('SEI Prospect', frm.doc.name, 'modified')
+        .then((r) => {
+            const server_modified = r?.message?.modified;
+            if (!server_modified || !frm.doc?.modified) return;
+
+            const local_time = frappe.datetime.str_to_obj(frm.doc.modified);
+            const server_time = frappe.datetime.str_to_obj(server_modified);
+
+            if (server_time > local_time) {
+                frm.__sei_reloading_for_freshness = true;
+                frappe.show_alert({
+                    message: __('This prospect changed after it was cached locally. Reloading the latest version.'),
+                    indicator: 'orange'
+                });
+
+                const reload = frm.reload_doc().finally(() => {
+                    frm.__sei_reloading_for_freshness = false;
+                });
+
+                if (opts.block_save) {
+                    frappe.validated = false;
+                    frappe.throw(__('This prospect changed after it was cached locally. The latest version has been reloaded; please review and save again.'));
+                }
+
+                return reload;
+            }
+        })
+        .finally(() => {
+            frm.__sei_refresh_check_in_progress = false;
+        });
+}
 
 function can_prepare_crm_lead(frm) {
     return ['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
