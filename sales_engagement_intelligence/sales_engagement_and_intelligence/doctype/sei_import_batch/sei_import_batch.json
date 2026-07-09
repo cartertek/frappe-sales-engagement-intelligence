@@ -71,8 +71,8 @@
    "fieldname": "import_mode",
    "label": "Import Mode",
    "fieldtype": "Select",
-   "options": "Dry Run\nCreate Only\nUpdate Existing\nCreate or Update",
-   "default": "Dry Run"
+   "options": "Create Only\nUpdate Existing\nCreate or Update",
+   "default": "Create or Update"
   },
   {
    "fieldname": "status",
