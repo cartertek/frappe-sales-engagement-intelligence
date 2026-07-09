@@ -15,6 +15,7 @@ def after_migrate() -> None:
 
     repair_sei_desktop_layout()
     ensure_milestone_5_workspace_items()
+    ensure_milestone_6_workspace_reports()
     frappe.clear_cache()
 
 
@@ -210,6 +211,131 @@ def ensure_milestone_5_workspace_items() -> None:
     if changed:
         workspace.save(ignore_permissions=True)
 
+
+MILESTONE_6_REPORTS = (
+    "Prospect Lifecycle Summary",
+    "Active Prospect Queue",
+    "Ready for CRM Conversion",
+    "Signals by Type and Strength",
+    "Qualification by Signal Type",
+    "Prospects by Source Arena",
+    "Outcomes by Thesis",
+    "CRM Conversion Summary",
+    "CRM Context Missing",
+    "Import Batch Summary",
+    "Import Batch Row Errors",
+    "Data Hygiene Dashboard",
+    "Interaction Attribution Summary",
+)
+
+
+def ensure_milestone_6_workspace_reports() -> None:
+    """Keep Milestone 6 report shortcuts visible after fixture sync.
+
+    Workspace fixtures are not sufficient once a live Workspace has been synced or
+    customized. This repair is idempotent, scoped to Engagement Reports, and only
+    creates/repairs report navigation metadata. It does not execute reports or mutate
+    SEI/CRM business records.
+    """
+
+    if not frappe.db.exists("Workspace", "Engagement Reports"):
+        return
+
+    workspace = frappe.get_doc("Workspace", "Engagement Reports")
+    changed = False
+
+    content = _load_workspace_content(workspace.content)
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "reports_header",
+            {
+                "id": "reports_header",
+                "type": "header",
+                "data": {"text": "Reports and Feedback", "col": 12},
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "reports_intro",
+            {
+                "id": "reports_intro",
+                "type": "paragraph",
+                "data": {
+                    "text": (
+                        "Operational reporting for prospect queues, signals, imports, "
+                        "CRM conversion, data hygiene, and interaction attribution."
+                    ),
+                    "col": 12,
+                },
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "reports_card",
+            {
+                "id": "reports_card",
+                "type": "card",
+                "data": {"card_name": "SEI Reports", "col": 4},
+            },
+        )
+        or changed
+    )
+    if changed:
+        workspace.content = json.dumps(content)
+
+    for report_name in MILESTONE_6_REPORTS:
+        changed = (
+            _ensure_workspace_link(
+                workspace,
+                {
+                    "type": "Report",
+                    "label": report_name,
+                    "link_to": report_name,
+                    "link_count": 0,
+                    "onboard": 0,
+                    "hidden": 0,
+                    "is_query_report": 0,
+                },
+            )
+            or changed
+        )
+        changed = (
+            _ensure_workspace_shortcut(
+                workspace,
+                {
+                    "type": "Report",
+                    "link_to": report_name,
+                    "label": report_name,
+                    "doc_view": "Report",
+                    "color": "Purple",
+                    "stats_filter": "[]",
+                },
+            )
+            or changed
+        )
+
+    if changed:
+        workspace.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def validate_milestone_6_workspace_reports() -> dict:
+    """Production-safe validation for the live Engagement Reports workspace."""
+
+    if not frappe.db.exists("Workspace", "Engagement Reports"):
+        return {"ok": False, "missing_workspace": True, "missing_shortcuts": list(MILESTONE_6_REPORTS)}
+
+    workspace = frappe.get_doc("Workspace", "Engagement Reports")
+    labels = {shortcut.label for shortcut in workspace.shortcuts}
+    missing = [report_name for report_name in MILESTONE_6_REPORTS if report_name not in labels]
+    return {"ok": not missing, "missing_workspace": False, "missing_shortcuts": missing}
 
 def _load_workspace_content(content: str | None) -> list:
     if not content:

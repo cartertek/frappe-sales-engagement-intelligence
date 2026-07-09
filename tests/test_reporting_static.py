@@ -81,3 +81,58 @@ def test_shared_reporting_module_does_not_contain_mutation_operations():
     source = REPORTING_MODULE.read_text()
     for token in MUTATION_TOKENS:
         assert token not in source
+
+FILTERED_REPORTS = {
+    "Active Prospect Queue": {
+        "lifecycle_status",
+        "qualification_status",
+        "assigned_to",
+        "source_arena",
+        "sei_thesis",
+        "next_action_date",
+    },
+    "Ready for CRM Conversion": {"source_arena", "sei_thesis", "next_action_date"},
+    "Signals by Type and Strength": {
+        "signal_type",
+        "signal_strength",
+        "evidence_basis",
+        "counts_toward_qualification",
+    },
+    "Import Batch Summary": {
+        "source_type",
+        "source_arena",
+        "import_kind",
+        "import_mode",
+        "status",
+    },
+    "Interaction Attribution Summary": {
+        "interaction_type",
+        "channel",
+        "response_category",
+        "sei_thesis",
+        "sei_asset",
+    },
+}
+
+
+def _report_folder(report_name: str) -> Path:
+    return REPORT_ROOT / report_name.lower().replace(" / ", "_").replace(" ", "_")
+
+
+def test_filterable_reports_have_client_side_filter_definitions():
+    for report_name, expected_fields in FILTERED_REPORTS.items():
+        folder = _report_folder(report_name)
+        source = (folder / f"{folder.name}.js").read_text()
+        assert f'frappe.query_reports["{report_name}"]' in source
+        assert "filters:" in source
+        for fieldname in expected_fields:
+            assert f'fieldname: "{fieldname}"' in source
+
+
+def test_milestone_6_workspace_sync_hook_is_registered():
+    setup_source = Path("sales_engagement_intelligence/setup/__init__.py").read_text()
+    assert "ensure_milestone_6_workspace_reports()" in setup_source
+    assert "def ensure_milestone_6_workspace_reports()" in setup_source
+    assert "def validate_milestone_6_workspace_reports()" in setup_source
+    for report_name in FILTERED_REPORTS:
+        assert report_name in setup_source or report_name in REPORTING_MODULE.read_text()
