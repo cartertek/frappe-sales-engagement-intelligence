@@ -86,7 +86,10 @@
    "fieldname": "dry_run",
    "label": "Dry Run",
    "fieldtype": "Check",
-   "default": 1
+   "default": 1,
+   "hidden": 1,
+   "read_only": 1,
+   "description": "Internal state set by the Dry Run Import and Run Import actions."
   },
   {
    "fieldname": "section_timing",
