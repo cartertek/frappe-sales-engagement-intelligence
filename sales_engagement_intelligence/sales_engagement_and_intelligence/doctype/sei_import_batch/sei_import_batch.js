@@ -8,7 +8,7 @@ frappe.ui.form.on("SEI Import Batch", {
             args: { batch: frm.doc.name, dry_run: 1 },
             freeze: true,
             freeze_message: __("Running dry run..."),
-            callback: () => frm.reload_doc(),
+            callback: (r) => show_api_result_and_reload(frm, r),
           });
         });
       }
@@ -20,7 +20,7 @@ frappe.ui.form.on("SEI Import Batch", {
             args: { batch: frm.doc.name, dry_run: 0 },
             freeze: true,
             freeze_message: __("Running import..."),
-            callback: () => frm.reload_doc(),
+            callback: (r) => show_api_result_and_reload(frm, r),
           });
         });
       });
@@ -36,7 +36,7 @@ frappe.ui.form.on("SEI Import Batch", {
         frappe.call({
           method: "sales_engagement_intelligence.sales_engagement_and_intelligence.api.cancel_import_batch",
           args: { batch: frm.doc.name },
-          callback: () => frm.reload_doc(),
+          callback: (r) => show_api_result_and_reload(frm, r),
         });
       });
     }
@@ -47,10 +47,23 @@ frappe.ui.form.on("SEI Import Batch", {
           frappe.call({
             method: "sales_engagement_intelligence.sales_engagement_and_intelligence.api.reset_import_batch_to_draft",
             args: { batch: frm.doc.name },
-            callback: () => frm.reload_doc(),
+            callback: (r) => show_api_result_and_reload(frm, r),
           });
         });
       });
     }
   },
 });
+
+
+function show_api_result_and_reload(frm, r) {
+  const message = (r && r.message) || null;
+  if (message && message.ok === false) {
+    frappe.msgprint({
+      title: __('SEI Import Action Failed'),
+      message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+      indicator: 'red',
+    });
+  }
+  frm.reload_doc();
+}
