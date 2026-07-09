@@ -14,6 +14,7 @@ def after_migrate() -> None:
     """Refresh Desk state after app metadata and standard records sync."""
 
     repair_sei_desktop_layout()
+    ensure_milestone_5_workspace_items()
     frappe.clear_cache()
 
 
@@ -85,3 +86,173 @@ def _repair_layout_node(node) -> bool:
         changed = _repair_layout_node(value) or changed
 
     return changed
+
+
+def ensure_milestone_5_workspace_items() -> None:
+    """Ensure Milestone 5 import shortcuts are visible in the Prospecting workspace.
+
+    Workspace fixtures and one-time patches do not reliably overwrite a live Workspace
+    after it has already been synced or customized. This repair is intentionally
+    idempotent and narrowly scoped to the Prospecting workspace so future deploys keep
+    the SEI import entry points visible without disturbing the existing queue cards.
+    """
+
+    if not frappe.db.exists("Workspace", "Prospecting"):
+        return
+
+    workspace = frappe.get_doc("Workspace", "Prospecting")
+    changed = False
+
+    content = _load_workspace_content(workspace.content)
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "sei_imports_header",
+            {
+                "id": "sei_imports_header",
+                "type": "header",
+                "data": {
+                    "text": '<span class="h4"><b>SEI Imports</b></span>',
+                    "col": 12,
+                },
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "sei_imports_shortcut_1",
+            {
+                "id": "sei_imports_shortcut_1",
+                "type": "shortcut",
+                "data": {"shortcut_name": "SEI Import Batches", "col": 3},
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_content_item(
+            content,
+            "sei_imports_shortcut_2",
+            {
+                "id": "sei_imports_shortcut_2",
+                "type": "shortcut",
+                "data": {"shortcut_name": "New Import Batch", "col": 3},
+            },
+        )
+        or changed
+    )
+
+    if changed:
+        workspace.content = json.dumps(content)
+
+    changed = (
+        _ensure_workspace_link(
+            workspace,
+            {
+                "type": "Card Break",
+                "label": "SEI Imports",
+                "link_type": "DocType",
+                "link_to": None,
+                "link_count": 1,
+                "onboard": 0,
+                "dependencies": None,
+                "hidden": 0,
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_link(
+            workspace,
+            {
+                "type": "Link",
+                "label": "SEI Import Batch",
+                "link_type": "DocType",
+                "link_to": "SEI Import Batch",
+                "link_count": 0,
+                "onboard": 0,
+                "dependencies": None,
+                "hidden": 0,
+            },
+        )
+        or changed
+    )
+
+    changed = (
+        _ensure_workspace_shortcut(
+            workspace,
+            {
+                "type": "DocType",
+                "link_to": "SEI Import Batch",
+                "label": "SEI Import Batches",
+                "doc_view": "List",
+                "color": "Blue",
+            },
+        )
+        or changed
+    )
+    changed = (
+        _ensure_workspace_shortcut(
+            workspace,
+            {
+                "type": "DocType",
+                "link_to": "SEI Import Batch",
+                "label": "New Import Batch",
+                "doc_view": "New",
+                "color": "Green",
+            },
+        )
+        or changed
+    )
+
+    if changed:
+        workspace.save(ignore_permissions=True)
+
+
+def _load_workspace_content(content: str | None) -> list:
+    if not content:
+        return []
+    try:
+        parsed = json.loads(content)
+    except (TypeError, ValueError):
+        return []
+    return parsed if isinstance(parsed, list) else []
+
+
+def _ensure_workspace_content_item(content: list, item_id: str, item: dict) -> bool:
+    for index, existing in enumerate(content):
+        if isinstance(existing, dict) and existing.get("id") == item_id:
+            if existing != item:
+                content[index] = item
+                return True
+            return False
+    content.append(item)
+    return True
+
+
+def _ensure_workspace_link(workspace, values: dict) -> bool:
+    for link in workspace.links:
+        if link.label == values["label"]:
+            changed = False
+            for key, value in values.items():
+                if link.get(key) != value:
+                    link.set(key, value)
+                    changed = True
+            return changed
+    workspace.append("links", values)
+    return True
+
+
+def _ensure_workspace_shortcut(workspace, values: dict) -> bool:
+    for shortcut in workspace.shortcuts:
+        if shortcut.label == values["label"]:
+            changed = False
+            for key, value in values.items():
+                if shortcut.get(key) != value:
+                    shortcut.set(key, value)
+                    changed = True
+            return changed
+    workspace.append("shortcuts", values)
+    return True
