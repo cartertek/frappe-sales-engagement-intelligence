@@ -55,6 +55,12 @@ COMBINED = "Combined Prospect + Initial Signal"
 TERMINAL_STATUSES = ("Rejected", "Do Not Contact", "Converted to CRM Lead", "Converted to CRM Deal")
 
 
+def _normalize_import_mode(import_mode: str | None) -> str:
+    if not import_mode or import_mode == "Dry Run":
+        return CREATE_OR_UPDATE
+    return import_mode
+
+
 def _clean(value: Any) -> Any:
     if value is None:
         return None
@@ -525,9 +531,7 @@ def run_import_batch(batch: str, dry_run: bool = True) -> dict:
         frappe.throw("Cancelled import batches cannot be run.")
     rows = _read_csv(batch_doc)
     import_kind = batch_doc.import_kind or COMBINED
-    import_mode = DRY_RUN if dry_run else (batch_doc.import_mode or CREATE_OR_UPDATE)
-    if not dry_run and import_mode == DRY_RUN:
-        import_mode = CREATE_OR_UPDATE
+    import_mode = CREATE_OR_UPDATE if dry_run else _normalize_import_mode(batch_doc.import_mode)
 
     _clear_rows(batch_doc)
     batch_doc.started_at = now_datetime()
@@ -772,3 +776,15 @@ def find_inferred_qualifying_signal_issues() -> dict:
         fields=["name", "prospect", "signal_type", "signal_strength"],
     )
     return {"signals": names, "count": len(names)}
+
+
+def reset_import_batch_to_draft(batch: str) -> dict:
+    doc = frappe.get_doc("SEI Import Batch", batch)
+    if doc.status == "Cancelled":
+        frappe.throw("Cancelled import batches cannot be reset to Draft.")
+    doc.status = "Draft"
+    doc.dry_run = 1
+    doc.completed_at = None
+    doc.error_summary = None
+    doc.save()
+    return {"batch": batch, "status": "Draft"}

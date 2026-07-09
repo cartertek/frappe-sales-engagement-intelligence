@@ -37,7 +37,9 @@
    "fieldname": "batch_label",
    "label": "Batch Label",
    "fieldtype": "Data",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 3
   },
   {
    "fieldname": "source_type",
@@ -65,14 +67,18 @@
    "label": "Import Kind",
    "fieldtype": "Select",
    "options": "Combined Prospect + Initial Signal\nProspect Only\nSignal Only",
-   "default": "Combined Prospect + Initial Signal"
+   "default": "Combined Prospect + Initial Signal",
+   "in_list_view": 1,
+   "columns": 2
   },
   {
    "fieldname": "import_mode",
    "label": "Import Mode",
    "fieldtype": "Select",
-   "options": "Dry Run\nCreate Only\nUpdate Existing\nCreate or Update",
-   "default": "Dry Run"
+   "options": "Create Only\nUpdate Existing\nCreate or Update",
+   "default": "Create or Update",
+   "in_list_view": 1,
+   "columns": 2
   },
   {
    "fieldname": "status",
@@ -80,13 +86,19 @@
    "fieldtype": "Select",
    "options": "Draft\nDry Run Complete\nImport Complete\nImport Complete with Errors\nFailed\nCancelled",
    "default": "Draft",
-   "read_only": 1
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "columns": 2
   },
   {
    "fieldname": "dry_run",
    "label": "Dry Run",
    "fieldtype": "Check",
-   "default": 1
+   "default": 1,
+   "hidden": 1,
+   "read_only": 1,
+   "description": "Internal state set by the Dry Run Import and Run Import actions."
   },
   {
    "fieldname": "section_timing",
@@ -121,7 +133,9 @@
    "fieldname": "rows_total",
    "label": "Rows Total",
    "fieldtype": "Int",
-   "read_only": 1
+   "read_only": 1,
+   "in_list_view": 1,
+   "columns": 1
   },
   {
    "fieldname": "rows_created",
