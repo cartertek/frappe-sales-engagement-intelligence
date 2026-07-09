@@ -30,6 +30,7 @@ add_to_apps_screen = [
 # ------------------
 app_include_js = [
     "sales_engagement_intelligence.bundle.js",
+    "sales_engagement_intelligence/js/sei_prospect_cache_bypass.js",
 ]
 app_include_css = "sales_engagement_intelligence.bundle.css"
 
