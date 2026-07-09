@@ -121,26 +121,78 @@ function ensure_fresh_document(frm, opts = {}) {
             const server_time = frappe.datetime.str_to_obj(server_modified);
 
             if (server_time > local_time) {
+                if (opts.block_save) {
+                    frappe.validated = false;
+                    const local_edits = get_local_field_edits(frm);
+                    reload_and_reapply_local_edits(frm, local_edits).then(() => {
+                        frappe.msgprint({
+                            title: __('Prospect Reloaded'),
+                            message: __('This prospect changed after it was cached locally. The latest version has been reloaded and your unsaved edits have been reapplied. Please review and save again.'),
+                            indicator: 'orange'
+                        });
+                    });
+                    return;
+                }
+
                 frm.__sei_reloading_for_freshness = true;
                 frappe.show_alert({
                     message: __('This prospect changed after it was cached locally. Reloading the latest version.'),
                     indicator: 'orange'
                 });
-
-                const reload = frm.reload_doc().finally(() => {
+                return frm.reload_doc().finally(() => {
                     frm.__sei_reloading_for_freshness = false;
                 });
-
-                if (opts.block_save) {
-                    frappe.validated = false;
-                    frappe.throw(__('This prospect changed after it was cached locally. The latest version has been reloaded; please review and save again.'));
-                }
-
-                return reload;
             }
         })
         .finally(() => {
             frm.__sei_refresh_check_in_progress = false;
+        });
+}
+
+function get_local_field_edits(frm) {
+    const before_save = frm.get_doc_before_save ? frm.get_doc_before_save() : null;
+    if (!before_save) return {};
+
+    const local_edits = {};
+    const ignored_fieldtypes = [
+        'Section Break',
+        'Column Break',
+        'Tab Break',
+        'HTML',
+        'Button',
+        'Table',
+        'Table MultiSelect',
+    ];
+
+    (frm.meta?.fields || []).forEach((df) => {
+        if (!df.fieldname || ignored_fieldtypes.includes(df.fieldtype)) return;
+        if (df.read_only || df.is_virtual) return;
+
+        const current_value = frm.doc[df.fieldname] ?? null;
+        const previous_value = before_save[df.fieldname] ?? null;
+
+        if (JSON.stringify(current_value) !== JSON.stringify(previous_value)) {
+            local_edits[df.fieldname] = current_value;
+        }
+    });
+
+    return local_edits;
+}
+
+function reload_and_reapply_local_edits(frm, local_edits) {
+    frm.__sei_reloading_for_freshness = true;
+    return frm.reload_doc()
+        .then(() => {
+            const entries = Object.entries(local_edits || {});
+            if (!entries.length) return;
+
+            entries.forEach(([fieldname, value]) => {
+                frm.set_value(fieldname, value);
+            });
+            frm.dirty();
+        })
+        .finally(() => {
+            frm.__sei_reloading_for_freshness = false;
         });
 }
 
