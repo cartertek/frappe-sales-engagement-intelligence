@@ -1,0 +1,2 @@
+prospect_name,prospect_website,prospect_normalized_domain,prospect_external_key,signal_type,signal_strength,evidence_basis,confidence,source_url,source_date,evidence_notes,counts_toward_qualification,reviewed_by,review_date
+Example Agency,https://example-agency.com,example-agency.com,,Technical Distress,Strong,Observed,85,https://example.com/evidence,2026-07-08,Public evidence of stalled technical delivery,1,Administrator,2026-07-08
