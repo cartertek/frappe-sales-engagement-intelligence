@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"reports_header\", \"type\": \"header\", \"data\": {\"text\": \"Engagement Reports\", \"col\": 12}}, {\"id\": \"reports_placeholder\", \"type\": \"paragraph\", \"data\": {\"text\": \"Engagement Reports workspace for review and measurement placeholders.\", \"col\": 12}}]",
+ "content": "[{\"id\": \"reports_header\", \"type\": \"header\", \"data\": {\"text\": \"Reports and Feedback\", \"col\": 12}}, {\"id\": \"reports_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Operational reporting for prospect queues, signals, imports, CRM conversion, data hygiene, and interaction attribution.\", \"col\": 12}}, {\"id\": \"reports_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Reports\", \"col\": 4}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -13,8 +13,225 @@
  "indicator_color": "purple",
  "is_hidden": 0,
  "label": "Engagement Reports",
- "links": [],
- "modified": "2026-06-25 00:00:00.000000",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Prospect Lifecycle Summary",
+   "link_count": 0,
+   "link_to": "Prospect Lifecycle Summary",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Active Prospect Queue",
+   "link_count": 0,
+   "link_to": "Active Prospect Queue",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Ready for CRM Conversion",
+   "link_count": 0,
+   "link_to": "Ready for CRM Conversion",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Terminal Status Review",
+   "link_count": 0,
+   "link_to": "Terminal Status Review",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Signals by Type and Strength",
+   "link_count": 0,
+   "link_to": "Signals by Type and Strength",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Qualification by Signal Type",
+   "link_count": 0,
+   "link_to": "Qualification by Signal Type",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Inferred Signal Review",
+   "link_count": 0,
+   "link_to": "Inferred Signal Review",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Missing Evidence Report",
+   "link_count": 0,
+   "link_to": "Missing Evidence Report",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Prospects by Source Arena",
+   "link_count": 0,
+   "link_to": "Prospects by Source Arena",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Outcomes by Thesis",
+   "link_count": 0,
+   "link_to": "Outcomes by Thesis",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Asset Usage and Outcomes",
+   "link_count": 0,
+   "link_to": "Asset Usage and Outcomes",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Offer Performance",
+   "link_count": 0,
+   "link_to": "Offer Performance",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CRM Conversion Summary",
+   "link_count": 0,
+   "link_to": "CRM Conversion Summary",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CRM Lead Conversion Detail",
+   "link_count": 0,
+   "link_to": "CRM Lead Conversion Detail",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CRM Deal Conversion Detail",
+   "link_count": 0,
+   "link_to": "CRM Deal Conversion Detail",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "CRM Context Missing",
+   "link_count": 0,
+   "link_to": "CRM Context Missing",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Possible Duplicate CRM Conversion Review",
+   "link_count": 0,
+   "link_to": "Possible Duplicate CRM Conversion Review",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Batch Summary",
+   "link_count": 0,
+   "link_to": "Import Batch Summary",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Batch Row Errors",
+   "link_count": 0,
+   "link_to": "Import Batch Row Errors",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Import Source Quality",
+   "link_count": 0,
+   "link_to": "Import Source Quality",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Data Hygiene Dashboard",
+   "link_count": 0,
+   "link_to": "Data Hygiene Dashboard",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Interaction Attribution Summary",
+   "link_count": 0,
+   "link_to": "Interaction Attribution Summary",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Response Category by Thesis",
+   "link_count": 0,
+   "link_to": "Response Category by Thesis",
+   "onboard": 0,
+   "type": "Report"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Channel Outcome Report",
+   "link_count": 0,
+   "link_to": "Channel Outcome Report",
+   "onboard": 0,
+   "type": "Report"
+  }
+ ],
+ "modified": "2026-07-09 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "Engagement Reports",
@@ -26,7 +243,200 @@
  "restrict_to_domain": "",
  "roles": [],
  "sequence_id": 36.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Prospect Lifecycle Summary",
+   "link_to": "Prospect Lifecycle Summary",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Active Prospect Queue",
+   "link_to": "Active Prospect Queue",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Ready for CRM Conversion",
+   "link_to": "Ready for CRM Conversion",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Terminal Status Review",
+   "link_to": "Terminal Status Review",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Signals by Type and Strength",
+   "link_to": "Signals by Type and Strength",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Qualification by Signal Type",
+   "link_to": "Qualification by Signal Type",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Inferred Signal Review",
+   "link_to": "Inferred Signal Review",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Missing Evidence Report",
+   "link_to": "Missing Evidence Report",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Prospects by Source Arena",
+   "link_to": "Prospects by Source Arena",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Outcomes by Thesis",
+   "link_to": "Outcomes by Thesis",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Asset Usage and Outcomes",
+   "link_to": "Asset Usage and Outcomes",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Offer Performance",
+   "link_to": "Offer Performance",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "CRM Conversion Summary",
+   "link_to": "CRM Conversion Summary",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "CRM Lead Conversion Detail",
+   "link_to": "CRM Lead Conversion Detail",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "CRM Deal Conversion Detail",
+   "link_to": "CRM Deal Conversion Detail",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "CRM Context Missing",
+   "link_to": "CRM Context Missing",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Possible Duplicate CRM Conversion Review",
+   "link_to": "Possible Duplicate CRM Conversion Review",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Import Batch Summary",
+   "link_to": "Import Batch Summary",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Import Batch Row Errors",
+   "link_to": "Import Batch Row Errors",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Import Source Quality",
+   "link_to": "Import Source Quality",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Data Hygiene Dashboard",
+   "link_to": "Data Hygiene Dashboard",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Interaction Attribution Summary",
+   "link_to": "Interaction Attribution Summary",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Response Category by Thesis",
+   "link_to": "Response Category by Thesis",
+   "stats_filter": "[]",
+   "type": "Report"
+  },
+  {
+   "color": "Purple",
+   "doc_view": "Report",
+   "label": "Channel Outcome Report",
+   "link_to": "Channel Outcome Report",
+   "stats_filter": "[]",
+   "type": "Report"
+  }
+ ],
  "title": "Engagement Reports",
  "type": "Workspace"
 }
