@@ -312,14 +312,24 @@ def _find_crm_contact_duplicates(prospect) -> list[dict]:
         row = frappe.get_value(doctype, prospect.crm_contact, fields, as_dict=True)
         _append_unique_match(matches, row, "Already linked from SEI Prospect")
 
-    if prospect.primary_contact_email and _has_field(doctype, "email_id"):
-        for row in _get_all_if_exists(
-            doctype,
-            filters={"email_id": prospect.primary_contact_email},
-            fields=fields,
-            limit=10,
-        ):
-            _append_unique_match(matches, row, "Matched by contact email")
+    if prospect.primary_contact_email:
+        if _has_field(doctype, "email_id"):
+            for row in _get_all_if_exists(
+                doctype,
+                filters={"email_id": prospect.primary_contact_email},
+                fields=fields,
+                limit=10,
+            ):
+                _append_unique_match(matches, row, "Matched by contact email")
+        if _doctype_exists("Contact Email"):
+            for email_row in frappe.get_all(
+                "Contact Email",
+                filters={"email_id": prospect.primary_contact_email, "parenttype": "Contact"},
+                fields=["parent"],
+                limit=10,
+            ):
+                row = frappe.get_value(doctype, email_row.parent, fields, as_dict=True)
+                _append_unique_match(matches, row, "Matched by contact email")
 
     if prospect.primary_contact_name:
         name_field = _first_existing_field(doctype, ("full_name", "first_name"))
@@ -431,6 +441,8 @@ def build_crm_contact_payload(prospect_name: str) -> dict:
     _set_if_exists(payload, "Contact", "full_name", prospect.primary_contact_name)
     _set_if_exists(payload, "Contact", "email_id", prospect.primary_contact_email)
     _set_if_exists(payload, "Contact", "company_name", prospect.prospect_name)
+    if prospect.primary_contact_email and _has_field("Contact", "email_ids"):
+        payload["email_ids"] = [{"email_id": prospect.primary_contact_email, "is_primary": 1}]
     return payload
 
 
