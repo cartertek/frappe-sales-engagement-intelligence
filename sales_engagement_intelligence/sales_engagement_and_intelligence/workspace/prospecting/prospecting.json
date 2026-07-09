@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification queues.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SEI Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Converted to CRM Lead\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"prospecting_records_spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"prospecting_records_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Records\", \"col\": 4}}]",
+ "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification queues.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SEI Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Converted to CRM Lead\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"prospecting_records_spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"prospecting_records_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Records\", \"col\": 4}}, {\"id\": \"sei_imports_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SEI Imports</b></span>\", \"col\": 12}}, {\"id\": \"sei_imports_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Import Batches\", \"col\": 3}}, {\"id\": \"sei_imports_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Import Batch\", \"col\": 3}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -69,6 +69,46 @@
    "label": "SEI Interaction Attribution",
    "link_type": "DocType",
    "link_to": "SEI Interaction Attribution",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Card Break",
+   "label": "SEI Imports",
+   "link_type": "DocType",
+   "link_to": null,
+   "link_count": 3,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "SEI Import Batch",
+   "link_type": "DocType",
+   "link_to": "SEI Import Batch",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Import Templates Documentation",
+   "link_type": "URL",
+   "link_to": "/app/file?file_url=%25docs/import_templates%25",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Data Hygiene",
+   "link_type": "URL",
+   "link_to": "/app/query-report",
    "link_count": 0,
    "onboard": 0,
    "dependencies": null,
@@ -151,6 +191,20 @@
    "doc_view": "List",
    "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Do Not Contact\"]]",
    "color": "Grey"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Import Batch",
+   "label": "SEI Import Batches",
+   "doc_view": "List",
+   "color": "Blue"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Import Batch",
+   "label": "New Import Batch",
+   "doc_view": "New",
+   "color": "Green"
   }
  ],
  "title": "Prospecting",

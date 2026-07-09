@@ -210,3 +210,121 @@ def link_existing_crm_record(prospect: str, doctype: str, record_name: str) -> d
     )
 
     return link_existing_crm_record(prospect, doctype, record_name)
+
+
+@frappe.whitelist()
+def run_import_batch(batch: str, dry_run: int | str | bool = 1) -> dict:
+    _require_manager()
+    doc = frappe.get_doc("SEI Import Batch", batch)
+    if not doc.has_permission("write"):
+        frappe.throw(f"Not permitted to run SEI Import Batch {batch}.")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        run_import_batch as _run_import_batch,
+    )
+
+    return _run_import_batch(batch, bool(int(dry_run)))
+
+
+@frappe.whitelist()
+def cancel_import_batch(batch: str) -> dict:
+    _require_manager()
+    doc = frappe.get_doc("SEI Import Batch", batch)
+    if not doc.has_permission("write"):
+        frappe.throw(f"Not permitted to cancel SEI Import Batch {batch}.")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        cancel_import_batch as _cancel_import_batch,
+    )
+
+    return _cancel_import_batch(batch)
+
+
+@frappe.whitelist()
+def backfill_sei_normalized_domains() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        backfill_normalized_domains,
+    )
+
+    return backfill_normalized_domains()
+
+
+@frappe.whitelist()
+def find_duplicate_sei_prospects() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_duplicate_sei_prospects as _find_duplicate_sei_prospects,
+    )
+
+    return _find_duplicate_sei_prospects()
+
+
+@frappe.whitelist()
+def find_duplicate_sei_signals() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_duplicate_sei_signals as _find_duplicate_sei_signals,
+    )
+
+    return _find_duplicate_sei_signals()
+
+
+@frappe.whitelist()
+def recalculate_all_sei_prospect_qualifications() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        recalculate_all_prospect_qualifications,
+    )
+
+    return recalculate_all_prospect_qualifications()
+
+
+@frappe.whitelist()
+def apply_lifecycle_to_selected_prospects(prospects: str | list[str]) -> dict:
+    _require_manager()
+    if isinstance(prospects, str):
+        prospects = json.loads(prospects)
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        apply_lifecycle_to_selected_prospects as _apply_lifecycle_to_selected_prospects,
+    )
+
+    return _apply_lifecycle_to_selected_prospects(prospects)
+
+
+@frappe.whitelist()
+def find_sei_prospects_missing_source_arena() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_prospects_missing_source_arena,
+    )
+
+    return find_prospects_missing_source_arena()
+
+
+@frappe.whitelist()
+def find_sei_prospects_missing_signal_evidence() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_prospects_missing_signal_evidence,
+    )
+
+    return find_prospects_missing_signal_evidence()
+
+
+@frappe.whitelist()
+def find_sei_signals_missing_source_url() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_signals_missing_source_url,
+    )
+
+    return find_signals_missing_source_url()
+
+
+@frappe.whitelist()
+def find_inferred_qualifying_signal_issues() -> dict:
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        find_inferred_qualifying_signal_issues as _find_inferred_qualifying_signal_issues,
+    )
+
+    return _find_inferred_qualifying_signal_issues()

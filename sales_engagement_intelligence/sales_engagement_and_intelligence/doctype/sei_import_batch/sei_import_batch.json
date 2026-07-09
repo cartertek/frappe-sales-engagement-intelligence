@@ -1,0 +1,236 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "format:SEI-IMP-.YYYY.-.#####",
+ "creation": "2026-07-08 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "batch_label",
+  "source_type",
+  "source_arena",
+  "source_url",
+  "import_file",
+  "import_kind",
+  "import_mode",
+  "status",
+  "dry_run",
+  "section_timing",
+  "imported_by",
+  "started_at",
+  "completed_at",
+  "column_break_counts",
+  "rows_total",
+  "rows_created",
+  "rows_updated",
+  "rows_skipped",
+  "rows_failed",
+  "notes_section",
+  "notes",
+  "error_summary",
+  "rows_section",
+  "rows"
+ ],
+ "fields": [
+  {
+   "fieldname": "batch_label",
+   "label": "Batch Label",
+   "fieldtype": "Data",
+   "reqd": 1
+  },
+  {
+   "fieldname": "source_type",
+   "label": "Source Type",
+   "fieldtype": "Select",
+   "options": "Manual CSV\nDirectory Research\nJob Board Research\nLaunch Source Research\nGitHub / Technical Distress Research\nCommunity Research\nAgency / Partner List\nProcurement Research\nOther"
+  },
+  {
+   "fieldname": "source_arena",
+   "label": "Source Arena",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "source_url",
+   "label": "Source URL",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "import_file",
+   "label": "Import File",
+   "fieldtype": "Attach"
+  },
+  {
+   "fieldname": "import_kind",
+   "label": "Import Kind",
+   "fieldtype": "Select",
+   "options": "Combined Prospect + Initial Signal\nProspect Only\nSignal Only",
+   "default": "Combined Prospect + Initial Signal"
+  },
+  {
+   "fieldname": "import_mode",
+   "label": "Import Mode",
+   "fieldtype": "Select",
+   "options": "Dry Run\nCreate Only\nUpdate Existing\nCreate or Update",
+   "default": "Dry Run"
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Draft\nDry Run Complete\nImport Complete\nImport Complete with Errors\nFailed\nCancelled",
+   "default": "Draft",
+   "read_only": 1
+  },
+  {
+   "fieldname": "dry_run",
+   "label": "Dry Run",
+   "fieldtype": "Check",
+   "default": 1
+  },
+  {
+   "fieldname": "section_timing",
+   "label": "Run Metadata",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "imported_by",
+   "label": "Imported By",
+   "fieldtype": "Link",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "started_at",
+   "label": "Started At",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "completed_at",
+   "label": "Completed At",
+   "fieldtype": "Datetime",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_counts",
+   "label": "",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "rows_total",
+   "label": "Rows Total",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rows_created",
+   "label": "Rows Created",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rows_updated",
+   "label": "Rows Updated",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rows_skipped",
+   "label": "Rows Skipped",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rows_failed",
+   "label": "Rows Failed",
+   "fieldtype": "Int",
+   "read_only": 1
+  },
+  {
+   "fieldname": "notes_section",
+   "label": "Notes and Errors",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "error_summary",
+   "label": "Error Summary",
+   "fieldtype": "Long Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "rows_section",
+   "label": "Rows",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "rows",
+   "label": "Rows",
+   "fieldtype": "Table",
+   "options": "SEI Import Batch Row"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-07-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Import Batch",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 1,
+   "doctype": "DocPerm",
+   "parent": "SEI Import Batch",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 2,
+   "doctype": "DocPerm",
+   "parent": "SEI Import Batch",
+   "parentfield": "permissions",
+   "parenttype": "DocType"
+  }
+ ],
+ "search_fields": "batch_label,source_type,source_arena,status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "batch_label",
+ "track_changes": 1
+}

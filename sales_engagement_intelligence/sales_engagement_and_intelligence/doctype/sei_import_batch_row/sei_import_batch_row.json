@@ -1,0 +1,75 @@
+{
+ "actions": [],
+ "creation": "2026-07-08 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "row_number",
+  "row_status",
+  "action_taken",
+  "prospect",
+  "signal",
+  "matched_existing_prospect",
+  "error_message",
+  "raw_row_json"
+ ],
+ "fields": [
+  {
+   "fieldname": "row_number",
+   "label": "Row Number",
+   "fieldtype": "Int"
+  },
+  {
+   "fieldname": "row_status",
+   "label": "Row Status",
+   "fieldtype": "Select",
+   "options": "Pending\nCreated\nUpdated\nSkipped\nFailed\nDuplicate Warning"
+  },
+  {
+   "fieldname": "action_taken",
+   "label": "Action Taken",
+   "fieldtype": "Select",
+   "options": "Create Prospect\nUpdate Prospect\nCreate Signal\nUpdate Signal\nSkip\nFailed"
+  },
+  {
+   "fieldname": "prospect",
+   "label": "Prospect",
+   "fieldtype": "Link",
+   "options": "SEI Prospect"
+  },
+  {
+   "fieldname": "signal",
+   "label": "Signal",
+   "fieldtype": "Link",
+   "options": "SEI Signal"
+  },
+  {
+   "fieldname": "matched_existing_prospect",
+   "label": "Matched Existing Prospect",
+   "fieldtype": "Link",
+   "options": "SEI Prospect"
+  },
+  {
+   "fieldname": "error_message",
+   "label": "Error Message",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "raw_row_json",
+   "label": "Raw Row JSON",
+   "fieldtype": "Code"
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-08 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Import Batch Row",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
