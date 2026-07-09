@@ -13,7 +13,7 @@ CRM_LINK_FIELD_BY_DOCTYPE = {
     "CRM Lead": "crm_lead",
     "CRM Deal": "crm_deal",
     "CRM Organization": "crm_organization",
-    "CRM Contacts": "crm_contact",
+    "Contact": "crm_contact",
 }
 
 PROTECTED_LIFECYCLES = ("Rejected", "Do Not Contact")
@@ -301,10 +301,10 @@ def _find_crm_organization_duplicates(prospect) -> list[dict]:
 
 
 def _find_crm_contact_duplicates(prospect) -> list[dict]:
-    doctype = "CRM Contacts"
+    doctype = "Contact"
     fields = _get_fields(
         doctype,
-        ("full_name", "first_name", "last_name", "email", "email_id", "organization", "organization_name"),
+        ("full_name", "first_name", "last_name", "email_id", "company_name"),
     )
     matches: list[dict] = []
 
@@ -312,26 +312,23 @@ def _find_crm_contact_duplicates(prospect) -> list[dict]:
         row = frappe.get_value(doctype, prospect.crm_contact, fields, as_dict=True)
         _append_unique_match(matches, row, "Already linked from SEI Prospect")
 
-    if prospect.primary_contact_email:
-        for email_field in ("email", "email_id"):
-            if _has_field(doctype, email_field):
-                for row in _get_all_if_exists(
-                    doctype,
-                    filters={email_field: prospect.primary_contact_email},
-                    fields=fields,
-                    limit=10,
-                ):
-                    _append_unique_match(matches, row, "Matched by contact email")
+    if prospect.primary_contact_email and _has_field(doctype, "email_id"):
+        for row in _get_all_if_exists(
+            doctype,
+            filters={"email_id": prospect.primary_contact_email},
+            fields=fields,
+            limit=10,
+        ):
+            _append_unique_match(matches, row, "Matched by contact email")
 
     if prospect.primary_contact_name:
         name_field = _first_existing_field(doctype, ("full_name", "first_name"))
-        org_field = _first_existing_field(doctype, ("organization", "organization_name"))
         if name_field:
             filters = {name_field: prospect.primary_contact_name}
-            if org_field and prospect.crm_organization:
-                filters[org_field] = prospect.crm_organization
+            if _has_field(doctype, "company_name") and prospect.prospect_name:
+                filters["company_name"] = prospect.prospect_name
             for row in _get_all_if_exists(doctype, filters=filters, fields=fields, limit=10):
-                _append_unique_match(matches, row, "Matched by contact name")
+                _append_unique_match(matches, row, "Matched by contact name and company")
 
     return matches
 
@@ -429,13 +426,11 @@ def build_crm_organization_payload(prospect_name: str) -> dict:
 
 def build_crm_contact_payload(prospect_name: str) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
-    payload = {"doctype": "CRM Contacts"}
-    _set_if_exists(payload, "CRM Contacts", "full_name", prospect.primary_contact_name)
-    _set_if_exists(payload, "CRM Contacts", "first_name", prospect.primary_contact_name)
-    _set_if_exists(payload, "CRM Contacts", "email", prospect.primary_contact_email)
-    _set_if_exists(payload, "CRM Contacts", "email_id", prospect.primary_contact_email)
-    _set_if_exists(payload, "CRM Contacts", "organization", prospect.crm_organization)
-    _set_if_exists(payload, "CRM Contacts", "organization_name", prospect.prospect_name)
+    payload = {"doctype": "Contact"}
+    _set_if_exists(payload, "Contact", "first_name", prospect.primary_contact_name or prospect.prospect_name)
+    _set_if_exists(payload, "Contact", "full_name", prospect.primary_contact_name)
+    _set_if_exists(payload, "Contact", "email_id", prospect.primary_contact_email)
+    _set_if_exists(payload, "Contact", "company_name", prospect.prospect_name)
     return payload
 
 
@@ -448,7 +443,7 @@ def build_crm_deal_payload(prospect_name: str) -> dict:
     _set_if_exists(payload, "CRM Deal", "organization_name", prospect.prospect_name)
     _set_if_exists(payload, "CRM Deal", "lead", prospect.crm_lead)
     _set_if_exists(payload, "CRM Deal", "organization", prospect.crm_organization)
-    _set_if_exists(payload, "CRM Deal", "status", "Open")
+    _set_if_exists(payload, "CRM Deal", "status", "Qualification")
     _set_if_exists(payload, "CRM Deal", "sei_prospect", prospect.name)
     _set_if_exists(payload, "CRM Deal", "sei_source_arena", prospect.source_arena)
     _set_if_exists(payload, "CRM Deal", "sei_thesis", prospect.thesis)
@@ -511,7 +506,7 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
         org_linked = bool(
             prospect.crm_organization
             and _safe_set_link_on_related_doc(
-                "CRM Contacts", prospect.crm_contact, "CRM Organization", prospect.crm_organization
+                "Contact", prospect.crm_contact, "CRM Organization", prospect.crm_organization
             )
         )
         result["crm_contact_synced"] = lead_linked or org_linked
@@ -589,7 +584,7 @@ def create_or_link_crm_contact(prospect_name: str, options: Optional[dict] = Non
 
     existing = options.get("existing_record")
     if existing:
-        return link_existing_crm_record(prospect_name, "CRM Contacts", existing)
+        return link_existing_crm_record(prospect_name, "Contact", existing)
 
     if not (prospect.primary_contact_name or prospect.primary_contact_email or prospect.primary_contact_url):
         frappe.throw("CRM Contact creation requires a verified contact name, email, or URL.")
@@ -603,6 +598,8 @@ def create_or_link_crm_contact(prospect_name: str, options: Optional[dict] = Non
     payload = build_crm_contact_payload(prospect_name)
     contact = frappe.get_doc(payload)
     contact.insert()
+    if prospect.crm_deal and _has_field("CRM Deal", "contact"):
+        frappe.db.set_value("CRM Deal", prospect.crm_deal, "contact", contact.name, update_modified=True)
     _set_prospect_values(prospect_name, {"crm_contact": contact.name})
     sync = sync_sei_context_to_crm(prospect_name)
     audit = _record_conversion_attribution(

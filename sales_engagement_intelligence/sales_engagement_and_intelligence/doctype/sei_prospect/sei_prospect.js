@@ -49,7 +49,7 @@ frappe.ui.form.on('SEI Prospect', {
 
                 add_link_button(frm, 'CRM Lead', 'crm_lead');
                 add_link_button(frm, 'CRM Organization', 'crm_organization');
-                add_link_button(frm, 'CRM Contacts', 'crm_contact');
+                add_link_button(frm, 'Contact', 'crm_contact');
                 add_link_button(frm, 'CRM Deal', 'crm_deal');
             }
         }
@@ -57,7 +57,7 @@ frappe.ui.form.on('SEI Prospect', {
         add_open_button(frm, 'CRM Lead', frm.doc.crm_lead);
         add_open_button(frm, 'CRM Deal', frm.doc.crm_deal);
         add_open_button(frm, 'CRM Organization', frm.doc.crm_organization);
-        add_open_button(frm, 'CRM Contacts', frm.doc.crm_contact);
+        add_open_button(frm, 'Contact', frm.doc.crm_contact);
 
         if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
             && is_manager_or_admin()) {
@@ -192,7 +192,7 @@ function render_preview_html(data) {
         <h4>${__('Possible CRM Duplicates')}</h4>
         ${render_duplicate_group(__('CRM Leads'), duplicates.crm_leads || [], 'CRM Lead')}
         ${render_duplicate_group(__('CRM Organizations'), duplicates.crm_organizations || [], 'CRM Organization')}
-        ${render_duplicate_group(__('CRM Contacts'), duplicates.crm_contacts || [], 'CRM Contacts')}
+        ${render_duplicate_group(__('CRM Contacts'), duplicates.crm_contacts || [], 'Contact')}
         ${render_duplicate_group(__('CRM Deals'), duplicates.crm_deals || [], 'CRM Deal')}
         <h4>${__('Payload Preview')}</h4>
         <pre style="white-space: pre-wrap; max-height: 420px; overflow: auto;">${frappe.utils.escape_html(JSON.stringify(payloads, null, 2))}</pre>
