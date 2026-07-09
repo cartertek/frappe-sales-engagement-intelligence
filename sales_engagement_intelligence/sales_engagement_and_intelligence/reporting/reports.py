@@ -42,6 +42,42 @@ def _has_crm_doctype(doctype):
     return utils.has_doctype(doctype)
 
 
+def _row_value(row, fieldname):
+    if isinstance(row, dict):
+        return row.get(fieldname)
+    return getattr(row, fieldname, None)
+
+
+def _bar_chart(data, label_field, value_field, dataset_name):
+    return {
+        "data": {
+            "labels": [str(_row_value(row, label_field) or "(Blank)") for row in data],
+            "datasets": [
+                {
+                    "name": dataset_name,
+                    "values": [int(_row_value(row, value_field) or 0) for row in data],
+                }
+            ],
+        },
+        "type": "bar",
+    }
+
+
+def _single_row_chart(row, fields, dataset_name):
+    return {
+        "data": {
+            "labels": [label for label, _fieldname in fields],
+            "datasets": [
+                {
+                    "name": dataset_name,
+                    "values": [int(_row_value(row, fieldname) or 0) for _label, fieldname in fields],
+                }
+            ],
+        },
+        "type": "bar",
+    }
+
+
 def _execute_prospect_lifecycle_summary(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
@@ -52,7 +88,7 @@ def _execute_prospect_lifecycle_summary(filters):
         GROUP BY lifecycle_status, qualification_status
         ORDER BY lifecycle_status, qualification_status
     """)
-    return columns, data
+    return columns, data, None, _bar_chart(data, "lifecycle_status", "prospect_count", "Prospects")
 
 
 def _execute_active_prospect_queue(filters):
@@ -71,6 +107,12 @@ def _execute_active_prospect_queue(filters):
 def _execute_ready_for_crm_conversion(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+    )
+    filter_sql = where.replace(" WHERE ", " AND ", 1)
     columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Website", "website"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _data("Qualification Explanation", "qualification_explanation", 260), _data("Primary Contact Email", "primary_contact_email", 220), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _link("CRM Deal", "crm_deal", "CRM Deal"), _date("Next Action Date", "next_action_date")]
     data = _sql(f"""
         SELECT name prospect, website, source_arena, thesis, qualification_explanation, primary_contact_email, crm_lead, crm_organization, crm_contact contact, crm_deal, next_action_date
@@ -79,40 +121,72 @@ def _execute_ready_for_crm_conversion(filters):
           AND ready_for_crm_conversion = 1
           AND COALESCE(do_not_contact, 0) = 0
           AND COALESCE(lifecycle_status, '') NOT IN ('Rejected', 'Do Not Contact')
+          {filter_sql}
         ORDER BY COALESCE(next_action_date, '2999-12-31'), modified DESC
-    """)
+    """, params)
     return columns, data
 
 
 def _execute_terminal_status_review(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {
+            "lifecycle_status": "lifecycle_status",
+            "qualification_status": "qualification_status",
+            "source_arena": "source_arena",
+            "sei_thesis": "thesis",
+        },
+    )
+    filter_sql = where.replace(" WHERE ", " AND ", 1)
     columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Lifecycle Status", "lifecycle_status"), _data("Qualification Status", "qualification_status"), _data("Rejected Reason", "rejected_reason", 240), _check("Do Not Contact", "do_not_contact"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _link("Modified By", "modified_by", "User"), _datetime("Modified", "modified")]
     data = _sql(f"""
         SELECT name prospect, lifecycle_status, qualification_status, rejected_reason, do_not_contact, source_arena, thesis, modified_by, modified
         FROM {utils.table('SEI Prospect')}
-        WHERE lifecycle_status IN ('Rejected', 'Do Not Contact') OR qualification_status IN ('Rejected', 'Do Not Contact') OR COALESCE(do_not_contact, 0) = 1
+        WHERE (lifecycle_status IN ('Rejected', 'Do Not Contact') OR qualification_status IN ('Rejected', 'Do Not Contact') OR COALESCE(do_not_contact, 0) = 1)
+          {filter_sql}
         ORDER BY modified DESC
-    """)
+    """, params)
     return columns, data
 
 
 def _execute_signals_by_type_and_strength(filters):
     if not utils.has_doctype("SEI Signal"):
         return utils.empty_result("SEI Signal is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Signal",
+        {
+            "signal_type": "signal_type",
+            "signal_strength": "signal_strength",
+            "evidence_basis": "evidence_basis",
+            "counts_toward_qualification": "counts_toward_qualification",
+        },
+    )
     columns = [_data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Counts Toward Qualification", "counts_toward_qualification"), _int("Signal Count", "signal_count"), _int("Prospect Count", "prospect_count")]
     data = _sql(f"""
         SELECT signal_type, signal_strength, evidence_basis, counts_toward_qualification, COUNT(*) signal_count, COUNT(DISTINCT prospect) prospect_count
-        FROM {utils.table('SEI Signal')}
+        FROM {utils.table('SEI Signal')}{where}
         GROUP BY signal_type, signal_strength, evidence_basis, counts_toward_qualification
         ORDER BY signal_type, signal_strength, evidence_basis
-    """)
-    return columns, data
+    """, params)
+    return columns, data, None, _bar_chart(data, "signal_type", "signal_count", "Signals")
 
 
 def _execute_qualification_by_signal_type(filters):
     if not utils.doctypes_available("SEI Signal", "SEI Prospect"):
         return utils.empty_result("SEI Signal and SEI Prospect are required.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Signal",
+        {
+            "signal_type": "signal_type",
+            "evidence_basis": "evidence_basis",
+            "counts_toward_qualification": "counts_toward_qualification",
+        },
+    )
     columns = [_data("Signal Type", "signal_type"), _int("Total Prospects", "total_prospects"), _int("Qualified Prospects", "qualified_prospects"), _int("Manually Approved Prospects", "manually_approved_prospects"), _int("Needs Review Prospects", "needs_review_prospects"), _int("Rejected Prospects", "rejected_prospects"), _int("Do Not Contact Prospects", "do_not_contact_prospects"), _percent("Qualification Rate", "qualification_rate")]
     data = _sql(f"""
         SELECT s.signal_type,
@@ -125,10 +199,11 @@ def _execute_qualification_by_signal_type(filters):
                {utils.pct_expr("COUNT(DISTINCT CASE WHEN p.qualification_status IN ('Qualified','Manually Approved') THEN p.name END)", "COUNT(DISTINCT p.name)")} qualification_rate
         FROM {utils.table('SEI Signal')} s
         LEFT JOIN {utils.table('SEI Prospect')} p ON p.name = s.prospect
+        {where.replace(utils.table('SEI Signal'), 's')}
         GROUP BY s.signal_type
         ORDER BY qualification_rate DESC, total_prospects DESC
-    """)
-    return columns, data
+    """, params)
+    return columns, data, None, _bar_chart(data, "signal_type", "total_prospects", "Prospects")
 
 
 def _execute_inferred_signal_review(filters):
@@ -165,7 +240,16 @@ def _execute_missing_evidence_report(filters):
     return columns, data
 
 
-def _source_or_thesis(group_field: str, label: str, fieldname: str):
+def _source_or_thesis(group_field: str, label: str, fieldname: str, filters=None):
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {
+            "source_arena": "source_arena",
+            "qualification_status": "qualification_status",
+            "lifecycle_status": "lifecycle_status",
+        },
+    )
     columns = [_data(label, fieldname), _int("Total Prospects", "total_prospects"), _int("Qualified Prospects", "qualified_prospects"), _int("Manually Approved Prospects", "manually_approved_prospects"), _int("Ready for CRM Conversion", "ready_for_crm_conversion"), _int("Converted to CRM Lead", "converted_to_crm_lead"), _int("Converted to CRM Deal", "converted_to_crm_deal"), _int("Rejected", "rejected"), _int("Do Not Contact", "do_not_contact"), _percent("Qualification Rate", "qualification_rate"), _percent("CRM Lead Conversion Rate", "crm_lead_conversion_rate"), _percent("CRM Deal Conversion Rate", "crm_deal_conversion_rate")]
     data = _sql(f"""
         SELECT COALESCE({group_field}, '(Blank)') {fieldname}, COUNT(*) total_prospects,
@@ -179,28 +263,33 @@ def _source_or_thesis(group_field: str, label: str, fieldname: str):
                {utils.pct_expr("SUM(CASE WHEN qualification_status IN ('Qualified','Manually Approved') THEN 1 ELSE 0 END)", "COUNT(*)")} qualification_rate,
                {utils.pct_expr("SUM(CASE WHEN COALESCE(crm_lead,'')!='' OR lifecycle_status='Converted to CRM Lead' THEN 1 ELSE 0 END)", "COUNT(*)")} crm_lead_conversion_rate,
                {utils.pct_expr("SUM(CASE WHEN COALESCE(crm_deal,'')!='' OR lifecycle_status='Converted to CRM Deal' THEN 1 ELSE 0 END)", "COUNT(*)")} crm_deal_conversion_rate
-        FROM {utils.table('SEI Prospect')}
+        FROM {utils.table('SEI Prospect')}{where}
         GROUP BY COALESCE({group_field}, '(Blank)')
         ORDER BY total_prospects DESC
-    """)
-    return columns, data
+    """, params)
+    return columns, data, None, _bar_chart(data, fieldname, "total_prospects", "Prospects")
 
 
 def _execute_prospects_by_source_arena(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    return _source_or_thesis("source_arena", "Source Arena", "source_arena")
+    return _source_or_thesis("source_arena", "Source Arena", "source_arena", filters)
 
 
 def _execute_outcomes_by_thesis(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    return _source_or_thesis("thesis", "Thesis", "thesis")
+    return _source_or_thesis("thesis", "Thesis", "thesis", filters)
 
 
 def _execute_asset_usage_and_outcomes(filters):
     if not utils.doctypes_available("SEI Asset", "SEI Interaction Attribution"):
         return utils.empty_result("SEI Asset and SEI Interaction Attribution are required.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Asset",
+        {"sei_thesis": "related_thesis", "asset_type": "asset_type"},
+    )
     columns = [_link("Asset", "asset", "SEI Asset"), _data("Asset Type", "asset_type"), _link("Related Thesis", "related_thesis", "SEI Thesis"), _int("Interaction Count", "interaction_count"), _int("Positive Responses", "positive_responses"), _int("Interested Responses", "interested_responses"), _int("Meeting Booked", "meeting_booked"), _int("Converted to CRM Lead", "converted_to_crm_lead"), _int("Converted to CRM Deal", "converted_to_crm_deal")]
     data = _sql(f"""
         SELECT a.name asset, a.asset_type, a.related_thesis,
@@ -212,30 +301,41 @@ def _execute_asset_usage_and_outcomes(filters):
                COUNT(DISTINCT CASE WHEN COALESCE(ia.crm_deal, '') != '' THEN ia.crm_deal END) converted_to_crm_deal
         FROM {utils.table('SEI Asset')} a
         LEFT JOIN {utils.table('SEI Interaction Attribution')} ia ON ia.marketing_asset = a.name
+        {where.replace(utils.table('SEI Asset'), 'a')}
         GROUP BY a.name, a.asset_type, a.related_thesis
         ORDER BY interaction_count DESC, a.name
-    """)
-    return columns, data
+    """, params)
+    return columns, data, None, _bar_chart(data, "asset", "interaction_count", "Interactions")
 
 
 def _execute_offer_performance(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    ia_join = f"LEFT JOIN {utils.table('SEI Interaction Attribution')} ia ON ia.prospect = p.name" if utils.has_doctype("SEI Interaction Attribution") else ""
+    has_attribution = utils.has_doctype("SEI Interaction Attribution")
+    ia_join = f"LEFT JOIN {utils.table('SEI Interaction Attribution')} ia ON ia.prospect = p.name" if has_attribution else ""
+    interaction_count = "COUNT(DISTINCT ia.name)" if has_attribution else "0"
+    positive_responses = "SUM(CASE WHEN ia.response_category = 'Positive' THEN 1 ELSE 0 END)" if has_attribution else "0"
+    meeting_booked = "SUM(CASE WHEN ia.response_category = 'Meeting Booked' THEN 1 ELSE 0 END)" if has_attribution else "0"
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+    )
     columns = [_data("Offer", "offer"), _int("Prospect Count", "prospect_count"), _int("Interaction Count", "interaction_count"), _int("Qualified Prospects", "qualified_prospects"), _int("Positive Responses", "positive_responses"), _int("Meeting Booked", "meeting_booked"), _int("CRM Leads", "crm_leads"), _int("CRM Deals", "crm_deals")]
     data = _sql(f"""
         SELECT COALESCE(p.offer, '(Blank)') offer, COUNT(DISTINCT p.name) prospect_count,
-               COUNT(DISTINCT ia.name) interaction_count,
+               {interaction_count} interaction_count,
                COUNT(DISTINCT CASE WHEN p.qualification_status IN ('Qualified','Manually Approved') THEN p.name END) qualified_prospects,
-               SUM(CASE WHEN ia.response_category = 'Positive' THEN 1 ELSE 0 END) positive_responses,
-               SUM(CASE WHEN ia.response_category = 'Meeting Booked' THEN 1 ELSE 0 END) meeting_booked,
+               {positive_responses} positive_responses,
+               {meeting_booked} meeting_booked,
                COUNT(DISTINCT CASE WHEN COALESCE(p.crm_lead,'') != '' THEN p.crm_lead END) crm_leads,
                COUNT(DISTINCT CASE WHEN COALESCE(p.crm_deal,'') != '' THEN p.crm_deal END) crm_deals
         FROM {utils.table('SEI Prospect')} p {ia_join}
+        {where.replace(utils.table('SEI Prospect'), 'p')}
         GROUP BY COALESCE(p.offer, '(Blank)')
         ORDER BY prospect_count DESC
-    """)
-    return columns, data
+    """, params)
+    return columns, data, None, _bar_chart(data, "offer", "prospect_count", "Prospects")
 
 
 def _execute_crm_conversion_summary(filters):
@@ -252,19 +352,41 @@ def _execute_crm_conversion_summary(filters):
                SUM(CASE WHEN lifecycle_status = 'Converted to CRM Deal' THEN 1 ELSE 0 END) converted_to_crm_deal_lifecycle
         FROM {utils.table('SEI Prospect')}
     """)
-    return columns, data
+    chart = _single_row_chart(
+        data[0] if data else {},
+        (
+            ("Total", "total_sei_prospects"),
+            ("CRM Leads", "with_crm_lead"),
+            ("CRM Organizations", "with_crm_organization"),
+            ("Contacts", "with_contact"),
+            ("CRM Deals", "with_crm_deal"),
+        ),
+        "Prospects",
+    )
+    return columns, data, None, chart
 
 
 def _execute_crm_lead_conversion_detail(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {
+            "source_arena": "source_arena",
+            "sei_thesis": "thesis",
+            "qualification_status": "qualification_status",
+        },
+    )
+    filter_sql = where.replace(" WHERE ", " AND ", 1)
     columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _data("Qualification Status", "qualification_status"), _data("Lifecycle Status", "lifecycle_status"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Primary Contact Email", "primary_contact_email", 220), _datetime("Converted / Linked Date", "converted_linked_date"), _datetime("Modified", "modified")]
     data = _sql(f"""
         SELECT name sei_prospect, source_arena, thesis, qualification_status, lifecycle_status, crm_lead, crm_organization, crm_contact contact, primary_contact_email, modified converted_linked_date, modified
         FROM {utils.table('SEI Prospect')}
         WHERE COALESCE(crm_lead, '') != ''
+          {filter_sql}
         ORDER BY modified DESC
-    """)
+    """, params)
     return columns, data
 
 
@@ -273,16 +395,27 @@ def _execute_crm_deal_conversion_detail(filters):
         return utils.empty_result("SEI Prospect is not installed.")
     deal_status = utils.column("CRM Deal", "status", "NULL") if _has_crm_doctype("CRM Deal") else "NULL"
     join = f"LEFT JOIN {utils.table('CRM Deal')} d ON d.name = p.crm_deal" if _has_crm_doctype("CRM Deal") else ""
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+    )
+    filter_sql = where.replace(" WHERE ", " AND ", 1)
+    if utils.has_doctype("SEI Interaction Attribution"):
+        commercial_basis = f"""CASE WHEN EXISTS (SELECT 1 FROM {utils.table('SEI Interaction Attribution')} ia WHERE ia.prospect = p.name AND ia.response_category IN ('Positive','Interested','Meeting Booked','Converted to Deal')) THEN 'Attributed commercial response' ELSE NULL END"""
+    else:
+        commercial_basis = "NULL"
     columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _link("Primary Signal", "primary_signal", "SEI Signal"), _link("CRM Deal", "crm_deal", "CRM Deal"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Deal Status", "deal_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Commercial Basis", "commercial_basis", 200), _datetime("Modified", "modified")]
     data = _sql(f"""
         SELECT p.name sei_prospect, p.source_arena, p.thesis, (SELECT s.name FROM {utils.table('SEI Signal')} s WHERE s.prospect = p.name ORDER BY s.source_date DESC, s.creation DESC LIMIT 1) primary_signal,
                p.crm_deal, p.crm_lead, p.crm_organization, p.crm_contact contact, {deal_status} deal_status, p.lifecycle_status,
-               CASE WHEN EXISTS (SELECT 1 FROM {utils.table('SEI Interaction Attribution')} ia WHERE ia.prospect = p.name AND ia.response_category IN ('Positive','Interested','Meeting Booked','Converted to Deal')) THEN 'Attributed commercial response' ELSE NULL END commercial_basis,
+               {commercial_basis} commercial_basis,
                p.modified
         FROM {utils.table('SEI Prospect')} p {join}
         WHERE COALESCE(p.crm_deal, '') != ''
+          {filter_sql}
         ORDER BY p.modified DESC
-    """)
+    """, params)
     return columns, data
 
 
@@ -337,27 +470,71 @@ def _execute_possible_duplicate_crm_conversion_review(filters):
 def _execute_import_batch_summary(filters):
     if not utils.has_doctype("SEI Import Batch"):
         return utils.empty_result("SEI Import Batch is not installed in this source tree/site.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Import Batch",
+        {
+            "source_type": "source_type",
+            "source_arena": "source_arena",
+            "import_kind": "import_kind",
+            "import_mode": "import_mode",
+            "status": "status",
+        },
+    )
     cols = ["source_type", "source_arena", "import_kind", "import_mode", "status", "rows_total", "rows_created", "rows_updated", "rows_skipped", "rows_failed", "started_at", "completed_at", "imported_by"]
     columns = [_link("Import Batch", "import_batch", "SEI Import Batch")] + [_data(c.replace('_',' ').title(), c) for c in cols]
     select = ", ".join([f"{utils.column('SEI Import Batch', c)} {c}" for c in cols])
-    return columns, _sql(f"SELECT name import_batch, {select} FROM {utils.table('SEI Import Batch')} ORDER BY modified DESC")
+    data = _sql(
+        f"SELECT name import_batch, {select} FROM {utils.table('SEI Import Batch')}{where} ORDER BY modified DESC",
+        params,
+    )
+    return columns, data, None, _bar_chart(data, "status", "rows_total", "Rows")
 
 
 def _execute_import_batch_row_errors(filters):
     if not utils.has_doctype("SEI Import Batch Row"):
         return utils.empty_result("SEI Import Batch Row is not installed in this source tree/site.")
-    cols = ["import_batch", "row_number", "row_status", "action_taken", "matched_existing_prospect", "prospect", "signal", "error_message", "raw_row_json"]
-    columns = [_data(c.replace('_',' ').title(), c, 220 if c in ('error_message','raw_row_json') else 160) for c in cols]
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Import Batch Row",
+        {"import_batch": "parent", "row_status": "row_status"},
+    )
+    filter_sql = where.replace(" WHERE ", " AND ", 1)
+    columns = [
+        _link("Import Batch", "import_batch", "SEI Import Batch"),
+        _int("Row Number", "row_number"),
+        _data("Row Status", "row_status"),
+        _data("Action Taken", "action_taken"),
+        _link("Matched Existing Prospect", "matched_existing_prospect", "SEI Prospect"),
+        _link("Prospect", "prospect", "SEI Prospect"),
+        _link("Signal", "signal", "SEI Signal"),
+        _data("Error Message", "error_message", 220),
+        _data("Raw Row JSON", "raw_row_json", 220),
+    ]
     status_col = "row_status" if utils.has_field("SEI Import Batch Row", "row_status") else "status"
-    select = ", ".join([f"{utils.column('SEI Import Batch Row', c)} {c}" for c in cols])
-    return columns, _sql(f"SELECT {select} FROM {utils.table('SEI Import Batch Row')} WHERE {status_col} IN ('Failed','Duplicate Warning','Skipped') ORDER BY modified DESC")
+    return columns, _sql(
+        f"""
+        SELECT parent import_batch, row_number, row_status, action_taken,
+               matched_existing_prospect, prospect, signal, error_message, raw_row_json
+        FROM {utils.table('SEI Import Batch Row')}
+        WHERE {status_col} IN ('Failed','Duplicate Warning','Skipped')
+          {filter_sql}
+        ORDER BY modified DESC
+        """,
+        params,
+    )
 
 
 def _execute_import_source_quality(filters):
     if not utils.has_doctype("SEI Import Batch"):
         return utils.empty_result("SEI Import Batch is not installed in this source tree/site.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Import Batch",
+        {"source_type": "source_type", "source_arena": "source_arena"},
+    )
     columns = [_data("Source Type", "source_type"), _data("Source Arena", "source_arena"), _int("Import Batch Count", "import_batch_count"), _int("Rows Total", "rows_total"), _int("Rows Created", "rows_created"), _int("Rows Updated", "rows_updated"), _int("Rows Skipped", "rows_skipped"), _int("Rows Failed", "rows_failed"), _percent("Failure Rate", "failure_rate"), _percent("Duplicate Warning Rate", "duplicate_warning_rate"), _int("Qualified Prospects Created", "qualified_prospects_created")]
-    return columns, _sql(f"""
+    data = _sql(f"""
         SELECT {utils.column('SEI Import Batch','source_type')} source_type, {utils.column('SEI Import Batch','source_arena')} source_arena,
                COUNT(*) import_batch_count,
                SUM(COALESCE({utils.column('SEI Import Batch','rows_total','0')},0)) rows_total,
@@ -368,10 +545,11 @@ def _execute_import_source_quality(filters):
                {utils.pct_expr("SUM(COALESCE(" + utils.column('SEI Import Batch','rows_failed','0') + ",0))", "SUM(COALESCE(" + utils.column('SEI Import Batch','rows_total','0') + ",0))")} failure_rate,
                0 duplicate_warning_rate,
                0 qualified_prospects_created
-        FROM {utils.table('SEI Import Batch')}
+        FROM {utils.table('SEI Import Batch')}{where}
         GROUP BY source_type, source_arena
         ORDER BY rows_total DESC
-    """)
+    """, params)
+    return columns, data, None, _bar_chart(data, "source_arena", "rows_total", "Rows")
 
 
 def _execute_data_hygiene_dashboard(filters):
@@ -389,36 +567,62 @@ def _execute_data_hygiene_dashboard(filters):
     ]
     for issue, sql, action in checks:
         rows.append({"issue": issue, "count": _sql(sql)[0].c, "recommended_action": action})
-    return columns, rows
+    return columns, rows, None, _bar_chart(rows, "issue", "count", "Issues")
 
 
 def _execute_interaction_attribution_summary(filters):
     if not utils.has_doctype("SEI Interaction Attribution"):
         return utils.empty_result("SEI Interaction Attribution is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Interaction Attribution",
+        {
+            "interaction_type": "interaction_type",
+            "channel": "channel",
+            "response_category": "response_category",
+            "sei_thesis": "thesis",
+            "sei_asset": "marketing_asset",
+        },
+    )
     columns = [_data("Interaction Type", "interaction_type"), _data("Channel", "channel"), _data("Response Category", "response_category"), _link("Thesis", "thesis", "SEI Thesis"), _link("Asset", "asset", "SEI Asset"), _int("Interaction Count", "interaction_count"), _int("Prospect Count", "prospect_count"), _int("CRM Lead Count", "crm_lead_count"), _int("CRM Deal Count", "crm_deal_count")]
-    return columns, _sql(f"""
+    data = _sql(f"""
         SELECT interaction_type, channel, response_category, thesis, marketing_asset asset, COUNT(*) interaction_count,
                COUNT(DISTINCT prospect) prospect_count, COUNT(DISTINCT crm_lead) crm_lead_count, COUNT(DISTINCT crm_deal) crm_deal_count
-        FROM {utils.table('SEI Interaction Attribution')}
+        FROM {utils.table('SEI Interaction Attribution')}{where}
         GROUP BY interaction_type, channel, response_category, thesis, marketing_asset
         ORDER BY interaction_count DESC
-    """)
+    """, params)
+    return columns, data, None, _bar_chart(data, "channel", "interaction_count", "Interactions")
 
 
 def _execute_response_category_by_thesis(filters):
     if not utils.has_doctype("SEI Interaction Attribution"):
         return utils.empty_result("SEI Interaction Attribution is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Interaction Attribution",
+        {"sei_thesis": "thesis", "channel": "channel"},
+    )
     cats = ["No Response", "Positive", "Interested", "Wrong Person", "Not Now", "Already Solved", "No Budget", "Bad Fit", "Unsubscribe / Do Not Contact", "Meeting Booked", "Converted to Deal", "Other"]
     columns = [_link("Thesis", "thesis", "SEI Thesis")] + [_int(cat, cat.lower().replace(' / ','_').replace(' ','_').replace('-','_')) for cat in cats]
     select = ", ".join([f"SUM(CASE WHEN response_category = '{cat}' THEN 1 ELSE 0 END) `{cat.lower().replace(' / ','_').replace(' ','_').replace('-','_')}`" for cat in cats])
-    return columns, _sql(f"SELECT thesis, {select} FROM {utils.table('SEI Interaction Attribution')} GROUP BY thesis ORDER BY thesis")
+    data = _sql(
+        f"SELECT thesis, {select} FROM {utils.table('SEI Interaction Attribution')}{where} GROUP BY thesis ORDER BY thesis",
+        params,
+    )
+    return columns, data, None, _bar_chart(data, "thesis", "positive", "Positive")
 
 
 def _execute_channel_outcome_report(filters):
     if not utils.has_doctype("SEI Interaction Attribution"):
         return utils.empty_result("SEI Interaction Attribution is not installed.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Interaction Attribution",
+        {"channel": "channel", "sei_thesis": "thesis"},
+    )
     columns = [_data("Channel", "channel"), _int("Interaction Count", "interaction_count"), _int("Positive", "positive"), _int("Interested", "interested"), _int("Meeting Booked", "meeting_booked"), _int("Converted to Deal", "converted_to_deal"), _int("Bad Fit", "bad_fit"), _int("Unsubscribe / Do Not Contact", "unsubscribe_do_not_contact")]
-    return columns, _sql(f"""
+    data = _sql(f"""
         SELECT channel, COUNT(*) interaction_count,
                SUM(CASE WHEN response_category='Positive' THEN 1 ELSE 0 END) positive,
                SUM(CASE WHEN response_category='Interested' THEN 1 ELSE 0 END) interested,
@@ -426,10 +630,11 @@ def _execute_channel_outcome_report(filters):
                SUM(CASE WHEN response_category='Converted to Deal' THEN 1 ELSE 0 END) converted_to_deal,
                SUM(CASE WHEN response_category='Bad Fit' THEN 1 ELSE 0 END) bad_fit,
                SUM(CASE WHEN response_category='Unsubscribe / Do Not Contact' THEN 1 ELSE 0 END) unsubscribe_do_not_contact
-        FROM {utils.table('SEI Interaction Attribution')}
+        FROM {utils.table('SEI Interaction Attribution')}{where}
         GROUP BY channel
         ORDER BY interaction_count DESC
-    """)
+    """, params)
+    return columns, data, None, _bar_chart(data, "channel", "interaction_count", "Interactions")
 
 
 REPORT_EXECUTORS = {
