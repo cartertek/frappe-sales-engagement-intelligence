@@ -374,7 +374,7 @@
    "fieldname": "crm_contact",
    "label": "CRM Contact",
    "fieldtype": "Link",
-   "options": "CRM Contacts",
+   "options": "Contact",
    "read_only": 1,
    "idx": 46
   },
