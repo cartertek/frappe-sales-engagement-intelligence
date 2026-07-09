@@ -155,7 +155,7 @@ def ensure_milestone_5_workspace_items() -> None:
                 "label": "SEI Imports",
                 "link_type": "DocType",
                 "link_to": None,
-                "link_count": 3,
+                "link_count": 1,
                 "onboard": 0,
                 "dependencies": None,
                 "hidden": 0,
@@ -171,38 +171,6 @@ def ensure_milestone_5_workspace_items() -> None:
                 "label": "SEI Import Batch",
                 "link_type": "DocType",
                 "link_to": "SEI Import Batch",
-                "link_count": 0,
-                "onboard": 0,
-                "dependencies": None,
-                "hidden": 0,
-            },
-        )
-        or changed
-    )
-    changed = (
-        _ensure_workspace_link(
-            workspace,
-            {
-                "type": "Link",
-                "label": "Import Templates Documentation",
-                "link_type": "URL",
-                "link_to": "/app/file?file_url=%25docs/import_templates%25",
-                "link_count": 0,
-                "onboard": 0,
-                "dependencies": None,
-                "hidden": 0,
-            },
-        )
-        or changed
-    )
-    changed = (
-        _ensure_workspace_link(
-            workspace,
-            {
-                "type": "Link",
-                "label": "Data Hygiene",
-                "link_type": "URL",
-                "link_to": "/app/query-report",
                 "link_count": 0,
                 "onboard": 0,
                 "dependencies": None,
