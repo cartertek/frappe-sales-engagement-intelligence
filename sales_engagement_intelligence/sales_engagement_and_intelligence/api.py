@@ -239,6 +239,19 @@ def cancel_import_batch(batch: str) -> dict:
 
 
 @frappe.whitelist()
+def reset_import_batch_to_draft(batch: str) -> dict:
+    _require_manager()
+    doc = frappe.get_doc("SEI Import Batch", batch)
+    if not doc.has_permission("write"):
+        frappe.throw(f"Not permitted to reset SEI Import Batch {batch}.")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+        reset_import_batch_to_draft as _reset_import_batch_to_draft,
+    )
+
+    return _reset_import_batch_to_draft(batch)
+
+
+@frappe.whitelist()
 def backfill_sei_normalized_domains() -> dict:
     _require_manager()
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (

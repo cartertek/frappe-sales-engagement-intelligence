@@ -772,3 +772,15 @@ def find_inferred_qualifying_signal_issues() -> dict:
         fields=["name", "prospect", "signal_type", "signal_strength"],
     )
     return {"signals": names, "count": len(names)}
+
+
+def reset_import_batch_to_draft(batch: str) -> dict:
+    doc = frappe.get_doc("SEI Import Batch", batch)
+    if doc.status == "Cancelled":
+        frappe.throw("Cancelled import batches cannot be reset to Draft.")
+    doc.status = "Draft"
+    doc.dry_run = 1
+    doc.completed_at = None
+    doc.error_summary = None
+    doc.save()
+    return {"batch": batch, "status": "Draft"}
