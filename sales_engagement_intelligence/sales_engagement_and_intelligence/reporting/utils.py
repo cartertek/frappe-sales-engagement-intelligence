@@ -18,9 +18,25 @@ def has_doctype(doctype: str) -> bool:
         return False
 
 
+STANDARD_FIELDS = {
+    "name",
+    "owner",
+    "creation",
+    "modified",
+    "modified_by",
+    "docstatus",
+    "idx",
+    "parent",
+    "parentfield",
+    "parenttype",
+}
+
+
 @lru_cache(maxsize=512)
 def has_field(doctype: str, fieldname: str) -> bool:
     """Return true when a DocType has a field in the installed schema."""
+    if fieldname in STANDARD_FIELDS:
+        return True
     if not doctype or not fieldname or not has_doctype(doctype):
         return False
     try:
