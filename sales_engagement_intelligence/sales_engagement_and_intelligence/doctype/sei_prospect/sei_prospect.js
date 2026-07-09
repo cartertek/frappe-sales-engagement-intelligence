@@ -147,11 +147,12 @@ function call_and_reload(frm, action, args) {
         args,
         freeze: true,
         callback(r) {
-            if (r.message) {
+            const message = unwrap_api_message(r);
+            if (message) {
                 frappe.msgprint({
-                    title: __('SEI Action Complete'),
-                    message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(r.message, null, 2))}</pre>`,
-                    indicator: 'green'
+                    title: message.ok === false ? __('SEI Action Failed') : __('SEI Action Complete'),
+                    message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+                    indicator: message.ok === false ? 'red' : 'green'
                 });
             }
             frm.reload_doc();
@@ -165,7 +166,7 @@ function show_conversion_preview(frm) {
         args: { prospect: frm.doc.name },
         freeze: true,
         callback(r) {
-            const data = r.message || {};
+            const data = unwrap_api_data(r);
             const dialog = new frappe.ui.Dialog({
                 title: __('CRM Conversion Preview'),
                 size: 'extra-large',
@@ -176,6 +177,16 @@ function show_conversion_preview(frm) {
             dialog.show();
         }
     });
+}
+
+
+function unwrap_api_message(r) {
+    return (r && r.message) || null;
+}
+
+function unwrap_api_data(r) {
+    const message = unwrap_api_message(r) || {};
+    return message.ok === true ? (message.data || {}) : message;
 }
 
 function render_preview_html(data) {
