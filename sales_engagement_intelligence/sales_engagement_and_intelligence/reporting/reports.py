@@ -211,7 +211,7 @@ def _execute_inferred_signal_review(filters):
         return utils.empty_result("SEI Signal is not installed.")
     columns = [_link("Signal", "signal", "SEI Signal"), _link("Prospect", "prospect", "SEI Prospect"), _data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Counts Toward Qualification", "counts_toward_qualification"), _data("Source URL", "source_url", 240), _data("Evidence Notes", "evidence_notes", 300), _date("Review Date", "review_date")]
     data = _sql(f"""
-        SELECT name signal, prospect, signal_type, signal_strength, evidence_basis, counts_toward_qualification, source_url, evidence_notes, review_date
+        SELECT name `signal`, prospect, signal_type, signal_strength, evidence_basis, counts_toward_qualification, source_url, evidence_notes, review_date
         FROM {utils.table('SEI Signal')}
         WHERE evidence_basis = 'Inferred' AND COALESCE(counts_toward_qualification, 0) = 1
         ORDER BY modified DESC
@@ -224,17 +224,17 @@ def _execute_missing_evidence_report(filters):
         return utils.empty_result("SEI Prospect and SEI Signal are required.")
     columns = [_data("Issue Type", "issue_type"), _link("Prospect", "prospect", "SEI Prospect"), _link("Signal", "signal", "SEI Signal"), _data("Source Arena", "source_arena"), _data("Signal Type", "signal_type"), _data("Details", "details", 360), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT 'Prospect has no linked SEI Signal' issue_type, p.name prospect, NULL signal, p.source_arena, NULL signal_type, 'No SEI Signal rows reference this prospect.' details, p.modified
+        SELECT 'Prospect has no linked SEI Signal' issue_type, p.name prospect, NULL `signal`, p.source_arena, NULL signal_type, 'No SEI Signal rows reference this prospect.' details, p.modified
         FROM {utils.table('SEI Prospect')} p LEFT JOIN {utils.table('SEI Signal')} s ON s.prospect = p.name
         WHERE s.name IS NULL
         UNION ALL
-        SELECT 'Signal missing source URL', prospect, name signal, NULL source_arena, signal_type, 'source_url is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(source_url, '') = ''
+        SELECT 'Signal missing source URL', prospect, name `signal`, NULL source_arena, signal_type, 'source_url is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(source_url, '') = ''
         UNION ALL
-        SELECT 'Signal missing source date', prospect, name signal, NULL source_arena, signal_type, 'source_date is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE source_date IS NULL
+        SELECT 'Signal missing source date', prospect, name `signal`, NULL source_arena, signal_type, 'source_date is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE source_date IS NULL
         UNION ALL
-        SELECT 'Signal missing evidence notes', prospect, name signal, NULL source_arena, signal_type, 'evidence_notes is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(evidence_notes, '') = ''
+        SELECT 'Signal missing evidence notes', prospect, name `signal`, NULL source_arena, signal_type, 'evidence_notes is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(evidence_notes, '') = ''
         UNION ALL
-        SELECT 'Prospect missing source arena', name prospect, NULL signal, source_arena, NULL signal_type, 'source_arena is blank.' details, modified FROM {utils.table('SEI Prospect')} WHERE COALESCE(source_arena, '') = ''
+        SELECT 'Prospect missing source arena', name prospect, NULL `signal`, source_arena, NULL signal_type, 'source_arena is blank.' details, modified FROM {utils.table('SEI Prospect')} WHERE COALESCE(source_arena, '') = ''
         ORDER BY modified DESC
     """)
     return columns, data
@@ -393,7 +393,7 @@ def _execute_crm_lead_conversion_detail(filters):
 def _execute_crm_deal_conversion_detail(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    deal_status = utils.column("CRM Deal", "status", "NULL") if _has_crm_doctype("CRM Deal") else "NULL"
+    deal_status = "d.`status`" if _has_crm_doctype("CRM Deal") and utils.has_column("CRM Deal", "status") else "NULL"
     join = f"LEFT JOIN {utils.table('CRM Deal')} d ON d.name = p.crm_deal" if _has_crm_doctype("CRM Deal") else ""
     where, params = utils.make_conditions(
         filters,
@@ -514,10 +514,10 @@ def _execute_import_batch_row_errors(filters):
     status_col = "row_status" if utils.has_field("SEI Import Batch Row", "row_status") else "status"
     return columns, _sql(
         f"""
-        SELECT parent import_batch, row_number, row_status, action_taken,
-               matched_existing_prospect, prospect, signal, error_message, raw_row_json
+        SELECT parent import_batch, `row_number`, `row_status`, `action_taken`,
+               `matched_existing_prospect`, `prospect`, `signal`, `error_message`, `raw_row_json`
         FROM {utils.table('SEI Import Batch Row')}
-        WHERE {status_col} IN ('Failed','Duplicate Warning','Skipped')
+        WHERE `{status_col}` IN ('Failed','Duplicate Warning','Skipped')
           {filter_sql}
         ORDER BY modified DESC
         """,
