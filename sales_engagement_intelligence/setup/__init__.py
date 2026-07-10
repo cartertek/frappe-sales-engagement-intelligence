@@ -327,7 +327,7 @@ def ensure_milestone_6_workspace_reports() -> None:
             _ensure_workspace_link(
                 workspace,
                 {
-                    "type": "Report",
+                    "type": "Link",
                     "label": report_name,
                     "link_type": "Report",
                     "link_to": report_name,
@@ -406,9 +406,23 @@ def _ensure_workspace_content_item(content: list, item_id: str, item: dict) -> b
 
 
 def _ensure_workspace_link(workspace, values: dict) -> bool:
+    # Workspace Link rows use a Dynamic Link field where ``link_type`` must be
+    # populated before ``link_to``. Keep this helper defensive because existing
+    # live rows may have been created by older migrations with an invalid
+    # ``type=Report`` / missing ``link_type`` combination.
+    if values.get("link_to") and not values.get("link_type"):
+        values = {**values, "link_type": values.get("type")}
+    if values.get("link_type") and values.get("type") not in {"Link", "Card Break"}:
+        values = {**values, "type": "Link"}
+
     for link in workspace.links:
         if link.label == values["label"]:
             changed = False
+            if link.get("link_to") and not link.get("link_type"):
+                inferred_link_type = values.get("link_type") or link.get("type")
+                if inferred_link_type:
+                    link.set("link_type", inferred_link_type)
+                    changed = True
             for key, value in values.items():
                 if link.get(key) != value:
                     link.set(key, value)
