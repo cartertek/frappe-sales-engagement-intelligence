@@ -346,7 +346,7 @@ def ensure_milestone_6_workspace_reports() -> None:
                     "type": "Report",
                     "link_to": report_name,
                     "label": report_name,
-                    "doc_view": "Report",
+                    "doc_view": "",
                     "color": "Purple",
                     "stats_filter": "[]",
                 },
@@ -430,6 +430,15 @@ def _ensure_workspace_link(workspace, values: dict) -> bool:
             return changed
     workspace.append("links", values)
     return True
+
+
+def _normalize_workspace_shortcuts(workspace) -> bool:
+    changed = False
+    for shortcut in workspace.shortcuts:
+        if shortcut.get("type") == "Report" and shortcut.get("doc_view") == "Report":
+            shortcut.set("doc_view", "")
+            changed = True
+    return changed
 
 
 def _ensure_workspace_shortcut(workspace, values: dict) -> bool:
