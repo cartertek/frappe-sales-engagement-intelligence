@@ -53,7 +53,7 @@ def test_milestone_7_endpoints_are_exposed_and_whitelisted():
     for name in REQUIRED_ENDPOINTS:
         method = frappe.get_attr(f"{API_PATH}.{name}")
         assert callable(method), name
-        assert getattr(method, "whitelisted", False), name
+        assert method in frappe.whitelisted, name
 
 
 def test_response_helpers_match_contract():
