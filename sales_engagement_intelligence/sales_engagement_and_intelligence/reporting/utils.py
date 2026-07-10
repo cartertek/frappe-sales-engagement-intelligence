@@ -45,6 +45,17 @@ def has_field(doctype: str, fieldname: str) -> bool:
         return False
 
 
+@lru_cache(maxsize=512)
+def has_column(doctype: str, fieldname: str) -> bool:
+    """Return true when the current database table has the physical column."""
+    if not doctype or not fieldname or not has_doctype(doctype):
+        return False
+    try:
+        return bool(frappe.db.sql(f"SHOW COLUMNS FROM {table(doctype)} LIKE %s", fieldname))
+    except Exception:
+        return has_field(doctype, fieldname)
+
+
 def get_safe_link_field(doctype: str, candidates: Iterable[str]) -> str | None:
     """Return the first installed candidate field for schema-aware reports."""
     for candidate in candidates:
@@ -58,7 +69,7 @@ def table(doctype: str) -> str:
 
 
 def column(doctype: str, fieldname: str, fallback: str = "NULL") -> str:
-    return f"{table(doctype)}.`{fieldname}`" if has_field(doctype, fieldname) else fallback
+    return f"{table(doctype)}.`{fieldname}`" if has_column(doctype, fieldname) else fallback
 
 
 def doctypes_available(*doctypes: str) -> bool:
