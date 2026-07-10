@@ -180,7 +180,8 @@ def seed_playbooks() -> None:
             doc.append(
                 "signal_rules",
                 {
-                    "playbook": values["playbook_name"],
+                    # Do not set the self-link before the parent playbook exists;
+                    # Frappe validates child-row Link fields during parent insert.
                     "signal_type": signal_type,
                     "minimum_strength": minimum_strength,
                     "evidence_basis_required": evidence_basis_required,
