@@ -393,7 +393,7 @@ def _execute_crm_lead_conversion_detail(filters):
 def _execute_crm_deal_conversion_detail(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    deal_status = utils.column("CRM Deal", "status", "NULL") if _has_crm_doctype("CRM Deal") else "NULL"
+    deal_status = "d.`status`" if _has_crm_doctype("CRM Deal") and utils.has_column("CRM Deal", "status") else "NULL"
     join = f"LEFT JOIN {utils.table('CRM Deal')} d ON d.name = p.crm_deal" if _has_crm_doctype("CRM Deal") else ""
     where, params = utils.make_conditions(
         filters,
