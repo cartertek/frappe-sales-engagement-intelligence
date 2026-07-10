@@ -1,0 +1,62 @@
+{
+ "actions": [],
+ "creation": "2026-07-10 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "playbook",
+  "signal_type",
+  "minimum_strength",
+  "evidence_basis_required",
+  "counts_toward_qualification",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "playbook",
+   "label": "Playbook",
+   "fieldtype": "Link",
+   "options": "SEI Playbook"
+  },
+  {
+   "fieldname": "signal_type",
+   "label": "Signal Type",
+   "fieldtype": "Select",
+   "options": "Failed Recruitment\nTechnical Distress\nLaunch Aftermath\nAgency Overflow\nEcosystem Adjacency\nVendor/Directory Presence\nCommunity Request\nProcurement Visibility\nCredibility/Referral Signal\nReactivation Signal\nOther"
+  },
+  {
+   "fieldname": "minimum_strength",
+   "label": "Minimum Strength",
+   "fieldtype": "Select",
+   "options": "Weak\nModerate\nStrong"
+  },
+  {
+   "fieldname": "evidence_basis_required",
+   "label": "Evidence Basis Required",
+   "fieldtype": "Select",
+   "options": "Observed\nInferred"
+  },
+  {
+   "fieldname": "counts_toward_qualification",
+   "label": "Counts Toward Qualification",
+   "fieldtype": "Check"
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Small Text"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-10 00:00:00.000000",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Playbook Signal Rule",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1,
+ "istable": 1,
+ "editable_grid": 1
+}

@@ -13,6 +13,18 @@ frappe.ui.form.on('SEI Prospect', {
                 call_and_reload(frm, 'apply_lifecycle_suggestion', { prospect: frm.doc.name });
             }, __('SEI Actions'));
         }
+        if (frm.doc.sei_playbook && !is_terminal(frm)) {
+            frm.add_custom_button(__('Apply Playbook Defaults'), () => {
+                frappe.confirm(__('Apply playbook defaults to blank fields only? Existing values will not be overwritten.'), () => {
+                    call_and_reload(frm, 'apply_playbook_defaults', { prospect: frm.doc.name });
+                });
+            }, __('Outreach Drafting'));
+        }
+
+        frm.add_custom_button(__('Preview Message Draft'), () => {
+            prompt_message_template(frm);
+        }, __('Outreach Drafting'));
+
 
         if (['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
             && !frm.doc.do_not_contact && !frm.doc.crm_lead) {
@@ -294,4 +306,84 @@ function is_manager_or_admin() {
     return frappe.session.user === 'Administrator'
         || frappe.user_roles.includes('Administrator')
         || frappe.user_roles.includes('Sales Engagement Manager');
+}
+
+
+
+function prompt_message_template(frm) {
+    const fields = [
+        {
+            fieldname: 'template',
+            label: __('Message Template'),
+            fieldtype: 'Link',
+            options: 'SEI Message Template',
+            reqd: 1,
+            get_query() {
+                const filters = { active: 1 };
+                if (frm.doc.sei_playbook) filters.playbook = frm.doc.sei_playbook;
+                return { filters };
+            }
+        }
+    ];
+
+    const default_template = frm.doc.suggested_message_template || null;
+    frappe.prompt(fields, (values) => {
+        show_message_draft_preview(frm, values.template);
+    }, __('Preview Message Draft'), __('Render Preview'));
+
+    // frappe.prompt does not expose a stable direct default hook across Frappe
+    // versions. Keep the suggested template visible on the form instead of
+    // relying on undocumented dialog internals.
+    if (default_template) {
+        frappe.show_alert({
+            message: __('Suggested template: {0}', [default_template]),
+            indicator: 'blue'
+        });
+    }
+}
+
+function show_message_draft_preview(frm, template) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.preview_message_draft',
+        args: { prospect: frm.doc.name, template },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                frappe.msgprint({
+                    title: __('Draft Preview Failed'),
+                    message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+                    indicator: 'red'
+                });
+                return;
+            }
+            const data = message.data || {};
+            const dialog = new frappe.ui.Dialog({
+                title: __('Message Draft Preview'),
+                size: 'extra-large',
+                fields: [{ fieldtype: 'HTML', fieldname: 'draft_html' }]
+            });
+            dialog.fields_dict.draft_html.$wrapper.html(render_message_draft_html(data));
+            dialog.show();
+        }
+    });
+}
+
+function render_message_draft_html(data) {
+    const missing = data.missing_variables || [];
+    const missing_html = missing.length
+        ? `<p><b>${__('Missing Variables')}:</b> ${missing.map(value => frappe.utils.escape_html(value)).join(', ')}</p>`
+        : `<p><b>${__('Missing Variables')}:</b> ${__('None')}</p>`;
+    const safety = data.safety || {};
+    return `
+        <p><b>${__('Channel')}:</b> ${frappe.utils.escape_html(data.channel || '')}</p>
+        ${missing_html}
+        <h4>${__('Subject')}</h4>
+        <pre style="white-space: pre-wrap;">${frappe.utils.escape_html(data.subject || '')}</pre>
+        <h4>${__('Body')}</h4>
+        <pre style="white-space: pre-wrap; max-height: 420px; overflow: auto;">${frappe.utils.escape_html(data.body || '')}</pre>
+        <h4>${__('Safety')}</h4>
+        <pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(safety, null, 2))}</pre>
+        <p class="text-muted">${__('This preview does not send outreach, create a Communication, create CRM records, or change lifecycle status.')}</p>
+    `;
 }

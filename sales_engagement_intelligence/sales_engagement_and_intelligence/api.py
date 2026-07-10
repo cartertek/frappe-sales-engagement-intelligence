@@ -43,6 +43,9 @@ PROSPECT_CREATE_FIELDS = {
     "next_action_date",
     "assigned_to",
     "notes",
+    "sei_playbook",
+    "playbook_guidance",
+    "suggested_message_template",
 }
 PROSPECT_UPDATE_FIELDS = PROSPECT_CREATE_FIELDS | {"first_seen_date", "last_researched_date"}
 PROSPECT_RESTRICTED_FIELDS = {
@@ -72,6 +75,8 @@ WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
     "last_researched_date",
     "thesis",
     "offer",
+    "sei_playbook",
+    "suggested_message_template",
 }
 SIGNAL_FIELDS = {
     "signal_type",
@@ -135,6 +140,8 @@ QUEUE_FIELDS = [
     "do_not_contact",
     "rejected_reason",
     "ready_for_crm_conversion",
+    "sei_playbook",
+    "suggested_message_template",
     "modified",
 ]
 PROTECTED_LIFECYCLES = {"Rejected", "Do Not Contact"}
@@ -656,6 +663,30 @@ def reopen_prospect(prospect: str) -> dict:
     )
 
     return reopen_prospect(prospect)
+
+
+# Playbook and drafting endpoints
+
+
+@api_endpoint
+def apply_playbook_defaults(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.playbooks import (
+        apply_playbook_defaults as _apply_playbook_defaults,
+    )
+
+    return _apply_playbook_defaults(prospect)
+
+
+@api_endpoint
+def preview_message_draft(prospect: str, template: str) -> dict:
+    _check_prospect_permission(prospect, "read")
+    _check_doc_permission("SEI Message Template", template, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.drafting import (
+        preview_message_draft as _preview_message_draft,
+    )
+
+    return _preview_message_draft(prospect, template)
 
 
 # CRM conversion/linking endpoints
