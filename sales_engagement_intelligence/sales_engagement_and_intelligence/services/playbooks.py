@@ -57,7 +57,11 @@ def apply_playbook_defaults(prospect: str) -> dict:
         "playbook": playbook.name,
         "changed_fields": changed,
         "skipped_populated_fields": skipped,
-        "message": "Playbook defaults applied to blank fields only." if changed else "No blank fields needed updates.",
+        "message": (
+            "Playbook defaults applied to blank fields only."
+            if changed
+            else "No blank fields needed updates."
+        ),
     }
 
 

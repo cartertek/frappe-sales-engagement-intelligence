@@ -505,7 +505,10 @@ def ensure_milestone_8_workspace_items() -> None:
                 "id": "m8_outreach_intro",
                 "type": "paragraph",
                 "data": {
-                    "text": "Playbooks, message templates, imports, queues, and attribution for manual outreach execution.",
+                    "text": (
+                        "Playbooks, message templates, imports, queues, and attribution "
+                        "for manual outreach execution."
+                    ),
                     "col": 12,
                 },
             },
