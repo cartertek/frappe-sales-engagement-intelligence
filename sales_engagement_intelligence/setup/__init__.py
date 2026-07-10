@@ -216,16 +216,27 @@ MILESTONE_6_REPORTS = (
     "Prospect Lifecycle Summary",
     "Active Prospect Queue",
     "Ready for CRM Conversion",
+    "Terminal Status Review",
     "Signals by Type and Strength",
     "Qualification by Signal Type",
+    "Inferred Signal Review",
+    "Missing Evidence Report",
     "Prospects by Source Arena",
     "Outcomes by Thesis",
+    "Asset Usage and Outcomes",
+    "Offer Performance",
     "CRM Conversion Summary",
+    "CRM Lead Conversion Detail",
+    "CRM Deal Conversion Detail",
     "CRM Context Missing",
+    "Possible Duplicate CRM Conversion Review",
     "Import Batch Summary",
     "Import Batch Row Errors",
+    "Import Source Quality",
     "Data Hygiene Dashboard",
     "Interaction Attribution Summary",
+    "Response Category by Thesis",
+    "Channel Outcome Report",
 )
 
 
@@ -278,17 +289,38 @@ def ensure_milestone_6_workspace_reports() -> None:
     changed = (
         _ensure_workspace_content_item(
             content,
-            "reports_card",
+            "reports_shortcuts_header",
             {
-                "id": "reports_card",
-                "type": "card",
-                "data": {"card_name": "SEI Reports", "col": 4},
+                "id": "reports_shortcuts_header",
+                "type": "header",
+                "data": {"text": '<span class="h4"><b>SEI Reports</b></span>', "col": 12},
             },
         )
         or changed
     )
+    for index, report_name in enumerate(MILESTONE_6_REPORTS, 1):
+        changed = (
+            _ensure_workspace_content_item(
+                content,
+                f"reports_shortcut_{index}",
+                {
+                    "id": f"reports_shortcut_{index}",
+                    "type": "shortcut",
+                    "data": {"shortcut_name": report_name, "col": 3},
+                },
+            )
+            or changed
+        )
     if changed:
         workspace.content = json.dumps(content)
+        frappe.db.set_value(
+            "Workspace",
+            "Engagement Reports",
+            "content",
+            workspace.content,
+            update_modified=False,
+        )
+        changed = False
 
     for report_name in MILESTONE_6_REPORTS:
         changed = (
@@ -297,6 +329,7 @@ def ensure_milestone_6_workspace_reports() -> None:
                 {
                     "type": "Report",
                     "label": report_name,
+                    "link_type": "Report",
                     "link_to": report_name,
                     "link_count": 0,
                     "onboard": 0,
@@ -335,7 +368,21 @@ def validate_milestone_6_workspace_reports() -> dict:
     workspace = frappe.get_doc("Workspace", "Engagement Reports")
     labels = {shortcut.label for shortcut in workspace.shortcuts}
     missing = [report_name for report_name in MILESTONE_6_REPORTS if report_name not in labels]
-    return {"ok": not missing, "missing_workspace": False, "missing_shortcuts": missing}
+    content = _load_workspace_content(workspace.content)
+    content_shortcuts = {
+        item.get("data", {}).get("shortcut_name")
+        for item in content
+        if isinstance(item, dict) and item.get("type") == "shortcut"
+    }
+    missing_content = [
+        report_name for report_name in MILESTONE_6_REPORTS if report_name not in content_shortcuts
+    ]
+    return {
+        "ok": not missing and not missing_content,
+        "missing_workspace": False,
+        "missing_shortcuts": missing,
+        "missing_content_shortcuts": missing_content,
+    }
 
 def _load_workspace_content(content: str | None) -> list:
     if not content:
