@@ -184,9 +184,23 @@ def api_endpoint(fn: Callable) -> Callable:
                 return result
             return success(result)
         except Exception as exc:
-            # Keep stack traces in server logs, not in script-facing API responses.
-            frappe.log_error(title=f"SEI API error: {fn.__name__}", message=frappe.get_traceback())
-            return failure(_classify_exception(exc), str(exc))
+            code = _classify_exception(exc)
+            expected_codes = {
+                ERROR_CODES["validation"],
+                ERROR_CODES["permission"],
+                ERROR_CODES["not_found"],
+                ERROR_CODES["duplicate"],
+                ERROR_CODES["protected"],
+                ERROR_CODES["invalid_payload"],
+                ERROR_CODES["unsupported"],
+                ERROR_CODES["schema"],
+                ERROR_CODES["import"],
+                ERROR_CODES["crm_blocked"],
+            }
+            if code not in expected_codes:
+                # Keep unexpected stack traces in server logs, not in script-facing API responses.
+                frappe.log_error(title=f"SEI API error: {fn.__name__}", message=frappe.get_traceback())
+            return failure(code, str(exc))
 
     return wrapper
 
@@ -283,6 +297,11 @@ def _check_batch_permission(batch: str, ptype: str = "read"):
 
 def _meta_fields(doctype: str) -> set[str]:
     return {field.fieldname for field in frappe.get_meta(doctype).fields if field.fieldname}
+
+
+def _select_fields(doctype: str, fields: list[str]) -> list[str]:
+    known = _meta_fields(doctype)
+    return [field for field in fields if field == "name" or field in known]
 
 
 def _filter_known_fields(doctype: str, values: dict) -> tuple[dict, list[str]]:
@@ -423,7 +442,7 @@ def _queue(
     rows = frappe.get_all(
         "SEI Prospect",
         filters=clean_filters,
-        fields=[field for field in QUEUE_FIELDS if field in _meta_fields("SEI Prospect")],
+        fields=_select_fields("SEI Prospect", QUEUE_FIELDS),
         order_by="next_action_date asc, modified desc",
         limit=_limit(limit),
     )
@@ -500,7 +519,7 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
     rows = frappe.get_all(
         "SEI Prospect",
         filters=clean_filters,
-        fields=[field for field in QUEUE_FIELDS if field in _meta_fields("SEI Prospect")],
+        fields=_select_fields("SEI Prospect", QUEUE_FIELDS),
         order_by="modified desc",
         limit=_limit(limit),
     )
