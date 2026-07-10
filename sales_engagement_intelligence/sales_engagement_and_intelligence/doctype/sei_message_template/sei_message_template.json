@@ -1,0 +1,143 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "field:template_name",
+ "creation": "2026-07-10 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "template_name",
+  "active",
+  "playbook",
+  "thesis",
+  "asset",
+  "channel",
+  "prospect_type",
+  "contact_role",
+  "subject_template",
+  "body_template",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "template_name",
+   "label": "Template Name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "active",
+   "label": "Active",
+   "fieldtype": "Check",
+   "default": 1
+  },
+  {
+   "fieldname": "playbook",
+   "label": "Playbook",
+   "fieldtype": "Link",
+   "options": "SEI Playbook"
+  },
+  {
+   "fieldname": "thesis",
+   "label": "Thesis",
+   "fieldtype": "Link",
+   "options": "SEI Thesis"
+  },
+  {
+   "fieldname": "asset",
+   "label": "Asset",
+   "fieldtype": "Link",
+   "options": "SEI Asset"
+  },
+  {
+   "fieldname": "channel",
+   "label": "Channel",
+   "fieldtype": "Select",
+   "options": "Email\nLinkedIn\nPhone\nContact Form\nCommunity DM\nReferral Intro\nOther"
+  },
+  {
+   "fieldname": "prospect_type",
+   "label": "Prospect Type",
+   "fieldtype": "Select",
+   "options": "Agency\nStartup\nSMB\nEnterprise\nEcosystem Partner\nDirectory Lead\nCommunity Lead\nProcurement Lead\nReferral Partner\nOther"
+  },
+  {
+   "fieldname": "contact_role",
+   "label": "Contact Role",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "subject_template",
+   "label": "Subject Template",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "body_template",
+   "label": "Body Template",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Long Text"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-10 00:00:00.000000",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Message Template",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 1,
+   "doctype": "DocPerm",
+   "parentfield": "permissions",
+   "parenttype": "DocType",
+   "parent": "SEI Message Template"
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 2,
+   "doctype": "DocPerm",
+   "parentfield": "permissions",
+   "parenttype": "DocType",
+   "parent": "SEI Message Template"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "template_name",
+ "track_changes": 1,
+ "istable": 0,
+ "search_fields": "template_name, playbook, thesis, channel, active"
+}

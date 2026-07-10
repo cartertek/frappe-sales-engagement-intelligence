@@ -16,6 +16,8 @@ def after_migrate() -> None:
     repair_sei_desktop_layout()
     ensure_milestone_5_workspace_items()
     ensure_milestone_6_workspace_reports()
+    ensure_milestone_8_seed_data()
+    ensure_milestone_8_workspace_items()
     frappe.clear_cache()
 
 
@@ -452,3 +454,165 @@ def _ensure_workspace_shortcut(workspace, values: dict) -> bool:
             return changed
     workspace.append("shortcuts", values)
     return True
+
+MILESTONE_8_OPERATIONAL_DOCTYPES = (
+    ("SEI Prospect", "SEI Prospects", "Blue"),
+    ("SEI Import Batch", "SEI Import Batches", "Blue"),
+    ("SEI Playbook", "SEI Playbooks", "Green"),
+    ("SEI Message Template", "SEI Message Templates", "Green"),
+    ("SEI Thesis", "SEI Theses", "Purple"),
+    ("SEI Asset", "SEI Assets", "Purple"),
+    ("SEI Interaction Attribution", "Interaction Attribution", "Orange"),
+)
+
+
+def ensure_milestone_8_seed_data() -> None:
+    """Keep final playbook/template seed records present after migration."""
+
+    if not frappe.db.exists("DocType", "SEI Playbook") or not frappe.db.exists(
+        "DocType", "SEI Message Template"
+    ):
+        return
+    from sales_engagement_intelligence.patches.v0_0_1.seed_playbooks_and_templates import (
+        execute as seed_playbooks_and_templates,
+    )
+
+    seed_playbooks_and_templates()
+
+
+def ensure_milestone_8_workspace_items() -> None:
+    """Keep final SEI operating-system entry points visible in Prospecting."""
+
+    if not frappe.db.exists("Workspace", "Prospecting"):
+        return
+
+    workspace = frappe.get_doc("Workspace", "Prospecting")
+    changed = False
+    content = _load_workspace_content(workspace.content)
+
+    for item_id, item in (
+        (
+            "m8_outreach_header",
+            {
+                "id": "m8_outreach_header",
+                "type": "header",
+                "data": {"text": '<span class="h4"><b>Outreach Execution</b></span>', "col": 12},
+            },
+        ),
+        (
+            "m8_outreach_intro",
+            {
+                "id": "m8_outreach_intro",
+                "type": "paragraph",
+                "data": {
+                    "text": (
+                        "Playbooks, message templates, imports, queues, and attribution "
+                        "for manual outreach execution."
+                    ),
+                    "col": 12,
+                },
+            },
+        ),
+    ):
+        changed = _ensure_workspace_content_item(content, item_id, item) or changed
+
+    for index, (_, label, _) in enumerate(MILESTONE_8_OPERATIONAL_DOCTYPES, 1):
+        changed = (
+            _ensure_workspace_content_item(
+                content,
+                f"m8_outreach_shortcut_{index}",
+                {
+                    "id": f"m8_outreach_shortcut_{index}",
+                    "type": "shortcut",
+                    "data": {"shortcut_name": label, "col": 3},
+                },
+            )
+            or changed
+        )
+
+    if changed:
+        workspace.content = json.dumps(content)
+
+    changed = (
+        _ensure_workspace_link(
+            workspace,
+            {
+                "type": "Card Break",
+                "label": "Outreach Execution",
+                "link_type": "DocType",
+                "link_to": None,
+                "link_count": len(MILESTONE_8_OPERATIONAL_DOCTYPES),
+                "onboard": 0,
+                "dependencies": None,
+                "hidden": 0,
+            },
+        )
+        or changed
+    )
+
+    for doctype, label, color in MILESTONE_8_OPERATIONAL_DOCTYPES:
+        changed = (
+            _ensure_workspace_link(
+                workspace,
+                {
+                    "type": "Link",
+                    "label": doctype,
+                    "link_type": "DocType",
+                    "link_to": doctype,
+                    "link_count": 0,
+                    "onboard": 0,
+                    "dependencies": None,
+                    "hidden": 0,
+                },
+            )
+            or changed
+        )
+        changed = (
+            _ensure_workspace_shortcut(
+                workspace,
+                {
+                    "type": "DocType",
+                    "link_to": doctype,
+                    "label": label,
+                    "doc_view": "List",
+                    "color": color,
+                },
+            )
+            or changed
+        )
+
+    if changed:
+        workspace.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def validate_milestone_8_workspace_items() -> dict:
+    """Production-safe validation for final Milestone 8 navigation."""
+
+    if not frappe.db.exists("Workspace", "Prospecting"):
+        return {"ok": False, "missing_workspace": True}
+
+    workspace = frappe.get_doc("Workspace", "Prospecting")
+    shortcut_labels = {shortcut.label for shortcut in workspace.shortcuts}
+    expected_labels = {label for _, label, _ in MILESTONE_8_OPERATIONAL_DOCTYPES}
+    missing_shortcuts = sorted(expected_labels - shortcut_labels)
+
+    link_targets = {link.link_to for link in workspace.links if link.link_type == "DocType"}
+    expected_doctypes = {doctype for doctype, _, _ in MILESTONE_8_OPERATIONAL_DOCTYPES}
+    missing_links = sorted(expected_doctypes - link_targets)
+
+    content = _load_workspace_content(workspace.content)
+    content_shortcuts = {
+        item.get("data", {}).get("shortcut_name")
+        for item in content
+        if isinstance(item, dict) and item.get("type") == "shortcut"
+    }
+    missing_content_shortcuts = sorted(expected_labels - content_shortcuts)
+
+    return {
+        "ok": not missing_shortcuts and not missing_links and not missing_content_shortcuts,
+        "missing_workspace": False,
+        "missing_shortcuts": missing_shortcuts,
+        "missing_links": missing_links,
+        "missing_content_shortcuts": missing_content_shortcuts,
+    }

@@ -25,6 +25,10 @@
   "signal_summary",
   "contact_target_notes",
   "notes",
+  "playbook_section",
+  "sei_playbook",
+  "playbook_guidance",
+  "suggested_message_template",
   "contact_path_section",
   "primary_contact_name",
   "primary_contact_role",
@@ -175,6 +179,29 @@
    "label": "Notes",
    "fieldtype": "Long Text",
    "idx": 17
+  },
+  {
+   "fieldname": "playbook_section",
+   "label": "Playbook Guidance",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "sei_playbook",
+   "label": "SEI Playbook",
+   "fieldtype": "Link",
+   "options": "SEI Playbook"
+  },
+  {
+   "fieldname": "playbook_guidance",
+   "label": "Playbook Guidance",
+   "fieldtype": "Small Text",
+   "read_only": 1
+  },
+  {
+   "fieldname": "suggested_message_template",
+   "label": "Suggested Message Template",
+   "fieldtype": "Link",
+   "options": "SEI Message Template"
   },
   {
    "fieldname": "contact_path_section",
@@ -405,7 +432,7 @@
   }
  ],
  "links": [],
- "modified": "2026-07-01 00:00:00.000000",
+ "modified": "2026-07-10 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "SEI Prospect",

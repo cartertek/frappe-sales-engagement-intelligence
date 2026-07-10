@@ -1,0 +1,165 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "autoname": "field:playbook_name",
+ "creation": "2026-07-10 00:00:00.000000",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "playbook_name",
+  "active",
+  "description",
+  "default_thesis",
+  "default_offer",
+  "default_asset",
+  "prospect_types",
+  "source_arenas",
+  "likely_contact_roles",
+  "qualifying_signal_guidance",
+  "disqualifying_guidance",
+  "recommended_first_action",
+  "follow_up_guidance",
+  "signal_rules",
+  "notes"
+ ],
+ "fields": [
+  {
+   "fieldname": "playbook_name",
+   "label": "Playbook Name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "fieldname": "active",
+   "label": "Active",
+   "fieldtype": "Check",
+   "default": 1
+  },
+  {
+   "fieldname": "description",
+   "label": "Description",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "default_thesis",
+   "label": "Default Thesis",
+   "fieldtype": "Link",
+   "options": "SEI Thesis"
+  },
+  {
+   "fieldname": "default_offer",
+   "label": "Default Offer",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "default_asset",
+   "label": "Default Asset",
+   "fieldtype": "Link",
+   "options": "SEI Asset"
+  },
+  {
+   "fieldname": "prospect_types",
+   "label": "Prospect Types",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "source_arenas",
+   "label": "Source Arenas",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "likely_contact_roles",
+   "label": "Likely Contact Roles",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "qualifying_signal_guidance",
+   "label": "Qualifying Signal Guidance",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "disqualifying_guidance",
+   "label": "Disqualifying Guidance",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "recommended_first_action",
+   "label": "Recommended First Action",
+   "fieldtype": "Data"
+  },
+  {
+   "fieldname": "follow_up_guidance",
+   "label": "Follow-Up Guidance",
+   "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "signal_rules",
+   "label": "Signal Rules",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Signal Rule"
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Long Text"
+  }
+ ],
+ "links": [],
+ "modified": "2026-07-10 00:00:00.000000",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Playbook",
+ "naming_rule": "By fieldname",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 1,
+   "doctype": "DocPerm",
+   "parentfield": "permissions",
+   "parenttype": "DocType",
+   "parent": "SEI Playbook"
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 0,
+   "submit": 0,
+   "cancel": 0,
+   "amend": 0,
+   "report": 1,
+   "export": 1,
+   "import": 0,
+   "share": 1,
+   "print": 1,
+   "email": 1,
+   "idx": 2,
+   "doctype": "DocPerm",
+   "parentfield": "permissions",
+   "parenttype": "DocType",
+   "parent": "SEI Playbook"
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "playbook_name",
+ "track_changes": 1,
+ "istable": 0,
+ "search_fields": "playbook_name, default_thesis, active"
+}

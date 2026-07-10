@@ -20,6 +20,8 @@ REQUIRED_ENDPOINTS = [
     "mark_rejected",
     "mark_do_not_contact",
     "reopen_prospect",
+    "apply_playbook_defaults",
+    "preview_message_draft",
     "preview_crm_conversion",
     "find_crm_duplicates",
     "create_crm_lead",
