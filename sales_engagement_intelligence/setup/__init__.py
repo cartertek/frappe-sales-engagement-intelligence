@@ -473,14 +473,44 @@ def _ensure_workspace_shortcut(workspace, values: dict) -> bool:
     workspace.append("shortcuts", values)
     return True
 
-MILESTONE_8_OPERATIONAL_DOCTYPES = (
-    ("SEI Prospect", "SEI Prospects", "Blue"),
-    ("SEI Import Batch", "SEI Import Batches", "Blue"),
-    ("SEI Playbook", "SEI Playbooks", "Green"),
-    ("SEI Message Template", "SEI Message Templates", "Green"),
-    ("SEI Thesis", "SEI Theses", "Purple"),
-    ("SEI Asset", "SEI Assets", "Purple"),
-    ("SEI Interaction Attribution", "Interaction Attribution", "Orange"),
+MILESTONE_8_QUEUE_SHORTCUTS = (
+    "Needs Research",
+    "Research Complete",
+    "Qualified",
+    "Find Contact",
+    "Ready for CRM Conversion",
+    "Rejected",
+    "Do Not Contact",
+)
+
+MILESTONE_8_DAILY_WORKFLOW_SHORTCUTS = (
+    ("SEI Prospect", "Prospects", "List", "Blue"),
+    ("SEI Import Batch", "Import Batches", "List", "Blue"),
+    ("SEI Import Batch", "New Import Batch", "New", "Green"),
+)
+
+MILESTONE_8_OUTREACH_SETUP_SHORTCUTS = (
+    ("SEI Playbook", "Playbooks", "List", "Green"),
+    ("SEI Message Template", "Message Templates", "List", "Green"),
+    ("SEI Thesis", "Theses", "List", "Purple"),
+    ("SEI Asset", "Assets", "List", "Purple"),
+)
+
+MILESTONE_8_SUPPORTING_RECORD_SHORTCUTS = (
+    ("SEI Signal", "Signals", "List", "Grey"),
+    ("SEI Interaction Attribution", "Interaction Attribution", "List", "Orange"),
+)
+
+MILESTONE_8_OPERATIONAL_SHORTCUTS = (
+    *MILESTONE_8_DAILY_WORKFLOW_SHORTCUTS,
+    *MILESTONE_8_OUTREACH_SETUP_SHORTCUTS,
+    *MILESTONE_8_SUPPORTING_RECORD_SHORTCUTS,
+)
+
+MILESTONE_8_OPERATIONAL_DOCTYPES = tuple(
+    (doctype, label, color)
+    for doctype, label, _doc_view, color in MILESTONE_8_OPERATIONAL_SHORTCUTS
+    if label != "New Import Batch"
 )
 
 
@@ -498,106 +528,189 @@ def ensure_milestone_8_seed_data() -> None:
     seed_playbooks_and_templates()
 
 
-def ensure_milestone_8_workspace_items() -> None:
-    """Keep final SEI operating-system entry points visible in Prospecting."""
+def _queue_shortcut_values(label: str) -> dict:
+    return {
+        "type": "DocType",
+        "link_to": "SEI Prospect",
+        "label": label,
+        "doc_view": "List",
+        "stats_filter": json.dumps([["SEI Prospect", "lifecycle_status", "=", label]]),
+        "color": "Grey",
+    }
 
-    if not frappe.db.exists("Workspace", "Prospecting"):
-        return
 
-    workspace = frappe.get_doc("Workspace", "Prospecting")
-    changed = _remove_invalid_workspace_url_links(workspace)
-    content = _load_workspace_content(workspace.content)
+def _shortcut_values(doctype: str, label: str, doc_view: str, color: str) -> dict:
+    return {
+        "type": "DocType",
+        "link_to": doctype,
+        "label": label,
+        "doc_view": doc_view,
+        "color": color,
+    }
 
-    for item_id, item in (
-        (
-            "m8_outreach_header",
+
+def _prospecting_workspace_content() -> list:
+    content = [
+        {
+            "id": "prospecting_header",
+            "type": "header",
+            "data": {"text": "Prospecting", "col": 12},
+        },
+        {
+            "id": "prospecting_intro",
+            "type": "paragraph",
+            "data": {"text": "Pre-CRM research and qualification workflows.", "col": 12},
+        },
+        {
+            "id": "prospecting_queue_header",
+            "type": "header",
+            "data": {"text": '<span class="h4"><b>Prospect Queues</b></span>', "col": 12},
+        },
+    ]
+
+    for index, label in enumerate(MILESTONE_8_QUEUE_SHORTCUTS, 1):
+        content.append(
             {
-                "id": "m8_outreach_header",
-                "type": "header",
-                "data": {"text": '<span class="h4"><b>Outreach Execution</b></span>', "col": 12},
-            },
-        ),
-        (
-            "m8_outreach_intro",
-            {
-                "id": "m8_outreach_intro",
-                "type": "paragraph",
-                "data": {
-                    "text": (
-                        "Playbooks, message templates, imports, queues, and attribution "
-                        "for manual outreach execution."
-                    ),
-                    "col": 12,
-                },
-            },
-        ),
-    ):
-        changed = _ensure_workspace_content_item(content, item_id, item) or changed
-
-    for index, (_, label, _) in enumerate(MILESTONE_8_OPERATIONAL_DOCTYPES, 1):
-        changed = (
-            _ensure_workspace_content_item(
-                content,
-                f"m8_outreach_shortcut_{index}",
-                {
-                    "id": f"m8_outreach_shortcut_{index}",
-                    "type": "shortcut",
-                    "data": {"shortcut_name": label, "col": 3},
-                },
-            )
-            or changed
+                "id": f"prospecting_queue_shortcut_{index}",
+                "type": "shortcut",
+                "data": {"shortcut_name": label, "col": 3},
+            }
         )
 
-    if changed:
-        workspace.content = json.dumps(content)
+    for section_id, title, intro, shortcuts in (
+        (
+            "daily_workflow",
+            "Daily Workflow",
+            "Open active prospects, review imports, or start a new import batch.",
+            MILESTONE_8_DAILY_WORKFLOW_SHORTCUTS,
+        ),
+        (
+            "outreach_setup",
+            "Outreach Setup",
+            "Configure playbooks, message templates, theses, and supporting assets.",
+            MILESTONE_8_OUTREACH_SETUP_SHORTCUTS,
+        ),
+        (
+            "supporting_records",
+            "Supporting Records",
+            "Review signal evidence and outcome attribution records.",
+            MILESTONE_8_SUPPORTING_RECORD_SHORTCUTS,
+        ),
+    ):
+        content.extend(
+            [
+                {
+                    "id": f"{section_id}_header",
+                    "type": "header",
+                    "data": {"text": f'<span class="h4"><b>{title}</b></span>', "col": 12},
+                },
+                {
+                    "id": f"{section_id}_intro",
+                    "type": "paragraph",
+                    "data": {"text": intro, "col": 12},
+                },
+            ]
+        )
+        for index, (_doctype, label, _doc_view, _color) in enumerate(shortcuts, 1):
+            content.append(
+                {
+                    "id": f"{section_id}_shortcut_{index}",
+                    "type": "shortcut",
+                    "data": {"shortcut_name": label, "col": 3},
+                }
+            )
 
-    changed = (
-        _ensure_workspace_link(
-            workspace,
+    return content
+
+
+def _prospecting_workspace_links() -> list:
+    links = []
+    for section_label, shortcuts in (
+        ("Daily Workflow", MILESTONE_8_DAILY_WORKFLOW_SHORTCUTS),
+        ("Outreach Setup", MILESTONE_8_OUTREACH_SETUP_SHORTCUTS),
+        ("Supporting Records", MILESTONE_8_SUPPORTING_RECORD_SHORTCUTS),
+    ):
+        links.append(
             {
                 "type": "Card Break",
-                "label": "Outreach Execution",
+                "label": section_label,
                 "link_type": "DocType",
                 "link_to": None,
-                "link_count": len(MILESTONE_8_OPERATIONAL_DOCTYPES),
+                "link_count": len(shortcuts),
                 "onboard": 0,
                 "dependencies": None,
                 "hidden": 0,
-            },
+            }
         )
-        or changed
-    )
-
-    for doctype, label, color in MILESTONE_8_OPERATIONAL_DOCTYPES:
-        changed = (
-            _ensure_workspace_link(
-                workspace,
+        for doctype, label, _doc_view, _color in shortcuts:
+            links.append(
                 {
                     "type": "Link",
-                    "label": doctype,
+                    "label": label,
                     "link_type": "DocType",
                     "link_to": doctype,
                     "link_count": 0,
                     "onboard": 0,
                     "dependencies": None,
                     "hidden": 0,
-                },
+                }
             )
-            or changed
-        )
-        changed = (
-            _ensure_workspace_shortcut(
-                workspace,
-                {
-                    "type": "DocType",
-                    "link_to": doctype,
-                    "label": label,
-                    "doc_view": "List",
-                    "color": color,
-                },
-            )
-            or changed
-        )
+    return links
+
+
+def ensure_milestone_8_workspace_items() -> None:
+    """Keep final Prospecting workspace navigation visible and de-duplicated."""
+
+    if not frappe.db.exists("Workspace", "Prospecting"):
+        return
+
+    workspace = frappe.get_doc("Workspace", "Prospecting")
+    changed = _remove_invalid_workspace_url_links(workspace)
+
+    desired_content = _prospecting_workspace_content()
+    if _load_workspace_content(workspace.content) != desired_content:
+        workspace.content = json.dumps(desired_content)
+        changed = True
+
+    desired_links = _prospecting_workspace_links()
+    existing_links = [
+        {
+            "type": link.get("type"),
+            "label": link.get("label"),
+            "link_type": link.get("link_type"),
+            "link_to": link.get("link_to"),
+            "link_count": link.get("link_count"),
+            "onboard": link.get("onboard"),
+            "dependencies": link.get("dependencies"),
+            "hidden": link.get("hidden"),
+        }
+        for link in workspace.links
+    ]
+    if existing_links != desired_links:
+        workspace.set("links", desired_links)
+        changed = True
+
+    desired_shortcuts = [
+        *[_queue_shortcut_values(label) for label in MILESTONE_8_QUEUE_SHORTCUTS],
+        *[
+            _shortcut_values(doctype, label, doc_view, color)
+            for doctype, label, doc_view, color in MILESTONE_8_OPERATIONAL_SHORTCUTS
+        ],
+    ]
+    existing_shortcuts = [
+        {
+            "type": shortcut.get("type"),
+            "link_to": shortcut.get("link_to"),
+            "label": shortcut.get("label"),
+            "doc_view": shortcut.get("doc_view"),
+            "stats_filter": shortcut.get("stats_filter"),
+            "color": shortcut.get("color"),
+        }
+        for shortcut in workspace.shortcuts
+    ]
+    if existing_shortcuts != desired_shortcuts:
+        workspace.set("shortcuts", desired_shortcuts)
+        changed = True
 
     if changed:
         workspace.save(ignore_permissions=True)
@@ -612,11 +725,15 @@ def validate_milestone_8_workspace_items() -> dict:
 
     workspace = frappe.get_doc("Workspace", "Prospecting")
     shortcut_labels = {shortcut.label for shortcut in workspace.shortcuts}
-    expected_labels = {label for _, label, _ in MILESTONE_8_OPERATIONAL_DOCTYPES}
+    expected_labels = set(MILESTONE_8_QUEUE_SHORTCUTS) | {
+        label for _doctype, label, _doc_view, _color in MILESTONE_8_OPERATIONAL_SHORTCUTS
+    }
     missing_shortcuts = sorted(expected_labels - shortcut_labels)
 
     link_targets = {link.link_to for link in workspace.links if link.link_type == "DocType"}
-    expected_doctypes = {doctype for doctype, _, _ in MILESTONE_8_OPERATIONAL_DOCTYPES}
+    expected_doctypes = {
+        doctype for doctype, _label, _doc_view, _color in MILESTONE_8_OPERATIONAL_SHORTCUTS
+    }
     missing_links = sorted(expected_doctypes - link_targets)
 
     content = _load_workspace_content(workspace.content)
@@ -627,10 +744,42 @@ def validate_milestone_8_workspace_items() -> dict:
     }
     missing_content_shortcuts = sorted(expected_labels - content_shortcuts)
 
+    content_headers = {
+        item.get("data", {}).get("text")
+        for item in content
+        if isinstance(item, dict) and item.get("type") == "header"
+    }
+    expected_headers = {
+        '<span class="h4"><b>Prospect Queues</b></span>',
+        '<span class="h4"><b>Daily Workflow</b></span>',
+        '<span class="h4"><b>Outreach Setup</b></span>',
+        '<span class="h4"><b>Supporting Records</b></span>',
+    }
+    missing_headers = sorted(expected_headers - content_headers)
+
+    duplicate_content_shortcuts = sorted(
+        label
+        for label in content_shortcuts
+        if label and sum(
+            1
+            for item in content
+            if isinstance(item, dict)
+            and item.get("type") == "shortcut"
+            and item.get("data", {}).get("shortcut_name") == label
+        )
+        > 1
+    )
+
     return {
-        "ok": not missing_shortcuts and not missing_links and not missing_content_shortcuts,
+        "ok": not missing_shortcuts
+        and not missing_links
+        and not missing_content_shortcuts
+        and not missing_headers
+        and not duplicate_content_shortcuts,
         "missing_workspace": False,
         "missing_shortcuts": missing_shortcuts,
         "missing_links": missing_links,
         "missing_content_shortcuts": missing_content_shortcuts,
+        "missing_headers": missing_headers,
+        "duplicate_content_shortcuts": duplicate_content_shortcuts,
     }
