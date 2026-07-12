@@ -425,7 +425,7 @@ def _remove_invalid_workspace_url_links(workspace) -> bool:
     return len(workspace.links) != original_len
 
 
-def _ensure_workspace_link(workspace, values: dict) -> bool:
+def _ensure_workspace_link(workspace, values: dict, before_label: str | None = None) -> bool:
     # Workspace Link rows use a Dynamic Link field where ``link_type`` must be
     # populated before ``link_to``. Keep this helper defensive because existing
     # live rows may have been created by older migrations with an invalid
@@ -448,6 +448,13 @@ def _ensure_workspace_link(workspace, values: dict) -> bool:
                     link.set(key, value)
                     changed = True
             return changed
+
+    if before_label:
+        for idx, link in enumerate(workspace.links):
+            if link.label == before_label:
+                workspace.insert("links", idx, values)
+                return True
+
     workspace.append("links", values)
     return True
 
@@ -506,6 +513,29 @@ def ensure_milestone_8_workspace_items() -> None:
 
     workspace = frappe.get_doc("Workspace", "Prospecting")
     changed = _remove_invalid_workspace_url_links(workspace)
+
+    # Keep M8 navigation reachable in the visible SEI Records card, not only in
+    # the lower Outreach Execution shortcut block. Operators need to open these
+    # lists from the workspace without typing routes.
+    for doctype in ("SEI Playbook", "SEI Message Template"):
+        changed = (
+            _ensure_workspace_link(
+                workspace,
+                {
+                    "type": "Link",
+                    "label": doctype,
+                    "link_type": "DocType",
+                    "link_to": doctype,
+                    "link_count": 0,
+                    "onboard": 0,
+                    "dependencies": None,
+                    "hidden": 0,
+                },
+                before_label="SEI Interaction Attribution",
+            )
+            or changed
+        )
+
     content = _load_workspace_content(workspace.content)
 
     for item_id, item in (
