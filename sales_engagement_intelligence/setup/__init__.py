@@ -104,7 +104,7 @@ def ensure_milestone_5_workspace_items() -> None:
         return
 
     workspace = frappe.get_doc("Workspace", "Prospecting")
-    changed = False
+    changed = _remove_invalid_workspace_url_links(workspace)
 
     content = _load_workspace_content(workspace.content)
     changed = (
@@ -407,6 +407,24 @@ def _ensure_workspace_content_item(content: list, item_id: str, item: dict) -> b
     return True
 
 
+def _remove_invalid_workspace_url_links(workspace) -> bool:
+    """Drop legacy Workspace Link rows whose Dynamic Link target is URL.
+
+    Workspace Link.link_to is a Dynamic Link keyed by link_type. Frappe does not
+    ship a DocType named URL, so rows with link_type=URL fail validation when the
+    Workspace is saved during migrate. Those navigation entries are already
+    represented by workspace content/shortcuts or reports; keeping the invalid
+    link rows is worse than omitting them because it blocks deploys.
+    """
+
+    original_len = len(workspace.links)
+    workspace.set(
+        "links",
+        [link for link in workspace.links if link.get("link_type") != "URL"],
+    )
+    return len(workspace.links) != original_len
+
+
 def _ensure_workspace_link(workspace, values: dict) -> bool:
     # Workspace Link rows use a Dynamic Link field where ``link_type`` must be
     # populated before ``link_to``. Keep this helper defensive because existing
@@ -487,7 +505,7 @@ def ensure_milestone_8_workspace_items() -> None:
         return
 
     workspace = frappe.get_doc("Workspace", "Prospecting")
-    changed = False
+    changed = _remove_invalid_workspace_url_links(workspace)
     content = _load_workspace_content(workspace.content)
 
     for item_id, item in (

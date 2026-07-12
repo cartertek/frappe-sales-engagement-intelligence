@@ -95,26 +95,6 @@
    "hidden": 0
   },
   {
-   "type": "Link",
-   "label": "Import Templates Documentation",
-   "link_type": "URL",
-   "link_to": "/app/file?file_url=%25docs/import_templates%25",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "Data Hygiene",
-   "link_type": "URL",
-   "link_to": "/app/query-report",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
    "type": "Card Break",
    "label": "Outreach Execution",
    "link_type": "DocType",
