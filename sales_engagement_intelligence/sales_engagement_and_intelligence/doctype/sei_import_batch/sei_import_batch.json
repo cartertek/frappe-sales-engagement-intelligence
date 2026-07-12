@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "import_setup_tab",
   "batch_label",
   "source_type",
   "source_arena",
@@ -16,6 +17,7 @@
   "import_mode",
   "status",
   "dry_run",
+  "run_results_tab",
   "section_timing",
   "imported_by",
   "started_at",
@@ -29,10 +31,16 @@
   "notes_section",
   "notes",
   "error_summary",
+  "import_rows_tab",
   "rows_section",
   "rows"
  ],
  "fields": [
+  {
+   "fieldname": "import_setup_tab",
+   "fieldtype": "Tab Break",
+   "label": "Import Setup"
+  },
   {
    "fieldname": "batch_label",
    "label": "Batch Label",
@@ -99,6 +107,11 @@
    "hidden": 1,
    "read_only": 1,
    "description": "Internal state set by the Dry Run Import and Run Import actions."
+  },
+  {
+   "fieldname": "run_results_tab",
+   "fieldtype": "Tab Break",
+   "label": "Run Results"
   },
   {
    "fieldname": "section_timing",
@@ -176,6 +189,11 @@
    "label": "Error Summary",
    "fieldtype": "Long Text",
    "read_only": 1
+  },
+  {
+   "fieldname": "import_rows_tab",
+   "fieldtype": "Tab Break",
+   "label": "Import Rows"
   },
   {
    "fieldname": "rows_section",
