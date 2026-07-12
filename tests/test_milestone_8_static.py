@@ -111,3 +111,46 @@ def test_prospect_form_has_user_triggered_draft_and_playbook_actions():
     assert "preview_message_draft" in source
     assert "sendmail" not in source
     assert "frappe.confirm(__('Apply playbook defaults to blank fields only?" in source
+
+
+def test_prospect_form_uses_operator_tabs_for_large_schema():
+    prospect = _doctype("sei_prospect")
+    tabs = [
+        field["label"]
+        for field in prospect["fields"]
+        if field.get("fieldtype") == "Tab Break"
+    ]
+    assert tabs == [
+        "Overview",
+        "Playbook & Drafting",
+        "Contact Path",
+        "Qualification",
+        "Lifecycle & Safety",
+        "CRM Conversion",
+    ]
+
+    field_order = prospect["field_order"]
+    assert field_order.index("playbook_drafting_tab") < field_order.index("sei_playbook")
+    assert field_order.index("crm_conversion_tab") < field_order.index("ready_for_crm_conversion")
+
+
+def test_large_operator_forms_use_tabs():
+    import_batch = _doctype("sei_import_batch")
+    import_tabs = [
+        field["label"]
+        for field in import_batch["fields"]
+        if field.get("fieldtype") == "Tab Break"
+    ]
+    assert import_tabs == ["Import Setup", "Run Results", "Import Rows"]
+
+    attribution = _doctype("sei_interaction_attribution")
+    attribution_tabs = [
+        field["label"]
+        for field in attribution["fields"]
+        if field.get("fieldtype") == "Tab Break"
+    ]
+    assert attribution_tabs == [
+        "Attribution Sources",
+        "CRM Links",
+        "Interaction Outcome",
+    ]

@@ -8,6 +8,7 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
+  "overview_tab",
   "identity_section",
   "prospect_name",
   "website",
@@ -25,16 +26,19 @@
   "signal_summary",
   "contact_target_notes",
   "notes",
+  "playbook_drafting_tab",
   "playbook_section",
   "sei_playbook",
   "playbook_guidance",
   "suggested_message_template",
+  "contact_path_tab",
   "contact_path_section",
   "primary_contact_name",
   "primary_contact_role",
   "primary_contact_email",
   "primary_contact_url",
   "primary_contact_notes",
+  "qualification_tab",
   "qualification_section",
   "qualification_status",
   "manual_qualification_override",
@@ -44,6 +48,7 @@
   "strong_observed_signal_count",
   "moderate_observed_signal_count",
   "qualification_explanation",
+  "lifecycle_safety_tab",
   "lifecycle_/_queue_section",
   "lifecycle_status",
   "next_action",
@@ -52,18 +57,24 @@
   "column_break_3",
   "rejected_reason",
   "do_not_contact",
+  "crm_conversion_tab",
+  "conversion_preparation_section",
+  "ready_for_crm_conversion",
+  "conversion_target",
+  "crm_conversion_notes",
   "frappe_crm_links_section",
   "crm_lead",
   "crm_deal",
   "column_break_4",
   "crm_organization",
-  "crm_contact",
-  "conversion_preparation_section",
-  "ready_for_crm_conversion",
-  "conversion_target",
-  "crm_conversion_notes"
+  "crm_contact"
  ],
  "fields": [
+  {
+   "fieldname": "overview_tab",
+   "fieldtype": "Tab Break",
+   "label": "Overview"
+  },
   {
    "fieldname": "identity_section",
    "label": "Identity",
@@ -181,6 +192,11 @@
    "idx": 17
   },
   {
+   "fieldname": "playbook_drafting_tab",
+   "fieldtype": "Tab Break",
+   "label": "Playbook & Drafting"
+  },
+  {
    "fieldname": "playbook_section",
    "label": "Playbook Guidance",
    "fieldtype": "Section Break"
@@ -202,6 +218,11 @@
    "label": "Suggested Message Template",
    "fieldtype": "Link",
    "options": "SEI Message Template"
+  },
+  {
+   "fieldname": "contact_path_tab",
+   "fieldtype": "Tab Break",
+   "label": "Contact Path"
   },
   {
    "fieldname": "contact_path_section",
@@ -238,6 +259,11 @@
    "label": "Primary Contact Notes",
    "fieldtype": "Small Text",
    "idx": 23
+  },
+  {
+   "fieldname": "qualification_tab",
+   "fieldtype": "Tab Break",
+   "label": "Qualification"
   },
   {
    "fieldname": "qualification_section",
@@ -302,6 +328,11 @@
    "idx": 32
   },
   {
+   "fieldname": "lifecycle_safety_tab",
+   "fieldtype": "Tab Break",
+   "label": "Lifecycle & Safety"
+  },
+  {
    "fieldname": "lifecycle_/_queue_section",
    "label": "Lifecycle / Queue",
    "fieldtype": "Section Break",
@@ -358,6 +389,36 @@
    "idx": 40
   },
   {
+   "fieldname": "crm_conversion_tab",
+   "fieldtype": "Tab Break",
+   "label": "CRM Conversion"
+  },
+  {
+   "fieldname": "conversion_preparation_section",
+   "label": "Conversion Preparation",
+   "fieldtype": "Section Break",
+   "idx": 47
+  },
+  {
+   "fieldname": "ready_for_crm_conversion",
+   "label": "Ready for CRM Conversion",
+   "fieldtype": "Check",
+   "idx": 48
+  },
+  {
+   "fieldname": "conversion_target",
+   "label": "Conversion Target",
+   "fieldtype": "Select",
+   "options": "CRM Lead Only\nCRM Lead + CRM Organization\nCRM Lead + CRM Organization + CRM Contact\nCRM Deal",
+   "idx": 49
+  },
+  {
+   "fieldname": "crm_conversion_notes",
+   "label": "CRM Conversion Notes",
+   "fieldtype": "Small Text",
+   "idx": 50
+  },
+  {
    "fieldname": "frappe_crm_links_section",
    "label": "Frappe CRM Links",
    "fieldtype": "Section Break",
@@ -404,31 +465,6 @@
    "options": "Contact",
    "read_only": 1,
    "idx": 46
-  },
-  {
-   "fieldname": "conversion_preparation_section",
-   "label": "Conversion Preparation",
-   "fieldtype": "Section Break",
-   "idx": 47
-  },
-  {
-   "fieldname": "ready_for_crm_conversion",
-   "label": "Ready for CRM Conversion",
-   "fieldtype": "Check",
-   "idx": 48
-  },
-  {
-   "fieldname": "conversion_target",
-   "label": "Conversion Target",
-   "fieldtype": "Select",
-   "options": "CRM Lead Only\nCRM Lead + CRM Organization\nCRM Lead + CRM Organization + CRM Contact\nCRM Deal",
-   "idx": 49
-  },
-  {
-   "fieldname": "crm_conversion_notes",
-   "label": "CRM Conversion Notes",
-   "fieldtype": "Small Text",
-   "idx": 50
   }
  ],
  "links": [],

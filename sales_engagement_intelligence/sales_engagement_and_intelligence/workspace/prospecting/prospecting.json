@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification queues.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SEI Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Converted to CRM Lead\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_8\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"prospecting_records_spacer\", \"type\": \"spacer\", \"data\": {\"col\": 12}}, {\"id\": \"prospecting_records_card\", \"type\": \"card\", \"data\": {\"card_name\": \"SEI Records\", \"col\": 4}}, {\"id\": \"sei_imports_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>SEI Imports</b></span>\", \"col\": 12}}, {\"id\": \"sei_imports_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Import Batches\", \"col\": 3}}, {\"id\": \"sei_imports_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Import Batch\", \"col\": 3}}, {\"id\": \"m8_outreach_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Outreach Execution</b></span>\", \"col\": 12}}, {\"id\": \"m8_outreach_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Playbooks, message templates, imports, queues, and attribution for manual outreach execution.\", \"col\": 12}}, {\"id\": \"m8_outreach_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Prospects\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Import Batches\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Playbooks\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Message Templates\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Theses\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Assets\", \"col\": 3}}, {\"id\": \"m8_outreach_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Interaction Attribution\", \"col\": 3}}]",
+ "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification workflows.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"daily_workflow_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Daily Workflow</b></span>\", \"col\": 12}}, {\"id\": \"daily_workflow_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Open active prospects, review imports, or start a new import batch.\", \"col\": 12}}, {\"id\": \"daily_workflow_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Prospects\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Import Batches\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Import Batch\", \"col\": 3}}, {\"id\": \"outreach_setup_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Outreach Setup</b></span>\", \"col\": 12}}, {\"id\": \"outreach_setup_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Configure playbooks, message templates, theses, and supporting assets.\", \"col\": 12}}, {\"id\": \"outreach_setup_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Playbooks\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Message Templates\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Theses\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}, {\"id\": \"supporting_records_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Supporting Records</b></span>\", \"col\": 12}}, {\"id\": \"supporting_records_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Review signal evidence and outcome attribution records.\", \"col\": 12}}, {\"id\": \"supporting_records_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Signals\", \"col\": 3}}, {\"id\": \"supporting_records_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Interaction Attribution\", \"col\": 3}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -16,67 +16,7 @@
  "links": [
   {
    "type": "Card Break",
-   "label": "SEI Records",
-   "link_type": "DocType",
-   "link_to": null,
-   "link_count": 5,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "SEI Prospect",
-   "link_type": "DocType",
-   "link_to": "SEI Prospect",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "SEI Signal",
-   "link_type": "DocType",
-   "link_to": "SEI Signal",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "SEI Thesis",
-   "link_type": "DocType",
-   "link_to": "SEI Thesis",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "SEI Asset",
-   "link_type": "DocType",
-   "link_to": "SEI Asset",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Link",
-   "label": "SEI Interaction Attribution",
-   "link_type": "DocType",
-   "link_to": "SEI Interaction Attribution",
-   "link_count": 0,
-   "onboard": 0,
-   "dependencies": null,
-   "hidden": 0
-  },
-  {
-   "type": "Card Break",
-   "label": "SEI Imports",
+   "label": "Daily Workflow",
    "link_type": "DocType",
    "link_to": null,
    "link_count": 3,
@@ -86,7 +26,27 @@
   },
   {
    "type": "Link",
-   "label": "SEI Import Batch",
+   "label": "Prospects",
+   "link_type": "DocType",
+   "link_to": "SEI Prospect",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Import Batches",
+   "link_type": "DocType",
+   "link_to": "SEI Import Batch",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "New Import Batch",
    "link_type": "DocType",
    "link_to": "SEI Import Batch",
    "link_count": 0,
@@ -96,17 +56,17 @@
   },
   {
    "type": "Card Break",
-   "label": "Outreach Execution",
+   "label": "Outreach Setup",
    "link_type": "DocType",
    "link_to": null,
-   "link_count": 7,
+   "link_count": 4,
    "onboard": 0,
    "dependencies": null,
    "hidden": 0
   },
   {
    "type": "Link",
-   "label": "SEI Playbook",
+   "label": "Playbooks",
    "link_type": "DocType",
    "link_to": "SEI Playbook",
    "link_count": 0,
@@ -116,9 +76,59 @@
   },
   {
    "type": "Link",
-   "label": "SEI Message Template",
+   "label": "Message Templates",
    "link_type": "DocType",
    "link_to": "SEI Message Template",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Theses",
+   "link_type": "DocType",
+   "link_to": "SEI Thesis",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Assets",
+   "link_type": "DocType",
+   "link_to": "SEI Asset",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Card Break",
+   "label": "Supporting Records",
+   "link_type": "DocType",
+   "link_to": null,
+   "link_count": 2,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Signals",
+   "link_type": "DocType",
+   "link_to": "SEI Signal",
+   "link_count": 0,
+   "onboard": 0,
+   "dependencies": null,
+   "hidden": 0
+  },
+  {
+   "type": "Link",
+   "label": "Interaction Attribution",
+   "link_type": "DocType",
+   "link_to": "SEI Interaction Attribution",
    "link_count": 0,
    "onboard": 0,
    "dependencies": null,
@@ -181,14 +191,6 @@
   {
    "type": "DocType",
    "link_to": "SEI Prospect",
-   "label": "Converted to CRM Lead",
-   "doc_view": "List",
-   "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Converted to CRM Lead\"]]",
-   "color": "Grey"
-  },
-  {
-   "type": "DocType",
-   "link_to": "SEI Prospect",
    "label": "Rejected",
    "doc_view": "List",
    "stats_filter": "[[\"SEI Prospect\", \"lifecycle_status\", \"=\", \"Rejected\"]]",
@@ -204,8 +206,15 @@
   },
   {
    "type": "DocType",
+   "link_to": "SEI Prospect",
+   "label": "Prospects",
+   "doc_view": "List",
+   "color": "Blue"
+  },
+  {
+   "type": "DocType",
    "link_to": "SEI Import Batch",
-   "label": "SEI Import Batches",
+   "label": "Import Batches",
    "doc_view": "List",
    "color": "Blue"
   },
@@ -218,38 +227,38 @@
   },
   {
    "type": "DocType",
-   "link_to": "SEI Prospect",
-   "label": "SEI Prospects",
-   "doc_view": "List",
-   "color": "Blue"
-  },
-  {
-   "type": "DocType",
    "link_to": "SEI Playbook",
-   "label": "SEI Playbooks",
+   "label": "Playbooks",
    "doc_view": "List",
    "color": "Green"
   },
   {
    "type": "DocType",
    "link_to": "SEI Message Template",
-   "label": "SEI Message Templates",
+   "label": "Message Templates",
    "doc_view": "List",
    "color": "Green"
   },
   {
    "type": "DocType",
    "link_to": "SEI Thesis",
-   "label": "SEI Theses",
+   "label": "Theses",
    "doc_view": "List",
    "color": "Purple"
   },
   {
    "type": "DocType",
    "link_to": "SEI Asset",
-   "label": "SEI Assets",
+   "label": "Assets",
    "doc_view": "List",
    "color": "Purple"
+  },
+  {
+   "type": "DocType",
+   "link_to": "SEI Signal",
+   "label": "Signals",
+   "doc_view": "List",
+   "color": "Grey"
   },
   {
    "type": "DocType",

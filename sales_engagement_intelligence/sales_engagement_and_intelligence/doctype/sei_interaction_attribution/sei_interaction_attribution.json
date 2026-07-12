@@ -8,6 +8,7 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
+  "attribution_sources_tab",
   "attribution_links_section",
   "prospect",
   "signal",
@@ -15,6 +16,7 @@
   "marketing_asset",
   "offer",
   "source_arena",
+  "crm_links_tab",
   "frappe_crm_links_section",
   "crm_lead",
   "crm_deal",
@@ -22,6 +24,7 @@
   "column_break_1",
   "crm_task",
   "crm_call_log",
+  "interaction_outcome_tab",
   "interaction_metadata_section",
   "interaction_type",
   "channel",
@@ -30,6 +33,11 @@
   "notes"
  ],
  "fields": [
+  {
+   "fieldname": "attribution_sources_tab",
+   "fieldtype": "Tab Break",
+   "label": "Attribution Sources"
+  },
   {
    "fieldname": "attribution_links_section",
    "label": "Attribution Links",
@@ -83,6 +91,11 @@
    "idx": 7
   },
   {
+   "fieldname": "crm_links_tab",
+   "fieldtype": "Tab Break",
+   "label": "CRM Links"
+  },
+  {
    "fieldname": "frappe_crm_links_section",
    "label": "Frappe CRM Links",
    "fieldtype": "Section Break",
@@ -132,6 +145,11 @@
    "fieldtype": "Link",
    "options": "CRM Call Log",
    "idx": 14
+  },
+  {
+   "fieldname": "interaction_outcome_tab",
+   "fieldtype": "Tab Break",
+   "label": "Interaction Outcome"
   },
   {
    "fieldname": "interaction_metadata_section",
