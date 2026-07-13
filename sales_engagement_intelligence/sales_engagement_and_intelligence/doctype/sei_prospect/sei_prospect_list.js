@@ -28,3 +28,31 @@ frappe.listview_settings['SEI Prospect'] = {
         return [doc.lifecycle_status || doc.qualification_status, colors[doc.lifecycle_status] || 'gray', `lifecycle_status,=,${doc.lifecycle_status}`];
     }
 };
+
+(() => {
+    const original_setup_columns = frappe.views.ListView.prototype.setup_columns;
+
+    frappe.views.ListView.prototype.setup_columns = function(fields_override = null) {
+        original_setup_columns.call(this, fields_override);
+
+        if (this.doctype !== 'SEI Prospect' || !Array.isArray(this.columns)) {
+            return;
+        }
+
+        const tag_column_index = this.columns.findIndex((column) => column.type === 'Tag');
+        if (tag_column_index === -1) {
+            return;
+        }
+
+        const [tag_column] = this.columns.splice(tag_column_index, 1);
+        const id_column_index = this.columns.findIndex((column) => column.df?.fieldname === 'name');
+
+        if (id_column_index === -1) {
+            this.columns.push(tag_column);
+            return;
+        }
+
+        this.columns.splice(id_column_index, 0, tag_column);
+    };
+})();
+
