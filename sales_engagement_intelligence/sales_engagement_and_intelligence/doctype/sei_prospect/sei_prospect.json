@@ -345,7 +345,7 @@
    "options": "New\nNeeds Research\nResearch Complete\nQualified\nFind Contact\nReady for CRM Conversion\nConverted to CRM Lead\nConverted to CRM Deal\nRejected\nDo Not Contact",
    "default": "New",
    "reqd": 1,
-   "in_list_view": 1,
+   "in_list_view": 0,
    "in_standard_filter": 1,
    "idx": 34
   },
