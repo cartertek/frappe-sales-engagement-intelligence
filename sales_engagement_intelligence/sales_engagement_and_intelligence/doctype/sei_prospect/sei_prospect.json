@@ -341,7 +341,6 @@
    "fieldname": "signals_section",
    "label": "Signals",
    "fieldtype": "Section Break",
-   "collapsible": 1,
    "idx": 41
   },
   {
