@@ -66,6 +66,8 @@ frappe.ui.form.on('SEI Prospect', {
             }
         }
 
+        render_signals_embedded_list(frm);
+
         add_open_button(frm, 'CRM Lead', frm.doc.crm_lead);
         add_open_button(frm, 'CRM Deal', frm.doc.crm_deal);
         add_open_button(frm, 'CRM Organization', frm.doc.crm_organization);
@@ -386,4 +388,117 @@ function render_message_draft_html(data) {
         <pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(safety, null, 2))}</pre>
         <p class="text-muted">${__('This preview does not send outreach, create a Communication, create CRM records, or change lifecycle status.')}</p>
     `;
+}
+
+
+function render_signals_embedded_list(frm) {
+    const field = frm.fields_dict.signals_embedded_list;
+    if (!field || !field.$wrapper) return;
+
+    const wrapper = field.$wrapper;
+
+    if (frm.is_new()) {
+        wrapper.html(`<p class="text-muted">${__('Save this prospect before adding signals.')}</p>`);
+        return;
+    }
+
+    wrapper.html(`<p class="text-muted">${__('Loading signals...')}</p>`);
+
+    frappe.db.get_list('SEI Signal', {
+        fields: [
+            'name',
+            'signal_type',
+            'signal_strength',
+            'evidence_basis',
+            'counts_toward_qualification',
+            'confidence',
+            'source_date',
+            'modified'
+        ],
+        filters: { prospect: frm.doc.name },
+        order_by: 'source_date desc, modified desc',
+        limit: 100
+    }).then((signals) => {
+        wrapper.html(render_signals_table(frm, signals || []));
+        wrapper.find('[data-sei-action="new-signal"]').on('click', () => {
+            frappe.new_doc('SEI Signal', {
+                prospect: frm.doc.name,
+                prospect_name: frm.doc.prospect_name
+            });
+        });
+    }).catch(() => {
+        wrapper.html(`<p class="text-muted">${__('Unable to load signals.')}</p>`);
+    });
+}
+
+function render_signals_table(frm, signals) {
+    const new_button = `
+        <button class="btn btn-xs btn-default" data-sei-action="new-signal">
+            ${__('New Signal')}
+        </button>
+    `;
+
+    if (!signals.length) {
+        return `
+            <div class="sei-signals-embedded-list">
+                <div class="flex justify-between align-center" style="margin-bottom: var(--margin-sm);">
+                    <p class="text-muted" style="margin: 0;">${__('No signals recorded for this prospect yet.')}</p>
+                    ${new_button}
+                </div>
+            </div>
+        `;
+    }
+
+    const rows = signals.map((signal) => {
+        const route = `/app/sei-signal/${encodeURIComponent(signal.name)}`;
+        const counts = signal.counts_toward_qualification ? __('Yes') : __('No');
+        const confidence = signal.confidence === null || signal.confidence === undefined
+            ? ''
+            : `${flt(signal.confidence, 2)}%`;
+
+        return `
+            <tr>
+                <td><a href="${route}">${frappe.utils.escape_html(signal.signal_type || signal.name)}</a></td>
+                <td>${render_signal_badge(signal.signal_strength)}</td>
+                <td>${frappe.utils.escape_html(signal.evidence_basis || '')}</td>
+                <td>${counts}</td>
+                <td>${confidence}</td>
+                <td>${frappe.utils.escape_html(signal.source_date || '')}</td>
+            </tr>
+        `;
+    }).join('');
+
+    return `
+        <div class="sei-signals-embedded-list">
+            <div class="flex justify-between align-center" style="margin-bottom: var(--margin-sm);">
+                <p class="text-muted" style="margin: 0;">${__('Signals linked to this prospect')}</p>
+                ${new_button}
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>${__('Signal Type')}</th>
+                            <th>${__('Strength')}</th>
+                            <th>${__('Evidence')}</th>
+                            <th>${__('Counts')}</th>
+                            <th>${__('Confidence')}</th>
+                            <th>${__('Source Date')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>${rows}</tbody>
+                </table>
+            </div>
+        </div>
+    `;
+}
+
+function render_signal_badge(strength) {
+    if (!strength) return '';
+    const color = {
+        Strong: 'green',
+        Moderate: 'orange',
+        Weak: 'gray'
+    }[strength] || 'gray';
+    return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(strength)}</span>`;
 }
