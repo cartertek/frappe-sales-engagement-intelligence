@@ -1,4 +1,5 @@
 frappe.listview_settings['SEI Prospect'] = {
+    show_tags: true,
     add_fields: [
         'prospect_name',
         'prospect_type',
@@ -10,7 +11,7 @@ frappe.listview_settings['SEI Prospect'] = {
         'next_action_date',
         'crm_lead',
         'crm_deal',
-        'assigned_to'
+        '_user_tags'
     ],
     get_indicator(doc) {
         const colors = {

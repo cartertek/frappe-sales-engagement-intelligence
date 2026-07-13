@@ -367,7 +367,7 @@
    "label": "Assigned To",
    "fieldtype": "Link",
    "options": "User",
-   "in_list_view": 1,
+   "in_list_view": 0,
    "idx": 37
   },
   {
