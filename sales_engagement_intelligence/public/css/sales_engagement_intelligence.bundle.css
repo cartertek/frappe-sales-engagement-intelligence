@@ -15,3 +15,42 @@
   text-align: center;
   line-height: 1.2;
 }
+
+/* Match Frappe tag pills to SEI list/form pill styling without changing framework CSS. */
+[data-route^="List/SEI "] .tag-pill,
+[data-route^="Form/SEI "] .tag-pill,
+[data-route^="List/SEI%20"] .tag-pill,
+[data-route^="Form/SEI%20"] .tag-pill,
+[data-route^="query-report/SEI "] .tag-pill,
+[data-route^="query-report/SEI%20"] .tag-pill,
+[data-route="prospecting"] .tag-pill,
+[data-route="crm-review"] .tag-pill,
+[data-route="Review Records"] .tag-pill,
+[data-route="CRM Review"] .tag-pill {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 20px;
+  border: 0;
+  border-radius: var(--border-radius-full, 999px);
+  padding: 2px 8px;
+  background: var(--bg-green, var(--control-bg));
+  color: var(--text-on-green, var(--text-color));
+  font-size: var(--text-xs);
+  font-weight: var(--weight-regular);
+  line-height: 1.4;
+}
+
+[data-route^="List/SEI "] .tag-pill a,
+[data-route^="Form/SEI "] .tag-pill a,
+[data-route^="List/SEI%20"] .tag-pill a,
+[data-route^="Form/SEI%20"] .tag-pill a,
+[data-route^="query-report/SEI "] .tag-pill a,
+[data-route^="query-report/SEI%20"] .tag-pill a,
+[data-route="prospecting"] .tag-pill a,
+[data-route="crm-review"] .tag-pill a,
+[data-route="Review Records"] .tag-pill a,
+[data-route="CRM Review"] .tag-pill a {
+  color: inherit;
+}
+
