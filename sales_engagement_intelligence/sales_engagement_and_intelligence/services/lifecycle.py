@@ -38,14 +38,6 @@ def has_signals(prospect: Document) -> bool:
     return bool(prospect_name and frappe.db.exists("SEI Signal", {"prospect": prospect_name}))
 
 
-def has_research_evidence(prospect: Document) -> bool:
-    return bool(
-        prospect.get("last_researched_date")
-        or prospect.get("signal_summary")
-        or has_signals(prospect)
-    )
-
-
 def suggest_lifecycle_status(prospect_name: str) -> str:
     return suggest_lifecycle_status_for_doc(frappe.get_doc("SEI Prospect", prospect_name))
 
@@ -69,18 +61,16 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
         return "Research Complete"
 
     if prospect.qualification_status in ("Unqualified", None, ""):
-        if prospect.lifecycle_status == "Research Complete":
-            return "Rejected"
-        if prospect.lifecycle_status in ("New", "Needs Research"):
-            return prospect.lifecycle_status or "Needs Research"
-        if has_research_evidence(prospect):
-            return "Rejected"
-        return "Needs Research"
+        if prospect.lifecycle_status in ("New", "Needs Research", "Research Complete"):
+            return prospect.lifecycle_status or "New"
+        if prospect.get("last_researched_date") or prospect.get("signal_summary") or has_signals(prospect):
+            return "Research Complete"
+        return "New"
 
-    if has_research_evidence(prospect):
+    if prospect.get("last_researched_date") or prospect.get("signal_summary") or has_signals(prospect):
         return "Research Complete"
 
-    return prospect.lifecycle_status or "Needs Research"
+    return prospect.lifecycle_status or "New"
 
 
 def apply_lifecycle_to_doc(prospect: Document) -> dict:
@@ -88,9 +78,6 @@ def apply_lifecycle_to_doc(prospect: Document) -> dict:
     new_status = suggest_lifecycle_status_for_doc(prospect)
     if old_status != new_status:
         prospect.lifecycle_status = new_status
-    if new_status == "Rejected":
-        prospect.qualification_status = "Rejected"
-        prospect.ready_for_crm_conversion = 0
     return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
 
 
@@ -100,13 +87,11 @@ def apply_lifecycle_status(prospect_name: str) -> dict:
     new_status = suggest_lifecycle_status_for_doc(prospect)
 
     if old_status != new_status:
-        values = {"lifecycle_status": new_status}
-        if new_status == "Rejected":
-            values.update({"qualification_status": "Rejected", "ready_for_crm_conversion": 0})
         frappe.db.set_value(
             "SEI Prospect",
             prospect_name,
-            values,
+            "lifecycle_status",
+            new_status,
             update_modified=True,
         )
         frappe.get_doc("SEI Prospect", prospect_name).notify_update()
