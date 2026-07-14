@@ -21,7 +21,7 @@ Signal-only import must match an existing prospect by `prospect_name`, `prospect
 Use the Select values configured on the current SEI DocTypes. Common values include:
 
 - Prospect Type: `Agency`, `Startup`, `SMB`, `Enterprise`, `Ecosystem Partner`, `Directory Lead`, `Community Lead`, `Procurement Lead`, `Referral Partner`, `Other`.
-- Signal Type: `Failed Recruitment`, `Technical Distress`, `Launch Aftermath`, `Agency Overflow`, `Ecosystem Adjacency`, `Vendor`, `Directory Presence`, `Community Request`, `Procurement Visibility`, `Credibility`, `Referral Signal`, `Reactivation Signal`, `Other`.
+- Signal Type: `Failed Recruitment`, `Technical Distress`, `Launch Aftermath`, `Agency Overflow`, `Ecosystem Adjacency`, `Vendor/Directory Presence`, `Community Request`, `Procurement Visibility`, `Credibility/Referral Signal`, `Reactivation Signal`.
 - Signal Strength: `Weak`, `Moderate`, `Strong`.
 - Evidence Basis: `Observed`, `Inferred`.
 

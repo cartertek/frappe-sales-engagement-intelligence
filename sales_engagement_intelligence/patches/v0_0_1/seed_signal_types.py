@@ -53,11 +53,6 @@ SIGNAL_TYPES = [
         "description": "Fresh timing signal that makes a prior prospect worth revisiting.",
         "thesis": "Technical Diagnostic / Second Set of Eyes",
     },
-    {
-        "signal_type_name": "Other",
-        "description": "Fallback signal type for reviewed evidence that does not fit the default taxonomy.",
-        "thesis": "Technical Diagnostic / Second Set of Eyes",
-    },
 ]
 
 
@@ -72,3 +67,17 @@ def execute() -> None:
             doc.save(ignore_permissions=True)
         else:
             frappe.get_doc({"doctype": "SEI Signal Type", **row}).insert(ignore_permissions=True)
+
+    remove_deprecated_signal_type("Other")
+
+
+def remove_deprecated_signal_type(signal_type: str) -> None:
+    if not frappe.db.exists("SEI Signal Type", signal_type):
+        return
+
+    linked_signal = frappe.db.exists("SEI Signal", {"signal_type": signal_type})
+    linked_rule = frappe.db.exists("SEI Playbook Signal Rule", {"signal_type": signal_type})
+    if linked_signal or linked_rule:
+        return
+
+    frappe.delete_doc("SEI Signal Type", signal_type, ignore_permissions=True, force=True)
