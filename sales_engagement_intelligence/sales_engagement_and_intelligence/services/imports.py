@@ -35,7 +35,12 @@ PROSPECT_FIELDS = {
     "notes",
 }
 DATE_FIELDS = {"first_seen_date", "last_researched_date", "next_action_date", "source_date", "review_date"}
-BOOLEAN_FIELDS = {"exclude_from_qualification", "initial_exclude_from_qualification", "counts_toward_qualification", "initial_counts_toward_qualification"}
+BOOLEAN_FIELDS = {
+    "exclude_from_qualification",
+    "initial_exclude_from_qualification",
+    "counts_toward_qualification",
+    "initial_counts_toward_qualification",
+}
 PROTECTED_IMPORT_FIELDS = {
     "manual_qualification_override",
     "manual_qualification_reason",
