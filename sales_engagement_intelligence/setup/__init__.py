@@ -591,6 +591,21 @@ def _prospecting_workspace_content() -> list:
             }
         )
 
+    content.append(
+        {
+            "id": "prospecting_queue_guidance",
+            "type": "paragraph",
+            "data": {
+                "text": (
+                    "Research Complete is for Needs Review prospects. "
+                    "Unqualified prospects should remain in Needs Research until a decision is possible, "
+                    "or move to Rejected when research is complete and no qualifying evidence exists."
+                ),
+                "col": 12,
+            },
+        }
+    )
+
     for section_id, title, intro, shortcuts in (
         (
             "daily_workflow",
