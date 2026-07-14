@@ -7,3 +7,11 @@ Observed evidence is directly visible in a source such as a job post, issue trac
 Playbook signal rules guide research but do not replace qualification logic. Assigning a playbook does not mark a prospect qualified, change lifecycle status, or create CRM records.
 
 Manual qualification overrides require a reason. Rejected and Do Not Contact remain protected lifecycle states.
+
+## Lifecycle disposition for unqualified prospects
+
+Unqualified means the evidence threshold was not met. It does not by itself mean more research is needed.
+
+- Keep the prospect in Needs Research when more investigation is still required before a disposition decision.
+- Move the prospect to Rejected when research is complete and no qualifying outreach evidence exists.
+- Use Research Complete for Needs Review prospects that have enough evidence for a human review decision, not for researched prospects that are already known to be unqualified.
