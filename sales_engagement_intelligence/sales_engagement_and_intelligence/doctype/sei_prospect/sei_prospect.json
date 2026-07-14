@@ -21,7 +21,6 @@
   "first_seen_date",
   "last_researched_date",
   "positioning_section",
-  "thesis",
   "offer",
   "signal_summary",
   "contact_target_notes",
@@ -160,15 +159,6 @@
    "label": "Positioning",
    "fieldtype": "Section Break",
    "idx": 13
-  },
-  {
-   "fieldname": "thesis",
-   "label": "Thesis",
-   "fieldtype": "Link",
-   "options": "SEI Thesis",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "idx": 14
   },
   {
    "fieldname": "offer",

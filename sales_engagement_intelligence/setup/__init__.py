@@ -16,6 +16,7 @@ def after_migrate() -> None:
     repair_sei_desktop_layout()
     ensure_milestone_5_workspace_items()
     ensure_milestone_6_workspace_reports()
+    ensure_signal_type_seed_data()
     ensure_milestone_8_seed_data()
     ensure_milestone_8_workspace_items()
     frappe.clear_cache()
@@ -89,6 +90,17 @@ def _repair_layout_node(node) -> bool:
         changed = _repair_layout_node(value) or changed
 
     return changed
+
+
+def ensure_signal_type_seed_data() -> None:
+    """Keep managed signal type taxonomy seeded after migrations."""
+
+    try:
+        from sales_engagement_intelligence.patches.v0_0_1.seed_signal_types import execute as seed_signal_types
+
+        seed_signal_types()
+    except Exception:
+        frappe.log_error(title="SEI signal type seed repair failed", message=frappe.get_traceback())
 
 
 def ensure_milestone_5_workspace_items() -> None:

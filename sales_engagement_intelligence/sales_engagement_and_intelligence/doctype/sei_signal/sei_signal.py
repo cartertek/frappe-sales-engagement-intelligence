@@ -1,9 +1,12 @@
 import frappe
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import resolve_signal_type
 from frappe.model.document import Document
 
 
 class SEISignal(Document):
     def validate(self):
+        if self.signal_type:
+            self.signal_type = resolve_signal_type(self.signal_type)
         self.set_prospect_name()
         if not self.exclude_from_qualification and self.evidence_basis == 'Inferred':
             frappe.msgprint(

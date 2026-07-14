@@ -4,6 +4,10 @@ import re
 from dataclasses import dataclass
 
 import frappe
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    get_prospect_theses,
+    get_signal_type_thesis,
+)
 
 VARIABLES = (
     "prospect_name",
@@ -59,8 +63,9 @@ def preview_message_draft(prospect: str, template: str) -> dict:
 
 
 def build_context(prospect_doc, template_doc) -> dict[str, str]:
-    thesis_name = prospect_doc.thesis or template_doc.thesis or ""
-    thesis_label = thesis_name
+    derived_theses = get_prospect_theses(prospect_doc.name)
+    thesis_name = (derived_theses[0] if derived_theses else None) or template_doc.thesis or ""
+    thesis_label = ", ".join(derived_theses) if derived_theses else thesis_name
     offer = prospect_doc.offer or ""
     asset = template_doc.asset or ""
 
@@ -107,7 +112,8 @@ def _primary_signal_summary(prospect: str) -> str:
     if not rows:
         return ""
     row = rows[0]
-    parts = [row.signal_strength, row.evidence_basis, row.signal_type]
+    signal_label = frappe.db.get_value("SEI Signal Type", row.signal_type, "signal_type_name") or row.signal_type
+    parts = [row.signal_strength, row.evidence_basis, signal_label]
     summary = " ".join([part for part in parts if part])
     if row.evidence_notes:
         summary = f"{summary}: {row.evidence_notes}" if summary else row.evidence_notes

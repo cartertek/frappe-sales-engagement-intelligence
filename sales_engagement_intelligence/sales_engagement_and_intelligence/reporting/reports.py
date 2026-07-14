@@ -78,6 +78,27 @@ def _single_row_chart(row, fields, dataset_name):
     }
 
 
+
+
+def _prospect_theses_expr(alias: str = "p") -> str:
+    return (
+        f"(SELECT GROUP_CONCAT(DISTINCT st.thesis ORDER BY st.thesis SEPARATOR ', ') "
+        f"FROM {utils.table('SEI Signal')} s "
+        f"INNER JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type "
+        f"WHERE s.prospect = {alias}.name)"
+    )
+
+def _prospect_thesis_filter(filters, alias: str = "p") -> tuple[str, dict]:
+    thesis = (filters or {}).get("sei_thesis") or (filters or {}).get("thesis")
+    if not thesis:
+        return "", {}
+    return (
+        f" AND EXISTS (SELECT 1 FROM {utils.table('SEI Signal')} s "
+        f"INNER JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type "
+        f"WHERE s.prospect = {alias}.name AND st.thesis = %(derived_thesis)s)",
+        {"derived_thesis": thesis},
+    )
+
 def _execute_prospect_lifecycle_summary(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
@@ -94,11 +115,11 @@ def _execute_prospect_lifecycle_summary(filters):
 def _execute_active_prospect_queue(filters):
     if not utils.has_doctype("SEI Prospect"):
         return utils.empty_result("SEI Prospect is not installed.")
-    where, params = utils.make_conditions(filters, "SEI Prospect", {"lifecycle_status": "lifecycle_status", "qualification_status": "qualification_status", "assigned_to": "assigned_to", "source_arena": "source_arena", "sei_thesis": "thesis"})
-    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Prospect Type", "prospect_type"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _data("Qualification Status", "qualification_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Next Action", "next_action"), _date("Next Action Date", "next_action_date"), _link("Assigned To", "assigned_to", "User"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Deal", "crm_deal", "CRM Deal"), _datetime("Modified", "modified")]
+    where, params = utils.make_conditions(filters, "SEI Prospect", {"lifecycle_status": "lifecycle_status", "qualification_status": "qualification_status", "assigned_to": "assigned_to", "source_arena": "source_arena"})
+    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Prospect Type", "prospect_type"), _data("Source Arena", "source_arena"), _data("Theses", "theses", 220), _data("Qualification Status", "qualification_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Next Action", "next_action"), _date("Next Action Date", "next_action_date"), _link("Assigned To", "assigned_to", "User"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Deal", "crm_deal", "CRM Deal"), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT name prospect, prospect_type, source_arena, thesis, qualification_status, lifecycle_status, next_action, next_action_date, assigned_to, crm_lead, crm_deal, modified
-        FROM {utils.table('SEI Prospect')}{where}
+        SELECT p.name prospect, p.prospect_type, p.source_arena, {_prospect_theses_expr("p")} theses, p.qualification_status, p.lifecycle_status, p.next_action, p.next_action_date, p.assigned_to, p.crm_lead, p.crm_deal, p.modified
+        FROM {utils.table('SEI Prospect')} p{where.replace(utils.table('SEI Prospect'), 'p')}
         ORDER BY COALESCE(next_action_date, '2999-12-31'), modified DESC
     """, params)
     return columns, data
@@ -110,13 +131,13 @@ def _execute_ready_for_crm_conversion(filters):
     where, params = utils.make_conditions(
         filters,
         "SEI Prospect",
-        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+        {"source_arena": "source_arena"},
     )
-    filter_sql = where.replace(" WHERE ", " AND ", 1)
-    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Website", "website"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _data("Qualification Explanation", "qualification_explanation", 260), _data("Primary Contact Email", "primary_contact_email", 220), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _link("CRM Deal", "crm_deal", "CRM Deal"), _date("Next Action Date", "next_action_date")]
+    filter_sql = where.replace(" WHERE ", " AND ", 1).replace(utils.table("SEI Prospect"), "p")
+    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Website", "website"), _data("Source Arena", "source_arena"), _data("Theses", "theses", 220), _data("Qualification Explanation", "qualification_explanation", 260), _data("Primary Contact Email", "primary_contact_email", 220), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _link("CRM Deal", "crm_deal", "CRM Deal"), _date("Next Action Date", "next_action_date")]
     data = _sql(f"""
-        SELECT name prospect, website, source_arena, thesis, qualification_explanation, primary_contact_email, crm_lead, crm_organization, crm_contact contact, crm_deal, next_action_date
-        FROM {utils.table('SEI Prospect')}
+        SELECT p.name prospect, p.website, p.source_arena, {_prospect_theses_expr("p")} theses, p.qualification_explanation, p.primary_contact_email, p.crm_lead, p.crm_organization, p.crm_contact contact, p.crm_deal, p.next_action_date
+        FROM {utils.table('SEI Prospect')} p
         WHERE qualification_status IN ('Qualified', 'Manually Approved')
           AND ready_for_crm_conversion = 1
           AND COALESCE(do_not_contact, 0) = 0
@@ -137,14 +158,13 @@ def _execute_terminal_status_review(filters):
             "lifecycle_status": "lifecycle_status",
             "qualification_status": "qualification_status",
             "source_arena": "source_arena",
-            "sei_thesis": "thesis",
-        },
+                    },
     )
-    filter_sql = where.replace(" WHERE ", " AND ", 1)
-    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Lifecycle Status", "lifecycle_status"), _data("Qualification Status", "qualification_status"), _data("Rejected Reason", "rejected_reason", 240), _check("Do Not Contact", "do_not_contact"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _link("Modified By", "modified_by", "User"), _datetime("Modified", "modified")]
+    filter_sql = where.replace(" WHERE ", " AND ", 1).replace(utils.table("SEI Prospect"), "p")
+    columns = [_link("Prospect", "prospect", "SEI Prospect"), _data("Lifecycle Status", "lifecycle_status"), _data("Qualification Status", "qualification_status"), _data("Rejected Reason", "rejected_reason", 240), _check("Do Not Contact", "do_not_contact"), _data("Source Arena", "source_arena"), _data("Theses", "theses", 220), _link("Modified By", "modified_by", "User"), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT name prospect, lifecycle_status, qualification_status, rejected_reason, do_not_contact, source_arena, thesis, modified_by, modified
-        FROM {utils.table('SEI Prospect')}
+        SELECT p.name prospect, p.lifecycle_status, p.qualification_status, p.rejected_reason, p.do_not_contact, p.source_arena, {_prospect_theses_expr("p")} theses, p.modified_by, p.modified
+        FROM {utils.table('SEI Prospect')} p
         WHERE (lifecycle_status IN ('Rejected', 'Do Not Contact') OR qualification_status IN ('Rejected', 'Do Not Contact') OR COALESCE(do_not_contact, 0) = 1)
           {filter_sql}
         ORDER BY modified DESC
@@ -167,9 +187,9 @@ def _execute_signals_by_type_and_strength(filters):
     )
     columns = [_data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Exclude from Qualification", "exclude_from_qualification"), _int("Signal Count", "signal_count"), _int("Prospect Count", "prospect_count")]
     data = _sql(f"""
-        SELECT signal_type, signal_strength, evidence_basis, exclude_from_qualification, COUNT(*) signal_count, COUNT(DISTINCT prospect) prospect_count
-        FROM {utils.table('SEI Signal')}{where}
-        GROUP BY signal_type, signal_strength, evidence_basis, exclude_from_qualification
+        SELECT COALESCE(st.signal_type_name, s.signal_type) signal_type, s.signal_strength, s.evidence_basis, s.exclude_from_qualification, COUNT(*) signal_count, COUNT(DISTINCT s.prospect) prospect_count
+        FROM {utils.table('SEI Signal')} s LEFT JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type {where.replace(utils.table('SEI Signal'), 's')}
+        GROUP BY COALESCE(st.signal_type_name, s.signal_type), s.signal_strength, s.evidence_basis, s.exclude_from_qualification
         ORDER BY signal_type, signal_strength, evidence_basis
     """, params)
     return columns, data, None, _bar_chart(data, "signal_type", "signal_count", "Signals")
@@ -189,7 +209,7 @@ def _execute_qualification_by_signal_type(filters):
     )
     columns = [_data("Signal Type", "signal_type"), _int("Total Prospects", "total_prospects"), _int("Qualified Prospects", "qualified_prospects"), _int("Manually Approved Prospects", "manually_approved_prospects"), _int("Needs Review Prospects", "needs_review_prospects"), _int("Rejected Prospects", "rejected_prospects"), _int("Do Not Contact Prospects", "do_not_contact_prospects"), _percent("Qualification Rate", "qualification_rate")]
     data = _sql(f"""
-        SELECT s.signal_type,
+        SELECT COALESCE(st.signal_type_name, s.signal_type) signal_type,
                COUNT(DISTINCT p.name) total_prospects,
                COUNT(DISTINCT CASE WHEN p.qualification_status = 'Qualified' THEN p.name END) qualified_prospects,
                COUNT(DISTINCT CASE WHEN p.qualification_status = 'Manually Approved' THEN p.name END) manually_approved_prospects,
@@ -199,8 +219,9 @@ def _execute_qualification_by_signal_type(filters):
                {utils.pct_expr("COUNT(DISTINCT CASE WHEN p.qualification_status IN ('Qualified','Manually Approved') THEN p.name END)", "COUNT(DISTINCT p.name)")} qualification_rate
         FROM {utils.table('SEI Signal')} s
         LEFT JOIN {utils.table('SEI Prospect')} p ON p.name = s.prospect
+        LEFT JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type
         {where.replace(utils.table('SEI Signal'), 's')}
-        GROUP BY s.signal_type
+        GROUP BY COALESCE(st.signal_type_name, s.signal_type)
         ORDER BY qualification_rate DESC, total_prospects DESC
     """, params)
     return columns, data, None, _bar_chart(data, "signal_type", "total_prospects", "Prospects")
@@ -277,9 +298,38 @@ def _execute_prospects_by_source_arena(filters):
 
 
 def _execute_outcomes_by_thesis(filters):
-    if not utils.has_doctype("SEI Prospect"):
-        return utils.empty_result("SEI Prospect is not installed.")
-    return _source_or_thesis("thesis", "Thesis", "thesis", filters)
+    if not utils.doctypes_available("SEI Prospect", "SEI Signal", "SEI Signal Type"):
+        return utils.empty_result("SEI Prospect, SEI Signal, and SEI Signal Type are required.")
+    where, params = utils.make_conditions(
+        filters,
+        "SEI Prospect",
+        {
+            "source_arena": "source_arena",
+            "qualification_status": "qualification_status",
+            "lifecycle_status": "lifecycle_status",
+        },
+    )
+    columns = [_link("Thesis", "thesis", "SEI Thesis"), _int("Total Prospects", "total_prospects"), _int("Qualified Prospects", "qualified_prospects"), _int("Manually Approved Prospects", "manually_approved_prospects"), _int("Ready for CRM Conversion", "ready_for_crm_conversion"), _int("Converted to CRM Lead", "converted_to_crm_lead"), _int("Converted to CRM Deal", "converted_to_crm_deal"), _int("Rejected", "rejected"), _int("Do Not Contact", "do_not_contact"), _percent("Qualification Rate", "qualification_rate"), _percent("CRM Lead Conversion Rate", "crm_lead_conversion_rate"), _percent("CRM Deal Conversion Rate", "crm_deal_conversion_rate")]
+    data = _sql(f"""
+        SELECT st.thesis thesis, COUNT(DISTINCT p.name) total_prospects,
+               COUNT(DISTINCT CASE WHEN p.qualification_status = 'Qualified' THEN p.name END) qualified_prospects,
+               COUNT(DISTINCT CASE WHEN p.qualification_status = 'Manually Approved' THEN p.name END) manually_approved_prospects,
+               COUNT(DISTINCT CASE WHEN COALESCE(p.ready_for_crm_conversion,0)=1 THEN p.name END) ready_for_crm_conversion,
+               COUNT(DISTINCT CASE WHEN COALESCE(p.crm_lead,'')!='' OR p.lifecycle_status='Converted to CRM Lead' THEN p.name END) converted_to_crm_lead,
+               COUNT(DISTINCT CASE WHEN COALESCE(p.crm_deal,'')!='' OR p.lifecycle_status='Converted to CRM Deal' THEN p.name END) converted_to_crm_deal,
+               COUNT(DISTINCT CASE WHEN p.qualification_status='Rejected' OR p.lifecycle_status='Rejected' THEN p.name END) rejected,
+               COUNT(DISTINCT CASE WHEN p.qualification_status='Do Not Contact' OR p.lifecycle_status='Do Not Contact' OR COALESCE(p.do_not_contact,0)=1 THEN p.name END) do_not_contact,
+               {utils.pct_expr("COUNT(DISTINCT CASE WHEN p.qualification_status IN ('Qualified','Manually Approved') THEN p.name END)", "COUNT(DISTINCT p.name)")} qualification_rate,
+               {utils.pct_expr("COUNT(DISTINCT CASE WHEN COALESCE(p.crm_lead,'')!='' OR p.lifecycle_status='Converted to CRM Lead' THEN p.name END)", "COUNT(DISTINCT p.name)")} crm_lead_conversion_rate,
+               {utils.pct_expr("COUNT(DISTINCT CASE WHEN COALESCE(p.crm_deal,'')!='' OR p.lifecycle_status='Converted to CRM Deal' THEN p.name END)", "COUNT(DISTINCT p.name)")} crm_deal_conversion_rate
+        FROM {utils.table('SEI Prospect')} p
+        INNER JOIN {utils.table('SEI Signal')} s ON s.prospect = p.name
+        INNER JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type
+        {where.replace(utils.table('SEI Prospect'), 'p')}
+        GROUP BY st.thesis
+        ORDER BY total_prospects DESC
+    """, params)
+    return columns, data, None, _bar_chart(data, "thesis", "total_prospects", "Prospects")
 
 
 def _execute_asset_usage_and_outcomes(filters):
@@ -319,7 +369,7 @@ def _execute_offer_performance(filters):
     where, params = utils.make_conditions(
         filters,
         "SEI Prospect",
-        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+        {"source_arena": "source_arena"},
     )
     columns = [_data("Offer", "offer"), _int("Prospect Count", "prospect_count"), _int("Interaction Count", "interaction_count"), _int("Qualified Prospects", "qualified_prospects"), _int("Positive Responses", "positive_responses"), _int("Meeting Booked", "meeting_booked"), _int("CRM Leads", "crm_leads"), _int("CRM Deals", "crm_deals")]
     data = _sql(f"""
@@ -374,15 +424,14 @@ def _execute_crm_lead_conversion_detail(filters):
         "SEI Prospect",
         {
             "source_arena": "source_arena",
-            "sei_thesis": "thesis",
-            "qualification_status": "qualification_status",
+                        "qualification_status": "qualification_status",
         },
     )
-    filter_sql = where.replace(" WHERE ", " AND ", 1)
-    columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _data("Qualification Status", "qualification_status"), _data("Lifecycle Status", "lifecycle_status"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Primary Contact Email", "primary_contact_email", 220), _datetime("Converted / Linked Date", "converted_linked_date"), _datetime("Modified", "modified")]
+    filter_sql = where.replace(" WHERE ", " AND ", 1).replace(utils.table("SEI Prospect"), "p")
+    columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _data("Theses", "theses", 220), _data("Qualification Status", "qualification_status"), _data("Lifecycle Status", "lifecycle_status"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Primary Contact Email", "primary_contact_email", 220), _datetime("Converted / Linked Date", "converted_linked_date"), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT name sei_prospect, source_arena, thesis, qualification_status, lifecycle_status, crm_lead, crm_organization, crm_contact contact, primary_contact_email, modified converted_linked_date, modified
-        FROM {utils.table('SEI Prospect')}
+        SELECT p.name sei_prospect, p.source_arena, {_prospect_theses_expr("p")} theses, p.qualification_status, p.lifecycle_status, p.crm_lead, p.crm_organization, p.crm_contact contact, p.primary_contact_email, p.modified converted_linked_date, p.modified
+        FROM {utils.table('SEI Prospect')} p
         WHERE COALESCE(crm_lead, '') != ''
           {filter_sql}
         ORDER BY modified DESC
@@ -398,16 +447,16 @@ def _execute_crm_deal_conversion_detail(filters):
     where, params = utils.make_conditions(
         filters,
         "SEI Prospect",
-        {"source_arena": "source_arena", "sei_thesis": "thesis"},
+        {"source_arena": "source_arena"},
     )
-    filter_sql = where.replace(" WHERE ", " AND ", 1)
+    filter_sql = where.replace(" WHERE ", " AND ", 1).replace(utils.table("SEI Prospect"), "p")
     if utils.has_doctype("SEI Interaction Attribution"):
         commercial_basis = f"""CASE WHEN EXISTS (SELECT 1 FROM {utils.table('SEI Interaction Attribution')} ia WHERE ia.prospect = p.name AND ia.response_category IN ('Positive','Interested','Meeting Booked','Converted to Deal')) THEN 'Attributed commercial response' ELSE NULL END"""
     else:
         commercial_basis = "NULL"
-    columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _link("Thesis", "thesis", "SEI Thesis"), _link("Primary Signal", "primary_signal", "SEI Signal"), _link("CRM Deal", "crm_deal", "CRM Deal"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Deal Status", "deal_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Commercial Basis", "commercial_basis", 200), _datetime("Modified", "modified")]
+    columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Source Arena", "source_arena"), _data("Theses", "theses", 220), _link("Primary Signal", "primary_signal", "SEI Signal"), _link("CRM Deal", "crm_deal", "CRM Deal"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Deal Status", "deal_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Commercial Basis", "commercial_basis", 200), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT p.name sei_prospect, p.source_arena, p.thesis, (SELECT s.name FROM {utils.table('SEI Signal')} s WHERE s.prospect = p.name ORDER BY s.source_date DESC, s.creation DESC LIMIT 1) primary_signal,
+        SELECT p.name sei_prospect, p.source_arena, {_prospect_theses_expr("p")} theses, (SELECT s.name FROM {utils.table('SEI Signal')} s WHERE s.prospect = p.name ORDER BY s.source_date DESC, s.creation DESC LIMIT 1) primary_signal,
                p.crm_deal, p.crm_lead, p.crm_organization, p.crm_contact contact, {deal_status} deal_status, p.lifecycle_status,
                {commercial_basis} commercial_basis,
                p.modified
@@ -438,10 +487,10 @@ def _execute_crm_context_missing(filters):
     if utils.has_doctype("SEI Prospect"):
         rows.extend(_sql(f"""
             SELECT 'SEI Prospect' record_type, name record,
-                   CONCAT_WS(', ', CASE WHEN COALESCE(crm_lead,'') != '' AND COALESCE(source_arena,'') = '' THEN 'source_arena' END, CASE WHEN COALESCE(crm_deal,'') != '' AND COALESCE(thesis,'') = '' THEN 'thesis' END) missing_context,
+                   CONCAT_WS(', ', CASE WHEN COALESCE(crm_lead,'') != '' AND COALESCE(source_arena,'') = '' THEN 'source_arena' END) missing_context,
                    modified
             FROM {utils.table('SEI Prospect')}
-            WHERE (COALESCE(crm_lead,'') != '' OR COALESCE(crm_deal,'') != '') AND (COALESCE(source_arena,'') = '' OR COALESCE(thesis,'') = '')
+            WHERE (COALESCE(crm_lead,'') != '' OR COALESCE(crm_deal,'') != '') AND COALESCE(source_arena,'') = ''
         """))
     return columns, rows
 
@@ -499,7 +548,7 @@ def _execute_import_batch_row_errors(filters):
         "SEI Import Batch Row",
         {"import_batch": "parent", "row_status": "row_status"},
     )
-    filter_sql = where.replace(" WHERE ", " AND ", 1)
+    filter_sql = where.replace(" WHERE ", " AND ", 1).replace(utils.table("SEI Prospect"), "p")
     columns = [
         _link("Import Batch", "import_batch", "SEI Import Batch"),
         _int("Row Number", "row_number"),
@@ -580,11 +629,10 @@ def _execute_interaction_attribution_summary(filters):
             "interaction_type": "interaction_type",
             "channel": "channel",
             "response_category": "response_category",
-            "sei_thesis": "thesis",
-            "sei_asset": "marketing_asset",
+                        "sei_asset": "marketing_asset",
         },
     )
-    columns = [_data("Interaction Type", "interaction_type"), _data("Channel", "channel"), _data("Response Category", "response_category"), _link("Thesis", "thesis", "SEI Thesis"), _link("Asset", "asset", "SEI Asset"), _int("Interaction Count", "interaction_count"), _int("Prospect Count", "prospect_count"), _int("CRM Lead Count", "crm_lead_count"), _int("CRM Deal Count", "crm_deal_count")]
+    columns = [_data("Interaction Type", "interaction_type"), _data("Channel", "channel"), _data("Response Category", "response_category"), _data("Theses", "theses", 220), _link("Asset", "asset", "SEI Asset"), _int("Interaction Count", "interaction_count"), _int("Prospect Count", "prospect_count"), _int("CRM Lead Count", "crm_lead_count"), _int("CRM Deal Count", "crm_deal_count")]
     data = _sql(f"""
         SELECT interaction_type, channel, response_category, thesis, marketing_asset asset, COUNT(*) interaction_count,
                COUNT(DISTINCT prospect) prospect_count, COUNT(DISTINCT crm_lead) crm_lead_count, COUNT(DISTINCT crm_deal) crm_deal_count
@@ -604,7 +652,7 @@ def _execute_response_category_by_thesis(filters):
         {"sei_thesis": "thesis", "channel": "channel"},
     )
     cats = ["No Response", "Positive", "Interested", "Wrong Person", "Not Now", "Already Solved", "No Budget", "Bad Fit", "Unsubscribe / Do Not Contact", "Meeting Booked", "Converted to Deal", "Other"]
-    columns = [_link("Thesis", "thesis", "SEI Thesis")] + [_int(cat, cat.lower().replace(' / ','_').replace(' ','_').replace('-','_')) for cat in cats]
+    columns = [_data("Theses", "theses", 220)] + [_int(cat, cat.lower().replace(' / ','_').replace(' ','_').replace('-','_')) for cat in cats]
     select = ", ".join([f"SUM(CASE WHEN response_category = '{cat}' THEN 1 ELSE 0 END) `{cat.lower().replace(' / ','_').replace(' ','_').replace('-','_')}`" for cat in cats])
     data = _sql(
         f"SELECT thesis, {select} FROM {utils.table('SEI Interaction Attribution')}{where} GROUP BY thesis ORDER BY thesis",
@@ -619,7 +667,7 @@ def _execute_channel_outcome_report(filters):
     where, params = utils.make_conditions(
         filters,
         "SEI Interaction Attribution",
-        {"channel": "channel", "sei_thesis": "thesis"},
+        {"channel": "channel"},
     )
     columns = [_data("Channel", "channel"), _int("Interaction Count", "interaction_count"), _int("Positive", "positive"), _int("Interested", "interested"), _int("Meeting Booked", "meeting_booked"), _int("Converted to Deal", "converted_to_deal"), _int("Bad Fit", "bad_fit"), _int("Unsubscribe / Do Not Contact", "unsubscribe_do_not_contact")]
     data = _sql(f"""

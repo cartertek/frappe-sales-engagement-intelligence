@@ -8,6 +8,7 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 
 import frappe
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import resolve_signal_type
 from frappe.model.document import Document
 from frappe.utils import getdate, now_datetime
 from frappe.utils.file_manager import get_file_path
@@ -216,6 +217,11 @@ def find_existing_sei_signal(prospect_name: str, row: dict) -> Optional[dict]:
 
 
 def _resolve_thesis(row: dict) -> Optional[str]:
+    """Resolve legacy thesis import columns for validation only.
+
+    Prospect thesis is no longer stored directly; thesis membership is derived
+    from SEI Signal Type.thesis through linked signals.
+    """
     thesis = row.get("sei_thesis") or row.get("thesis")
     if not thesis:
         return None
@@ -263,18 +269,14 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
 
 
 def _prospect_values(row: dict) -> dict:
-    values = {field: row.get(field) for field in PROSPECT_FIELDS if row.get(field) is not None}
-    thesis = _resolve_thesis(row)
-    if thesis:
-        values["thesis"] = thesis
-    return values
+    return {field: row.get(field) for field in PROSPECT_FIELDS if row.get(field) is not None}
 
 
 def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
     if initial:
         values = {
             "prospect": prospect,
-            "signal_type": row.get("initial_signal_type"),
+            "signal_type": resolve_signal_type(row.get("initial_signal_type")),
             "signal_strength": row.get("initial_signal_strength"),
             "evidence_basis": row.get("initial_evidence_basis"),
             "confidence": row.get("initial_confidence"),
@@ -286,7 +288,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
     else:
         values = {
             "prospect": prospect,
-            "signal_type": row.get("signal_type"),
+            "signal_type": resolve_signal_type(row.get("signal_type")),
             "signal_strength": row.get("signal_strength"),
             "evidence_basis": row.get("evidence_basis"),
             "confidence": row.get("confidence"),
