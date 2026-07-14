@@ -107,14 +107,14 @@ def test_workspace_and_after_migrate_include_final_navigation_validation():
 
     workspace = json.loads(PROSPECTING_WORKSPACE.read_text())
     labels = {shortcut["label"] for shortcut in workspace["shortcuts"]}
-    assert {"SEI Playbooks", "SEI Message Templates", "Interaction Attribution"} <= labels
+    assert {"Playbooks", "Message Templates", "Interaction Attribution"} <= labels
     content = json.loads(workspace["content"])
     content_labels = {
         item.get("data", {}).get("shortcut_name")
         for item in content
         if isinstance(item, dict) and item.get("type") == "shortcut"
     }
-    assert {"SEI Playbooks", "SEI Message Templates"} <= content_labels
+    assert {"Playbooks", "Message Templates"} <= content_labels
 
 
 def test_prospect_form_has_user_triggered_draft_and_playbook_actions():

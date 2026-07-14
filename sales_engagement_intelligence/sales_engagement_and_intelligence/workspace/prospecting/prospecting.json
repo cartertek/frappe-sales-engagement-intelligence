@@ -1,7 +1,7 @@
 {
  "app": "sales_engagement_intelligence",
  "charts": [],
- "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification workflows.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"daily_workflow_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Daily Workflow</b></span>\", \"col\": 12}}, {\"id\": \"daily_workflow_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Open active prospects, review imports, or start a new import batch.\", \"col\": 12}}, {\"id\": \"daily_workflow_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Prospects\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Import Batches\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Import Batch\", \"col\": 3}}, {\"id\": \"outreach_setup_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Outreach Setup</b></span>\", \"col\": 12}}, {\"id\": \"outreach_setup_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Configure playbooks, message templates, theses, and supporting assets.\", \"col\": 12}}, {\"id\": \"outreach_setup_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Playbooks\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Message Templates\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Theses\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}, {\"id\": \"supporting_records_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Supporting Records</b></span>\", \"col\": 12}}, {\"id\": \"supporting_records_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Review signal evidence and outcome attribution records.\", \"col\": 12}}, {\"id\": \"supporting_records_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Signals\", \"col\": 3}}, {\"id\": \"supporting_records_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Interaction Attribution\", \"col\": 3}}, {\"id\": \"sei_signal_types_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"SEI Signal Types\", \"col\": 3}}]",
+ "content": "[{\"id\": \"prospecting_header\", \"type\": \"header\", \"data\": {\"text\": \"Prospecting\", \"col\": 12}}, {\"id\": \"prospecting_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Pre-CRM research and qualification workflows.\", \"col\": 12}}, {\"id\": \"prospecting_queue_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Prospect Queues</b></span>\", \"col\": 12}}, {\"id\": \"prospecting_queue_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Needs Research\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Research Complete\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Qualified\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Find Contact\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_5\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Ready for CRM Conversion\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_6\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Rejected\", \"col\": 3}}, {\"id\": \"prospecting_queue_shortcut_7\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Do Not Contact\", \"col\": 3}}, {\"id\": \"daily_workflow_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Daily Workflow</b></span>\", \"col\": 12}}, {\"id\": \"daily_workflow_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Open active prospects, review imports, or start a new import batch.\", \"col\": 12}}, {\"id\": \"daily_workflow_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Prospects\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Import Batches\", \"col\": 3}}, {\"id\": \"daily_workflow_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"New Import Batch\", \"col\": 3}}, {\"id\": \"outreach_setup_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Outreach Setup</b></span>\", \"col\": 12}}, {\"id\": \"outreach_setup_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Configure playbooks, message templates, theses, and supporting assets.\", \"col\": 12}}, {\"id\": \"outreach_setup_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Playbooks\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Message Templates\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_3\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Theses\", \"col\": 3}}, {\"id\": \"outreach_setup_shortcut_4\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Assets\", \"col\": 3}}, {\"id\": \"supporting_records_header\", \"type\": \"header\", \"data\": {\"text\": \"<span class=\\\"h4\\\"><b>Supporting Records</b></span>\", \"col\": 12}}, {\"id\": \"supporting_records_intro\", \"type\": \"paragraph\", \"data\": {\"text\": \"Review signal evidence and outcome attribution records.\", \"col\": 12}}, {\"id\": \"supporting_records_shortcut_1\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Signals\", \"col\": 3}}, {\"id\": \"supporting_records_shortcut_2\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Interaction Attribution\", \"col\": 3}}, {\"id\": \"sei_signal_types_shortcut\", \"type\": \"shortcut\", \"data\": {\"shortcut_name\": \"Signal Types\", \"col\": 3}}]",
  "creation": "2026-06-25 00:00:00.000000",
  "custom_blocks": [],
  "docstatus": 0,
@@ -135,7 +135,7 @@
    "hidden": 0
   },
   {
-   "label": "SEI Signal Type",
+   "label": "Signal Type",
    "link_count": 0,
    "link_to": "SEI Signal Type",
    "link_type": "DocType",
@@ -236,14 +236,14 @@
   {
    "type": "DocType",
    "link_to": "SEI Playbook",
-   "label": "SEI Playbooks",
+   "label": "Playbooks",
    "doc_view": "List",
    "color": "Green"
   },
   {
    "type": "DocType",
    "link_to": "SEI Message Template",
-   "label": "SEI Message Templates",
+   "label": "Message Templates",
    "doc_view": "List",
    "color": "Green"
   },
@@ -278,7 +278,7 @@
   {
    "color": "Grey",
    "doc_view": "List",
-   "label": "SEI Signal Types",
+   "label": "Signal Types",
    "link_to": "SEI Signal Type",
    "stats_filter": "[]",
    "type": "DocType"
