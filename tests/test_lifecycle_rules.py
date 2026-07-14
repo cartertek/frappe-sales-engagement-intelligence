@@ -45,6 +45,9 @@ def prospect(**overrides):
         "last_researched_date": None,
         "signal_summary": None,
         "ready_for_crm_conversion": 0,
+        "primary_contact_name": None,
+        "primary_contact_email": None,
+        "primary_contact_url": None,
     }
     values.update(overrides)
     return Prospect(values)
@@ -92,3 +95,50 @@ def test_needs_review_maps_to_research_complete(monkeypatch):
         )
         == "Research Complete"
     )
+
+
+def test_qualified_with_contact_path_maps_to_qualified_not_ready(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Needs Research",
+                primary_contact_email="buyer@example.com",
+            )
+        )
+        == "Qualified"
+    )
+
+
+def test_qualified_without_contact_path_maps_to_find_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(qualification_status="Qualified", lifecycle_status="Needs Research")
+        )
+        == "Find Contact"
+    )
+
+
+def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    requirements = lifecycle.get_crm_readiness_requirements(
+        prospect(
+            qualification_status="Unqualified",
+            lifecycle_status="Do Not Contact",
+            do_not_contact=1,
+            crm_lead="CRM-LEAD-1",
+        )
+    )
+
+    by_key = {requirement["key"]: requirement["met"] for requirement in requirements}
+    assert by_key == {
+        "qualified": False,
+        "not_do_not_contact": False,
+        "not_protected_lifecycle": False,
+        "no_crm_lead": False,
+    }

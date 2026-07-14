@@ -26,12 +26,9 @@ frappe.ui.form.on('SEI Prospect', {
         }, __('Outreach Drafting'));
 
 
-        if (['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
-            && !frm.doc.do_not_contact && !frm.doc.crm_lead) {
-            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
-                call_and_reload(frm, 'mark_ready_for_crm_conversion', { prospect: frm.doc.name });
-            }, __('CRM Preparation'));
-        }
+        frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
+            mark_ready_for_crm_conversion(frm);
+        }, __('CRM Preparation'));
 
         if (can_prepare_crm(frm)) {
             frm.add_custom_button(__('Find CRM Duplicates'), () => show_conversion_preview(frm), __('CRM Preparation'));
@@ -171,6 +168,53 @@ function call_and_reload(frm, action, args) {
             }
             frm.reload_doc();
         }
+    });
+}
+
+function mark_ready_for_crm_conversion(frm) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_ready_for_crm_conversion',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                show_crm_readiness_checklist(message);
+                return;
+            }
+            frappe.msgprint({
+                title: __('SEI Action Complete'),
+                message: __('Prospect marked ready for CRM conversion.'),
+                indicator: 'green'
+            });
+            frm.reload_doc();
+        }
+    });
+}
+
+function show_crm_readiness_checklist(message) {
+    const details = message.error && message.error.details ? message.error.details : {};
+    const requirements = details.requirements || [];
+    const rows = requirements.map((requirement) => {
+        const met = Boolean(requirement.met);
+        const icon = met ? '✓' : '✕';
+        const color = met ? 'green' : 'red';
+        return `
+            <li style="margin-bottom: var(--margin-xs);">
+                <span class="indicator-pill ${color}" style="margin-right: var(--margin-xs);">${icon}</span>
+                ${frappe.utils.escape_html(requirement.label || '')}
+            </li>
+        `;
+    }).join('');
+    const fallback = frappe.utils.escape_html((message.error && message.error.message) || __('Requirements not met.'));
+
+    frappe.msgprint({
+        title: __('CRM Readiness Requirements'),
+        message: `
+            <p>${fallback}</p>
+            <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">${rows}</ul>
+        `,
+        indicator: 'red'
     });
 }
 
