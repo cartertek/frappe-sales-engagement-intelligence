@@ -35,7 +35,12 @@ PROSPECT_FIELDS = {
     "notes",
 }
 DATE_FIELDS = {"first_seen_date", "last_researched_date", "next_action_date", "source_date", "review_date"}
-BOOLEAN_FIELDS = {"counts_toward_qualification", "initial_counts_toward_qualification"}
+BOOLEAN_FIELDS = {
+    "exclude_from_qualification",
+    "initial_exclude_from_qualification",
+    "counts_toward_qualification",
+    "initial_counts_toward_qualification",
+}
 PROTECTED_IMPORT_FIELDS = {
     "manual_qualification_override",
     "manual_qualification_reason",
@@ -78,6 +83,18 @@ def _parse_bool(value: Any) -> int:
     if isinstance(value, (int, float)):
         return 1 if value else 0
     return 1 if str(value).strip().lower() in {"1", "true", "yes", "y", "on"} else 0
+
+
+def _exclude_from_qualification_value(row: dict, initial: bool = False) -> int:
+    """Resolve the new exclusion flag, accepting legacy count-toward columns during transition."""
+    new_field = "initial_exclude_from_qualification" if initial else "exclude_from_qualification"
+    legacy_field = "initial_counts_toward_qualification" if initial else "counts_toward_qualification"
+
+    if row.get(new_field) is not None:
+        return row.get(new_field) or 0
+    if row.get(legacy_field) is not None:
+        return 0 if row.get(legacy_field) else 1
+    return 0
 
 
 def normalize_domain(value: Optional[str]) -> Optional[str]:
@@ -264,7 +281,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "source_url": row.get("initial_signal_source_url") or row.get("source_url"),
             "source_date": row.get("initial_source_date"),
             "evidence_notes": row.get("initial_evidence_notes"),
-            "counts_toward_qualification": row.get("initial_counts_toward_qualification") or 0,
+            "exclude_from_qualification": _exclude_from_qualification_value(row, initial=True),
         }
     else:
         values = {
@@ -276,7 +293,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "source_url": row.get("source_url"),
             "source_date": row.get("source_date"),
             "evidence_notes": row.get("evidence_notes"),
-            "counts_toward_qualification": row.get("counts_toward_qualification") or 0,
+            "exclude_from_qualification": _exclude_from_qualification_value(row),
             "reviewed_by": row.get("reviewed_by"),
             "review_date": row.get("review_date"),
         }
@@ -772,7 +789,7 @@ def find_signals_missing_source_url() -> dict:
 def find_inferred_qualifying_signal_issues() -> dict:
     names = frappe.get_all(
         "SEI Signal",
-        filters={"counts_toward_qualification": 1, "evidence_basis": "Inferred"},
+        filters={"exclude_from_qualification": 0, "evidence_basis": "Inferred"},
         fields=["name", "prospect", "signal_type", "signal_strength"],
     )
     return {"signals": names, "count": len(names)}

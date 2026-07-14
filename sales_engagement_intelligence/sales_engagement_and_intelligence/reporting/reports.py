@@ -162,14 +162,14 @@ def _execute_signals_by_type_and_strength(filters):
             "signal_type": "signal_type",
             "signal_strength": "signal_strength",
             "evidence_basis": "evidence_basis",
-            "counts_toward_qualification": "counts_toward_qualification",
+            "exclude_from_qualification": "exclude_from_qualification",
         },
     )
-    columns = [_data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Counts Toward Qualification", "counts_toward_qualification"), _int("Signal Count", "signal_count"), _int("Prospect Count", "prospect_count")]
+    columns = [_data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Exclude from Qualification", "exclude_from_qualification"), _int("Signal Count", "signal_count"), _int("Prospect Count", "prospect_count")]
     data = _sql(f"""
-        SELECT signal_type, signal_strength, evidence_basis, counts_toward_qualification, COUNT(*) signal_count, COUNT(DISTINCT prospect) prospect_count
+        SELECT signal_type, signal_strength, evidence_basis, exclude_from_qualification, COUNT(*) signal_count, COUNT(DISTINCT prospect) prospect_count
         FROM {utils.table('SEI Signal')}{where}
-        GROUP BY signal_type, signal_strength, evidence_basis, counts_toward_qualification
+        GROUP BY signal_type, signal_strength, evidence_basis, exclude_from_qualification
         ORDER BY signal_type, signal_strength, evidence_basis
     """, params)
     return columns, data, None, _bar_chart(data, "signal_type", "signal_count", "Signals")
@@ -184,7 +184,7 @@ def _execute_qualification_by_signal_type(filters):
         {
             "signal_type": "signal_type",
             "evidence_basis": "evidence_basis",
-            "counts_toward_qualification": "counts_toward_qualification",
+            "exclude_from_qualification": "exclude_from_qualification",
         },
     )
     columns = [_data("Signal Type", "signal_type"), _int("Total Prospects", "total_prospects"), _int("Qualified Prospects", "qualified_prospects"), _int("Manually Approved Prospects", "manually_approved_prospects"), _int("Needs Review Prospects", "needs_review_prospects"), _int("Rejected Prospects", "rejected_prospects"), _int("Do Not Contact Prospects", "do_not_contact_prospects"), _percent("Qualification Rate", "qualification_rate")]
@@ -209,11 +209,11 @@ def _execute_qualification_by_signal_type(filters):
 def _execute_inferred_signal_review(filters):
     if not utils.has_doctype("SEI Signal"):
         return utils.empty_result("SEI Signal is not installed.")
-    columns = [_link("Signal", "signal", "SEI Signal"), _link("Prospect", "prospect", "SEI Prospect"), _data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Counts Toward Qualification", "counts_toward_qualification"), _data("Source URL", "source_url", 240), _data("Evidence Notes", "evidence_notes", 300), _date("Review Date", "review_date")]
+    columns = [_link("Signal", "signal", "SEI Signal"), _link("Prospect", "prospect", "SEI Prospect"), _data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Exclude from Qualification", "exclude_from_qualification"), _data("Source URL", "source_url", 240), _data("Evidence Notes", "evidence_notes", 300), _date("Review Date", "review_date")]
     data = _sql(f"""
-        SELECT name `signal`, prospect, signal_type, signal_strength, evidence_basis, counts_toward_qualification, source_url, evidence_notes, review_date
+        SELECT name `signal`, prospect, signal_type, signal_strength, evidence_basis, exclude_from_qualification, source_url, evidence_notes, review_date
         FROM {utils.table('SEI Signal')}
-        WHERE evidence_basis = 'Inferred' AND COALESCE(counts_toward_qualification, 0) = 1
+        WHERE evidence_basis = 'Inferred' AND COALESCE(exclude_from_qualification, 0) = 0
         ORDER BY modified DESC
     """)
     return columns, data
@@ -560,7 +560,7 @@ def _execute_data_hygiene_dashboard(filters):
     checks = [
         ("Prospects missing source arena", f"SELECT COUNT(*) c FROM {utils.table('SEI Prospect')} WHERE COALESCE(source_arena,'')=''", "Review prospect source attribution."),
         ("Signals missing source URL", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} WHERE COALESCE(source_url,'')=''", "Add original evidence URL where available."),
-        ("Inferred signals marked as qualifying", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} WHERE evidence_basis='Inferred' AND COALESCE(counts_toward_qualification,0)=1", "Review whether inferred evidence should qualify prospects."),
+        ("Inferred signals not excluded from qualification", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} WHERE evidence_basis='Inferred' AND COALESCE(exclude_from_qualification,0)=0", "Mark inferred evidence excluded or change its evidence basis to Observed when appropriate."),
         ("Prospects missing normalized domain where website exists", f"SELECT COUNT(*) c FROM {utils.table('SEI Prospect')} WHERE COALESCE(website,'')!='' AND COALESCE(normalized_domain,'')=''", "Run/repair domain normalization via existing hygiene utilities."),
         ("Duplicate SEI Prospects by normalized domain", f"SELECT COUNT(*) c FROM (SELECT normalized_domain FROM {utils.table('SEI Prospect')} WHERE COALESCE(normalized_domain,'')!='' GROUP BY normalized_domain HAVING COUNT(*) > 1) x", "Review potential duplicate prospects."),
         ("Duplicate SEI Signals by prospect/type/url", f"SELECT COUNT(*) c FROM (SELECT prospect, signal_type, source_url FROM {utils.table('SEI Signal')} GROUP BY prospect, signal_type, source_url HAVING COUNT(*) > 1) x", "Review potential duplicate signals."),

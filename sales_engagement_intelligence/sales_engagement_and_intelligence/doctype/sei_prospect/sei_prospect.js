@@ -410,7 +410,7 @@ function render_signals_embedded_list(frm) {
             'signal_type',
             'signal_strength',
             'evidence_basis',
-            'counts_toward_qualification',
+            'exclude_from_qualification',
             'confidence',
             'source_date',
             'modified'
@@ -451,7 +451,7 @@ function render_signals_table(frm, signals) {
 
     const rows = signals.map((signal) => {
         const route = `/app/sei-signal/${encodeURIComponent(signal.name)}`;
-        const counts = signal.counts_toward_qualification ? __('Yes') : __('No');
+        const excluded = signal.exclude_from_qualification ? __('Yes') : __('No');
         const confidence = signal.confidence === null || signal.confidence === undefined
             ? ''
             : `${flt(signal.confidence, 2)}%`;
@@ -461,7 +461,7 @@ function render_signals_table(frm, signals) {
                 <td><a href="${route}">${frappe.utils.escape_html(signal.signal_type || signal.name)}</a></td>
                 <td>${render_signal_badge(signal.signal_strength)}</td>
                 <td>${frappe.utils.escape_html(signal.evidence_basis || '')}</td>
-                <td>${counts}</td>
+                <td>${excluded}</td>
                 <td>${confidence}</td>
                 <td>${frappe.utils.escape_html(signal.source_date || '')}</td>
             </tr>
@@ -481,7 +481,7 @@ function render_signals_table(frm, signals) {
                             <th>${__('Signal Type')}</th>
                             <th>${__('Strength')}</th>
                             <th>${__('Evidence')}</th>
-                            <th>${__('Counts')}</th>
+                            <th>${__('Excluded')}</th>
                             <th>${__('Confidence')}</th>
                             <th>${__('Source Date')}</th>
                         </tr>

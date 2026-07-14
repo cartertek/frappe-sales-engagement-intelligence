@@ -33,7 +33,7 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     assert rule.get("istable") == 1
     rule_fields = {field["fieldname"]: field for field in rule["fields"]}
     assert rule_fields["signal_type"]["fieldtype"] == "Select"
-    assert rule_fields["counts_toward_qualification"]["fieldtype"] == "Check"
+    assert rule_fields["exclude_from_qualification"]["fieldtype"] == "Check"
 
     assert template["name"] == "SEI Message Template"
     template_fields = {field["fieldname"]: field for field in template["fields"]}
