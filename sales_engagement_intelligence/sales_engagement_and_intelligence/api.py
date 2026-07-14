@@ -86,7 +86,7 @@ SIGNAL_FIELDS = {
     "source_url",
     "source_date",
     "evidence_notes",
-    "counts_toward_qualification",
+    "exclude_from_qualification",
     "reviewed_by",
     "review_date",
     "attachment",

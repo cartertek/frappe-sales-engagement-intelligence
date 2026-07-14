@@ -7,7 +7,7 @@ frappe.ui.form.on('SEI Signal', {
         show_inferred_qualification_warning(frm);
     },
 
-    counts_toward_qualification(frm) {
+    exclude_from_qualification(frm) {
         show_inferred_qualification_warning(frm);
     },
 
@@ -17,10 +17,10 @@ frappe.ui.form.on('SEI Signal', {
 });
 
 function show_inferred_qualification_warning(frm) {
-    const inferred_counting_signal = frm.doc.evidence_basis === 'Inferred'
-        && frm.doc.counts_toward_qualification;
+    const inferred_not_excluded_signal = frm.doc.evidence_basis === 'Inferred'
+        && !frm.doc.exclude_from_qualification;
 
-    if (!inferred_counting_signal) {
+    if (!inferred_not_excluded_signal) {
         frm.dashboard.clear_headline();
         return;
     }

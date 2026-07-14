@@ -8,7 +8,7 @@
   "signal_type",
   "minimum_strength",
   "evidence_basis_required",
-  "counts_toward_qualification",
+  "exclude_from_qualification",
   "notes"
  ],
  "fields": [
@@ -37,8 +37,8 @@
    "options": "Observed\nInferred"
   },
   {
-   "fieldname": "counts_toward_qualification",
-   "label": "Counts Toward Qualification",
+   "fieldname": "exclude_from_qualification",
+   "label": "Exclude from Qualification",
    "fieldtype": "Check"
   },
   {

@@ -12,14 +12,14 @@ TERMINAL_STATUSES = ("Rejected", "Do Not Contact")
 def _signal_filters(prospect_name: str) -> dict:
     return {
         "prospect": prospect_name,
-        "counts_toward_qualification": 1,
+        "exclude_from_qualification": 0,
         "evidence_basis": "Observed",
         "signal_strength": ["in", QUALIFYING_STRENGTHS],
     }
 
 
 def get_qualifying_signals(prospect_name: str) -> list[dict]:
-    """Return observed Moderate/Strong signals that count toward qualification."""
+    """Return observed Moderate/Strong signals that are not excluded from qualification."""
     if not prospect_name:
         return []
 
@@ -30,7 +30,7 @@ def get_qualifying_signals(prospect_name: str) -> list[dict]:
             "name",
             "signal_strength",
             "evidence_basis",
-            "counts_toward_qualification",
+            "exclude_from_qualification",
             "source_date",
             "creation",
         ],

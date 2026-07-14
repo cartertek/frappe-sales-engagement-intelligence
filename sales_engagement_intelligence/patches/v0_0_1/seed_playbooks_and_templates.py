@@ -185,7 +185,7 @@ def seed_playbooks() -> None:
                     "signal_type": signal_type,
                     "minimum_strength": minimum_strength,
                     "evidence_basis_required": evidence_basis_required,
-                    "counts_toward_qualification": 1,
+                    "exclude_from_qualification": 0,
                 },
             )
         if frappe.db.exists("SEI Playbook", values["playbook_name"]):

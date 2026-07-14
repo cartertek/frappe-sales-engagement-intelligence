@@ -96,7 +96,7 @@ FILTERED_REPORTS = {
         "signal_type",
         "signal_strength",
         "evidence_basis",
-        "counts_toward_qualification",
+        "exclude_from_qualification",
     },
     "Import Batch Summary": {
         "source_type",

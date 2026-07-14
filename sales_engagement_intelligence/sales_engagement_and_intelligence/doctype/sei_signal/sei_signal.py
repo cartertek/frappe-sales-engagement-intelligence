@@ -5,7 +5,7 @@ from frappe.model.document import Document
 class SEISignal(Document):
     def validate(self):
         self.set_prospect_name()
-        if self.counts_toward_qualification and self.evidence_basis == 'Inferred':
+        if not self.exclude_from_qualification and self.evidence_basis == 'Inferred':
             frappe.msgprint(
                 'Inferred signals do not count toward automatic qualification. '
                 'Only observed Moderate or Strong signals are counted by the qualification engine.',

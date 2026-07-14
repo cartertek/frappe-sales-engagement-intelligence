@@ -13,8 +13,8 @@ frappe.query_reports["Qualification by Signal Type"] = {
       options: "\nObserved\nInferred"
     },
     {
-      fieldname: "counts_toward_qualification",
-      label: __("Counts Toward Qualification"),
+      fieldname: "exclude_from_qualification",
+      label: __("Exclude from Qualification"),
       fieldtype: "Check",
       default: 0
     },
