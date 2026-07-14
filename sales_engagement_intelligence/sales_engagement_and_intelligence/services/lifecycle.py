@@ -61,8 +61,8 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
         return prospect.lifecycle_status
 
     if prospect.qualification_status in ("Qualified", "Manually Approved"):
-        if has_contact_path(prospect) or has_company_identity(prospect):
-            return "Ready for CRM Conversion"
+        if has_contact_path(prospect):
+            return "Qualified"
         return "Find Contact"
 
     if prospect.qualification_status == "Needs Review":
@@ -182,12 +182,45 @@ def reopen_prospect(prospect_name: str) -> dict:
     return {**qualification, **lifecycle}
 
 
+def get_crm_readiness_requirements(prospect: Document) -> list[dict]:
+    return [
+        {
+            "key": "qualified",
+            "label": "Qualification status is Qualified or Manually Approved",
+            "met": prospect.qualification_status in ("Qualified", "Manually Approved"),
+        },
+        {
+            "key": "not_do_not_contact",
+            "label": "Prospect is not marked Do Not Contact",
+            "met": not bool(prospect.do_not_contact),
+        },
+        {
+            "key": "not_protected_lifecycle",
+            "label": "Lifecycle status is not Rejected or Do Not Contact",
+            "met": prospect.lifecycle_status not in ("Rejected", "Do Not Contact"),
+        },
+        {
+            "key": "no_crm_lead",
+            "label": "No CRM Lead has already been created",
+            "met": not bool(prospect.get("crm_lead")),
+        },
+    ]
+
+
 def mark_ready_for_crm_conversion(prospect_name: str) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
-    if prospect.do_not_contact or prospect.lifecycle_status in ("Rejected", "Do Not Contact"):
-        frappe.throw("Do Not Contact or Rejected prospects cannot be marked ready for CRM conversion.")
-    if prospect.qualification_status not in ("Qualified", "Manually Approved"):
-        frappe.throw("Only Qualified or Manually Approved prospects can be marked ready for CRM conversion.")
+    requirements = get_crm_readiness_requirements(prospect)
+    unmet = [requirement for requirement in requirements if not requirement["met"]]
+    if unmet:
+        return {
+            "ok": False,
+            "error": {
+                "code": "CRM_READINESS_REQUIREMENTS_NOT_MET",
+                "message": "This prospect is not ready for CRM conversion.",
+                "details": {"requirements": requirements},
+            },
+            "warnings": [],
+        }
 
     frappe.db.set_value(
         "SEI Prospect",
