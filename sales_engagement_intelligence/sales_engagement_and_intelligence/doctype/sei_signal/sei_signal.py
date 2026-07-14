@@ -1,6 +1,9 @@
 import frappe
-from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import resolve_signal_type
 from frappe.model.document import Document
+
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    resolve_signal_type,
+)
 
 
 class SEISignal(Document):

@@ -96,7 +96,9 @@ def ensure_signal_type_seed_data() -> None:
     """Keep managed signal type taxonomy seeded after migrations."""
 
     try:
-        from sales_engagement_intelligence.patches.v0_0_1.seed_signal_types import execute as seed_signal_types
+        from sales_engagement_intelligence.patches.v0_0_1.seed_signal_types import (
+            execute as seed_signal_types,
+        )
 
         seed_signal_types()
     except Exception:

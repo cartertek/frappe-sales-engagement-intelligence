@@ -8,10 +8,13 @@ from typing import Any, Optional
 from urllib.parse import urlparse
 
 import frappe
-from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import resolve_signal_type
 from frappe.model.document import Document
 from frappe.utils import getdate, now_datetime
 from frappe.utils.file_manager import get_file_path
+
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    resolve_signal_type,
+)
 
 PROSPECT_FIELDS = {
     "prospect_name",

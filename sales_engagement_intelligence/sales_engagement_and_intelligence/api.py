@@ -5,10 +5,10 @@ from functools import wraps
 from typing import Any, Callable, Optional
 
 import frappe
+
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
     get_prospect_theses,
     get_prospect_theses_display,
-    prospect_matches_any_thesis,
 )
 
 SEI_USER_ROLES = {"Sales Engagement User", "Sales Engagement Manager"}

@@ -5,12 +5,12 @@ from urllib.parse import urlparse
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
+    get_primary_signal,
+)
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
     get_prospect_theses,
     get_prospect_theses_display,
-)
-from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
-    get_primary_signal,
 )
 
 CRM_LINK_FIELD_BY_DOCTYPE = {
