@@ -11,6 +11,7 @@ PROSPECT_JS = DOCTYPE_ROOT / "sei_prospect" / "sei_prospect.js"
 PROSPECTING_WORKSPACE = (
     APP / "sales_engagement_and_intelligence" / "workspace" / "prospecting" / "prospecting.json"
 )
+PROSPECTING_SIDEBAR = APP / "workspace_sidebar" / "prospecting.json"
 
 
 def _doctype(folder: str) -> dict:
@@ -115,6 +116,10 @@ def test_workspace_and_after_migrate_include_final_navigation_validation():
         if isinstance(item, dict) and item.get("type") == "shortcut"
     }
     assert {"Playbooks", "Message Templates"} <= content_labels
+
+    sidebar = json.loads(PROSPECTING_SIDEBAR.read_text())
+    sidebar_links = {item.get("label"): item.get("link_to") for item in sidebar["items"]}
+    assert sidebar_links["Signal Types"] == "SEI Signal Type"
 
 
 def test_prospect_form_has_user_triggered_draft_and_playbook_actions():
