@@ -21,7 +21,7 @@ Signal-only import must match an existing prospect by `prospect_name`, `prospect
 Use the Select values configured on the current SEI DocTypes. Common values include:
 
 - Prospect Type: `Agency`, `Startup`, `SMB`, `Enterprise`, `Ecosystem Partner`, `Directory Lead`, `Community Lead`, `Procurement Lead`, `Referral Partner`, `Other`.
-- Signal Type: `Failed Recruitment`, `Technical Distress`, `Launch Aftermath`, `Agency Overflow`, `Ecosystem Adjacency`, `Vendor`, `Directory Presence`, `Community Request`, `Procurement Visibility`, `Credibility`, `Referral Signal`, `Reactivation Signal`, `Other`.
+- Signal Type: `Failed Recruitment`, `Technical Distress`, `Launch Aftermath`, `Agency Overflow`, `Ecosystem Adjacency`, `Vendor/Directory Presence`, `Community Request`, `Procurement Visibility`, `Credibility/Referral Signal`, `Reactivation Signal`.
 - Signal Strength: `Weak`, `Moderate`, `Strong`.
 - Evidence Basis: `Observed`, `Inferred`.
 
@@ -31,7 +31,7 @@ Dates should use `YYYY-MM-DD`. Boolean fields accept `1`, `0`, `true`, `false`, 
 
 ## Thesis resolution
 
-`sei_thesis` is resolved against `SEI Thesis.thesis_name` first, then by document name. Rows fail when a supplied thesis cannot be resolved.
+Prospect thesis is not imported as a direct field. A prospect's thesis list is derived from its linked signal types: `SEI Signal.signal_type -> SEI Signal Type.thesis`. Legacy `sei_thesis` / `thesis` columns are accepted only for validation/backward compatibility and are not stored on the prospect.
 
 ## Duplicate detection
 
@@ -41,7 +41,7 @@ Signal duplicates are checked only against `SEI Signal` by `prospect + source_ur
 
 ## Dry run
 
-Dry run parses rows, validates required data, resolves thesis names, detects SEI duplicates, classifies intended actions, and writes row outcomes to the import batch. It creates no prospects, no signals, and no CRM records.
+Dry run parses rows, validates required data, resolves managed signal types, detects SEI duplicates, classifies intended actions, and writes row outcomes to the import batch. It creates no prospects, no signals, and no CRM records.
 
 ## Import behavior
 

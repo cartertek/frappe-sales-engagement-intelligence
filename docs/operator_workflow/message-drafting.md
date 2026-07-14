@@ -18,7 +18,7 @@ Supported variables:
 Workflow:
 
 1. Assign a playbook when useful.
-2. Apply playbook defaults only if you want blank thesis, offer, guidance, contact notes, or suggested template filled conservatively.
+2. Apply playbook defaults only if you want blank offer, guidance, contact notes, or suggested template filled conservatively. Message thesis context is derived from linked signal types.
 3. Choose or create a message template.
 4. Use Preview Message Draft.
 5. Review missing variables, tone, accuracy, source evidence, Do Not Contact status, and channel fit.

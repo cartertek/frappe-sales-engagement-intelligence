@@ -2,7 +2,7 @@
 
 Prospect review turns raw research into a decision about whether the prospect belongs in an outreach queue.
 
-Review the SEI Prospect form for identity, source arena, source URL, thesis, offer, signal summary, notes, contact path, qualification status, lifecycle status, and CRM links. Review related SEI Signal records to confirm that the evidence is current and specific.
+Review the SEI Prospect form for identity, source arena, source URL, offer, signal summary, notes, contact path, qualification status, lifecycle status, and CRM links. Review related SEI Signal records and their managed Signal Types to confirm the derived thesis list, evidence, and timing are current and specific.
 
 Use the queue shortcuts in the Prospecting workspace:
 

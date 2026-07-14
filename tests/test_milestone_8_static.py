@@ -21,6 +21,14 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     playbook = _doctype("sei_playbook")
     template = _doctype("sei_message_template")
     rule = _doctype("sei_playbook_signal_rule")
+    signal_type = _doctype("sei_signal_type")
+
+    assert signal_type["name"] == "SEI Signal Type"
+    signal_type_fields = {field["fieldname"]: field for field in signal_type["fields"]}
+    assert signal_type_fields["signal_type_name"]["label"] == "Name"
+    assert signal_type_fields["signal_type_name"]["reqd"] == 1
+    assert signal_type_fields["thesis"]["options"] == "SEI Thesis"
+    assert signal_type_fields["thesis"]["reqd"] == 1
 
     assert playbook["name"] == "SEI Playbook"
     assert playbook["autoname"] == "field:playbook_name"
@@ -32,7 +40,8 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
 
     assert rule.get("istable") == 1
     rule_fields = {field["fieldname"]: field for field in rule["fields"]}
-    assert rule_fields["signal_type"]["fieldtype"] == "Select"
+    assert rule_fields["signal_type"]["fieldtype"] == "Link"
+    assert rule_fields["signal_type"]["options"] == "SEI Signal Type"
     assert rule_fields["exclude_from_qualification"]["fieldtype"] == "Check"
 
     assert template["name"] == "SEI Message Template"
@@ -50,6 +59,7 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
 def test_prospect_has_playbook_assignment_fields():
     prospect = _doctype("sei_prospect")
     fields = {field["fieldname"]: field for field in prospect["fields"]}
+    assert "thesis" not in fields
     assert fields["sei_playbook"]["fieldtype"] == "Link"
     assert fields["sei_playbook"]["options"] == "SEI Playbook"
     assert fields["suggested_message_template"]["options"] == "SEI Message Template"
@@ -83,25 +93,28 @@ def test_seed_patch_includes_required_playbooks_and_templates():
     ]:
         assert playbook in seed
     assert "SEI Message Template" in seed
-    assert "seed_playbooks_and_templates" in (APP / "patches.txt").read_text()
+    patches = (APP / "patches.txt").read_text()
+    assert "seed_signal_types" in patches
+    assert "seed_playbooks_and_templates" in patches
 
 
 def test_workspace_and_after_migrate_include_final_navigation_validation():
     setup_source = SETUP.read_text()
+    assert "ensure_signal_type_seed_data()" in setup_source
     assert "ensure_milestone_8_seed_data()" in setup_source
     assert "ensure_milestone_8_workspace_items()" in setup_source
     assert "def validate_milestone_8_workspace_items()" in setup_source
 
     workspace = json.loads(PROSPECTING_WORKSPACE.read_text())
     labels = {shortcut["label"] for shortcut in workspace["shortcuts"]}
-    assert {"SEI Playbooks", "SEI Message Templates", "Interaction Attribution"} <= labels
+    assert {"Playbooks", "Message Templates", "Interaction Attribution"} <= labels
     content = json.loads(workspace["content"])
     content_labels = {
         item.get("data", {}).get("shortcut_name")
         for item in content
         if isinstance(item, dict) and item.get("type") == "shortcut"
     }
-    assert {"SEI Playbooks", "SEI Message Templates"} <= content_labels
+    assert {"Playbooks", "Message Templates"} <= content_labels
 
 
 def test_prospect_form_has_user_triggered_draft_and_playbook_actions():

@@ -35,9 +35,8 @@
   "name": "CRM Lead-sei_thesis",
   "dt": "CRM Lead",
   "fieldname": "sei_thesis",
-  "label": "Thesis",
-  "fieldtype": "Link",
-  "options": "SEI Thesis",
+  "label": "Theses",
+  "fieldtype": "Small Text",
   "insert_after": "sei_source_arena",
   "is_system_generated": 1
  },
@@ -87,9 +86,8 @@
   "name": "CRM Deal-sei_thesis",
   "dt": "CRM Deal",
   "fieldname": "sei_thesis",
-  "label": "Thesis",
-  "fieldtype": "Link",
-  "options": "SEI Thesis",
+  "label": "Theses",
+  "fieldtype": "Small Text",
   "insert_after": "sei_source_arena",
   "is_system_generated": 1
  },

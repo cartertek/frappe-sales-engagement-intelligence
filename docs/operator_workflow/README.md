@@ -10,7 +10,7 @@ The system does not send outreach automatically. Operators draft and send messag
 2. Review import rows, duplicate warnings, and missing evidence.
 3. Review queues: Needs Research, Find Contact, Qualified, Ready for CRM Conversion, Rejected, and Do Not Contact.
 4. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
-5. Assign a playbook and choose the thesis, offer, and asset.
+5. Assign a playbook and choose the offer and asset. Confirm the relevant theses are represented by the prospect's linked signal types.
 6. Preview a message draft from a message template.
 7. Send manually outside SEI only after review.
 8. Explicitly create or link Frappe CRM Lead, Organization, Contact, and Deal records when appropriate.

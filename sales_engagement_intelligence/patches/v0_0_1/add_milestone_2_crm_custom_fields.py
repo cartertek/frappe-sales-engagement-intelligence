@@ -41,9 +41,8 @@ def execute():
             },
             {
                 'fieldname': 'sei_thesis',
-                'label': 'Thesis',
-                'fieldtype': 'Link',
-                'options': 'SEI Thesis',
+                'label': 'Theses',
+                'fieldtype': 'Small Text',
                 'insert_after': 'sei_source_arena',
             },
             {
@@ -77,9 +76,8 @@ def execute():
             },
             {
                 'fieldname': 'sei_thesis',
-                'label': 'Thesis',
-                'fieldtype': 'Link',
-                'options': 'SEI Thesis',
+                'label': 'Theses',
+                'fieldtype': 'Small Text',
                 'insert_after': 'sei_source_arena',
             },
             {

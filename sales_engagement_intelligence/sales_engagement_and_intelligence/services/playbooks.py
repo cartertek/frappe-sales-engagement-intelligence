@@ -28,7 +28,6 @@ def apply_playbook_defaults(prospect: str) -> dict:
         doc.set(fieldname, value)
         changed.append(fieldname)
 
-    fill_if_blank("thesis", playbook.default_thesis)
     fill_if_blank("offer", playbook.default_offer)
 
     guidance_parts = []

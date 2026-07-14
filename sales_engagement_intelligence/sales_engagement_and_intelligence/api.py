@@ -6,6 +6,11 @@ from typing import Any, Callable, Optional
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    get_prospect_theses,
+    get_prospect_theses_display,
+)
+
 SEI_USER_ROLES = {"Sales Engagement User", "Sales Engagement Manager"}
 SEI_MANAGER_ROLES = {"Sales Engagement Manager"}
 
@@ -29,8 +34,6 @@ PROSPECT_CREATE_FIELDS = {
     "source_arena",
     "source_url",
     "source_notes",
-    "thesis",
-    "sei_thesis",
     "offer",
     "signal_summary",
     "contact_target_notes",
@@ -73,7 +76,6 @@ WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
     "primary_contact_email",
     "primary_contact_url",
     "last_researched_date",
-    "thesis",
     "offer",
     "sei_playbook",
     "suggested_message_template",
@@ -125,7 +127,7 @@ QUEUE_FIELDS = [
     "website",
     "source_arena",
     "source_url",
-    "thesis",
+    "theses_display",
     "offer",
     "qualification_status",
     "lifecycle_status",
@@ -318,19 +320,12 @@ def _filter_known_fields(doctype: str, values: dict) -> tuple[dict, list[str]]:
     return kept, dropped
 
 
-def _resolve_thesis_value(values: dict) -> None:
-    thesis = values.pop("sei_thesis", None)
-    if thesis and not values.get("thesis"):
-        values["thesis"] = thesis
-
-
 def _sanitize_values(payload: dict, allowed: set[str], doctype: str) -> tuple[dict, list[dict]]:
     warnings = []
     restricted = sorted(set(payload) & PROSPECT_RESTRICTED_FIELDS)
     if restricted:
         warnings.append({"code": "RESTRICTED_FIELDS_IGNORED", "fields": restricted})
     values = {field: payload[field] for field in allowed if field in payload}
-    _resolve_thesis_value(values)
     values, dropped = _filter_known_fields(doctype, values)
     if dropped:
         warnings.append({"code": "UNKNOWN_FIELDS_IGNORED", "fields": dropped})
@@ -367,6 +362,8 @@ def _recalculate_and_apply_lifecycle(prospect: str) -> dict:
 def _prospect_row(row) -> dict:
     data = dict(row)
     data["prospect"] = data.pop("name", None)
+    data["theses"] = get_prospect_theses(data["prospect"])
+    data["theses_display"] = ", ".join(data["theses"])
     return data
 
 
@@ -395,7 +392,8 @@ def _prospect_summary(prospect: str) -> dict:
         "normalized_domain": doc.normalized_domain,
         "source_arena": doc.source_arena,
         "source_url": doc.source_url,
-        "thesis": doc.thesis,
+        "theses": get_prospect_theses(doc.name),
+        "theses_display": get_prospect_theses_display(doc.name),
         "offer": doc.offer,
         "qualification_status": doc.qualification_status,
         "lifecycle_status": doc.lifecycle_status,
@@ -435,7 +433,6 @@ def _queue(
     clean_filters = dict(base_filters)
     allowed_filters = {
         "source_arena",
-        "thesis",
         "offer",
         "qualification_status",
         "lifecycle_status",
@@ -453,7 +450,11 @@ def _queue(
         order_by="next_action_date asc, modified desc",
         limit=_limit(limit),
     )
-    return {"rows": [_prospect_row(row) for row in rows], "count": len(rows)}
+    thesis_filter = supplied.get("thesis") or supplied.get("sei_thesis")
+    result_rows = [_prospect_row(row) for row in rows]
+    if thesis_filter:
+        result_rows = [row for row in result_rows if thesis_filter in row.get("theses", [])]
+    return {"rows": result_rows, "count": len(result_rows)}
 
 
 # Prospect endpoints
@@ -513,7 +514,6 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
         "website",
         "normalized_domain",
         "source_arena",
-        "thesis",
         "qualification_status",
         "lifecycle_status",
         "assigned_to",
@@ -530,7 +530,11 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
         order_by="modified desc",
         limit=_limit(limit),
     )
-    return {"rows": [_prospect_row(row) for row in rows], "count": len(rows)}
+    thesis_filter = supplied.get("thesis") or supplied.get("sei_thesis")
+    result_rows = [_prospect_row(row) for row in rows]
+    if thesis_filter:
+        result_rows = [row for row in result_rows if thesis_filter in row.get("theses", [])]
+    return {"rows": result_rows, "count": len(result_rows)}
 
 
 # Signal endpoints
