@@ -19,6 +19,7 @@ def after_migrate() -> None:
     ensure_signal_type_seed_data()
     ensure_milestone_8_seed_data()
     ensure_milestone_8_workspace_items()
+    ensure_signal_prospect_tag_sync()
     frappe.clear_cache()
 
 
@@ -812,3 +813,18 @@ def validate_milestone_8_workspace_items() -> dict:
         "missing_headers": missing_headers,
         "duplicate_content_shortcuts": duplicate_content_shortcuts,
     }
+
+
+def ensure_signal_prospect_tag_sync() -> None:
+    """Keep the DB-level prospect-tag sync trigger installed after migrations."""
+
+    try:
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_tag_sync import (
+            ensure_signal_prospect_tag_trigger,
+            sync_all_signal_prospect_tags,
+        )
+
+        sync_all_signal_prospect_tags()
+        ensure_signal_prospect_tag_trigger()
+    except Exception:
+        frappe.log_error(title="SEI prospect tag sync repair failed", message=frappe.get_traceback())

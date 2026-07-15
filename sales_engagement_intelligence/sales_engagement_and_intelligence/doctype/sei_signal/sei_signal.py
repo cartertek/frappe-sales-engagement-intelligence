@@ -20,6 +20,7 @@ class SEISignal(Document):
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)
         self.set_prospect_name()
+        self.set_prospect_tags()
         self.sync_disqualifier_check_rows()
         self.apply_evidence_guardrails()
 
@@ -101,6 +102,18 @@ class SEISignal(Document):
             self.manual_override_by = frappe.session.user
         if not self.manual_override_date:
             self.manual_override_date = now_datetime()
+
+    def set_prospect_tags(self):
+        if not self.prospect:
+            self.prospect_tags = None
+            return
+
+        self.prospect_tags = frappe.db.get_value(
+            'SEI Prospect',
+            self.prospect,
+            '_user_tags',
+            ignore=True,
+        ) or ''
 
     def after_insert(self):
         self.recalculate_prospect()
