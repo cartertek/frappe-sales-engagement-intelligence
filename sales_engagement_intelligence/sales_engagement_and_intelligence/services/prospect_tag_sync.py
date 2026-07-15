@@ -35,9 +35,9 @@ def sync_all_signal_prospect_tags() -> None:
 
     frappe.db.sql(
         """
-        UPDATE `tabSEI Signal` signal
-        LEFT JOIN `tabSEI Prospect` prospect ON prospect.name = signal.prospect
-        SET signal.prospect_tags = COALESCE(prospect._user_tags, '')
+        UPDATE `tabSEI Signal` AS sig
+        LEFT JOIN `tabSEI Prospect` AS prospect ON prospect.name = sig.prospect
+        SET sig.prospect_tags = COALESCE(prospect._user_tags, '')
         """
     )
 
