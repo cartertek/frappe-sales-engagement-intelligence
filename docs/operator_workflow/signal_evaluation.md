@@ -16,6 +16,29 @@ Ask these questions in order:
 5. Do any disqualifiers apply?
 6. Why is this not Weak?
 
+## Assistant-created signal default
+
+Assistant-created signals default to Weak and excluded from qualification unless the `observed_fact` directly asserts the selected managed Signal Type.
+
+Do not create a Moderate or Strong assistant-created signal from company context, a job title, technical work area, company scale, hiring activity, Cartertek fit, or a plausible interpretation. The `signal_claim`, `why_this_signal_type`, `why_not_weak`, and `evidence_notes` fields may explain the signal, but they must not supply the signal assertion missing from `observed_fact`.
+
+Use this test before creating or strengthening a signal:
+
+> If the selected Signal Type were hidden, would `observed_fact` still plainly describe that exact kind of signal?
+
+If the answer is no, create only a Weak, excluded signal or reject the candidate.
+
+## Signal Type assertion examples
+
+These examples do not replace the managed Signal Type definitions. They define the minimum assertion that must appear in `observed_fact` before an assistant-created signal can count.
+
+| Signal Type | `observed_fact` must assert | Invalid `observed_fact` pattern |
+|---|---|---|
+| `early-technical-capacity-gap` | A concrete technical capacity gap: the operational/business process and the actual constraint on that process. | Company scale, automation hiring, integration work, AI/workflow/internal-tools work, or desire to improve onboarding/customer experience. |
+| `consultancy-compatible-contract` | Buyer openness to a firm, vendor, consultancy, agency, implementation partner, subcontractor, or company-to-company delivery path. | Contract role, bounded project, implementation task, contractor request, or work that merely seems suitable for Cartertek. |
+| `long-open-role` | The same or substantially similar role has persisted over time through dated reposts, repeated promotion, explicit still-hiring language, or history/archive evidence. | Single job post, stale-looking listing, specialized role, search result, or job-board listing alone. |
+| `overloaded-hybrid-scope` | One role owns engineering work plus a separate non-engineering function. | Customer-facing engineering, cross-functional collaboration, requirements gathering, implementation engineering, FDE, solutions engineering, or broad technical scope. |
+
 ## Evidence note format
 
 Use this structure when recording signal evidence:

@@ -9,3 +9,7 @@ Use import batches when research produces structured prospect or signal rows. Us
 5. Run the real import only after dry run results are acceptable.
 
 Imports create or update SEI records only. They do not create Frappe CRM records, ERPNext records, emails, Communications, tasks, or outreach.
+
+## Assistant-created signal rows
+
+Assistant-created import rows must follow the signal evaluation standard in `docs/operator_workflow/signal_evaluation.md`. A Moderate or Strong signal row must have an `observed_fact` that directly asserts the selected Signal Type. If the `observed_fact` does not make that assertion, import the row as Weak and excluded from qualification, or reject it before import.
