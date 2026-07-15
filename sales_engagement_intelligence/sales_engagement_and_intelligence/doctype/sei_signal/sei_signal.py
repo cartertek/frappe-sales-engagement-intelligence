@@ -1,9 +1,18 @@
+from __future__ import annotations
+
 import frappe
 from frappe.model.document import Document
+from frappe.utils import now_datetime
 
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
     resolve_signal_type,
 )
+
+QUALIFYING_STRENGTHS = {"Moderate", "Strong"}
+
+
+def _has_value(value) -> bool:
+    return bool(str(value or "").strip())
 
 
 class SEISignal(Document):
@@ -11,12 +20,8 @@ class SEISignal(Document):
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)
         self.set_prospect_name()
-        if not self.exclude_from_qualification and self.evidence_basis == 'Inferred':
-            frappe.msgprint(
-                'Inferred signals do not count toward automatic qualification. '
-                'Only observed Moderate or Strong signals are counted by the qualification engine.',
-                alert=True,
-            )
+        self.sync_disqualifier_check_rows()
+        self.apply_evidence_guardrails()
 
     def set_prospect_name(self):
         if not self.prospect:
@@ -28,6 +33,74 @@ class SEISignal(Document):
             self.prospect,
             'prospect_name',
         )
+
+    def sync_disqualifier_check_rows(self) -> None:
+        for row in self.get("disqualifier_checks") or []:
+            row.signal = self.name
+            row.signal_type = self.signal_type
+
+    def apply_evidence_guardrails(self) -> None:
+        self.is_strength_capped = 1 if self.has_applied_disqualifier() else 0
+
+        if self.evidence_basis == "Observed" and not _has_value(self.observed_fact):
+            frappe.throw("Observed Fact is required when Evidence Basis is Observed.")
+
+        if self.signal_strength in QUALIFYING_STRENGTHS:
+            missing = [
+                label
+                for fieldname, label in (
+                    ("observed_fact", "Observed Fact"),
+                    ("signal_claim", "Signal Claim"),
+                    ("why_this_signal_type", "Why This Signal Type"),
+                    ("why_not_weak", "Why Not Weak"),
+                    ("disqualifiers_checked", "Disqualifiers Checked"),
+                )
+                if not _has_value(self.get(fieldname))
+            ]
+            if missing:
+                frappe.throw(
+                    "Moderate or Strong signals require structured evidence fields: "
+                    + ", ".join(missing)
+                )
+
+        if self.signal_strength == "Weak" and not (
+            _has_value(self.observed_fact) or _has_value(self.evidence_gap_reason)
+        ):
+            frappe.throw("Weak signals require either Observed Fact or Evidence Gap Reason.")
+
+        if self.evidence_basis == "Inferred":
+            if self.signal_strength == "Strong" and not self.has_manual_override():
+                frappe.throw("Inferred signals cannot be Strong without a Manual Override Reason.")
+            if not self.exclude_from_qualification:
+                self.exclude_from_qualification = 1
+                frappe.msgprint(
+                    "Inferred signals are automatically excluded from qualification unless "
+                    "manually reviewed.",
+                    alert=True,
+                )
+
+        if self.is_strength_capped and self.signal_strength in QUALIFYING_STRENGTHS:
+            if not self.has_manual_override():
+                frappe.throw(
+                    "One or more disqualifier checks apply, so this signal is capped at Weak unless "
+                    "Manual Override Reason is documented."
+                )
+            self.mark_manual_override_audit_fields()
+
+        if self.has_manual_override():
+            self.mark_manual_override_audit_fields()
+
+    def has_applied_disqualifier(self) -> bool:
+        return any(row.applies for row in self.get("disqualifier_checks") or [])
+
+    def has_manual_override(self) -> bool:
+        return _has_value(self.manual_override_reason)
+
+    def mark_manual_override_audit_fields(self) -> None:
+        if not self.manual_override_by:
+            self.manual_override_by = frappe.session.user
+        if not self.manual_override_date:
+            self.manual_override_date = now_datetime()
 
     def after_insert(self):
         self.recalculate_prospect()

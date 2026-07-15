@@ -38,7 +38,14 @@ PROSPECT_FIELDS = {
     "assigned_to",
     "notes",
 }
-DATE_FIELDS = {"first_seen_date", "last_researched_date", "next_action_date", "source_date", "review_date"}
+DATE_FIELDS = {
+    "first_seen_date",
+    "last_researched_date",
+    "next_action_date",
+    "source_date",
+    "review_date",
+    "manual_override_date",
+}
 BOOLEAN_FIELDS = {
     "exclude_from_qualification",
     "initial_exclude_from_qualification",
@@ -260,8 +267,12 @@ def _has_initial_signal(row: dict) -> bool:
     )
 
 
+def _signal_value(row: dict, base: str, prefix: str = ""):
+    return row.get(f"{prefix}{base}" if prefix else base)
+
+
 def _validate_signal(row: dict, prefix: str = "") -> None:
-    required = ["signal_type", "signal_strength", "evidence_basis", "evidence_notes"]
+    required = ["signal_type", "signal_strength", "evidence_basis"]
     missing = []
     for base in required:
         fieldname = f"{prefix}{base}" if prefix else base
@@ -269,6 +280,42 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
             missing.append(fieldname)
     if missing:
         frappe.throw("Missing required signal fields: " + ", ".join(missing))
+
+    strength = _signal_value(row, "signal_strength", prefix)
+    evidence_basis = _signal_value(row, "evidence_basis", prefix)
+    if evidence_basis == "Observed" and not _signal_value(row, "observed_fact", prefix):
+        frappe.throw("Observed signals require observed_fact.")
+
+    if strength in {"Moderate", "Strong"}:
+        proof_fields = [
+            "observed_fact",
+            "signal_claim",
+            "why_this_signal_type",
+            "why_not_weak",
+            "disqualifiers_checked",
+        ]
+        missing_proof = [
+            f"{prefix}{field}" if prefix else field
+            for field in proof_fields
+            if not _signal_value(row, field, prefix)
+        ]
+        if missing_proof:
+            frappe.throw(
+                "Moderate or Strong signals require structured evidence fields: "
+                + ", ".join(missing_proof)
+            )
+
+    if strength == "Weak" and not (
+        _signal_value(row, "observed_fact", prefix) or _signal_value(row, "evidence_gap_reason", prefix)
+    ):
+        frappe.throw("Weak signals require observed_fact or evidence_gap_reason.")
+
+    if (
+        evidence_basis == "Inferred"
+        and strength == "Strong"
+        and not _signal_value(row, "manual_override_reason", prefix)
+    ):
+        frappe.throw("Inferred signals cannot be Strong without manual_override_reason.")
 
 
 def _prospect_values(row: dict) -> dict:
@@ -282,11 +329,20 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("initial_signal_type")),
             "signal_strength": row.get("initial_signal_strength"),
             "evidence_basis": row.get("initial_evidence_basis"),
+            "evidence_specificity": row.get("initial_evidence_specificity")
+            or row.get("evidence_specificity"),
             "confidence": row.get("initial_confidence"),
             "source_url": row.get("initial_signal_source_url") or row.get("source_url"),
             "source_date": row.get("initial_source_date"),
+            "observed_fact": row.get("initial_observed_fact"),
+            "signal_claim": row.get("initial_signal_claim"),
+            "why_this_signal_type": row.get("initial_why_this_signal_type"),
+            "why_not_weak": row.get("initial_why_not_weak"),
+            "disqualifiers_checked": row.get("initial_disqualifiers_checked"),
+            "evidence_gap_reason": row.get("initial_evidence_gap_reason"),
             "evidence_notes": row.get("initial_evidence_notes"),
             "exclude_from_qualification": _exclude_from_qualification_value(row, initial=True),
+            "manual_override_reason": row.get("initial_manual_override_reason"),
         }
     else:
         values = {
@@ -294,11 +350,19 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("signal_type")),
             "signal_strength": row.get("signal_strength"),
             "evidence_basis": row.get("evidence_basis"),
+            "evidence_specificity": row.get("evidence_specificity"),
             "confidence": row.get("confidence"),
             "source_url": row.get("source_url"),
             "source_date": row.get("source_date"),
+            "observed_fact": row.get("observed_fact"),
+            "signal_claim": row.get("signal_claim"),
+            "why_this_signal_type": row.get("why_this_signal_type"),
+            "why_not_weak": row.get("why_not_weak"),
+            "disqualifiers_checked": row.get("disqualifiers_checked"),
+            "evidence_gap_reason": row.get("evidence_gap_reason"),
             "evidence_notes": row.get("evidence_notes"),
             "exclude_from_qualification": _exclude_from_qualification_value(row),
+            "manual_override_reason": row.get("manual_override_reason"),
             "reviewed_by": row.get("reviewed_by"),
             "review_date": row.get("review_date"),
         }

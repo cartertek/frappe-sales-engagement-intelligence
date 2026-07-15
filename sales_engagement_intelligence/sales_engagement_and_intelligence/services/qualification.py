@@ -9,12 +9,37 @@ QUALIFYING_STRENGTHS = ("Moderate", "Strong")
 TERMINAL_STATUSES = ("Rejected", "Do Not Contact")
 
 
+def _has_value(value) -> bool:
+    return bool(str(value or "").strip())
+
+
+def is_evidence_valid_for_qualification(signal: dict) -> bool:
+    """Return whether a signal has enough structured evidence to count."""
+    if signal.get("signal_strength") not in QUALIFYING_STRENGTHS:
+        return False
+    if signal.get("evidence_basis") != "Observed":
+        return False
+    if signal.get("exclude_from_qualification") or signal.get("is_strength_capped"):
+        return False
+    return all(
+        _has_value(signal.get(fieldname))
+        for fieldname in (
+            "observed_fact",
+            "signal_claim",
+            "why_this_signal_type",
+            "why_not_weak",
+            "disqualifiers_checked",
+        )
+    )
+
+
 def _signal_filters(prospect_name: str) -> dict:
     return {
         "prospect": prospect_name,
         "exclude_from_qualification": 0,
         "evidence_basis": "Observed",
         "signal_strength": ["in", QUALIFYING_STRENGTHS],
+        "is_strength_capped": 0,
     }
 
 
@@ -23,7 +48,7 @@ def get_qualifying_signals(prospect_name: str) -> list[dict]:
     if not prospect_name:
         return []
 
-    return frappe.get_all(
+    rows = frappe.get_all(
         "SEI Signal",
         filters=_signal_filters(prospect_name),
         fields=[
@@ -31,11 +56,18 @@ def get_qualifying_signals(prospect_name: str) -> list[dict]:
             "signal_strength",
             "evidence_basis",
             "exclude_from_qualification",
+            "is_strength_capped",
+            "observed_fact",
+            "signal_claim",
+            "why_this_signal_type",
+            "why_not_weak",
+            "disqualifiers_checked",
             "source_date",
             "creation",
         ],
         order_by="source_date desc, creation desc",
     )
+    return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]
 
 
 def get_primary_signal(prospect_name: str) -> Optional[str]:

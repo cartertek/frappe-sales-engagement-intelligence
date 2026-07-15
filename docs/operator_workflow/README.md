@@ -4,6 +4,19 @@ This guide is the operating manual for the completed Sales Engagement Intelligen
 
 The system does not send outreach automatically. Operators draft and send messages manually through the appropriate channel after reviewing the prospect, signal evidence, playbook, and safety status.
 
+## Evidence-first principle
+
+A signal is not what the source reminds us of.
+A signal is what the source directly supports.
+
+Use this order:
+
+1. Observed evidence first.
+2. Inference second.
+3. Qualification last.
+
+Cartertek fit is not signal evidence. A company can look like a good prospect, or describe work Cartertek could do, without proving a managed SEI Signal Type.
+
 ## End-to-end flow
 
 1. Import or manually create prospects and signals.
@@ -16,6 +29,23 @@ The system does not send outreach automatically. Operators draft and send messag
 8. Explicitly create or link Frappe CRM Lead, Organization, Contact, and Deal records when appropriate.
 9. Log interaction attribution.
 10. Use reports to evaluate sources, theses, assets, offers, channels, and outcomes.
+
+## Evidence-first research flow
+
+1. Find a candidate source.
+2. Identify the exact observed fact.
+3. Compare the observed fact against the managed Signal Type definition.
+4. Check obvious disqualifiers.
+5. Assign strength conservatively.
+6. Record the evidence note and structured evidence fields.
+7. Let qualification and lifecycle logic advance only evidence-backed signals.
+8. Use reviewer feedback to improve future evaluation.
+
+## Where rules live
+
+Signal Type-specific rules live in the managed SEI Signal Type records.
+
+Operator docs explain the research and evaluation workflow. They do not duplicate Signal Type definitions. Where type-specific criteria are needed, refer to the managed SEI Signal Type definition.
 
 ## Responsibility boundaries
 
@@ -31,6 +61,10 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 
 ## Related pages
 
+- [Research workflow](research_workflow.md)
+- [Signal evaluation](signal_evaluation.md)
+- [Review feedback](review_feedback.md)
+- [AI-assisted research](ai_assisted_research.md)
 - [Research to import](research-to-import.md)
 - [Prospect review](prospect-review.md)
 - [Qualification](qualification.md)

@@ -1,0 +1,113 @@
+{
+ "actions": [],
+ "allow_import": 1,
+ "allow_rename": 1,
+ "autoname": "format:SEI-STF-.YYYY.-.#####",
+ "creation": "2026-07-14 00:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "engine": "InnoDB",
+ "field_order": [
+  "signal_type",
+  "source_signal",
+  "feedback_summary",
+  "false_positive_pattern",
+  "recommended_definition_change",
+  "reviewed_by",
+  "review_date",
+  "status"
+ ],
+ "fields": [
+  {
+   "fieldname": "signal_type",
+   "fieldtype": "Link",
+   "label": "Signal Type",
+   "options": "SEI Signal Type",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "source_signal",
+   "fieldtype": "Link",
+   "label": "Source Signal",
+   "options": "SEI Signal",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "feedback_summary",
+   "fieldtype": "Long Text",
+   "label": "Feedback Summary",
+   "reqd": 1
+  },
+  {
+   "fieldname": "false_positive_pattern",
+   "fieldtype": "Long Text",
+   "label": "False Positive Pattern"
+  },
+  {
+   "fieldname": "recommended_definition_change",
+   "fieldtype": "Long Text",
+   "label": "Recommended Definition Change"
+  },
+  {
+   "fieldname": "reviewed_by",
+   "fieldtype": "Link",
+   "label": "Reviewed By",
+   "options": "User"
+  },
+  {
+   "fieldname": "review_date",
+   "fieldtype": "Date",
+   "label": "Review Date"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Open\nApplied\nDismissed",
+   "default": "Open",
+   "in_list_view": 1
+  }
+ ],
+ "idx": 0,
+ "links": [],
+ "modified": "2026-07-14 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Signal Type Feedback",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "role": "Sales Engagement Manager",
+   "read": 1,
+   "write": 1,
+   "create": 1,
+   "delete": 1,
+   "report": 1,
+   "export": 1,
+   "import": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  },
+  {
+   "role": "Sales Engagement User",
+   "read": 1,
+   "write": 0,
+   "create": 0,
+   "delete": 0,
+   "report": 1,
+   "export": 1,
+   "share": 1,
+   "print": 1,
+   "email": 1
+  }
+ ],
+ "search_fields": "signal_type,source_signal,status",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "title_field": "signal_type",
+ "track_changes": 1
+}
