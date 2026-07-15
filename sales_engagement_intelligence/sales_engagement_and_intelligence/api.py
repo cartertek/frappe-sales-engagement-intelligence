@@ -84,11 +84,20 @@ SIGNAL_FIELDS = {
     "signal_type",
     "signal_strength",
     "evidence_basis",
+    "evidence_specificity",
     "confidence",
     "source_url",
     "source_date",
+    "observed_fact",
+    "signal_claim",
+    "why_this_signal_type",
+    "why_not_weak",
+    "disqualifiers_checked",
+    "evidence_gap_reason",
     "evidence_notes",
+    "disqualifier_checks",
     "exclude_from_qualification",
+    "manual_override_reason",
     "reviewed_by",
     "review_date",
     "attachment",
@@ -581,7 +590,10 @@ def get_signals(prospect: str) -> dict:
     rows = frappe.get_all(
         "SEI Signal",
         filters={"prospect": prospect},
-        fields=["name", *[field for field in SIGNAL_FIELDS if field != "attachment"]],
+        fields=[
+            "name",
+            *[field for field in SIGNAL_FIELDS if field not in {"attachment", "disqualifier_checks"}],
+        ],
         order_by="source_date desc, creation desc",
     )
     return {"signals": rows, "count": len(rows)}

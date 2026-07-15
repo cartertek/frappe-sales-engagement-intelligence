@@ -13,13 +13,29 @@
   "signal_type",
   "signal_strength",
   "evidence_basis",
+  "evidence_specificity",
   "confidence",
   "source_url",
   "source_date",
+  "criteria_html",
+  "evidence_section",
+  "observed_fact",
+  "signal_claim",
+  "why_this_signal_type",
+  "why_not_weak",
+  "disqualifiers_checked",
+  "evidence_gap_reason",
+  "legacy_notes_section",
   "evidence_notes",
+  "disqualifier_checks",
+  "qualification_section",
   "exclude_from_qualification",
+  "is_strength_capped",
+  "manual_override_reason",
+  "manual_override_by",
+  "manual_override_date",
   "attachment",
-  "column_break_1",
+  "review_section",
   "reviewed_by",
   "review_date"
  ],
@@ -30,7 +46,7 @@
    "fieldtype": "Link",
    "options": "SEI Prospect",
    "reqd": 1,
-   "in_list_view": 0,
+   "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 1
   },
@@ -75,6 +91,14 @@
    "idx": 4
   },
   {
+   "fieldname": "evidence_specificity",
+   "fieldtype": "Select",
+   "label": "Evidence Specificity",
+   "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
+   "description": "Records how specific the evidence source is; Signal Type criteria determine whether it is sufficient.",
+   "default": "Unknown"
+  },
+  {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
@@ -85,7 +109,8 @@
    "label": "Source URL",
    "fieldtype": "Data",
    "in_standard_filter": 1,
-   "idx": 6
+   "idx": 6,
+   "in_list_view": 1
   },
   {
    "fieldname": "source_date",
@@ -95,11 +120,74 @@
    "idx": 7
   },
   {
+   "fieldname": "criteria_html",
+   "fieldtype": "HTML",
+   "label": "Signal Type Criteria"
+  },
+  {
+   "fieldname": "evidence_section",
+   "fieldtype": "Section Break",
+   "label": "Structured Evidence"
+  },
+  {
+   "fieldname": "observed_fact",
+   "fieldtype": "Long Text",
+   "label": "Observed Fact",
+   "description": "What the source directly says or shows. Do not include interpretation."
+  },
+  {
+   "fieldname": "signal_claim",
+   "fieldtype": "Long Text",
+   "label": "Signal Claim",
+   "description": "What the evaluator believes the observed fact proves."
+  },
+  {
+   "fieldname": "why_this_signal_type",
+   "fieldtype": "Long Text",
+   "label": "Why This Signal Type",
+   "description": "Why the evidence belongs to this Signal Type rather than another type or no signal."
+  },
+  {
+   "fieldname": "why_not_weak",
+   "fieldtype": "Long Text",
+   "label": "Why Not Weak",
+   "description": "Required for Moderate or Strong signals."
+  },
+  {
+   "fieldname": "disqualifiers_checked",
+   "fieldtype": "Long Text",
+   "label": "Disqualifiers Checked",
+   "description": "Narrative summary of false-positive checks performed."
+  },
+  {
+   "fieldname": "evidence_gap_reason",
+   "fieldtype": "Long Text",
+   "label": "Evidence Gap Reason",
+   "description": "Why this signal cannot be stronger than Weak."
+  },
+  {
+   "fieldname": "legacy_notes_section",
+   "fieldtype": "Section Break",
+   "label": "Legacy Notes",
+   "collapsible": 1
+  },
+  {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
-   "reqd": 1,
-   "idx": 8
+   "idx": 8,
+   "description": "Legacy/general notes. Structured evidence fields are the source of truth for Moderate/Strong validation."
+  },
+  {
+   "fieldname": "disqualifier_checks",
+   "fieldtype": "Table",
+   "label": "Disqualifier Checks",
+   "options": "SEI Signal Disqualifier Check"
+  },
+  {
+   "fieldname": "qualification_section",
+   "fieldtype": "Section Break",
+   "label": "Qualification Controls"
   },
   {
    "fieldname": "exclude_from_qualification",
@@ -109,16 +197,40 @@
    "idx": 9
   },
   {
+   "fieldname": "is_strength_capped",
+   "fieldtype": "Check",
+   "label": "Strength Capped at Weak",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manual_override_reason",
+   "fieldtype": "Long Text",
+   "label": "Manual Override Reason",
+   "description": "Required to override an inferred/strength-cap guardrail."
+  },
+  {
+   "fieldname": "manual_override_by",
+   "fieldtype": "Link",
+   "label": "Manual Override By",
+   "options": "User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "manual_override_date",
+   "fieldtype": "Datetime",
+   "label": "Manual Override Date",
+   "read_only": 1
+  },
+  {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
    "idx": 10
   },
   {
-   "fieldname": "column_break_1",
-   "label": "",
-   "fieldtype": "Column Break",
-   "idx": 11
+   "fieldname": "review_section",
+   "fieldtype": "Section Break",
+   "label": "Review"
   },
   {
    "fieldname": "reviewed_by",

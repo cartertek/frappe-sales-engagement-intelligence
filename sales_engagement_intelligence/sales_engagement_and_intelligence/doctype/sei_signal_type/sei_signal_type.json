@@ -9,7 +9,21 @@
  "field_order": [
   "signal_type_name",
   "description",
-  "thesis"
+  "thesis",
+  "evidence_criteria_section",
+  "evidence_summary",
+  "qualifying_evidence",
+  "insufficient_evidence",
+  "automatic_weak_conditions",
+  "disqualifying_conditions",
+  "strength_guidance_section",
+  "weak_guidance",
+  "moderate_guidance",
+  "strong_guidance",
+  "review_expectations_section",
+  "evidence_notes_requirements",
+  "false_positive_examples",
+  "positive_examples"
  ],
  "fields": [
   {
@@ -32,6 +46,82 @@
    "label": "Thesis",
    "options": "SEI Thesis",
    "reqd": 1
+  },
+  {
+   "fieldname": "evidence_criteria_section",
+   "fieldtype": "Section Break",
+   "label": "Evidence Criteria"
+  },
+  {
+   "fieldname": "evidence_summary",
+   "fieldtype": "Long Text",
+   "label": "Summary",
+   "description": "Short operator-facing summary of what this signal type means."
+  },
+  {
+   "fieldname": "qualifying_evidence",
+   "fieldtype": "Long Text",
+   "label": "Qualifying Evidence",
+   "description": "What the source must directly show for this signal to count."
+  },
+  {
+   "fieldname": "insufficient_evidence",
+   "fieldtype": "Long Text",
+   "label": "Insufficient Evidence",
+   "description": "Evidence that may look relevant but is not enough."
+  },
+  {
+   "fieldname": "automatic_weak_conditions",
+   "fieldtype": "Long Text",
+   "label": "Automatic Weak Conditions",
+   "description": "Conditions that cap this signal at Weak unless overridden."
+  },
+  {
+   "fieldname": "disqualifying_conditions",
+   "fieldtype": "Long Text",
+   "label": "Disqualifying Conditions",
+   "description": "One condition per line. These can be loaded into signal disqualifier checks."
+  },
+  {
+   "fieldname": "strength_guidance_section",
+   "fieldtype": "Section Break",
+   "label": "Strength Guidance"
+  },
+  {
+   "fieldname": "weak_guidance",
+   "fieldtype": "Long Text",
+   "label": "Weak Guidance"
+  },
+  {
+   "fieldname": "moderate_guidance",
+   "fieldtype": "Long Text",
+   "label": "Moderate Guidance"
+  },
+  {
+   "fieldname": "strong_guidance",
+   "fieldtype": "Long Text",
+   "label": "Strong Guidance"
+  },
+  {
+   "fieldname": "review_expectations_section",
+   "fieldtype": "Section Break",
+   "label": "Review Expectations"
+  },
+  {
+   "fieldname": "evidence_notes_requirements",
+   "fieldtype": "Long Text",
+   "label": "Evidence Notes Requirements",
+   "description": "Checklist for what evaluators must write in evidence fields."
+  },
+  {
+   "fieldname": "false_positive_examples",
+   "fieldtype": "Long Text",
+   "label": "False Positive Examples"
+  },
+  {
+   "fieldname": "positive_examples",
+   "fieldtype": "Long Text",
+   "label": "Positive Examples"
   }
  ],
  "idx": 0,
@@ -64,7 +154,7 @@
    "share": 1
   }
  ],
- "quick_entry": 1,
+ "quick_entry": 0,
  "search_fields": "signal_type_name,thesis",
  "sort_field": "modified",
  "sort_order": "DESC",
