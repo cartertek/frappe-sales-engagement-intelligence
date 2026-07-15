@@ -819,12 +819,11 @@ def ensure_signal_prospect_tag_sync() -> None:
     """Keep the DB-level prospect-tag sync trigger installed after migrations."""
 
     try:
-        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_tag_sync import (
-            ensure_signal_prospect_tag_trigger,
-            sync_all_signal_prospect_tags,
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_tag_sync,
         )
 
-        sync_all_signal_prospect_tags()
-        ensure_signal_prospect_tag_trigger()
+        prospect_tag_sync.sync_all_signal_prospect_tags()
+        prospect_tag_sync.ensure_signal_prospect_tag_trigger()
     except Exception:
         frappe.log_error(title="SEI prospect tag sync repair failed", message=frappe.get_traceback())
