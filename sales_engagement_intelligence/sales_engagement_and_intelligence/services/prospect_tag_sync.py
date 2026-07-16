@@ -63,8 +63,8 @@ def ensure_signal_prospect_tag_trigger() -> None:
         )
         return
 
-    frappe.db.sql(f"DROP TRIGGER IF EXISTS `{TRIGGER_NAME}`")
-    frappe.db.sql(
+    frappe.db.sql_ddl(f"DROP TRIGGER IF EXISTS `{TRIGGER_NAME}`")
+    frappe.db.sql_ddl(
         f"""
         CREATE TRIGGER `{TRIGGER_NAME}`
         AFTER UPDATE ON `tabSEI Prospect`
@@ -82,7 +82,7 @@ def ensure_signal_prospect_tag_trigger() -> None:
 
 def drop_signal_prospect_tag_trigger() -> None:
     if _is_mariadb():
-        frappe.db.sql(f"DROP TRIGGER IF EXISTS `{TRIGGER_NAME}`")
+        frappe.db.sql_ddl(f"DROP TRIGGER IF EXISTS `{TRIGGER_NAME}`")
 
 
 def ensure_prospect_user_tags_column() -> None:
