@@ -5,6 +5,7 @@ import frappe
 PARENT_ICON = "Sales Engagement and Intelligence"
 SEI_REMOVED_DESKTOP_ICONS = {"Signals"}
 SEI_CANONICAL_RESEARCH_DOCTYPES = {"SEI Prospect", "SEI Signal"}
+SEI_CANONICAL_TOUCHPOINT_DOCTYPES = {"SEI Interaction Attribution"}
 
 SEI_DESKTOP_ICON_RENAMES = {
     "Assets": "Theses and Assets",
@@ -109,7 +110,7 @@ def _repair_layout_node(node) -> bool:
 
 
 def consolidate_prospecting_navigation() -> None:
-    """Make Prospecting the sole workspace owner for prospect and signal records."""
+    """Keep operational DocTypes associated with their canonical sidebars."""
 
     for doctype, name in (
         ("Desktop Icon", "Signals"),
@@ -122,16 +123,19 @@ def consolidate_prospecting_navigation() -> None:
     if not frappe.db.table_exists("Workspace Sidebar"):
         return
 
+    canonical_sidebar_by_doctype = {
+        **{doctype: "Prospecting" for doctype in SEI_CANONICAL_RESEARCH_DOCTYPES},
+        **{doctype: "Touchpoints" for doctype in SEI_CANONICAL_TOUCHPOINT_DOCTYPES},
+    }
     for sidebar_name in frappe.get_all("Workspace Sidebar", pluck="name"):
-        if sidebar_name == "Prospecting":
-            continue
         sidebar = frappe.get_doc("Workspace Sidebar", sidebar_name)
         retained_items = [
             item.as_dict()
             for item in sidebar.items
             if not (
                 item.type == "Link"
-                and item.link_to in SEI_CANONICAL_RESEARCH_DOCTYPES
+                and item.link_to in canonical_sidebar_by_doctype
+                and canonical_sidebar_by_doctype[item.link_to] != sidebar_name
             )
         ]
         if len(retained_items) != len(sidebar.items):

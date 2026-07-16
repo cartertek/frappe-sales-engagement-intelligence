@@ -8,6 +8,7 @@ MODULE = APP / "sales_engagement_and_intelligence"
 SIGNAL_JSON = MODULE / "doctype" / "sei_signal" / "sei_signal.json"
 SIGNAL_JS = MODULE / "doctype" / "sei_signal" / "sei_signal.js"
 PROSPECTING_SIDEBAR = APP / "workspace_sidebar" / "prospecting.json"
+TOUCHPOINTS_SIDEBAR = APP / "workspace_sidebar" / "touchpoints.json"
 
 
 def test_signal_form_uses_collapsed_type_definition_and_compact_textareas():
@@ -51,6 +52,25 @@ def test_prospecting_is_the_only_sidebar_owner_for_prospects_and_signals():
         assert not ({"SEI Prospect", "SEI Signal"} & targets), sidebar_path
 
 
+def test_touchpoints_is_the_only_sidebar_owner_for_interaction_attribution():
+    canonical = json.loads(TOUCHPOINTS_SIDEBAR.read_text())
+    canonical_targets = {item.get("link_to") for item in canonical["items"]}
+    assert "SEI Interaction Attribution" in canonical_targets
+
+    for sidebar_path in (APP / "workspace_sidebar").glob("*.json"):
+        if sidebar_path == TOUCHPOINTS_SIDEBAR:
+            continue
+        sidebar = json.loads(sidebar_path.read_text())
+        targets = {item.get("link_to") for item in sidebar["items"]}
+        assert "SEI Interaction Attribution" not in targets, sidebar_path
+
+    prospecting = json.loads(
+        (MODULE / "workspace" / "prospecting" / "prospecting.json").read_text()
+    )
+    shortcuts = {shortcut.get("link_to") for shortcut in prospecting["shortcuts"]}
+    assert "SEI Interaction Attribution" in shortcuts
+
+
 def test_redundant_signals_workspace_is_removed_and_migration_cleans_live_records():
     assert not (APP / "desktop_icon" / "signals.json").exists()
     assert not (APP / "workspace_sidebar" / "signals.json").exists()
@@ -61,3 +81,4 @@ def test_redundant_signals_workspace_is_removed_and_migration_cleans_live_record
     assert '("Workspace Sidebar", "Signals")' in setup
     assert '("Workspace", "Signals")' in setup
     assert "SEI_CANONICAL_RESEARCH_DOCTYPES" in setup
+    assert "SEI_CANONICAL_TOUCHPOINT_DOCTYPES" in setup
