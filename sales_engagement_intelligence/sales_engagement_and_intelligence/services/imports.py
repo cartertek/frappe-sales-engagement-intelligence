@@ -267,6 +267,19 @@ def _has_initial_signal(row: dict) -> bool:
     )
 
 
+HIRING_GAP_SIGNAL_TYPES = {
+    "early-technical-capacity-gap",
+    "overloaded-hybrid-scope",
+    "consultancy-compatible-contract",
+    "long-open-role",
+}
+HIRING_GAP_REVIEW_LABELS = (
+    "Current-condition test:",
+    "Role-centrality test:",
+    "Role-type test:",
+)
+
+
 def _signal_value(row: dict, base: str, prefix: str = ""):
     return row.get(f"{prefix}{base}" if prefix else base)
 
@@ -304,6 +317,18 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
                 "Moderate or Strong signals require structured evidence fields: "
                 + ", ".join(missing_proof)
             )
+
+        signal_type = resolve_signal_type(_signal_value(row, "signal_type", prefix))
+        if signal_type in HIRING_GAP_SIGNAL_TYPES:
+            review_text = str(_signal_value(row, "disqualifiers_checked", prefix) or "")
+            missing_reviews = [
+                label for label in HIRING_GAP_REVIEW_LABELS if label not in review_text
+            ]
+            if missing_reviews:
+                frappe.throw(
+                    "Moderate or Strong hiring-gap signals must document these reviews in "
+                    "disqualifiers_checked: " + ", ".join(missing_reviews)
+                )
 
     if strength == "Weak" and not (
         _signal_value(row, "observed_fact", prefix) or _signal_value(row, "evidence_gap_reason", prefix)
