@@ -207,3 +207,21 @@ def test_pre_crm_handoff_status_recomputes_from_current_state(monkeypatch):
             signal_summary="Research in progress",
         )
     ) == "Needs Research"
+
+def test_rejected_qualification_maps_to_rejected_lifecycle(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    doc = prospect(
+        qualification_status="Rejected",
+        lifecycle_status="Needs Research",
+        last_researched_date="2026-07-16",
+        signal_summary="Research completed before rejection.",
+        ready_for_crm_conversion=1,
+    )
+
+    result = lifecycle.apply_lifecycle_to_doc(doc)
+
+    assert result == {"old_lifecycle_status": "Needs Research", "lifecycle_status": "Rejected"}
+    assert doc.lifecycle_status == "Rejected"
+    assert doc.qualification_status == "Rejected"
+    assert doc.ready_for_crm_conversion == 0
