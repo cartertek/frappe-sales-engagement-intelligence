@@ -18,6 +18,7 @@
   "confidence",
   "source_url",
   "source_date",
+  "signal_type_definition_section",
   "criteria_html",
   "evidence_section",
   "observed_fact",
@@ -131,71 +132,78 @@
    "idx": 10
   },
   {
+   "fieldname": "signal_type_definition_section",
+   "fieldtype": "Section Break",
+   "label": "Signal Type Definition",
+   "collapsible": 1,
+   "idx": 11
+  },
+  {
    "fieldname": "criteria_html",
    "fieldtype": "HTML",
    "label": "Signal Type Criteria",
-   "idx": 11
+   "idx": 12
   },
   {
    "fieldname": "evidence_section",
    "fieldtype": "Section Break",
    "label": "Structured Evidence",
-   "idx": 12
+   "idx": 13
   },
   {
    "fieldname": "observed_fact",
    "fieldtype": "Long Text",
    "label": "Observed Fact",
    "description": "Verbatim quotation copied from the source. Must contain at least one complete sentence. Do not paraphrase, interpret, or combine separate passages.",
-   "idx": 13
+   "idx": 14
   },
   {
    "fieldname": "signal_claim",
    "fieldtype": "Long Text",
    "label": "Signal Claim",
    "description": "Paraphrase or interpretation of what the quoted Observed Fact supports. Keep source wording in Observed Fact.",
-   "idx": 14
+   "idx": 15
   },
   {
    "fieldname": "why_this_signal_type",
    "fieldtype": "Long Text",
    "label": "Why This Signal Type",
    "description": "Why the evidence belongs to this Signal Type rather than another type or no signal.",
-   "idx": 15
+   "idx": 16
   },
   {
    "fieldname": "why_not_weak",
    "fieldtype": "Long Text",
    "label": "Why Not Weak",
    "description": "Required for Moderate or Strong signals.",
-   "idx": 16
+   "idx": 17
   },
   {
    "fieldname": "disqualifiers_checked",
    "fieldtype": "Long Text",
    "label": "Disqualifiers Checked",
    "description": "Narrative summary of false-positive checks performed.",
-   "idx": 17
+   "idx": 18
   },
   {
    "fieldname": "evidence_gap_reason",
    "fieldtype": "Long Text",
    "label": "Evidence Gap Reason",
    "description": "Why this signal cannot be stronger than Weak.",
-   "idx": 18
+   "idx": 19
   },
   {
    "fieldname": "legacy_notes_section",
    "fieldtype": "Section Break",
    "label": "Legacy Notes",
    "collapsible": 1,
-   "idx": 19
+   "idx": 20
   },
   {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
-   "idx": 20,
+   "idx": 21,
    "description": "Legacy/general notes. Structured evidence fields are the source of truth for Moderate/Strong validation."
   },
   {
@@ -203,34 +211,34 @@
    "fieldtype": "Table",
    "label": "Disqualifier Checks",
    "options": "SEI Signal Disqualifier Check",
-   "idx": 21
+   "idx": 22
   },
   {
    "fieldname": "qualification_section",
    "fieldtype": "Section Break",
    "label": "Qualification Controls",
-   "idx": 22
+   "idx": 23
   },
   {
    "fieldname": "exclude_from_qualification",
    "label": "Exclude from Qualification",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "idx": 23
+   "idx": 24
   },
   {
    "fieldname": "is_strength_capped",
    "fieldtype": "Check",
    "label": "Strength Capped at Weak",
    "read_only": 1,
-   "idx": 24
+   "idx": 25
   },
   {
    "fieldname": "manual_override_reason",
    "fieldtype": "Long Text",
    "label": "Manual Override Reason",
    "description": "Required to override an inferred/strength-cap guardrail.",
-   "idx": 25
+   "idx": 26
   },
   {
    "fieldname": "manual_override_by",
@@ -238,40 +246,40 @@
    "label": "Manual Override By",
    "options": "User",
    "read_only": 1,
-   "idx": 26
+   "idx": 27
   },
   {
    "fieldname": "manual_override_date",
    "fieldtype": "Datetime",
    "label": "Manual Override Date",
    "read_only": 1,
-   "idx": 27
+   "idx": 28
   },
   {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
-   "idx": 28
+   "idx": 29
   },
   {
    "fieldname": "review_section",
    "fieldtype": "Section Break",
    "label": "Review",
-   "idx": 29
+   "idx": 30
   },
   {
    "fieldname": "reviewed_by",
    "label": "Reviewed By",
    "fieldtype": "Link",
    "options": "User",
-   "idx": 30
+   "idx": 31
   },
   {
    "fieldname": "review_date",
    "label": "Review Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 31
+   "idx": 32
   }
  ],
  "links": [],

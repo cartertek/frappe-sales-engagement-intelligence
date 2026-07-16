@@ -3,6 +3,9 @@ import json
 import frappe
 
 PARENT_ICON = "Sales Engagement and Intelligence"
+SEI_REMOVED_DESKTOP_ICONS = {"Signals"}
+SEI_CANONICAL_RESEARCH_DOCTYPES = {"SEI Prospect", "SEI Signal"}
+
 SEI_DESKTOP_ICON_RENAMES = {
     "Assets": "Theses and Assets",
     "Reports": "Engagement Reports",
@@ -14,6 +17,7 @@ def after_migrate() -> None:
     """Refresh Desk state after app metadata and standard records sync."""
 
     repair_sei_desktop_layout()
+    consolidate_prospecting_navigation()
     ensure_milestone_5_workspace_items()
     ensure_milestone_6_workspace_reports()
     ensure_signal_type_seed_data()
@@ -73,6 +77,17 @@ def _repair_layout_node(node) -> bool:
     changed = False
 
     if isinstance(node, list):
+        original_length = len(node)
+        node[:] = [
+            child
+            for child in node
+            if not (
+                isinstance(child, dict)
+                and child.get("parent_icon") == PARENT_ICON
+                and child.get("name") in SEI_REMOVED_DESKTOP_ICONS
+            )
+        ]
+        changed = len(node) != original_length
         for child in node:
             changed = _repair_layout_node(child) or changed
         return changed
@@ -91,6 +106,37 @@ def _repair_layout_node(node) -> bool:
         changed = _repair_layout_node(value) or changed
 
     return changed
+
+
+def consolidate_prospecting_navigation() -> None:
+    """Make Prospecting the sole workspace owner for prospect and signal records."""
+
+    for doctype, name in (
+        ("Desktop Icon", "Signals"),
+        ("Workspace Sidebar", "Signals"),
+        ("Workspace", "Signals"),
+    ):
+        if frappe.db.exists(doctype, name):
+            frappe.delete_doc(doctype, name, force=True, ignore_permissions=True)
+
+    if not frappe.db.table_exists("Workspace Sidebar"):
+        return
+
+    for sidebar_name in frappe.get_all("Workspace Sidebar", pluck="name"):
+        if sidebar_name == "Prospecting":
+            continue
+        sidebar = frappe.get_doc("Workspace Sidebar", sidebar_name)
+        retained_items = [
+            item.as_dict()
+            for item in sidebar.items
+            if not (
+                item.type == "Link"
+                and item.link_to in SEI_CANONICAL_RESEARCH_DOCTYPES
+            )
+        ]
+        if len(retained_items) != len(sidebar.items):
+            sidebar.set("items", retained_items)
+            sidebar.save(ignore_permissions=True)
 
 
 def ensure_signal_type_seed_data() -> None:
