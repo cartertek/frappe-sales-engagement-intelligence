@@ -60,6 +60,9 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
     if is_terminal_status(prospect.lifecycle_status):
         return prospect.lifecycle_status
 
+    if prospect.qualification_status == "Rejected":
+        return "Rejected"
+
     if prospect.qualification_status in ("Qualified", "Manually Approved"):
         if prospect.lifecycle_status == "Find Contact":
             if has_contact_path(prospect):
