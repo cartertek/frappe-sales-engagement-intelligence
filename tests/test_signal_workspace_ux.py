@@ -17,7 +17,9 @@ def test_signal_form_uses_collapsed_type_definition_and_compact_textareas():
     section = fields["signal_type_definition_section"]
     assert section["fieldtype"] == "Section Break"
     assert section["collapsible"] == 1
-    assert signal["field_order"].index("signal_type_definition_section") < signal["field_order"].index("criteria_html")
+    assert signal["field_order"].index("signal_type_definition_section") < signal[
+        "field_order"
+    ].index("criteria_html")
 
     source = SIGNAL_JS.read_text()
     assert "onload_post_render(frm)" in source
