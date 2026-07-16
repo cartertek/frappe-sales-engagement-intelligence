@@ -184,7 +184,9 @@ function mark_ready_for_crm_conversion(frm) {
             }
             frappe.msgprint({
                 title: __('SEI Action Complete'),
-                message: __('Prospect marked ready for CRM conversion.'),
+                message: message.data && message.data.lifecycle_status === 'Find Contact'
+                    ? __('CRM handoff approved. Add contact information to become Ready for CRM Conversion.')
+                    : __('Prospect marked ready for CRM conversion.'),
                 indicator: 'green'
             });
             frm.reload_doc();

@@ -97,7 +97,7 @@ def test_needs_review_maps_to_research_complete(monkeypatch):
     )
 
 
-def test_qualified_with_contact_path_maps_to_qualified_not_ready(monkeypatch):
+def test_qualified_stays_qualified_before_manual_handoff(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
 
     assert (
@@ -112,16 +112,61 @@ def test_qualified_with_contact_path_maps_to_qualified_not_ready(monkeypatch):
     )
 
 
-def test_qualified_without_contact_path_maps_to_find_contact(monkeypatch):
+def test_qualified_without_manual_handoff_stays_qualified(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
 
     assert (
         lifecycle.suggest_lifecycle_status_for_doc(
-            prospect(qualification_status="Qualified", lifecycle_status="Needs Research")
+            prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+        )
+        == "Qualified"
+    )
+
+
+def test_find_contact_without_contact_stays_find_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(qualification_status="Qualified", lifecycle_status="Find Contact")
         )
         == "Find Contact"
     )
 
+
+def test_approved_handoff_with_contact_maps_to_ready_for_crm_conversion(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Find Contact",
+                primary_contact_email="buyer@example.com",
+            )
+        )
+        == "Ready for CRM Conversion"
+    )
+
+
+
+def test_apply_lifecycle_promotes_find_contact_and_syncs_ready_flag(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Find Contact",
+        primary_contact_email="buyer@example.com",
+        ready_for_crm_conversion=0,
+    )
+
+    result = lifecycle.apply_lifecycle_to_doc(doc)
+
+    assert result == {
+        "old_lifecycle_status": "Find Contact",
+        "lifecycle_status": "Ready for CRM Conversion",
+    }
+    assert doc.lifecycle_status == "Ready for CRM Conversion"
+    assert doc.ready_for_crm_conversion == 1
 
 def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
