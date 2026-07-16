@@ -26,9 +26,15 @@ frappe.ui.form.on('SEI Prospect', {
         }, __('Outreach Drafting'));
 
 
-        frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
-            mark_ready_for_crm_conversion(frm);
-        }, __('CRM Preparation'));
+        if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
+            frm.add_custom_button(__('Mark as Not Ready for CRM'), () => {
+                mark_not_ready_for_crm_conversion(frm);
+            }, __('CRM Preparation'));
+        } else {
+            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
+                mark_ready_for_crm_conversion(frm);
+            }, __('CRM Preparation'));
+        }
 
         if (can_prepare_crm(frm)) {
             frm.add_custom_button(__('Find CRM Duplicates'), () => show_conversion_preview(frm), __('CRM Preparation'));
@@ -187,6 +193,31 @@ function mark_ready_for_crm_conversion(frm) {
                 message: message.data && message.data.lifecycle_status === 'Find Contact'
                     ? __('CRM handoff approved. Add contact information to become Ready for CRM Conversion.')
                     : __('Prospect marked ready for CRM conversion.'),
+                indicator: 'green'
+            });
+            frm.reload_doc();
+        }
+    });
+}
+
+function mark_not_ready_for_crm_conversion(frm) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_not_ready_for_crm_conversion',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                frappe.msgprint({
+                    title: __('Unable to Undo CRM Readiness'),
+                    message: frappe.utils.escape_html((message.error && message.error.message) || __('Action failed.')),
+                    indicator: 'red'
+                });
+                return;
+            }
+            frappe.msgprint({
+                title: __('SEI Action Complete'),
+                message: __('Prospect marked as not ready for CRM.'),
                 indicator: 'green'
             });
             frm.reload_doc();

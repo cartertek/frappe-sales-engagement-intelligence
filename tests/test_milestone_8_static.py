@@ -128,6 +128,8 @@ def test_prospect_form_has_user_triggered_draft_and_playbook_actions():
     assert "Preview Message Draft" in source
     assert "preview_message_draft" in source
     assert "Mark Ready for CRM Conversion" in source
+    assert "Mark as Not Ready for CRM" in source
+    assert "mark_not_ready_for_crm_conversion" in source
     assert "show_crm_readiness_checklist" in source
     assert "CRM Readiness Requirements" in source
     assert "}, __('CRM Preparation'));" in source

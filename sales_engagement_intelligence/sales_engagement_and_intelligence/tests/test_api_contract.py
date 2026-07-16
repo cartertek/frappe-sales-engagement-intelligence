@@ -17,6 +17,7 @@ REQUIRED_ENDPOINTS = [
     "recalculate_qualification",
     "apply_lifecycle",
     "mark_ready_for_crm_conversion",
+    "mark_not_ready_for_crm_conversion",
     "mark_rejected",
     "mark_do_not_contact",
     "reopen_prospect",

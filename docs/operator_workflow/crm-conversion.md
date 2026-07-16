@@ -16,3 +16,5 @@ SEI prepares conversion context, but Frappe CRM owns the sales records. CRM hand
 A Qualified prospect remains Qualified until the user explicitly approves CRM handoff. Find Contact therefore means the handoff was approved but the required contact path is not yet available.
 
 SEI never creates ERPNext Lead, Opportunity, Quotation, Customer, or other ERPNext commercial records.
+
+To undo CRM handoff approval while the prospect is in Find Contact or Ready for CRM Conversion, use **CRM Preparation → Mark as Not Ready for CRM**. SEI clears CRM readiness and recomputes the pre-handoff lifecycle from the current qualification and research state.

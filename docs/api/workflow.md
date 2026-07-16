@@ -6,6 +6,7 @@ Methods:
 - `apply_lifecycle(prospect)`
 - `apply_lifecycle_suggestion(prospect)` legacy alias
 - `mark_ready_for_crm_conversion(prospect)` — explicitly marks a prospect ready when CRM readiness requirements pass; otherwise returns a structured checklist of met/unmet requirements.
+- `mark_not_ready_for_crm_conversion(prospect)` — clears CRM handoff approval and recomputes the pre-handoff lifecycle.
 - `mark_rejected(prospect, reason=None)` manager-only
 - `mark_do_not_contact(prospect, reason=None)` manager-only
 - `reopen_prospect(prospect)` manager-only

@@ -187,3 +187,23 @@ def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
         "not_protected_lifecycle": False,
         "no_crm_lead": False,
     }
+
+def test_pre_crm_handoff_status_recomputes_from_current_state(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert lifecycle.suggest_pre_crm_handoff_status(
+        prospect(qualification_status="Qualified", lifecycle_status="Find Contact")
+    ) == "Qualified"
+    assert lifecycle.suggest_pre_crm_handoff_status(
+        prospect(qualification_status="Needs Review", lifecycle_status="Find Contact")
+    ) == "Research Complete"
+    assert lifecycle.suggest_pre_crm_handoff_status(
+        prospect(qualification_status="Unqualified", lifecycle_status="Find Contact")
+    ) == "New"
+    assert lifecycle.suggest_pre_crm_handoff_status(
+        prospect(
+            qualification_status="Unqualified",
+            lifecycle_status="Find Contact",
+            signal_summary="Research in progress",
+        )
+    ) == "Needs Research"
