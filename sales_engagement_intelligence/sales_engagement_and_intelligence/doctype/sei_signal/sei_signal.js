@@ -1,5 +1,11 @@
 frappe.ui.form.on('SEI Signal', {
+    onload_post_render(frm) {
+        collapse_default_sections(frm);
+        shorten_signal_textareas(frm);
+    },
+
     refresh(frm) {
+        shorten_signal_textareas(frm);
         render_signal_type_criteria(frm);
         show_evidence_guardrail_warning(frm);
         add_disqualifier_actions(frm);
@@ -143,5 +149,41 @@ function load_disqualifier_checks(frm, { only_if_empty } = { only_if_empty: true
             row.applies = 0;
         });
         frm.refresh_field('disqualifier_checks');
+    });
+}
+
+
+const COMPACT_SIGNAL_TEXT_FIELDS = [
+    'observed_fact',
+    'signal_claim',
+    'why_this_signal_type',
+    'why_not_weak',
+    'disqualifiers_checked',
+    'evidence_gap_reason',
+    'evidence_notes',
+    'manual_override_reason',
+];
+
+const DEFAULT_COLLAPSED_SIGNAL_SECTIONS = [
+    'signal_type_definition_section',
+    'qualification_section',
+    'review_section',
+];
+
+function collapse_default_sections(frm) {
+    DEFAULT_COLLAPSED_SIGNAL_SECTIONS.forEach((fieldname) => {
+        const field = frm.get_field(fieldname);
+        if (field && field.section) {
+            field.section.collapse(true);
+        }
+    });
+}
+
+function shorten_signal_textareas(frm) {
+    COMPACT_SIGNAL_TEXT_FIELDS.forEach((fieldname) => {
+        const field = frm.get_field(fieldname);
+        if (field && field.$input) {
+            field.$input.css({ height: '88px', 'min-height': '88px' });
+        }
     });
 }

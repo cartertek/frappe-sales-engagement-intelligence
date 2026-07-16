@@ -45,19 +45,6 @@
       "link_to": "SEI Interaction Attribution"
     },
     {
-      "child": 1,
-      "collapsible": 1,
-      "indent": 0,
-      "keep_closed": 0,
-      "label": "Prospects",
-      "link_type": "DocType",
-      "open_in_new_tab": 1,
-      "show_arrow": 0,
-      "type": "Link",
-      "icon": "",
-      "link_to": "SEI Prospect"
-    },
-    {
       "child": 0,
       "collapsible": 1,
       "indent": 1,
@@ -68,19 +55,6 @@
       "show_arrow": 0,
       "type": "Section Break",
       "icon": "radar"
-    },
-    {
-      "child": 1,
-      "collapsible": 1,
-      "indent": 0,
-      "keep_closed": 0,
-      "label": "Signals",
-      "link_type": "DocType",
-      "open_in_new_tab": 1,
-      "show_arrow": 0,
-      "type": "Link",
-      "icon": "",
-      "link_to": "SEI Signal"
     }
   ],
   "name": "Touchpoints",
