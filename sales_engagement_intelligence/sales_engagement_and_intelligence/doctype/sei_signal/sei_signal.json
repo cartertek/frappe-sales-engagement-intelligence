@@ -217,7 +217,8 @@
    "fieldname": "qualification_section",
    "fieldtype": "Section Break",
    "label": "Qualification Controls",
-   "idx": 23
+   "idx": 23,
+   "collapsible": 1
   },
   {
    "fieldname": "exclude_from_qualification",
@@ -265,7 +266,8 @@
    "fieldname": "review_section",
    "fieldtype": "Section Break",
    "label": "Review",
-   "idx": 30
+   "idx": 30,
+   "collapsible": 1
   },
   {
    "fieldname": "reviewed_by",

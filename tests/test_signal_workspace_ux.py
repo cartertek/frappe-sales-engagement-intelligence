@@ -15,16 +15,24 @@ def test_signal_form_uses_collapsed_type_definition_and_compact_textareas():
     signal = json.loads(SIGNAL_JSON.read_text())
     fields = {field["fieldname"]: field for field in signal["fields"]}
 
-    section = fields["signal_type_definition_section"]
-    assert section["fieldtype"] == "Section Break"
-    assert section["collapsible"] == 1
+    for fieldname in (
+        "signal_type_definition_section",
+        "qualification_section",
+        "review_section",
+    ):
+        section = fields[fieldname]
+        assert section["fieldtype"] == "Section Break"
+        assert section["collapsible"] == 1
     assert signal["field_order"].index("signal_type_definition_section") < signal[
         "field_order"
     ].index("criteria_html")
 
     source = SIGNAL_JS.read_text()
     assert "onload_post_render(frm)" in source
+    assert "collapse_default_sections(frm)" in source
     assert "field.section.collapse(true)" in source
+    assert "'qualification_section'" in source
+    assert "'review_section'" in source
     assert "height: '88px'" in source
     for fieldname in (
         "observed_fact",

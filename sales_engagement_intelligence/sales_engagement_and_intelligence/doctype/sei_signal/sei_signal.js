@@ -1,6 +1,6 @@
 frappe.ui.form.on('SEI Signal', {
     onload_post_render(frm) {
-        collapse_signal_type_definition(frm);
+        collapse_default_sections(frm);
         shorten_signal_textareas(frm);
     },
 
@@ -164,11 +164,19 @@ const COMPACT_SIGNAL_TEXT_FIELDS = [
     'manual_override_reason',
 ];
 
-function collapse_signal_type_definition(frm) {
-    const field = frm.get_field('signal_type_definition_section');
-    if (field && field.section) {
-        field.section.collapse(true);
-    }
+const DEFAULT_COLLAPSED_SIGNAL_SECTIONS = [
+    'signal_type_definition_section',
+    'qualification_section',
+    'review_section',
+];
+
+function collapse_default_sections(frm) {
+    DEFAULT_COLLAPSED_SIGNAL_SECTIONS.forEach((fieldname) => {
+        const field = frm.get_field(fieldname);
+        if (field && field.section) {
+            field.section.collapse(true);
+        }
+    });
 }
 
 function shorten_signal_textareas(frm) {
