@@ -9,6 +9,17 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.ta
 )
 
 QUALIFYING_STRENGTHS = {"Moderate", "Strong"}
+HIRING_GAP_SIGNAL_TYPES = {
+    "early-technical-capacity-gap",
+    "overloaded-hybrid-scope",
+    "consultancy-compatible-contract",
+    "long-open-role",
+}
+HIRING_GAP_REVIEW_LABELS = (
+    "Current-condition test:",
+    "Role-centrality test:",
+    "Role-type test:",
+)
 
 
 def _has_value(value) -> bool:
@@ -63,6 +74,17 @@ class SEISignal(Document):
                     "Moderate or Strong signals require structured evidence fields: "
                     + ", ".join(missing)
                 )
+
+            if self.signal_type in HIRING_GAP_SIGNAL_TYPES:
+                review_text = str(self.disqualifiers_checked or "")
+                missing_reviews = [
+                    label for label in HIRING_GAP_REVIEW_LABELS if label not in review_text
+                ]
+                if missing_reviews:
+                    frappe.throw(
+                        "Moderate or Strong hiring-gap signals must document these reviews in "
+                        "Disqualifiers Checked: " + ", ".join(missing_reviews)
+                    )
 
         if self.signal_strength == "Weak" and not (
             _has_value(self.observed_fact) or _has_value(self.evidence_gap_reason)
