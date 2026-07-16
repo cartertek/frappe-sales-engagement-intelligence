@@ -19,7 +19,9 @@ Moderate or Strong signals must include structured source-backed evidence:
 - `why_not_weak`
 - `disqualifiers_checked`
 
-Observed signals require `observed_fact`.
+Observed signals require `observed_fact`. For Moderate or Strong signals, it must be a verbatim quotation copied from the source, contain at least one complete sentence, and directly support the selected Signal Type. Do not paraphrase or combine separate passages in this field.
+
+Use `signal_claim` for paraphrase, interpretation, or explanation of what the quoted observation supports.
 
 Weak signals require either `observed_fact` or `evidence_gap_reason` so review can learn from weak or rejected evidence.
 

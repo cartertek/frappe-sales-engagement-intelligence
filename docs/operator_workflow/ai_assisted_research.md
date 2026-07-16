@@ -11,8 +11,8 @@ A signal is what the source directly supports.
 
 For each proposed signal, AI must separate:
 
-- source fact
-- interpretation
+- verbatim source quotation of at least one complete sentence
+- interpretation or paraphrase
 - candidate Signal Type
 - disqualifiers checked
 - strength rationale
@@ -25,7 +25,8 @@ Before AI proposes a new signal or signal update, it should provide:
 ```text
 Prospect:
 Exact evidence source:
-Observed fact:
+Observed fact (verbatim quotation; at least one complete sentence):
+Signal claim (paraphrase/interpretation):
 Candidate Signal Type:
 Disqualifiers checked:
 Proposed strength:
@@ -37,7 +38,7 @@ This applies whenever AI proposes new signals or signal updates. It is not limit
 
 ## Conservative scoring rule
 
-If AI cannot identify exact source-backed evidence for the selected Signal Type, it must propose Weak.
+If AI cannot copy at least one complete source sentence verbatim into Observed Fact, or if the quotation does not directly support the selected Signal Type, it must propose Weak.
 
 If AI cannot explain why the signal is not Weak, it must propose Weak.
 

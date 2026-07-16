@@ -12,4 +12,4 @@ Imports create or update SEI records only. They do not create Frappe CRM records
 
 ## Assistant-created signal rows
 
-Assistant-created import rows must follow the signal evaluation standard in `docs/operator_workflow/signal_evaluation.md`. A Moderate or Strong signal row must have an `observed_fact` that directly asserts the selected Signal Type. If the `observed_fact` does not make that assertion, import the row as Weak and excluded from qualification, or reject it before import.
+Assistant-created import rows must follow the signal evaluation standard in `docs/operator_workflow/signal_evaluation.md`. A Moderate or Strong signal row must have an `observed_fact` containing a verbatim quotation from the source of at least one complete sentence. The quotation itself must directly support the selected Signal Type. Put all paraphrase and interpretation in `signal_claim`. If the quotation does not support the signal, import the row as Weak and excluded from qualification, or reject it before import.

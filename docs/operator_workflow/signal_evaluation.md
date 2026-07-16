@@ -9,7 +9,7 @@ A signal is what the source directly supports.
 
 Ask these questions in order:
 
-1. What does the source directly say or show?
+1. What complete source sentence can be quoted verbatim?
 2. What am I inferring?
 3. Which managed Signal Type does this evidence appear to support?
 4. Does the Signal Type definition say this evidence is sufficient?
@@ -18,9 +18,11 @@ Ask these questions in order:
 
 ## Assistant-created signal default
 
-Assistant-created signals default to Weak and excluded from qualification unless the `observed_fact` directly asserts the selected managed Signal Type.
+Assistant-created signals default to Weak and excluded from qualification unless `observed_fact` contains a direct quotation copied verbatim from the source. The quotation must be at least one complete sentence long and must directly support the selected managed Signal Type.
 
-Do not create a Moderate or Strong assistant-created signal from company context, a job title, technical work area, company scale, hiring activity, Cartertek fit, or a plausible interpretation. The `signal_claim`, `why_this_signal_type`, `why_not_weak`, and `evidence_notes` fields may explain the signal, but they must not supply the signal assertion missing from `observed_fact`.
+Do not paraphrase, synthesize, interpret, or combine separate source passages in `observed_fact`. Preserve the original wording and sentence boundaries. If additional context is required, quote additional complete sentences. Any paraphrase or explanation of what the quotation means belongs in `signal_claim`, `why_this_signal_type`, `why_not_weak`, or `evidence_notes`.
+
+Do not create a Moderate or Strong assistant-created signal from company context, a job title, technical work area, company scale, hiring activity, Cartertek fit, or a plausible interpretation. The analysis fields may explain the quotation, but they must not supply a signal assertion missing from the quoted source text.
 
 Use this test before creating or strengthening a signal:
 
@@ -30,7 +32,7 @@ If the answer is no, create only a Weak, excluded signal or reject the candidate
 
 ## Signal Type assertion examples
 
-These examples do not replace the managed Signal Type definitions. They define the minimum assertion that must appear in `observed_fact` before an assistant-created signal can count.
+These examples do not replace the managed Signal Type definitions. They define the minimum assertion that must appear in the verbatim quotation stored in `observed_fact` before an assistant-created signal can count.
 
 | Signal Type | `observed_fact` must assert | Invalid `observed_fact` pattern |
 |---|---|---|
@@ -45,10 +47,10 @@ Use this structure when recording signal evidence:
 
 ```text
 Observed fact:
-[What the source directly says or shows]
+[Verbatim quotation from the source; at least one complete sentence; no paraphrasing]
 
 Signal claim:
-[What this fact is being used to support]
+[Paraphrase or interpretation of what the quotation supports]
 
 Why this Signal Type:
 [Why the observed fact matches the selected managed Signal Type]
@@ -88,7 +90,7 @@ It does not ask: could Cartertek help with this?
 
 ## Observed vs inferred
 
-Observed means the source directly says or shows the fact.
+Observed means `observed_fact` contains the source's exact wording as a verbatim quotation of at least one complete sentence. Interpretation remains separate in `signal_claim` and the other analysis fields.
 
 Inferred means the evaluator believes something may be true based on pattern, context, analogy, or experience.
 

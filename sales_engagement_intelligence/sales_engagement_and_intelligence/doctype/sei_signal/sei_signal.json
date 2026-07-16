@@ -146,14 +146,14 @@
    "fieldname": "observed_fact",
    "fieldtype": "Long Text",
    "label": "Observed Fact",
-   "description": "What the source directly says or shows. Do not include interpretation.",
+   "description": "Verbatim quotation copied from the source. Must contain at least one complete sentence. Do not paraphrase, interpret, or combine separate passages.",
    "idx": 13
   },
   {
    "fieldname": "signal_claim",
    "fieldtype": "Long Text",
    "label": "Signal Claim",
-   "description": "What the evaluator believes the observed fact proves.",
+   "description": "Paraphrase or interpretation of what the quoted Observed Fact supports. Keep source wording in Observed Fact.",
    "idx": 14
   },
   {
