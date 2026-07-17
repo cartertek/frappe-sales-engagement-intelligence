@@ -12,6 +12,15 @@ frappe.listview_settings['SEI Prospect'] = {
         'crm_deal',
         '_user_tags'
     ],
+    formatters: {
+        qualification_status(value) {
+            const is_qualified = value === 'Qualified';
+            const style = is_qualified
+                ? 'background-color: var(--green-100); color: var(--green-700);'
+                : 'background-color: var(--control-bg);';
+            return `<span class="data-pill btn-xs align-center ellipsis" style="${style} box-shadow: none;">${frappe.utils.escape_html(value || '')}</span>`;
+        }
+    },
     get_indicator(doc) {
         const colors = {
             'Ready for CRM Conversion': 'green',
@@ -24,7 +33,9 @@ frappe.listview_settings['SEI Prospect'] = {
             'Converted to CRM Lead': 'gray',
             'Converted to CRM Deal': 'gray'
         };
-        return [doc.lifecycle_status || doc.qualification_status, colors[doc.lifecycle_status] || 'gray', `lifecycle_status,=,${doc.lifecycle_status}`];
+        const status_field = doc.lifecycle_status ? 'lifecycle_status' : 'qualification_status';
+        const status = doc[status_field];
+        return [status, colors[status] || 'gray', `${status_field},=,${status}`];
     }
 };
 

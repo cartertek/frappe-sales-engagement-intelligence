@@ -166,11 +166,10 @@ function call_and_reload(frm, action, args) {
         callback(r) {
             const message = unwrap_api_message(r);
             if (message) {
-                frappe.msgprint({
-                    title: message.ok === false ? __('SEI Action Failed') : __('SEI Action Complete'),
-                    message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+                frappe.show_alert({
+                    message: message.ok === false ? __('SEI action failed.') : __('SEI action complete.'),
                     indicator: message.ok === false ? 'red' : 'green'
-                });
+                }, message.ok === false ? 7 : 4);
             }
             frm.reload_doc();
         }
@@ -188,13 +187,12 @@ function mark_ready_for_crm_conversion(frm) {
                 show_crm_readiness_checklist(message);
                 return;
             }
-            frappe.msgprint({
-                title: __('SEI Action Complete'),
+            frappe.show_alert({
                 message: message.data && message.data.lifecycle_status === 'Find Contact'
                     ? __('CRM handoff approved. Add contact information to become Ready for CRM Conversion.')
                     : __('Prospect marked ready for CRM conversion.'),
                 indicator: 'green'
-            });
+            }, 6);
             frm.reload_doc();
         }
     });
@@ -208,15 +206,13 @@ function mark_not_ready_for_crm_conversion(frm) {
         callback(r) {
             const message = unwrap_api_message(r) || {};
             if (message.ok === false) {
-                frappe.msgprint({
-                    title: __('Unable to Undo CRM Readiness'),
-                    message: frappe.utils.escape_html((message.error && message.error.message) || __('Action failed.')),
+                frappe.show_alert({
+                    message: (message.error && message.error.message) || __('Unable to undo CRM readiness.'),
                     indicator: 'red'
-                });
+                }, 7);
                 return;
             }
-            frappe.msgprint({
-                title: __('SEI Action Complete'),
+            frappe.show_alert({
                 message: __('Prospect marked as not ready for CRM.'),
                 indicator: 'green'
             });
@@ -429,11 +425,10 @@ function show_message_draft_preview(frm, template) {
         callback(r) {
             const message = unwrap_api_message(r) || {};
             if (message.ok === false) {
-                frappe.msgprint({
-                    title: __('Draft Preview Failed'),
-                    message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+                frappe.show_alert({
+                    message: __('Draft preview failed.'),
                     indicator: 'red'
-                });
+                }, 7);
                 return;
             }
             const data = message.data || {};
