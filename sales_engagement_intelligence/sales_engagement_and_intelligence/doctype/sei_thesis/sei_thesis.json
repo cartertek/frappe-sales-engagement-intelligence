@@ -14,6 +14,8 @@
   "typical_prospect_types",
   "typical_contact_roles",
   "default_asset",
+  "research_arenas_section",
+  "research_arenas",
   "active",
   "notes"
  ],
@@ -60,6 +62,18 @@
    "idx": 6
   },
   {
+   "fieldname": "research_arenas_section",
+   "label": "Research Arenas",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "research_arenas",
+   "label": "Research Arenas",
+   "fieldtype": "Table",
+   "options": "SEI Thesis Research Arena",
+   "description": "A signal using this Thesis must belong to one of these arenas."
+  },
+  {
    "fieldname": "active",
    "label": "Active",
    "fieldtype": "Check",
@@ -76,7 +90,7 @@
   }
  ],
  "links": [],
- "modified": "2026-07-01 00:00:00.000000",
+ "modified": "2026-07-17 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "SEI Thesis",

@@ -19,10 +19,44 @@ class SEISignal(Document):
     def validate(self):
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)
+        self.validate_signal_type_and_arena()
         self.set_prospect_name()
         self.set_prospect_tags()
         self.sync_disqualifier_check_rows()
         self.apply_evidence_guardrails()
+
+    def validate_signal_type_and_arena(self) -> None:
+        if not self.signal_type:
+            return
+
+        signal_type = frappe.db.get_value(
+            "SEI Signal Type", self.signal_type, ["thesis", "active"], as_dict=True
+        )
+        if not signal_type:
+            frappe.throw(f"SEI Signal Type not found: {self.signal_type}")
+
+        if self.is_new() and not signal_type.active:
+            frappe.throw("New signals cannot be created with an inactive Signal Type.")
+
+        if not self.research_arena:
+            return
+
+        if self.is_new() and not frappe.db.get_value("SEI Research Arena", self.research_arena, "active"):
+            frappe.throw("New signals must use an active Research Arena.")
+
+        allowed = frappe.db.exists(
+            "SEI Thesis Research Arena",
+            {
+                "parent": signal_type.thesis,
+                "parenttype": "SEI Thesis",
+                "parentfield": "research_arenas",
+                "research_arena": self.research_arena,
+            },
+        )
+        if not allowed:
+            frappe.throw(
+                f"Research Arena {self.research_arena} is not assigned to Thesis {signal_type.thesis}."
+            )
 
     def set_prospect_name(self):
         if not self.prospect:

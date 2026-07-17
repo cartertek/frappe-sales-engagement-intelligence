@@ -12,6 +12,7 @@
   "prospect_name",
   "prospect_tags",
   "signal_type",
+  "research_arena",
   "signal_strength",
   "evidence_basis",
   "evidence_specificity",
@@ -82,6 +83,17 @@
    "idx": 4
   },
   {
+   "fieldname": "research_arena",
+   "label": "Research Arena",
+   "fieldtype": "Link",
+   "options": "SEI Research Arena",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "description": "The arena in which this signal was researched.",
+   "idx": 5
+  },
+  {
    "fieldname": "signal_strength",
    "label": "Signal Strength",
    "fieldtype": "Select",
@@ -89,7 +101,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 5
+   "idx": 6
   },
   {
    "fieldname": "evidence_basis",
@@ -99,7 +111,7 @@
    "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 6
+   "idx": 7
   },
   {
    "fieldname": "evidence_specificity",
@@ -108,21 +120,21 @@
    "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
    "description": "Records how specific the evidence source is; Signal Type criteria determine whether it is sufficient.",
    "default": "Unknown",
-   "idx": 7,
+   "idx": 8,
    "reqd": 1
   },
   {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
-   "idx": 8
+   "idx": 9
   },
   {
    "fieldname": "source_url",
    "label": "Source URL",
    "fieldtype": "Data",
    "in_standard_filter": 1,
-   "idx": 9,
+   "idx": 10,
    "in_list_view": 1
   },
   {
@@ -130,81 +142,81 @@
    "label": "Source Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 10
+   "idx": 11
   },
   {
    "fieldname": "signal_type_definition_section",
    "fieldtype": "Section Break",
    "label": "Signal Type Definition",
    "collapsible": 1,
-   "idx": 11
+   "idx": 12
   },
   {
    "fieldname": "criteria_html",
    "fieldtype": "HTML",
    "label": "Signal Type Criteria",
-   "idx": 12
+   "idx": 13
   },
   {
    "fieldname": "evidence_section",
    "fieldtype": "Section Break",
    "label": "Structured Evidence",
-   "idx": 13
+   "idx": 14
   },
   {
    "fieldname": "observed_fact",
    "fieldtype": "Long Text",
    "label": "Observed Fact",
    "description": "Verbatim quotation copied from the source. Must contain at least one complete sentence. Do not paraphrase, interpret, or combine separate passages.",
-   "idx": 14
+   "idx": 15
   },
   {
    "fieldname": "signal_claim",
    "fieldtype": "Long Text",
    "label": "Signal Claim",
    "description": "Paraphrase or interpretation of what the quoted Observed Fact supports. Keep source wording in Observed Fact.",
-   "idx": 15
+   "idx": 16
   },
   {
    "fieldname": "why_this_signal_type",
    "fieldtype": "Long Text",
    "label": "Why This Signal Type",
    "description": "Why the evidence belongs to this Signal Type rather than another type or no signal.",
-   "idx": 16
+   "idx": 17
   },
   {
    "fieldname": "why_not_weak",
    "fieldtype": "Long Text",
    "label": "Why Not Weak",
    "description": "Required for Moderate or Strong signals.",
-   "idx": 17
+   "idx": 18
   },
   {
    "fieldname": "disqualifiers_checked",
    "fieldtype": "Long Text",
    "label": "Disqualifiers Checked",
    "description": "Narrative summary of false-positive checks performed.",
-   "idx": 18
+   "idx": 19
   },
   {
    "fieldname": "evidence_gap_reason",
    "fieldtype": "Long Text",
    "label": "Evidence Gap Reason",
    "description": "Why this signal cannot be stronger than Weak.",
-   "idx": 19
+   "idx": 20
   },
   {
    "fieldname": "legacy_notes_section",
    "fieldtype": "Section Break",
    "label": "Legacy Notes",
    "collapsible": 1,
-   "idx": 20
+   "idx": 21
   },
   {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
-   "idx": 21,
+   "idx": 22,
    "description": "Legacy/general notes. Structured evidence fields are the source of truth for Moderate/Strong validation."
   },
   {
@@ -212,13 +224,13 @@
    "fieldtype": "Table",
    "label": "Disqualifier Checks",
    "options": "SEI Signal Disqualifier Check",
-   "idx": 22
+   "idx": 23
   },
   {
    "fieldname": "qualification_section",
    "fieldtype": "Section Break",
    "label": "Qualification Controls",
-   "idx": 23,
+   "idx": 24,
    "collapsible": 1
   },
   {
@@ -226,21 +238,21 @@
    "label": "Exclude from Qualification",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "idx": 24
+   "idx": 25
   },
   {
    "fieldname": "is_strength_capped",
    "fieldtype": "Check",
    "label": "Strength Capped at Weak",
    "read_only": 1,
-   "idx": 25
+   "idx": 26
   },
   {
    "fieldname": "manual_override_reason",
    "fieldtype": "Long Text",
    "label": "Manual Override Reason",
    "description": "Required to override an inferred/strength-cap guardrail.",
-   "idx": 26
+   "idx": 27
   },
   {
    "fieldname": "manual_override_by",
@@ -248,26 +260,26 @@
    "label": "Manual Override By",
    "options": "User",
    "read_only": 1,
-   "idx": 27
+   "idx": 28
   },
   {
    "fieldname": "manual_override_date",
    "fieldtype": "Datetime",
    "label": "Manual Override Date",
    "read_only": 1,
-   "idx": 28
+   "idx": 29
   },
   {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
-   "idx": 29
+   "idx": 30
   },
   {
    "fieldname": "review_section",
    "fieldtype": "Section Break",
    "label": "Review",
-   "idx": 30,
+   "idx": 31,
    "collapsible": 1
   },
   {
@@ -275,18 +287,18 @@
    "label": "Reviewed By",
    "fieldtype": "Link",
    "options": "User",
-   "idx": 31
+   "idx": 32
   },
   {
    "fieldname": "review_date",
    "label": "Review Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 32
+   "idx": 33
   }
  ],
  "links": [],
- "modified": "2026-07-01 00:00:00.000000",
+ "modified": "2026-07-17 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "SEI Signal",
