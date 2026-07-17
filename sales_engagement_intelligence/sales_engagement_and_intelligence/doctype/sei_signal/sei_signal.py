@@ -147,6 +147,11 @@ class SEISignal(Document):
         self.recalculate_prospect()
 
     def on_trash(self):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            delete_unlinking,
+        )
+
+        delete_unlinking.unlink_references_before_delete(self)
         self.recalculate_prospect()
 
     def after_delete(self):
