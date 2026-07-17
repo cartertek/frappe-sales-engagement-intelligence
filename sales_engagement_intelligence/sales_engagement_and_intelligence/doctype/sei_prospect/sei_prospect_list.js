@@ -24,7 +24,9 @@ frappe.listview_settings['SEI Prospect'] = {
             'Converted to CRM Lead': 'gray',
             'Converted to CRM Deal': 'gray'
         };
-        return [doc.lifecycle_status || doc.qualification_status, colors[doc.lifecycle_status] || 'gray', `lifecycle_status,=,${doc.lifecycle_status}`];
+        const status_field = doc.lifecycle_status ? 'lifecycle_status' : 'qualification_status';
+        const status = doc[status_field];
+        return [status, colors[status] || 'gray', `${status_field},=,${status}`];
     }
 };
 

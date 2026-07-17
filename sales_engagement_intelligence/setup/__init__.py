@@ -25,6 +25,7 @@ def after_migrate() -> None:
     ensure_milestone_8_seed_data()
     ensure_milestone_8_workspace_items()
     ensure_signal_prospect_tag_sync()
+    ensure_prospect_signal_type_sync()
     frappe.clear_cache()
 
 
@@ -863,6 +864,22 @@ def validate_milestone_8_workspace_items() -> dict:
         "missing_headers": missing_headers,
         "duplicate_content_shortcuts": duplicate_content_shortcuts,
     }
+
+
+def ensure_prospect_signal_type_sync() -> None:
+    """Backfill Prospect.signals from linked Signal Types after migrations."""
+
+    try:
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_signal_type_sync,
+        )
+
+        prospect_signal_type_sync.sync_all_prospect_signal_types()
+    except Exception:
+        frappe.log_error(
+            title="SEI prospect signal type sync failed",
+            message=frappe.get_traceback(),
+        )
 
 
 def ensure_signal_prospect_tag_sync() -> None:

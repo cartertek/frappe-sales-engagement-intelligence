@@ -116,16 +116,32 @@ class SEISignal(Document):
         ) or ''
 
     def after_insert(self):
+        self.sync_prospect_signal_types()
         self.recalculate_prospect()
 
     def on_update(self):
+        self.sync_prospect_signal_types(include_previous=True)
         self.recalculate_prospect()
 
     def on_trash(self):
         self.recalculate_prospect()
 
     def after_delete(self):
+        self.sync_prospect_signal_types()
         self.recalculate_prospect()
+
+    def sync_prospect_signal_types(self, *, include_previous: bool = False) -> None:
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_signal_type_sync,
+        )
+
+        prospects = {self.prospect}
+        if include_previous:
+            previous = self.get_doc_before_save()
+            prospects.add(previous.prospect if previous else None)
+
+        for prospect in prospects:
+            prospect_signal_type_sync.sync_prospect_signal_types(prospect)
 
     def recalculate_prospect(self):
         if not self.prospect or getattr(frappe.flags, 'sei_m3_recalculating', False):

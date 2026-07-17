@@ -108,7 +108,8 @@
    "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
    "description": "Records how specific the evidence source is; Signal Type criteria determine whether it is sufficient.",
    "default": "Unknown",
-   "idx": 7
+   "idx": 7,
+   "reqd": 1
   },
   {
    "fieldname": "confidence",
