@@ -141,9 +141,17 @@
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
+  },
+  {
+   "label": "Research Arenas",
+   "link_count": 0,
+   "link_to": "SEI Research Arena",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
   }
  ],
- "modified": "2026-07-10 00:00:00.000000",
+ "modified": "2026-07-17 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
  "name": "Prospecting",
@@ -280,6 +288,14 @@
    "doc_view": "List",
    "label": "Signal Types",
    "link_to": "SEI Signal Type",
+   "stats_filter": "[]",
+   "type": "DocType"
+  },
+  {
+   "color": "Grey",
+   "doc_view": "List",
+   "label": "Research Arenas",
+   "link_to": "SEI Research Arena",
    "stats_filter": "[]",
    "type": "DocType"
   }

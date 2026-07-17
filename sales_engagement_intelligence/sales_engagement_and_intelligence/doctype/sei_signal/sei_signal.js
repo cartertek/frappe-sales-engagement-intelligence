@@ -1,4 +1,8 @@
 frappe.ui.form.on('SEI Signal', {
+    setup(frm) {
+        frm.set_query('signal_type', () => ({ filters: { active: 1 } }));
+    },
+
     onload_post_render(frm) {
         collapse_default_sections(frm);
         shorten_signal_textareas(frm);

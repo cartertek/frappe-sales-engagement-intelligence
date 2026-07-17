@@ -3,7 +3,6 @@ frappe.listview_settings['SEI Prospect'] = {
     add_fields: [
         'prospect_name',
         'prospect_type',
-        'source_arena',
         'qualification_status',
         'lifecycle_status',
         'ready_for_crm_conversion',
