@@ -831,7 +831,21 @@ def apply_lifecycle_to_selected_prospects(prospects: list[str]) -> dict:
 
 
 def find_prospects_missing_source_arena() -> dict:
-    names = frappe.get_all("SEI Prospect", filters={"source_arena": ["in", ["", None]]}, pluck="name")
+    """Backward-compatible audit: prospects without any signal-derived arena."""
+    names = frappe.db.sql(
+        """
+        SELECT p.name
+        FROM `tabSEI Prospect` p
+        WHERE NOT EXISTS (
+            SELECT 1
+            FROM `tabSEI Signal` s
+            INNER JOIN `tabSEI Signal Type` st ON st.name = s.signal_type
+            WHERE s.prospect = p.name AND COALESCE(st.research_arena, '') != ''
+        )
+        ORDER BY p.creation DESC
+        """,
+        pluck=True,
+    )
     return {"prospects": names, "count": len(names)}
 
 

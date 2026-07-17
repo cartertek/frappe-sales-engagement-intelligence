@@ -10,6 +10,7 @@
   "signal_type_name",
   "description",
   "thesis",
+  "research_arena",
   "active",
   "evidence_criteria_section",
   "evidence_summary",
@@ -47,6 +48,15 @@
    "label": "Thesis",
    "options": "SEI Thesis",
    "reqd": 1
+  },
+  {
+   "fieldname": "research_arena",
+   "label": "Research Arena",
+   "fieldtype": "Link",
+   "options": "SEI Research Arena",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "active",
@@ -164,7 +174,7 @@
   }
  ],
  "quick_entry": 0,
- "search_fields": "signal_type_name,thesis",
+ "search_fields": "signal_type_name,thesis,research_arena",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

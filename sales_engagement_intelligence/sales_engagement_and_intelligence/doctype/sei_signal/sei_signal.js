@@ -1,45 +1,6 @@
 frappe.ui.form.on('SEI Signal', {
     setup(frm) {
         frm.set_query('signal_type', () => ({ filters: { active: 1 } }));
-        frm.set_query('research_arena', () => ({ filters: { active: 1 } }));
-    },
-
-    onload_post_render(frm) {
-        collapse_default_sections(frm);
-        shorten_signal_textareas(frm);
-    },
-
-    refresh(frm) {
-        shorten_signal_textareas(frm);
-        set_research_arena_query(frm);
-        render_signal_type_criteria(frm);
-        show_evidence_guardrail_warning(frm);
-        add_disqualifier_actions(frm);
-    },
-
-    signal_type(frm) {
-        frm.set_value('research_arena', null);
-        set_research_arena_query(frm);
-        render_signal_type_criteria(frm);
-        load_disqualifier_checks(frm, { only_if_empty: true });
-    },
-
-    evidence_basis(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
-
-    exclude_from_qualification(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
-
-    signal_strength(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
-
-    evidence_specificity(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
-});
 
 frappe.ui.form.on('SEI Signal Disqualifier Check', {
     applies(frm) {
@@ -56,21 +17,6 @@ frappe.ui.form.on('SEI Signal Disqualifier Check', {
 
 function set_research_arena_query(frm) {
     if (!frm.doc.signal_type) {
-        frm.set_query('research_arena', () => ({ filters: { active: 1 } }));
-        return;
-    }
-
-    frappe.db.get_value('SEI Signal Type', frm.doc.signal_type, 'thesis').then((result) => {
-        const thesis = result.message && result.message.thesis;
-        if (!thesis) {
-            return;
-        }
-        frappe.db.get_doc('SEI Thesis', thesis).then((doc) => {
-            const arenas = (doc.research_arenas || []).map((row) => row.research_arena);
-            frm.set_query('research_arena', () => ({
-                filters: { name: ['in', arenas.length ? arenas : ['']], active: 1 },
-            }));
-        });
     });
 }
 

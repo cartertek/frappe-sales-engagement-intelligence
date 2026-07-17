@@ -31,26 +31,45 @@ def get_signal_type_thesis(signal_type: str | None) -> str | None:
     return frappe.db.get_value("SEI Signal Type", signal_type, "thesis")
 
 
-def get_prospect_theses(prospect: str | None) -> list[str]:
-    """Return the ordered unique thesis list derived from prospect signals."""
+def get_signal_type_arena(signal_type: str | None) -> str | None:
+    if not signal_type:
+        return None
+    return frappe.db.get_value("SEI Signal Type", signal_type, "research_arena")
+
+
+def _get_prospect_signal_type_values(prospect: str | None, fieldname: str) -> list[str]:
     if not prospect:
         return []
     rows = frappe.db.sql(
-        """
-        SELECT DISTINCT st.thesis
+        f"""
+        SELECT DISTINCT st.`{fieldname}` value
         FROM `tabSEI Signal` s
         INNER JOIN `tabSEI Signal Type` st ON st.name = s.signal_type
-        WHERE s.prospect = %s AND COALESCE(st.thesis, '') != ''
-        ORDER BY st.thesis
+        WHERE s.prospect = %s AND COALESCE(st.`{fieldname}`, '') != ''
+        ORDER BY st.`{fieldname}`
         """,
         prospect,
         as_dict=True,
     )
-    return [row.thesis for row in rows if row.thesis]
+    return [row.value for row in rows if row.value]
+
+
+def get_prospect_theses(prospect: str | None) -> list[str]:
+    """Return the ordered unique thesis list derived from prospect signals."""
+    return _get_prospect_signal_type_values(prospect, "thesis")
 
 
 def get_prospect_theses_display(prospect: str | None) -> str:
     return ", ".join(get_prospect_theses(prospect))
+
+
+def get_prospect_arenas(prospect: str | None) -> list[str]:
+    """Return the ordered unique arena list derived from prospect signals."""
+    return _get_prospect_signal_type_values(prospect, "research_arena")
+
+
+def get_prospect_arenas_display(prospect: str | None) -> str:
+    return ", ".join(get_prospect_arenas(prospect))
 
 
 def add_derived_theses(row: dict, prospect_field: str = "name") -> dict:
@@ -58,6 +77,14 @@ def add_derived_theses(row: dict, prospect_field: str = "name") -> dict:
     theses = get_prospect_theses(prospect)
     row["theses"] = theses
     row["theses_display"] = ", ".join(theses)
+    return row
+
+
+def add_derived_arenas(row: dict, prospect_field: str = "name") -> dict:
+    prospect = row.get(prospect_field) or row.get("prospect")
+    arenas = get_prospect_arenas(prospect)
+    row["arenas"] = arenas
+    row["arenas_display"] = ", ".join(arenas)
     return row
 
 

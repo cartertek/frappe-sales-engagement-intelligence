@@ -30,7 +30,7 @@ class SEISignal(Document):
             return
 
         signal_type = frappe.db.get_value(
-            "SEI Signal Type", self.signal_type, ["thesis", "active"], as_dict=True
+            "SEI Signal Type", self.signal_type, ["thesis", "research_arena", "active"], as_dict=True
         )
         if not signal_type:
             frappe.throw(f"SEI Signal Type not found: {self.signal_type}")
@@ -38,25 +38,11 @@ class SEISignal(Document):
         if self.is_new() and not signal_type.active:
             frappe.throw("New signals cannot be created with an inactive Signal Type.")
 
-        if not self.research_arena:
-            return
+        if not signal_type.thesis or not signal_type.research_arena:
+            frappe.throw("Signal Type must belong to exactly one Thesis and one Research Arena.")
 
-        if self.is_new() and not frappe.db.get_value("SEI Research Arena", self.research_arena, "active"):
-            frappe.throw("New signals must use an active Research Arena.")
-
-        allowed = frappe.db.exists(
-            "SEI Thesis Research Arena",
-            {
-                "parent": signal_type.thesis,
-                "parenttype": "SEI Thesis",
-                "parentfield": "research_arenas",
-                "research_arena": self.research_arena,
-            },
-        )
-        if not allowed:
-            frappe.throw(
-                f"Research Arena {self.research_arena} is not assigned to Thesis {signal_type.thesis}."
-            )
+        if self.is_new() and not frappe.db.get_value("SEI Research Arena", signal_type.research_arena, "active"):
+            frappe.throw("New signals cannot use a Signal Type whose Research Arena is inactive.")
 
     def set_prospect_name(self):
         if not self.prospect:

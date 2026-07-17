@@ -14,7 +14,6 @@
   "website",
   "normalized_domain",
   "prospect_type",
-  "source_arena",
   "source_url",
   "source_notes",
   "column_break_1",
@@ -116,14 +115,6 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 6
-  },
-  {
-   "fieldname": "source_arena",
-   "label": "Source Arena",
-   "fieldtype": "Data",
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "idx": 7
   },
   {
    "fieldname": "source_url",
@@ -541,7 +532,7 @@
    "parenttype": "DocType"
   }
  ],
- "search_fields": "prospect_name, website, normalized_domain, source_arena, prospect_type, lifecycle_status, qualification_status",
+ "search_fields": "prospect_name, website, normalized_domain, prospect_type, lifecycle_status, qualification_status",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

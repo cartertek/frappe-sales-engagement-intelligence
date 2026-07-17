@@ -12,7 +12,6 @@
   "prospect_name",
   "prospect_tags",
   "signal_type",
-  "research_arena",
   "signal_strength",
   "evidence_basis",
   "evidence_specificity",
@@ -81,17 +80,6 @@
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 4
-  },
-  {
-   "fieldname": "research_arena",
-   "label": "Research Arena",
-   "fieldtype": "Link",
-   "options": "SEI Research Arena",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "description": "The arena in which this signal was researched.",
-   "idx": 5
   },
   {
    "fieldname": "signal_strength",

@@ -9,6 +9,7 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qu
     get_primary_signal,
 )
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    get_prospect_arenas_display,
     get_prospect_theses,
     get_prospect_theses_display,
 )
@@ -114,7 +115,7 @@ def _has_identity(prospect) -> bool:
             prospect.website
             or prospect.primary_contact_email
             or prospect.source_url
-            or (prospect.prospect_name and prospect.source_arena)
+            or (prospect.prospect_name and get_prospect_arenas_display(prospect.name))
         )
     )
 
@@ -169,7 +170,7 @@ def _record_conversion_attribution(
     if _has_field("SEI Interaction Attribution", "offer"):
         doc.offer = prospect.offer
     if _has_field("SEI Interaction Attribution", "source_arena"):
-        doc.source_arena = prospect.source_arena
+        doc.source_arena = get_prospect_arenas_display(prospect.name)
     if crm_lead and _has_field("SEI Interaction Attribution", "crm_lead"):
         doc.crm_lead = crm_lead
     if crm_deal and _has_field("SEI Interaction Attribution", "crm_deal"):
@@ -416,7 +417,7 @@ def build_crm_lead_payload(prospect_name: str) -> dict:
     _set_if_exists(lead, "CRM Lead", "organization", prospect.crm_organization)
 
     _set_if_exists(lead, "CRM Lead", "sei_prospect", prospect.name)
-    _set_if_exists(lead, "CRM Lead", "sei_source_arena", prospect.source_arena)
+    _set_if_exists(lead, "CRM Lead", "sei_source_arena", get_prospect_arenas_display(prospect.name))
     _set_if_exists(lead, "CRM Lead", "sei_thesis", get_prospect_theses_display(prospect.name))
     _set_if_exists(
         lead,
@@ -462,7 +463,7 @@ def build_crm_deal_payload(prospect_name: str) -> dict:
     _set_if_exists(payload, "CRM Deal", "organization", prospect.crm_organization)
     _set_if_exists(payload, "CRM Deal", "status", "Qualification")
     _set_if_exists(payload, "CRM Deal", "sei_prospect", prospect.name)
-    _set_if_exists(payload, "CRM Deal", "sei_source_arena", prospect.source_arena)
+    _set_if_exists(payload, "CRM Deal", "sei_source_arena", get_prospect_arenas_display(prospect.name))
     _set_if_exists(payload, "CRM Deal", "sei_thesis", get_prospect_theses_display(prospect.name))
     _set_if_exists(payload, "CRM Deal", "sei_primary_signal", get_primary_signal(prospect.name))
     return payload
@@ -481,7 +482,7 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
         values = {}
         for field, value in {
             "sei_prospect": prospect.name,
-            "sei_source_arena": prospect.source_arena,
+            "sei_source_arena": get_prospect_arenas_display(prospect.name),
             "sei_thesis": get_prospect_theses_display(prospect.name),
             "sei_qualification_summary": prospect.qualification_explanation or prospect.signal_summary,
             "organization": prospect.crm_organization,
@@ -496,7 +497,7 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
         values = {}
         for field, value in {
             "sei_prospect": prospect.name,
-            "sei_source_arena": prospect.source_arena,
+            "sei_source_arena": get_prospect_arenas_display(prospect.name),
             "sei_thesis": get_prospect_theses_display(prospect.name),
             "sei_primary_signal": get_primary_signal(prospect.name),
             "lead": prospect.crm_lead,
