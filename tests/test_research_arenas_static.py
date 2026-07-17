@@ -47,7 +47,14 @@ def test_prospect_arenas_are_derived_not_stored():
     prospect = load("sei_prospect")
     assert field(prospect, "source_arena") is None
     assert field(prospect, "arenas") is None
-    taxonomy = (ROOT / "sales_engagement_intelligence" / "sales_engagement_and_intelligence" / "services" / "taxonomy.py").read_text()
+    taxonomy_path = (
+        ROOT
+        / "sales_engagement_intelligence"
+        / "sales_engagement_and_intelligence"
+        / "services"
+        / "taxonomy.py"
+    )
+    taxonomy = taxonomy_path.read_text()
     assert "def get_prospect_arenas" in taxonomy
     assert 'return _get_prospect_signal_type_values(prospect, "research_arena")' in taxonomy
 
@@ -59,12 +66,27 @@ def test_inactive_signal_type_is_blocked_only_for_new_signals():
 
 
 def test_migration_backfills_signal_types():
-    source = (ROOT / "sales_engagement_intelligence" / "patches" / "v0_0_1" / "backfill_research_arenas.py").read_text()
+    patch_path = (
+        ROOT
+        / "sales_engagement_intelligence"
+        / "patches"
+        / "v0_0_1"
+        / "backfill_research_arenas.py"
+    )
+    source = patch_path.read_text()
     assert "UPDATE `tabSEI Signal Type`" in source
     assert "Legacy / Unclassified" in source
 
 
 def test_signal_type_validates_thesis_arena_pair():
-    source = (ROOT / "sales_engagement_intelligence" / "sales_engagement_and_intelligence" / "doctype" / "sei_signal_type" / "sei_signal_type.py").read_text()
+    controller_path = (
+        ROOT
+        / "sales_engagement_intelligence"
+        / "sales_engagement_and_intelligence"
+        / "doctype"
+        / "sei_signal_type"
+        / "sei_signal_type.py"
+    )
+    source = controller_path.read_text()
     assert "SEI Thesis Research Arena" in source
     assert "Research Arena" in source and "is not assigned to Thesis" in source

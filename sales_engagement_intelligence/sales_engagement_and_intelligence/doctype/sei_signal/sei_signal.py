@@ -41,7 +41,10 @@ class SEISignal(Document):
         if not signal_type.thesis or not signal_type.research_arena:
             frappe.throw("Signal Type must belong to exactly one Thesis and one Research Arena.")
 
-        if self.is_new() and not frappe.db.get_value("SEI Research Arena", signal_type.research_arena, "active"):
+        arena_active = frappe.db.get_value(
+            "SEI Research Arena", signal_type.research_arena, "active"
+        )
+        if self.is_new() and not arena_active:
             frappe.throw("New signals cannot use a Signal Type whose Research Arena is inactive.")
 
     def set_prospect_name(self):
