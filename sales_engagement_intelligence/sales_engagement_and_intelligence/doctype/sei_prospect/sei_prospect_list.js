@@ -12,6 +12,12 @@ frappe.listview_settings['SEI Prospect'] = {
         'crm_deal',
         '_user_tags'
     ],
+    formatters: {
+        qualification_status(value) {
+            const color = value === 'Qualified' ? 'green' : 'gray';
+            return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(value || '')}</span>`;
+        }
+    },
     get_indicator(doc) {
         const colors = {
             'Ready for CRM Conversion': 'green',

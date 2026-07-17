@@ -14,6 +14,8 @@ def test_qualified_indicator_uses_qualification_status_color_and_filter():
         in source
     )
     assert "colors[status] || 'gray'" in source
+    assert "qualification_status(value)" in source
+    assert "value === 'Qualified' ? 'green' : 'gray'" in source
     assert "`${status_field},=,${status}`" in source
     assert "'Qualified': 'green'" in source
 

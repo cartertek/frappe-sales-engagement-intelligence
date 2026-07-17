@@ -28,7 +28,7 @@ frappe.ui.form.on("SEI Import Batch", {
 
     frm.add_custom_button(__("Download Template"), () => {
       frappe.set_route("List", "File", { file_url: ["like", "%docs/import_templates%"] });
-      frappe.msgprint(__("Templates are committed under docs/import_templates in the app repository."));
+      frappe.show_alert({ message: __('Templates are committed under docs/import_templates in the app repository.'), indicator: 'blue' });
     });
 
     if (!frm.is_new() && ["Draft", "Failed"].includes(frm.doc.status)) {
@@ -59,11 +59,10 @@ frappe.ui.form.on("SEI Import Batch", {
 function show_api_result_and_reload(frm, r) {
   const message = (r && r.message) || null;
   if (message && message.ok === false) {
-    frappe.msgprint({
-      title: __('SEI Import Action Failed'),
-      message: `<pre style="white-space: pre-wrap;">${frappe.utils.escape_html(JSON.stringify(message, null, 2))}</pre>`,
+    frappe.show_alert({
+      message: __('SEI import action failed. Review the batch details.'),
       indicator: 'red',
-    });
+    }, 7);
   }
   frm.reload_doc();
 }
