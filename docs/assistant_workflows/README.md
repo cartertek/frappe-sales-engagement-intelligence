@@ -13,3 +13,6 @@ Required rules:
 - Treat reports as read-only analysis outputs, not mutation sources.
 
 The API returns `{ ok, data, warnings, messages }` on success and `{ ok: false, error, warnings }` on failure.
+## Exact-source requirement
+
+Before an assistant creates or strengthens a Moderate or Strong signal, it must open the exact URL that will be stored in `source_url` and confirm that the page contains the expected entity, expected document or role, and complete verbatim `observed_fact` quotation. Discovery snippets, cached text, ATS APIs, job feeds, reconstructed URLs, generic ATS shells, and HTTP status alone are not sufficient. No verified exact source means no qualifying database write.

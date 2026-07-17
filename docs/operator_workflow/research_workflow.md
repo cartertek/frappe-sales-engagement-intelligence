@@ -6,11 +6,12 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 
 1. Select a source arena.
 2. Search for candidate evidence.
-3. Open the specific source item.
-4. Identify what the source directly says or shows.
-5. Decide whether the source supports any managed Signal Type.
-6. If yes, create or update a signal.
-7. If no, reject the candidate or keep it as non-counting context.
+3. Open the exact source URL that would be stored on the signal.
+4. Confirm that the opened page contains the expected entity, the expected document or role, and the complete proposed `observed_fact` quotation.
+5. Identify what the source directly says or shows.
+6. Decide whether the source supports any managed Signal Type.
+7. If yes, create or update a signal.
+8. If no, reject the candidate or keep it as non-counting context.
 
 ## Discovery source vs evidence source
 
@@ -19,7 +20,7 @@ An evidence source is the exact page, post, listing, issue, or artifact that pro
 
 The signal source URL should normally be the evidence source, not the discovery source.
 
-A search page may help discover a candidate, but the signal should link to the specific source item.
+A search page may help discover a candidate, but the signal should link to the specific source item. Opening a discovery result, API record, cached copy, or search snippet does not count as opening the evidence source. The exact URL intended for `source_url` must itself be opened and reviewed during the current research run.
 
 A thread or directory may help discover a candidate, but the signal should link to the specific post, listing, profile, or artifact that supports the claim.
 
@@ -29,6 +30,11 @@ An aggregator may be useful context, but the evaluator should prefer the origina
 
 Before creating or strengthening a signal, check:
 
+- Did I open the exact URL that will be stored?
+- Does that exact page contain the expected company or entity?
+- Does it contain the expected role, post, RFP, issue, or document?
+- Does it contain the complete `observed_fact` quotation?
+- Is it a real content page rather than a generic ATS shell, board homepage, login page, or error page?
 - Does this source point to one specific piece of evidence?
 - Does the source directly support the signal claim?
 - Is the source current enough for the claim being made?
@@ -48,4 +54,4 @@ A useful research result identifies:
 - proposed strength
 - uncertainty
 
-If the exact evidence source is missing, keep the item as discovery context or mark the signal Weak.
+If the exact evidence source is missing, or the exact URL does not contain the expected entity, document, and complete quotation, keep the item as discovery context or reject it. Do not create a Moderate or Strong signal from that URL.
