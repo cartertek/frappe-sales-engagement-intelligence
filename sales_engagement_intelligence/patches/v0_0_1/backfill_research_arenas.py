@@ -27,3 +27,23 @@ def execute():
         """,
         LEGACY_ARENA,
     )
+    _ensure_thesis_arena_pairs()
+
+
+def _ensure_thesis_arena_pairs():
+    for row in frappe.get_all("SEI Signal Type", fields=["thesis", "research_arena"]):
+        if not row.thesis or not row.research_arena:
+            continue
+        if frappe.db.exists(
+            "SEI Thesis Research Arena",
+            {
+                "parent": row.thesis,
+                "parenttype": "SEI Thesis",
+                "parentfield": "research_arenas",
+                "research_arena": row.research_arena,
+            },
+        ):
+            continue
+        thesis = frappe.get_doc("SEI Thesis", row.thesis)
+        thesis.append("research_arenas", {"research_arena": row.research_arena})
+        thesis.save(ignore_permissions=True)

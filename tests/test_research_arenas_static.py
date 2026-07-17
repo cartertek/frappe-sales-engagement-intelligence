@@ -36,9 +36,11 @@ def test_signal_does_not_duplicate_thesis_or_arena():
     assert field(signal, "thesis") is None
 
 
-def test_thesis_has_no_arena_relationship():
+def test_thesis_preserves_many_to_many_arena_relationship():
     thesis = load("sei_thesis")
-    assert field(thesis, "research_arenas") is None
+    arenas = field(thesis, "research_arenas")
+    assert arenas and arenas["fieldtype"] == "Table"
+    assert arenas["options"] == "SEI Thesis Research Arena"
 
 
 def test_prospect_arenas_are_derived_not_stored():
@@ -60,3 +62,9 @@ def test_migration_backfills_signal_types():
     source = (ROOT / "sales_engagement_intelligence" / "patches" / "v0_0_1" / "backfill_research_arenas.py").read_text()
     assert "UPDATE `tabSEI Signal Type`" in source
     assert "Legacy / Unclassified" in source
+
+
+def test_signal_type_validates_thesis_arena_pair():
+    source = (ROOT / "sales_engagement_intelligence" / "sales_engagement_and_intelligence" / "doctype" / "sei_signal_type" / "sei_signal_type.py").read_text()
+    assert "SEI Thesis Research Arena" in source
+    assert "Research Arena" in source and "is not assigned to Thesis" in source

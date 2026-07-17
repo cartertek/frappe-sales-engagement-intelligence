@@ -1,0 +1,25 @@
+{
+ "doctype": "DocType",
+ "name": "SEI Thesis Research Arena",
+ "module": "Sales Engagement and Intelligence",
+ "istable": 1,
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "research_arena"
+ ],
+ "fields": [
+  {
+   "fieldname": "research_arena",
+   "label": "Research Arena",
+   "fieldtype": "Link",
+   "options": "SEI Research Arena",
+   "reqd": 1,
+   "in_list_view": 1
+  }
+ ],
+ "permissions": [],
+ "actions": [],
+ "links": [],
+ "states": []
+}
