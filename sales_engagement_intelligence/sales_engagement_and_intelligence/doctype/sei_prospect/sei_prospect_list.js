@@ -14,8 +14,11 @@ frappe.listview_settings['SEI Prospect'] = {
     ],
     formatters: {
         qualification_status(value) {
-            const color = value === 'Qualified' ? 'green' : 'gray';
-            return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(value || '')}</span>`;
+            const is_qualified = value === 'Qualified';
+            const style = is_qualified
+                ? 'background-color: var(--green-100); color: var(--green-700);'
+                : 'background-color: var(--control-bg);';
+            return `<span class="data-pill btn-xs align-center ellipsis" style="${style} box-shadow: none;">${frappe.utils.escape_html(value || '')}</span>`;
         }
     },
     get_indicator(doc) {

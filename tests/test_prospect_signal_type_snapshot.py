@@ -14,8 +14,11 @@ def test_qualified_indicator_uses_qualification_status_color_and_filter():
         in source
     )
     assert "colors[status] || 'gray'" in source
+    assert 'class=\"data-pill btn-xs align-center ellipsis\"' in source
+    assert "background-color: var(--green-100)" in source
+    assert "indicator-pill ${color}" not in source
     assert "qualification_status(value)" in source
-    assert "value === 'Qualified' ? 'green' : 'gray'" in source
+    assert "const is_qualified = value === 'Qualified';" in source
     assert "`${status_field},=,${status}`" in source
     assert "'Qualified': 'green'" in source
 
