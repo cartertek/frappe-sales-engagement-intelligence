@@ -10,6 +10,8 @@
  "field_order": [
   "arena_name",
   "description",
+  "assigned_theses_section",
+  "assigned_theses",
   "active",
   "notes"
  ],
@@ -27,6 +29,18 @@
    "fieldname": "description",
    "label": "Description",
    "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "assigned_theses_section",
+   "fieldtype": "Section Break",
+   "label": "Assigned Theses"
+  },
+  {
+   "fieldname": "assigned_theses",
+   "fieldtype": "Table",
+   "label": "Assigned Theses",
+   "options": "SEI Research Arena Thesis",
+   "description": "Theses assigned to this Research Arena."
   },
   {
    "fieldname": "active",
