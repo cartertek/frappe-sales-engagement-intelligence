@@ -23,6 +23,7 @@
   "offer",
   "signal_summary",
   "signals",
+  "arenas",
   "contact_target_notes",
   "notes",
   "playbook_drafting_tab",
@@ -171,6 +172,14 @@
    "read_only": 1,
    "in_standard_filter": 1,
    "description": "Synchronized unique Signal Types from Signals linked to this prospect."
+  },
+  {
+   "fieldname": "arenas",
+   "label": "Research Arenas",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "description": "Synchronized unique Research Arenas from Signals linked to this prospect."
   },
   {
    "fieldname": "contact_target_notes",

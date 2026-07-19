@@ -22,5 +22,16 @@ class SEISignalType(Document):
         )
         if not allowed:
             frappe.throw(
-                f"Research Arena {self.research_arena} is not assigned to Thesis {self.thesis}."
+                f"Thesis {self.thesis} is not assigned to Research Arena {self.research_arena}."
             )
+
+    def on_update(self):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_signal_type_sync,
+        )
+
+        prospects = frappe.get_all(
+            "SEI Signal", filters={"signal_type": self.name}, pluck="prospect"
+        )
+        for prospect in dict.fromkeys(prospects):
+            prospect_signal_type_sync.sync_prospect_signal_types(prospect)

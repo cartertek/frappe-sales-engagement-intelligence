@@ -1,0 +1,32 @@
+{
+ "actions": [],
+ "creation": "2026-07-19 00:00:00.000000",
+ "doctype": "DocType",
+ "document_type": "Document",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "thesis"
+ ],
+ "fields": [
+  {
+   "fieldname": "thesis",
+   "fieldtype": "Link",
+   "label": "Thesis",
+   "options": "SEI Thesis",
+   "reqd": 1,
+   "in_list_view": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "modified": "2026-07-19 00:00:00.000000",
+ "modified_by": "Administrator",
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Research Arena Thesis",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
