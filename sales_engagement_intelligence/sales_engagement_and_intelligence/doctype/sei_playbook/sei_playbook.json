@@ -9,12 +9,14 @@
   "playbook_name",
   "active",
   "description",
-  "default_thesis",
+  "thesis",
+  "typical_prospect_types",
+  "research_arenas_section",
+  "research_arenas",
+  "contact_roles_section",
+  "contact_roles",
   "default_offer",
   "default_asset",
-  "prospect_types",
-  "source_arenas",
-  "likely_contact_roles",
   "qualifying_signal_guidance",
   "disqualifying_guidance",
   "recommended_first_action",
@@ -42,10 +44,37 @@
    "fieldtype": "Small Text"
   },
   {
-   "fieldname": "default_thesis",
-   "label": "Default Thesis",
-   "fieldtype": "Link",
-   "options": "SEI Thesis"
+   "fieldname": "thesis",
+   "label": "Thesis",
+   "fieldtype": "Small Text",
+   "description": "The outreach thesis: why a prospect with this playbook may care now."
+  },
+  {
+   "fieldname": "typical_prospect_types",
+   "label": "Typical Prospect Types",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "research_arenas_section",
+   "label": "Research Arenas",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "research_arenas",
+   "label": "Research Arenas",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Research Arena"
+  },
+  {
+   "fieldname": "contact_roles_section",
+   "label": "Contact Roles",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "contact_roles",
+   "label": "Contact Roles",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Contact Role"
   },
   {
    "fieldname": "default_offer",
@@ -57,21 +86,6 @@
    "label": "Default Asset",
    "fieldtype": "Link",
    "options": "SEI Asset"
-  },
-  {
-   "fieldname": "prospect_types",
-   "label": "Prospect Types",
-   "fieldtype": "Small Text"
-  },
-  {
-   "fieldname": "source_arenas",
-   "label": "Source Arenas",
-   "fieldtype": "Small Text"
-  },
-  {
-   "fieldname": "likely_contact_roles",
-   "label": "Likely Contact Roles",
-   "fieldtype": "Small Text"
   },
   {
    "fieldname": "qualifying_signal_guidance",
@@ -161,5 +175,5 @@
  "title_field": "playbook_name",
  "track_changes": 1,
  "istable": 0,
- "search_fields": "playbook_name, default_thesis, active"
+ "search_fields": "playbook_name, thesis, active"
 }

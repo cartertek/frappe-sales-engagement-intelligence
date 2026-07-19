@@ -6,10 +6,10 @@ frappe.query_reports["CRM Lead Conversion Detail"] = {
       fieldtype: "Data"
     },
     {
-      fieldname: "sei_thesis",
-      label: __("Thesis"),
+      fieldname: "sei_playbook",
+      label: __("Playbook"),
       fieldtype: "Link",
-      options: "SEI Thesis"
+      options: "SEI Playbook"
     },
     {
       fieldname: "qualification_status",

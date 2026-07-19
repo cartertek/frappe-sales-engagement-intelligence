@@ -19,10 +19,10 @@ frappe.query_reports["Interaction Attribution Summary"] = {
       options: "\nNo Response\nPositive\nInterested\nWrong Person\nNot Now\nAlready Solved\nNo Budget\nBad Fit\nUnsubscribe / Do Not Contact\nMeeting Booked\nConverted to Deal\nOther"
     },
     {
-      fieldname: "sei_thesis",
-      label: __("Thesis"),
+      fieldname: "sei_playbook",
+      label: __("Playbook"),
       fieldtype: "Link",
-      options: "SEI Thesis"
+      options: "SEI Playbook"
     },
     {
       fieldname: "sei_asset",

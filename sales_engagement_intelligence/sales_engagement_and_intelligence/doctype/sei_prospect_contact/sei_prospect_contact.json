@@ -1,0 +1,64 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "hash",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "contact_role",
+  "contact_name",
+  "emails",
+  "notes",
+  "is_primary",
+  "crm_contact"
+ ],
+ "fields": [
+  {
+   "fieldname": "contact_role",
+   "label": "Role",
+   "fieldtype": "Link",
+   "options": "SEI Contact Role",
+   "reqd": 1,
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "contact_name",
+   "label": "Name",
+   "fieldtype": "Data",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "emails",
+   "label": "Emails",
+   "fieldtype": "Small Text",
+   "description": "One email address per line."
+  },
+  {
+   "fieldname": "notes",
+   "label": "Notes",
+   "fieldtype": "Small Text"
+  },
+  {
+   "fieldname": "is_primary",
+   "label": "Primary",
+   "fieldtype": "Check",
+   "in_list_view": 1
+  },
+  {
+   "fieldname": "crm_contact",
+   "label": "CRM Contact",
+   "fieldtype": "Link",
+   "options": "Contact",
+   "read_only": 1
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Prospect Contact",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
+}

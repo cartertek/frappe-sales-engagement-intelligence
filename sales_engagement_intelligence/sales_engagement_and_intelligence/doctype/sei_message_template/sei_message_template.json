@@ -9,7 +9,6 @@
   "template_name",
   "active",
   "playbook",
-  "thesis",
   "asset",
   "channel",
   "prospect_type",
@@ -39,12 +38,6 @@
    "options": "SEI Playbook"
   },
   {
-   "fieldname": "thesis",
-   "label": "Thesis",
-   "fieldtype": "Link",
-   "options": "SEI Thesis"
-  },
-  {
    "fieldname": "asset",
    "label": "Asset",
    "fieldtype": "Link",
@@ -65,7 +58,8 @@
   {
    "fieldname": "contact_role",
    "label": "Contact Role",
-   "fieldtype": "Data"
+   "fieldtype": "Link",
+   "options": "SEI Contact Role"
   },
   {
    "fieldname": "subject_template",
@@ -139,5 +133,5 @@
  "title_field": "template_name",
  "track_changes": 1,
  "istable": 0,
- "search_fields": "template_name, playbook, thesis, channel, active"
+ "search_fields": "template_name, playbook, channel, active"
 }

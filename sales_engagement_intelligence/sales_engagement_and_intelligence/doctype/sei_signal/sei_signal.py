@@ -30,7 +30,7 @@ class SEISignal(Document):
             return
 
         signal_type = frappe.db.get_value(
-            "SEI Signal Type", self.signal_type, ["thesis", "research_arena", "active"], as_dict=True
+            "SEI Signal Type", self.signal_type, ["playbook", "research_arena", "active"], as_dict=True
         )
         if not signal_type:
             frappe.throw(f"SEI Signal Type not found: {self.signal_type}")
@@ -38,8 +38,8 @@ class SEISignal(Document):
         if self.is_new() and not signal_type.active:
             frappe.throw("New signals cannot be created with an inactive Signal Type.")
 
-        if not signal_type.thesis or not signal_type.research_arena:
-            frappe.throw("Signal Type must belong to exactly one Thesis and one Research Arena.")
+        if not signal_type.playbook or not signal_type.research_arena:
+            frappe.throw("Signal Type must belong to exactly one Playbook and one Research Arena.")
 
         arena_active = frappe.db.get_value(
             "SEI Research Arena", signal_type.research_arena, "active"

@@ -9,8 +9,8 @@ import frappe
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
     get_prospect_arenas,
     get_prospect_arenas_display,
-    get_prospect_theses,
-    get_prospect_theses_display,
+    get_prospect_playbooks,
+    get_prospect_playbooks_display,
 )
 
 SEI_USER_ROLES = {"Sales Engagement User", "Sales Engagement Manager"}
@@ -38,17 +38,10 @@ PROSPECT_CREATE_FIELDS = {
     "offer",
     "signal_summary",
     "contact_target_notes",
-    "primary_contact_name",
-    "primary_contact_role",
-    "primary_contact_email",
-    "primary_contact_url",
-    "primary_contact_notes",
     "next_action",
     "next_action_date",
     "assigned_to",
     "notes",
-    "sei_playbook",
-    "playbook_guidance",
     "suggested_message_template",
 }
 PROSPECT_UPDATE_FIELDS = PROSPECT_CREATE_FIELDS | {"first_seen_date", "last_researched_date"}
@@ -63,8 +56,6 @@ PROSPECT_RESTRICTED_FIELDS = {
     "rejected_reason",
     "manual_qualification_override",
     "manual_qualification_reason",
-    "ready_for_crm_conversion",
-    "conversion_target",
     "crm_conversion_notes",
 }
 WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
@@ -72,12 +63,8 @@ WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
     "source_url",
     "signal_summary",
     "contact_target_notes",
-    "primary_contact_name",
-    "primary_contact_email",
-    "primary_contact_url",
     "last_researched_date",
     "offer",
-    "sei_playbook",
     "suggested_message_template",
 }
 SIGNAL_FIELDS = {
@@ -136,7 +123,7 @@ QUEUE_FIELDS = [
     "website",
     "arenas_display",
     "source_url",
-    "theses_display",
+    "playbooks_display",
     "offer",
     "qualification_status",
     "lifecycle_status",
@@ -150,8 +137,6 @@ QUEUE_FIELDS = [
     "crm_deal",
     "do_not_contact",
     "rejected_reason",
-    "ready_for_crm_conversion",
-    "sei_playbook",
     "suggested_message_template",
     "modified",
 ]
@@ -338,7 +323,7 @@ def _sanitize_values(payload: dict, allowed: set[str], doctype: str) -> tuple[di
     values, dropped = _filter_known_fields(doctype, values)
     if dropped:
         warnings.append({"code": "UNKNOWN_FIELDS_IGNORED", "fields": dropped})
-    ignored = sorted(set(payload) - set(values) - set(PROSPECT_RESTRICTED_FIELDS) - {"sei_thesis"})
+    ignored = sorted(set(payload) - set(values) - set(PROSPECT_RESTRICTED_FIELDS) - {"sei_playbook"})
     ignored = [field for field in ignored if field not in allowed]
     if ignored:
         warnings.append({"code": "UNSUPPORTED_FIELDS_IGNORED", "fields": ignored})
@@ -373,8 +358,8 @@ def _prospect_row(row) -> dict:
     data["prospect"] = data.pop("name", None)
     data["arenas"] = get_prospect_arenas(data["prospect"])
     data["arenas_display"] = ", ".join(data["arenas"])
-    data["theses"] = get_prospect_theses(data["prospect"])
-    data["theses_display"] = ", ".join(data["theses"])
+    data["playbooks"] = get_prospect_playbooks(data["prospect"])
+    data["playbooks_display"] = ", ".join(data["playbooks"])
     return data
 
 
@@ -404,8 +389,8 @@ def _prospect_summary(prospect: str) -> dict:
         "arenas": get_prospect_arenas(doc.name),
         "arenas_display": get_prospect_arenas_display(doc.name),
         "source_url": doc.source_url,
-        "theses": get_prospect_theses(doc.name),
-        "theses_display": get_prospect_theses_display(doc.name),
+        "playbooks": get_prospect_playbooks(doc.name),
+        "playbooks_display": get_prospect_playbooks_display(doc.name),
         "offer": doc.offer,
         "qualification_status": doc.qualification_status,
         "lifecycle_status": doc.lifecycle_status,
@@ -419,16 +404,9 @@ def _prospect_summary(prospect: str) -> dict:
             "crm_contact": doc.crm_contact,
             "crm_deal": doc.crm_deal,
         },
-        "contact_path": {
-            "primary_contact_name": doc.primary_contact_name,
-            "primary_contact_role": doc.primary_contact_role,
-            "primary_contact_email": doc.primary_contact_email,
-            "primary_contact_url": doc.primary_contact_url,
-            "primary_contact_notes": doc.primary_contact_notes,
-        },
+        "contact_path": {},
         "do_not_contact": doc.do_not_contact,
         "rejected_reason": doc.rejected_reason,
-        "ready_for_crm_conversion": doc.ready_for_crm_conversion,
         "next_action": doc.next_action,
         "next_action_date": doc.next_action_date,
     }
@@ -449,7 +427,6 @@ def _queue(
         "lifecycle_status",
         "assigned_to",
         "next_action_date",
-        "ready_for_crm_conversion",
     }
     for key, value in supplied.items():
         if key in allowed_filters and value not in (None, ""):
@@ -462,12 +439,12 @@ def _queue(
         limit=_limit(limit),
     )
     arena_filter = supplied.get("arena") or supplied.get("source_arena") or supplied.get("research_arena")
-    thesis_filter = supplied.get("thesis") or supplied.get("sei_thesis")
+    thesis_filter = supplied.get("playbook") or supplied.get("sei_playbook")
     result_rows = [_prospect_row(row) for row in rows]
     if arena_filter:
         result_rows = [row for row in result_rows if arena_filter in row.get("arenas", [])]
     if thesis_filter:
-        result_rows = [row for row in result_rows if thesis_filter in row.get("theses", [])]
+        result_rows = [row for row in result_rows if thesis_filter in row.get("playbooks", [])]
     return {"rows": result_rows, "count": len(result_rows)}
 
 
@@ -513,8 +490,8 @@ def get_prospect(prospect: str) -> dict:
     data = doc.as_dict()
     data["arenas"] = get_prospect_arenas(doc.name)
     data["arenas_display"] = get_prospect_arenas_display(doc.name)
-    data["theses"] = get_prospect_theses(doc.name)
-    data["theses_display"] = get_prospect_theses_display(doc.name)
+    data["playbooks"] = get_prospect_playbooks(doc.name)
+    data["playbooks_display"] = get_prospect_playbooks_display(doc.name)
     return data
 
 
@@ -536,7 +513,6 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
         "lifecycle_status",
         "assigned_to",
         "do_not_contact",
-        "ready_for_crm_conversion",
     }
     clean_filters = {
         key: value for key, value in supplied.items() if key in allowed and value not in (None, "")
@@ -549,12 +525,12 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
         limit=_limit(limit),
     )
     arena_filter = supplied.get("arena") or supplied.get("source_arena") or supplied.get("research_arena")
-    thesis_filter = supplied.get("thesis") or supplied.get("sei_thesis")
+    thesis_filter = supplied.get("playbook") or supplied.get("sei_playbook")
     result_rows = [_prospect_row(row) for row in rows]
     if arena_filter:
         result_rows = [row for row in result_rows if arena_filter in row.get("arenas", [])]
     if thesis_filter:
-        result_rows = [row for row in result_rows if thesis_filter in row.get("theses", [])]
+        result_rows = [row for row in result_rows if thesis_filter in row.get("playbooks", [])]
     return {"rows": result_rows, "count": len(result_rows)}
 
 
@@ -648,26 +624,6 @@ def apply_lifecycle(prospect: str) -> dict:
 @api_endpoint
 def apply_lifecycle_suggestion(prospect: str) -> dict:
     return apply_lifecycle(prospect)
-
-
-@api_endpoint
-def mark_ready_for_crm_conversion(prospect: str) -> dict:
-    _check_prospect_permission(prospect, "write")
-    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
-        mark_ready_for_crm_conversion,
-    )
-
-    return mark_ready_for_crm_conversion(prospect)
-
-
-@api_endpoint
-def mark_not_ready_for_crm_conversion(prospect: str) -> dict:
-    _check_prospect_permission(prospect, "write")
-    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
-        mark_not_ready_for_crm_conversion,
-    )
-
-    return mark_not_ready_for_crm_conversion(prospect)
 
 
 @api_endpoint
@@ -1090,7 +1046,6 @@ def get_ready_for_crm_conversion_queue(filters: dict | str | None = None, limit:
         filters,
         {
             "lifecycle_status": "Ready for CRM Conversion",
-            "ready_for_crm_conversion": 1,
             "do_not_contact": 0,
             "qualification_status": ["in", ["Qualified", "Manually Approved"]],
         },
@@ -1192,3 +1147,64 @@ def get_interaction_attributions(
         "rows": [{"interaction_attribution": row.pop("name"), **dict(row)} for row in rows],
         "count": len(rows),
     }
+
+
+@api_endpoint
+def convert_to_crm_lead(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.crm_preparation import (
+        convert_prospect_to_crm_leads,
+    )
+
+    return convert_prospect_to_crm_leads(prospect)
+
+
+@api_endpoint
+def get_prospect_contact_options(prospect: str) -> list[str]:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        emails,
+        populated_contacts,
+    )
+
+    doc = frappe.get_doc("SEI Prospect", prospect)
+    return [
+        f"{row.contact_name or row.contact_role} <{(emails(row) or [''])[0]}>".strip()
+        for row in populated_contacts(doc)
+    ]
+
+
+@api_endpoint
+def mark_message_draft_sent(draft: str) -> dict:
+    _check_doc_permission("SEI Message Draft", draft, "write")
+    doc = frappe.get_doc("SEI Message Draft", draft)
+    prospect = frappe.get_doc("SEI Prospect", doc.prospect)
+    if (
+        prospect.lifecycle_status not in ("Converted to CRM Lead", "Converted to CRM Deal")
+        or not prospect.crm_lead
+    ):
+        frappe.throw("The prospect must be converted to a CRM Lead before a draft can be marked sent.")
+    if not frappe.db.exists("DocType", "CRM Lead Email"):
+        frappe.throw("CRM Lead Email is unavailable in the installed Frappe CRM schema.")
+    payload = {"doctype": "CRM Lead Email"}
+    meta = frappe.get_meta("CRM Lead Email")
+    values = {
+        "lead": prospect.crm_lead,
+        "from": doc.from_user,
+        "from_email": doc.from_user,
+        "to": doc.to_contact,
+        "to_email": doc.to_contact,
+        "cc": doc.cc,
+        "subject": doc.subject,
+        "body": doc.body,
+        "content": doc.body,
+        "platform": doc.platform,
+    }
+    for key, value in values.items():
+        if meta.has_field(key):
+            payload[key] = value
+    email = frappe.get_doc(payload)
+    email.insert()
+    doc.db_set({"sent": 1, "sent_on": frappe.utils.now_datetime(), "crm_email": email.name})
+    return {"crm_email": email.name, "sent": True}

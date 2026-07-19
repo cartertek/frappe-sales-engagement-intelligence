@@ -12,7 +12,7 @@
   "attribution_links_section",
   "prospect",
   "signal",
-  "thesis",
+  "playbook",
   "marketing_asset",
   "offer",
   "source_arena",
@@ -62,10 +62,10 @@
    "idx": 3
   },
   {
-   "fieldname": "thesis",
-   "label": "Thesis",
+   "fieldname": "playbook",
+   "label": "Playbook",
    "fieldtype": "Link",
-   "options": "SEI Thesis",
+   "options": "SEI Playbook",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 4

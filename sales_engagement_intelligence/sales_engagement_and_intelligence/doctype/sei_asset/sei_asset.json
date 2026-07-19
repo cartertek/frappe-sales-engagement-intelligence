@@ -11,7 +11,7 @@
   "asset_name",
   "asset_type",
   "url",
-  "related_thesis",
+  "related_playbook",
   "related_offer",
   "active",
   "notes"
@@ -44,10 +44,10 @@
    "idx": 3
   },
   {
-   "fieldname": "related_thesis",
-   "label": "Related Thesis",
+   "fieldname": "related_playbook",
+   "label": "Related Playbook",
    "fieldtype": "Link",
-   "options": "SEI Thesis",
+   "options": "SEI Playbook",
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 4
@@ -125,7 +125,7 @@
    "parenttype": "DocType"
   }
  ],
- "search_fields": "asset_name, asset_type, url, related_thesis",
+ "search_fields": "asset_name, asset_type, url, related_playbook",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

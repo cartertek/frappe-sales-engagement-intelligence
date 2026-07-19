@@ -16,11 +16,16 @@ def sync_prospect_signal_types(prospect: str | None) -> None:
         order_by="signal_type asc",
     )
     value = ", ".join(dict.fromkeys(signal_types))
+    playbooks = frappe.db.sql("""
+        SELECT DISTINCT st.playbook
+        FROM `tabSEI Signal` s
+        JOIN `tabSEI Signal Type` st ON st.name=s.signal_type
+        WHERE s.prospect=%s AND COALESCE(st.playbook, '') != ''
+        ORDER BY st.playbook
+    """, prospect, as_list=True)
     frappe.db.set_value(
-        "SEI Prospect",
-        prospect,
-        "signals",
-        value,
+        "SEI Prospect", prospect,
+        {"signals": value, "playbooks": ", ".join(row[0] for row in playbooks)},
         update_modified=False,
     )
 
@@ -40,5 +45,6 @@ def _can_sync() -> bool:
         frappe.db.table_exists("SEI Prospect")
         and frappe.db.table_exists("SEI Signal")
         and frappe.db.has_column("SEI Prospect", "signals")
+        and frappe.db.has_column("SEI Prospect", "playbooks")
         and frappe.db.has_column("SEI Signal", "signal_type")
     )

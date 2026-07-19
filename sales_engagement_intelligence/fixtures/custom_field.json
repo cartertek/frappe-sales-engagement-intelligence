@@ -32,9 +32,9 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Lead-sei_thesis",
+  "name": "CRM Lead-sei_playbook",
   "dt": "CRM Lead",
-  "fieldname": "sei_thesis",
+  "fieldname": "sei_playbook",
   "label": "Theses",
   "fieldtype": "Small Text",
   "insert_after": "sei_source_arena",
@@ -47,7 +47,7 @@
   "fieldname": "sei_qualification_summary",
   "label": "Qualification Summary",
   "fieldtype": "Small Text",
-  "insert_after": "sei_thesis",
+  "insert_after": "sei_playbook",
   "is_system_generated": 1
  },
  {
@@ -83,9 +83,9 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Deal-sei_thesis",
+  "name": "CRM Deal-sei_playbook",
   "dt": "CRM Deal",
-  "fieldname": "sei_thesis",
+  "fieldname": "sei_playbook",
   "label": "Theses",
   "fieldtype": "Small Text",
   "insert_after": "sei_source_arena",
@@ -99,7 +99,7 @@
   "label": "Primary Signal",
   "fieldtype": "Link",
   "options": "SEI Signal",
-  "insert_after": "sei_thesis",
+  "insert_after": "sei_playbook",
   "is_system_generated": 1
  }
 ]

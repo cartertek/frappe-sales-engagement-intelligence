@@ -57,8 +57,6 @@ PROTECTED_IMPORT_FIELDS = {
     "manual_qualification_reason",
     "do_not_contact",
     "rejected_reason",
-    "ready_for_crm_conversion",
-    "conversion_target",
     "crm_conversion_notes",
 }
 CREATE_ONLY = "Create Only"
@@ -159,16 +157,10 @@ def _first_value(doctype: str, filters: dict, fields: list[str]) -> Optional[dic
 
 def find_existing_sei_prospect(row: dict) -> Optional[dict]:
     row = normalize_import_row(row)
-    fields = ["name", "prospect_name", "normalized_domain", "website", "primary_contact_email", "source_url"]
+    fields = ["name", "prospect_name", "normalized_domain", "website", "source_url"]
     checks = [
         ("normalized_domain", row.get("normalized_domain"), "Matched by normalized_domain", "High"),
         ("website", row.get("website") or row.get("prospect_website"), "Matched by exact website", "High"),
-        (
-            "primary_contact_email",
-            row.get("primary_contact_email"),
-            "Matched by primary_contact_email",
-            "High",
-        ),
         ("prospect_name", row.get("prospect_name"), "Matched by exact prospect_name", "Medium"),
         ("source_url", row.get("source_url"), "Matched by source_url", "Medium"),
     ]
@@ -226,21 +218,13 @@ def find_existing_sei_signal(prospect_name: str, row: dict) -> Optional[dict]:
     return None
 
 
-def _resolve_thesis(row: dict) -> Optional[str]:
-    """Resolve legacy thesis import columns for validation only.
-
-    Prospect thesis is no longer stored directly; thesis membership is derived
-    from SEI Signal Type.thesis through linked signals.
-    """
-    thesis = row.get("sei_thesis") or row.get("thesis")
-    if not thesis:
+def _resolve_playbook(row: dict) -> Optional[str]:
+    value = row.get("sei_playbook") or row.get("playbook") or row.get("sei_thesis") or row.get("thesis")
+    if not value:
         return None
-    by_title = frappe.db.get_value("SEI Thesis", {"thesis_name": thesis}, "name")
-    if by_title:
-        return by_title
-    if frappe.db.exists("SEI Thesis", thesis):
-        return thesis
-    frappe.throw(f"SEI Thesis not found: {thesis}")
+    if frappe.db.exists("SEI Playbook", value):
+        return value
+    frappe.throw(f"SEI Playbook not found: {value}")
 
 
 def _validate_prospect(row: dict, require_create_context: bool = True) -> None:
@@ -301,8 +285,7 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
         ]
         if missing_proof:
             frappe.throw(
-                "Moderate or Strong signals require structured evidence fields: "
-                + ", ".join(missing_proof)
+                "Moderate or Strong signals require structured evidence fields: " + ", ".join(missing_proof)
             )
 
     if strength == "Weak" and not (
@@ -409,7 +392,7 @@ def classify_import_row(row: dict, import_kind: str = COMBINED, import_mode: str
                 intended_action = "Skip"
         else:
             _validate_prospect(row, require_create_context=True)
-            _resolve_thesis(row)
+            _resolve_playbook(row)
             duplicate = find_existing_sei_prospect(row)
             if duplicate:
                 if import_mode in (UPDATE_EXISTING, CREATE_OR_UPDATE):

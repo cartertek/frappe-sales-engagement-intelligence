@@ -5,6 +5,8 @@ from typing import Optional
 import frappe
 from frappe.model.document import Document
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import primary_contacts
+
 TERMINAL_STATUSES = (
     "Rejected",
     "Do Not Contact",
@@ -18,11 +20,7 @@ def is_terminal_status(status: str) -> bool:
 
 
 def has_contact_path(prospect: Document) -> bool:
-    return bool(
-        prospect.get("primary_contact_email")
-        or prospect.get("primary_contact_url")
-        or prospect.get("primary_contact_name")
-    )
+    return bool(primary_contacts(prospect))
 
 
 def has_company_identity(prospect: Document) -> bool:
@@ -40,9 +38,7 @@ def has_signals(prospect: Document) -> bool:
 
 def has_research_evidence(prospect: Document) -> bool:
     return bool(
-        prospect.get("last_researched_date")
-        or prospect.get("signal_summary")
-        or has_signals(prospect)
+        prospect.get("last_researched_date") or prospect.get("signal_summary") or has_signals(prospect)
     )
 
 
@@ -95,13 +91,8 @@ def apply_lifecycle_to_doc(prospect: Document) -> dict:
     new_status = suggest_lifecycle_status_for_doc(prospect)
     if old_status != new_status:
         prospect.lifecycle_status = new_status
-    if new_status == "Ready for CRM Conversion":
-        prospect.ready_for_crm_conversion = 1
-    elif new_status == "Find Contact":
-        prospect.ready_for_crm_conversion = 0
     if new_status == "Rejected":
         prospect.qualification_status = "Rejected"
-        prospect.ready_for_crm_conversion = 0
     return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
 
 
@@ -112,12 +103,8 @@ def apply_lifecycle_status(prospect_name: str) -> dict:
 
     if old_status != new_status:
         values = {"lifecycle_status": new_status}
-        if new_status == "Ready for CRM Conversion":
-            values["ready_for_crm_conversion"] = 1
-        elif new_status == "Find Contact":
-            values["ready_for_crm_conversion"] = 0
         if new_status == "Rejected":
-            values.update({"qualification_status": "Rejected", "ready_for_crm_conversion": 0})
+            values.update({"qualification_status": "Rejected"})
         frappe.db.set_value(
             "SEI Prospect",
             prospect_name,
@@ -133,7 +120,6 @@ def mark_rejected(prospect_name: str, reason: Optional[str] = None) -> dict:
     values = {
         "lifecycle_status": "Rejected",
         "qualification_status": "Rejected",
-        "ready_for_crm_conversion": 0,
     }
     if reason:
         values["rejected_reason"] = reason
@@ -147,7 +133,6 @@ def mark_do_not_contact(prospect_name: str, reason: Optional[str] = None) -> dic
         "do_not_contact": 1,
         "lifecycle_status": "Do Not Contact",
         "qualification_status": "Do Not Contact",
-        "ready_for_crm_conversion": 0,
     }
     if reason:
         values["rejected_reason"] = reason
@@ -171,9 +156,7 @@ def _has_manager_access() -> bool:
 
 def reopen_prospect(prospect_name: str) -> dict:
     if not _has_manager_access():
-        frappe.throw(
-            "Only an Administrator or Sales Engagement Manager can reopen a protected prospect."
-        )
+        frappe.throw("Only an Administrator or Sales Engagement Manager can reopen a protected prospect.")
 
     frappe.db.set_value(
         "SEI Prospect",
@@ -182,7 +165,6 @@ def reopen_prospect(prospect_name: str) -> dict:
             "do_not_contact": 0,
             "lifecycle_status": "New",
             "qualification_status": "Unqualified",
-            "ready_for_crm_conversion": 0,
         },
         update_modified=True,
     )
@@ -230,61 +212,3 @@ def suggest_pre_crm_handoff_status(prospect: Document) -> str:
     if prospect.qualification_status in ("Unqualified", None, ""):
         return "Needs Research" if has_research_evidence(prospect) else "New"
     return "New"
-
-
-def mark_ready_for_crm_conversion(prospect_name: str) -> dict:
-    prospect = frappe.get_doc("SEI Prospect", prospect_name)
-    requirements = get_crm_readiness_requirements(prospect)
-    unmet = [requirement for requirement in requirements if not requirement["met"]]
-    if unmet:
-        return {
-            "ok": False,
-            "error": {
-                "code": "CRM_READINESS_REQUIREMENTS_NOT_MET",
-                "message": "This prospect is not ready for CRM conversion.",
-                "details": {"requirements": requirements},
-            },
-            "warnings": [],
-        }
-
-    lifecycle_status = "Ready for CRM Conversion" if has_contact_path(prospect) else "Find Contact"
-    frappe.db.set_value(
-        "SEI Prospect",
-        prospect_name,
-        {
-            "ready_for_crm_conversion": 1 if lifecycle_status == "Ready for CRM Conversion" else 0,
-            "lifecycle_status": lifecycle_status,
-        },
-        update_modified=True,
-    )
-    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
-    return {
-        "ready_for_crm_conversion": 1 if lifecycle_status == "Ready for CRM Conversion" else 0,
-        "lifecycle_status": lifecycle_status,
-    }
-
-def mark_not_ready_for_crm_conversion(prospect_name: str) -> dict:
-    prospect = frappe.get_doc("SEI Prospect", prospect_name)
-    if prospect.lifecycle_status not in ("Find Contact", "Ready for CRM Conversion"):
-        return {
-            "ok": False,
-            "error": {
-                "code": "CRM_HANDOFF_NOT_ACTIVE",
-                "message": "This prospect is not currently in the CRM handoff workflow.",
-                "details": {},
-            },
-            "warnings": [],
-        }
-
-    lifecycle_status = suggest_pre_crm_handoff_status(prospect)
-    frappe.db.set_value(
-        "SEI Prospect",
-        prospect_name,
-        {
-            "ready_for_crm_conversion": 0,
-            "lifecycle_status": lifecycle_status,
-        },
-        update_modified=True,
-    )
-    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
-    return {"ready_for_crm_conversion": 0, "lifecycle_status": lifecycle_status}

@@ -64,7 +64,6 @@ def restore_prospect_lifecycle_after_deal_delete(doc, method: str | None = None)
             prospect_name,
             {
                 "lifecycle_status": lifecycle_status,
-                "ready_for_crm_conversion": 0,
             },
             update_modified=True,
         )

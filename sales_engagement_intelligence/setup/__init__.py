@@ -558,7 +558,7 @@ MILESTONE_8_DAILY_WORKFLOW_SHORTCUTS = (
 MILESTONE_8_OUTREACH_SETUP_SHORTCUTS = (
     ("SEI Playbook", "Playbooks", "List", "Green"),
     ("SEI Message Template", "Message Templates", "List", "Green"),
-    ("SEI Thesis", "Theses", "List", "Purple"),
+    ("SEI Playbook", "Playbooks", "List", "Purple"),
     ("SEI Asset", "Assets", "List", "Purple"),
 )
 

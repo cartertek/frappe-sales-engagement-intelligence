@@ -5,7 +5,6 @@ frappe.listview_settings['SEI Prospect'] = {
         'prospect_type',
         'qualification_status',
         'lifecycle_status',
-        'ready_for_crm_conversion',
         'next_action_date',
         'crm_lead',
         'crm_deal',
