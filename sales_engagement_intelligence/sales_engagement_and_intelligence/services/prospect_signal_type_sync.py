@@ -13,13 +13,19 @@ def sync_prospect_signal_types(prospect: str | None) -> None:
         LEFT JOIN `tabSEI Signal Type` st ON st.name = s.signal_type
         WHERE s.prospect = %s AND COALESCE(s.signal_type, '') != ''
         ORDER BY s.signal_type, st.playbook, st.research_arena""",
-        prospect, as_dict=True,
+        prospect,
+        as_dict=True,
     )
-    frappe.db.set_value("SEI Prospect", prospect, {
-        "signals": ", ".join(dict.fromkeys(r.signal_type for r in rows if r.signal_type)),
-        "playbooks": ", ".join(dict.fromkeys(r.playbook for r in rows if r.playbook)),
-        "arenas": ", ".join(dict.fromkeys(r.research_arena for r in rows if r.research_arena)),
-    }, update_modified=False)
+    frappe.db.set_value(
+        "SEI Prospect",
+        prospect,
+        {
+            "signals": ", ".join(dict.fromkeys(r.signal_type for r in rows if r.signal_type)),
+            "playbooks": ", ".join(dict.fromkeys(r.playbook for r in rows if r.playbook)),
+            "arenas": ", ".join(dict.fromkeys(r.research_arena for r in rows if r.research_arena)),
+        },
+        update_modified=False,
+    )
 
 
 def sync_all_prospect_signal_types() -> None:
@@ -29,10 +35,16 @@ def sync_all_prospect_signal_types() -> None:
 
 
 def _can_sync() -> bool:
-    return all((
-        frappe.db.table_exists("SEI Prospect"), frappe.db.table_exists("SEI Signal"),
-        frappe.db.table_exists("SEI Signal Type"),
-        frappe.db.has_column("SEI Prospect", "signals"), frappe.db.has_column("SEI Prospect", "playbooks"),
-        frappe.db.has_column("SEI Prospect", "arenas"), frappe.db.has_column("SEI Signal", "signal_type"),
-        frappe.db.has_column("SEI Signal Type", "playbook"), frappe.db.has_column("SEI Signal Type", "research_arena"),
-    ))
+    return all(
+        (
+            frappe.db.table_exists("SEI Prospect"),
+            frappe.db.table_exists("SEI Signal"),
+            frappe.db.table_exists("SEI Signal Type"),
+            frappe.db.has_column("SEI Prospect", "signals"),
+            frappe.db.has_column("SEI Prospect", "playbooks"),
+            frappe.db.has_column("SEI Prospect", "arenas"),
+            frappe.db.has_column("SEI Signal", "signal_type"),
+            frappe.db.has_column("SEI Signal Type", "playbook"),
+            frappe.db.has_column("SEI Signal Type", "research_arena"),
+        )
+    )
