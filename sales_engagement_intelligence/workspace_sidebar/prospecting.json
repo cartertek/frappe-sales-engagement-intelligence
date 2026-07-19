@@ -71,6 +71,19 @@
    "link_to": "SEI Signal Type"
   },
   {
+   "child": 1,
+   "collapsible": 1,
+   "indent": 0,
+   "keep_closed": 0,
+   "label": "Research Arenas",
+   "link_type": "DocType",
+   "open_in_new_tab": 1,
+   "show_arrow": 0,
+   "type": "Link",
+   "icon": "",
+   "link_to": "SEI Research Arena"
+  },
+  {
    "child": 0,
    "collapsible": 1,
    "indent": 1,

@@ -4,47 +4,35 @@ import frappe
 
 
 def sync_prospect_signal_types(prospect: str | None) -> None:
-    """Store the prospect's unique linked Signal Types as a filterable snapshot."""
-
+    """Store queryable taxonomy snapshots derived from a prospect's Signals."""
     if not prospect or not _can_sync():
         return
-
-    signal_types = frappe.get_all(
-        "SEI Signal",
-        filters={"prospect": prospect, "signal_type": ["is", "set"]},
-        pluck="signal_type",
-        order_by="signal_type asc",
-    )
-    value = ", ".join(dict.fromkeys(signal_types))
-    playbooks = frappe.db.sql("""
-        SELECT DISTINCT st.playbook
+    rows = frappe.db.sql(
+        """SELECT DISTINCT s.signal_type, st.playbook, st.research_arena
         FROM `tabSEI Signal` s
-        JOIN `tabSEI Signal Type` st ON st.name=s.signal_type
-        WHERE s.prospect=%s AND COALESCE(st.playbook, '') != ''
-        ORDER BY st.playbook
-    """, prospect, as_list=True)
-    frappe.db.set_value(
-        "SEI Prospect", prospect,
-        {"signals": value, "playbooks": ", ".join(row[0] for row in playbooks)},
-        update_modified=False,
+        LEFT JOIN `tabSEI Signal Type` st ON st.name = s.signal_type
+        WHERE s.prospect = %s AND COALESCE(s.signal_type, '') != ''
+        ORDER BY s.signal_type, st.playbook, st.research_arena""",
+        prospect, as_dict=True,
     )
+    frappe.db.set_value("SEI Prospect", prospect, {
+        "signals": ", ".join(dict.fromkeys(r.signal_type for r in rows if r.signal_type)),
+        "playbooks": ", ".join(dict.fromkeys(r.playbook for r in rows if r.playbook)),
+        "arenas": ", ".join(dict.fromkeys(r.research_arena for r in rows if r.research_arena)),
+    }, update_modified=False)
 
 
 def sync_all_prospect_signal_types() -> None:
-    """Backfill every prospect's Signal Type snapshot after schema migration."""
-
-    if not _can_sync():
-        return
-
-    for prospect in frappe.get_all("SEI Prospect", pluck="name"):
-        sync_prospect_signal_types(prospect)
+    if _can_sync():
+        for prospect in frappe.get_all("SEI Prospect", pluck="name"):
+            sync_prospect_signal_types(prospect)
 
 
 def _can_sync() -> bool:
-    return (
-        frappe.db.table_exists("SEI Prospect")
-        and frappe.db.table_exists("SEI Signal")
-        and frappe.db.has_column("SEI Prospect", "signals")
-        and frappe.db.has_column("SEI Prospect", "playbooks")
-        and frappe.db.has_column("SEI Signal", "signal_type")
-    )
+    return all((
+        frappe.db.table_exists("SEI Prospect"), frappe.db.table_exists("SEI Signal"),
+        frappe.db.table_exists("SEI Signal Type"),
+        frappe.db.has_column("SEI Prospect", "signals"), frappe.db.has_column("SEI Prospect", "playbooks"),
+        frappe.db.has_column("SEI Prospect", "arenas"), frappe.db.has_column("SEI Signal", "signal_type"),
+        frappe.db.has_column("SEI Signal Type", "playbook"), frappe.db.has_column("SEI Signal Type", "research_arena"),
+    ))
