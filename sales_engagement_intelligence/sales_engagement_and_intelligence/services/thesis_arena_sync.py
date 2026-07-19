@@ -6,7 +6,7 @@ SYNC_FLAG = "sei_syncing_thesis_arenas"
 
 
 def validate_thesis_relationships(thesis) -> None:
-    if thesis.is_new():
+    if getattr(frappe.flags, SYNC_FLAG, False) or thesis.is_new():
         return
     selected = {row.research_arena for row in thesis.get("research_arenas") or [] if row.research_arena}
     rows = frappe.get_all(
@@ -23,7 +23,7 @@ def validate_thesis_relationships(thesis) -> None:
 
 
 def validate_arena_relationships(arena) -> None:
-    if arena.is_new():
+    if getattr(frappe.flags, SYNC_FLAG, False) or arena.is_new():
         return
     selected = {row.thesis for row in arena.get("assigned_theses") or [] if row.thesis}
     rows = frappe.get_all(
