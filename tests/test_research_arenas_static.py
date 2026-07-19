@@ -43,10 +43,12 @@ def test_thesis_preserves_many_to_many_arena_relationship():
     assert arenas["options"] == "SEI Thesis Research Arena"
 
 
-def test_prospect_arenas_are_derived_not_stored():
+def test_prospect_arenas_are_derived_and_snapshotted_for_queries():
     prospect = load("sei_prospect")
     assert field(prospect, "source_arena") is None
-    assert field(prospect, "arenas") is None
+    arenas = field(prospect, "arenas")
+    assert arenas["read_only"] == 1
+    assert arenas["in_standard_filter"] == 1
     taxonomy_path = (
         ROOT
         / "sales_engagement_intelligence"
@@ -89,4 +91,4 @@ def test_signal_type_validates_thesis_arena_pair():
     )
     source = controller_path.read_text()
     assert "SEI Thesis Research Arena" in source
-    assert "Research Arena" in source and "is not assigned to Thesis" in source
+    assert "Thesis" in source and "is not assigned to Research Arena" in source
