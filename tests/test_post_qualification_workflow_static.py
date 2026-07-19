@@ -50,3 +50,21 @@ def test_unified_conversion_and_crm_routes():
     assert "def mark_ready_for_crm_conversion" not in api
     assert "Convert to CRM Lead" in js
     assert "/crm/${collections[doctype]}" in js
+
+
+def test_playbook_manages_assigned_signal_types():
+    playbook = dt("sei_playbook")
+    fields = {field["fieldname"]: field for field in playbook["fields"]}
+    assert fields["signal_types"]["fieldtype"] == "Table"
+    assert fields["signal_types"]["options"] == "SEI Playbook Signal Type"
+
+    child = dt("sei_playbook_signal_type")
+    child_fields = {field["fieldname"]: field for field in child["fields"]}
+    assert child["istable"] == 1
+    assert child_fields["signal_type"]["options"] == "SEI Signal Type"
+    assert child_fields["signal_type"]["reqd"] == 1
+
+    playbook_controller = (ROOT / "doctype/sei_playbook/sei_playbook.py").read_text()
+    signal_type_controller = (ROOT / "doctype/sei_signal_type/sei_signal_type.py").read_text()
+    assert "sync_signal_type_links" in playbook_controller
+    assert "sync_playbook_child_row" in signal_type_controller

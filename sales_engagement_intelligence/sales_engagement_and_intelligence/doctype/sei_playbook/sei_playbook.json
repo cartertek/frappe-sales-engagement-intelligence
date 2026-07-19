@@ -21,6 +21,8 @@
   "disqualifying_guidance",
   "recommended_first_action",
   "follow_up_guidance",
+  "signal_types_section",
+  "signal_types",
   "signal_rules",
   "notes"
  ],
@@ -117,6 +119,18 @@
    "fieldname": "notes",
    "label": "Notes",
    "fieldtype": "Long Text"
+  },
+  {
+   "fieldname": "signal_types_section",
+   "label": "Signal Types",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "signal_types",
+   "label": "Signal Types",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Signal Type",
+   "description": "Signal Types assigned to this Playbook. Adding a Signal Type here moves it from its previous Playbook."
   }
  ],
  "links": [],

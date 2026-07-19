@@ -13,6 +13,7 @@ def execute():
     _migrate_related_links(mapping)
     _migrate_primary_contacts()
     _seed_contact_roles()
+    _backfill_playbook_signal_types()
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
         prospect_signal_type_sync,
     )
@@ -177,3 +178,21 @@ def _seed_contact_roles():
         "Primary Contact",
     ):
         _ensure_role(role)
+
+
+def _backfill_playbook_signal_types() -> None:
+    if not frappe.db.table_exists("SEI Playbook Signal Type"):
+        return
+    for row in frappe.get_all(
+        "SEI Signal Type",
+        filters={"playbook": ["is", "set"]},
+        fields=["name", "playbook"],
+    ):
+        filters = {
+            "parent": row.playbook,
+            "parenttype": "SEI Playbook",
+            "parentfield": "signal_types",
+            "signal_type": row.name,
+        }
+        if not frappe.db.exists("SEI Playbook Signal Type", filters):
+            frappe.get_doc({"doctype": "SEI Playbook Signal Type", **filters}).insert(ignore_permissions=True)
