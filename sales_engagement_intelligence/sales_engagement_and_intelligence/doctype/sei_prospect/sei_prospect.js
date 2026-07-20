@@ -644,3 +644,22 @@ function configure_contact_grid(frm) {
 
     normalize_managed_grid_editor(field, 'contact');
 }
+
+
+frappe.ui.form.on('SEI Prospect Message Draft', {
+    mark_as_sent(frm, cdt, cdn) {
+        const row = locals[cdt][cdn];
+        if (row.sent) {
+            frappe.msgprint(__('This message draft is already marked as sent.'));
+            return;
+        }
+        frappe.call({
+            method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_message_draft_sent',
+            args: { draft: row.name },
+            freeze: true,
+            callback() {
+                frm.reload_doc();
+            }
+        });
+    }
+});

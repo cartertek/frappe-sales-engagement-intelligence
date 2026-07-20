@@ -60,3 +60,21 @@ def test_expanded_message_draft_editor_has_done_and_no_duplicate_insert_controls
     assert "__('Done')" in script
     assert ".grid-insert-row-below, .grid-append-row" in script
     assert ".remove()" in script
+
+
+def test_message_draft_rows_have_dedicated_send_button():
+    fields = {field["fieldname"]: field for field in json.loads(CHILD_JSON.read_text())["fields"]}
+    assert fields["mark_as_sent"]["fieldtype"] == "Button"
+    assert fields["mark_as_sent"]["in_list_view"] == 1
+    script = PROSPECT_JS.read_text()
+    assert "frappe.ui.form.on('SEI Prospect Message Draft'" in script
+    assert "mark_as_sent(frm, cdt, cdn)" in script
+    assert "args: { draft: row.name }" in script
+
+
+def test_send_api_supports_managed_child_drafts():
+    api_path = ROOT / "sales_engagement_intelligence" / "sales_engagement_and_intelligence" / "api.py"
+    api = api_path.read_text()
+    assert 'frappe.db.exists("SEI Prospect Message Draft", draft)' in api
+    assert '_check_doc_permission("SEI Prospect", doc.parent, "write")' in api
+    assert 'prospect = frappe.get_doc("SEI Prospect", doc.parent)' in api

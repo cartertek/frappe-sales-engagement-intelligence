@@ -1197,9 +1197,14 @@ def get_prospect_contact_options(prospect: str) -> list[str]:
 
 @api_endpoint
 def mark_message_draft_sent(draft: str) -> dict:
-    _check_doc_permission("SEI Message Draft", draft, "write")
-    doc = frappe.get_doc("SEI Message Draft", draft)
-    prospect = frappe.get_doc("SEI Prospect", doc.prospect)
+    if frappe.db.exists("SEI Prospect Message Draft", draft):
+        doc = frappe.get_doc("SEI Prospect Message Draft", draft)
+        _check_doc_permission("SEI Prospect", doc.parent, "write")
+        prospect = frappe.get_doc("SEI Prospect", doc.parent)
+    else:
+        _check_doc_permission("SEI Message Draft", draft, "write")
+        doc = frappe.get_doc("SEI Message Draft", draft)
+        prospect = frappe.get_doc("SEI Prospect", doc.prospect)
     if (
         prospect.lifecycle_status not in ("Converted to CRM Lead", "Converted to CRM Deal")
         or not prospect.crm_lead
