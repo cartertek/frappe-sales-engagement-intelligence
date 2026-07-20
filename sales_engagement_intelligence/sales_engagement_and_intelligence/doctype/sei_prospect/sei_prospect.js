@@ -59,11 +59,9 @@ frappe.ui.form.on('SEI Prospect', {
             }
         }
 
-        if (frm.doc.lifecycle_status === 'Ready for CRM Conversion' && is_manager_or_admin()) {
+        if (is_manager_or_admin()) {
             frm.add_custom_button(__('Convert to CRM Lead'), () => {
-                frappe.confirm(__('Upsert the CRM Organization, a CRM Contact for every populated contact, and a CRM Lead for every primary contact?'), () => {
-                    call_and_reload(frm, 'convert_to_crm_lead', { prospect: frm.doc.name });
-                });
+                show_conversion_preview(frm, { allow_convert: true });
             }, __('CRM Conversion'));
         }
 
@@ -231,19 +229,28 @@ function show_crm_readiness_checklist(message) {
     });
 }
 
-function show_conversion_preview(frm) {
+function show_conversion_preview(frm, options = {}) {
     frappe.call({
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.preview_crm_conversion',
         args: { prospect: frm.doc.name },
         freeze: true,
         callback(r) {
             const data = unwrap_api_data(r);
-            const dialog = new frappe.ui.Dialog({
+            const eligible = Boolean(data.eligibility && data.eligibility.eligible);
+            const fields = [{ fieldtype: 'HTML', fieldname: 'preview_html' }];
+            const dialog_options = {
                 title: __('CRM Conversion Preview'),
                 size: 'extra-large',
-                fields: [{ fieldtype: 'HTML', fieldname: 'preview_html' }]
-            });
-
+                fields
+            };
+            if (options.allow_convert && eligible) {
+                dialog_options.primary_action_label = __('Convert to CRM Lead');
+                dialog_options.primary_action = () => {
+                    dialog.hide();
+                    call_and_reload(frm, 'convert_to_crm_lead', { prospect: frm.doc.name });
+                };
+            }
+            const dialog = new frappe.ui.Dialog(dialog_options);
             dialog.fields_dict.preview_html.$wrapper.html(render_preview_html(data));
             dialog.show();
         }
