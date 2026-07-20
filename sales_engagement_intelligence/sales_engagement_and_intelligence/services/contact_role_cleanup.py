@@ -85,7 +85,7 @@ def merge_semantic_duplicates() -> dict:
     for source, target in merges:
         if frappe.db.exists("SEI Contact Role", source):
             frappe.rename_doc(
-                "SEI Contact Role", source, target, force=True, merge=True, ignore_permissions=True
+                "SEI Contact Role", source, target, force=True, merge=True
             )
             merged.append((source, target))
 
