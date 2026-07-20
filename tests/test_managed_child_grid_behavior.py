@@ -39,3 +39,12 @@ def test_message_draft_uses_sent_checkbox_not_send_button():
     assert "sent(frm, cdt, cdn)" in SCRIPT
     assert "isolate_message_draft_sent_checkbox(field)" in SCRIPT
     assert "data-sei-sent-bound" in SCRIPT
+
+
+def test_crm_contact_path_requires_primary_contact_email():
+    source = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js"
+    ).read_text()
+
+    assert "row.is_primary && Boolean((row.emails || '').trim())" in source
+    assert "row.contact_name || row.emails || row.notes" not in source

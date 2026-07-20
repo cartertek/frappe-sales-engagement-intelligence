@@ -201,7 +201,7 @@ function can_prepare_crm(frm) {
 }
 
 function has_contact_path(frm) {
-    return (frm.doc.contacts || []).some(row => row.is_primary && (row.contact_name || row.emails || row.notes));
+    return (frm.doc.contacts || []).some(row => row.is_primary && Boolean((row.emails || '').trim()));
 }
 
 function is_terminal(frm) {
