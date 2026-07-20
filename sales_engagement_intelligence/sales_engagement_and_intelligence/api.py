@@ -627,6 +627,26 @@ def apply_lifecycle_suggestion(prospect: str) -> dict:
 
 
 @api_endpoint
+def mark_ready_for_crm_conversion(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+        mark_ready_for_crm_conversion,
+    )
+
+    return mark_ready_for_crm_conversion(prospect)
+
+
+@api_endpoint
+def mark_not_ready_for_crm_conversion(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+        mark_not_ready_for_crm_conversion,
+    )
+
+    return mark_not_ready_for_crm_conversion(prospect)
+
+
+@api_endpoint
 def mark_rejected(prospect: str, reason: Optional[str] = None) -> dict:
     _check_prospect_permission(prospect, "write")
     _require_manager()

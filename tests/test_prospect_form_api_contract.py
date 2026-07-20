@@ -23,8 +23,10 @@ def test_every_prospect_call_and_reload_action_has_api_method():
 
 
 def test_retired_mark_ready_action_is_not_rendered():
-    assert "mark_ready_for_crm_conversion" not in SCRIPT
-    assert "Mark Ready for CRM Conversion" not in SCRIPT
+    assert "mark_ready_for_crm_conversion" in SCRIPT
+    assert "mark_not_ready_for_crm_conversion" in SCRIPT
+    assert "Mark Ready for CRM Conversion" in SCRIPT
+    assert "Mark as Not Ready for CRM" in SCRIPT
 
 
 def test_current_crm_preparation_actions_have_api_methods():
@@ -39,3 +41,22 @@ def test_current_crm_preparation_actions_have_api_methods():
     }
     missing = sorted(expected - api_functions())
     assert not missing, f"Missing CRM Preparation API methods: {missing}"
+
+
+def test_crm_handoff_statuses_and_queues_remain_available():
+    import json
+
+    prospect = json.loads(
+        Path(
+            "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+            "sei_prospect/sei_prospect.json"
+        ).read_text()
+    )
+    lifecycle = next(field for field in prospect["fields"] if field["fieldname"] == "lifecycle_status")
+    options = lifecycle["options"].splitlines()
+    assert "Find Contact" in options
+    assert "Ready for CRM Conversion" in options
+
+    api = API
+    assert "def get_find_contact_queue" in api
+    assert "def get_ready_for_crm_conversion_queue" in api

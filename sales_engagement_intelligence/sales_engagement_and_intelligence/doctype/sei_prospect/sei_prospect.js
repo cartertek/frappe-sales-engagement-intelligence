@@ -17,6 +17,16 @@ frappe.ui.form.on('SEI Prospect', {
             prompt_message_template(frm);
         }, __('Outreach Drafting'));
 
+        if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
+            frm.add_custom_button(__('Mark as Not Ready for CRM'), () => {
+                mark_not_ready_for_crm_conversion(frm);
+            }, __('CRM Preparation'));
+        } else if (!is_terminal(frm)) {
+            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
+                mark_ready_for_crm_conversion(frm);
+            }, __('CRM Preparation'));
+        }
+
         if (can_prepare_crm(frm)) {
             frm.add_custom_button(__('Find CRM Duplicates'), () => {
                 show_conversion_preview(frm);
@@ -162,6 +172,62 @@ function call_and_reload(frm, action, args) {
             }
             frm.reload_doc();
         }
+    });
+}
+
+function mark_ready_for_crm_conversion(frm) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_ready_for_crm_conversion',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                show_crm_readiness_checklist(message);
+                return;
+            }
+            frappe.show_alert({
+                message: message.data && message.data.lifecycle_status === 'Find Contact'
+                    ? __('CRM handoff approved. Add a usable primary contact to become Ready for CRM Conversion.')
+                    : __('Prospect marked Ready for CRM Conversion.'),
+                indicator: 'green'
+            }, 6);
+            frm.reload_doc();
+        }
+    });
+}
+
+function mark_not_ready_for_crm_conversion(frm) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_not_ready_for_crm_conversion',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                frappe.show_alert({
+                    message: (message.error && message.error.message) || __('Unable to undo CRM readiness.'),
+                    indicator: 'red'
+                }, 7);
+                return;
+            }
+            frappe.show_alert({message: __('Prospect removed from CRM handoff.'), indicator: 'green'});
+            frm.reload_doc();
+        }
+    });
+}
+
+function show_crm_readiness_checklist(message) {
+    const details = message.error && message.error.details ? message.error.details : {};
+    const requirements = details.requirements || [];
+    const rows = requirements.map((requirement) => {
+        const met = Boolean(requirement.met);
+        return `<li><span class="indicator-pill ${met ? 'green' : 'red'}">${met ? '✓' : '✕'}</span> ${frappe.utils.escape_html(requirement.label || '')}</li>`;
+    }).join('');
+    frappe.msgprint({
+        title: __('CRM Readiness Requirements'),
+        message: `<p>${frappe.utils.escape_html((message.error && message.error.message) || __('Requirements not met.'))}</p><ul style="list-style:none;padding-left:0">${rows}</ul>`,
+        indicator: 'red'
     });
 }
 
