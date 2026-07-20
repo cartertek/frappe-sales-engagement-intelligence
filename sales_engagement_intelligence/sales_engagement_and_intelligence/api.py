@@ -1265,11 +1265,24 @@ def _message_draft_recipient(prospect, value: str | None) -> str:
     frappe.throw(f"No email address is available for message recipient {raw or '(blank)' }.")
 
 
-def _optional_email(value: str | None) -> str | None:
+def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
     from email.utils import parseaddr
 
-    parsed = parseaddr((value or "").strip())[1]
-    return parsed if parsed and "@" in parsed else None
+    raw = (value or "").strip()
+    display_name, parsed = parseaddr(raw)
+    if parsed and "@" in parsed:
+        user = frappe.db.get_value(
+            "User", {"email": parsed}, ["email", "full_name"], as_dict=True
+        )
+        return parsed, (user.full_name if user else display_name or None)
+
+    user = frappe.db.get_value(
+        "User", raw, ["email", "full_name"], as_dict=True
+    )
+    if user and user.email and "@" in user.email:
+        return user.email, user.full_name or None
+
+    frappe.throw(f"No email address is available for message sender {raw or '(blank)' }.")
 
 
 def _optional_email_list(value: str | None) -> str | None:
@@ -1294,6 +1307,7 @@ def mark_message_draft_sent(draft: str) -> dict:
         or not prospect.crm_lead
     ):
         frappe.throw("The prospect must be converted to a CRM Lead before a draft can be marked sent.")
+    sender, sender_full_name = _message_draft_sender(doc.from_user)
     payload = {
         "doctype": "Communication",
         "communication_type": "Communication",
@@ -1301,7 +1315,8 @@ def mark_message_draft_sent(draft: str) -> dict:
         "sent_or_received": "Sent",
         "status": "Linked",
         "delivery_status": "Sent",
-        "sender": _optional_email(doc.from_user),
+        "sender": sender,
+        "sender_full_name": sender_full_name,
         "recipients": _message_draft_recipient(prospect, doc.to_contact),
         "cc": _optional_email_list(doc.cc),
         "subject": doc.subject or f"Message to {doc.to_contact}",

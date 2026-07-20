@@ -19,7 +19,11 @@ def test_mark_sent_logs_without_sending_email():
 def test_mark_sent_resolves_contact_display_name_to_email():
     assert "def _message_draft_recipient" in API
     assert '_message_draft_recipient(prospect, doc.to_contact)' in API
-    assert '_optional_email(doc.from_user)' in API
+    assert "def _message_draft_sender" in API
+    assert 'frappe.db.get_value(\n        "User", raw, ["email", "full_name"], as_dict=True\n    )' in API
+    assert "sender, sender_full_name = _message_draft_sender(doc.from_user)" in API
+    assert '"sender": sender' in API
+    assert '"sender_full_name": sender_full_name' in API
 
 
 def test_mark_sent_ignores_invalid_optional_cc():
