@@ -6,6 +6,7 @@ PARENT_ICON = "Sales Engagement and Intelligence"
 SEI_REMOVED_DESKTOP_ICONS = {"Signals"}
 SEI_CANONICAL_RESEARCH_DOCTYPES = {"SEI Prospect", "SEI Signal"}
 SEI_CANONICAL_TOUCHPOINT_DOCTYPES = {"SEI Interaction Attribution"}
+SEI_REMOVED_WORKSPACE_TARGETS = {"SEI Thesis", "SEI Thesis Research Arena", "SEI Research Arena Thesis"}
 
 SEI_DESKTOP_ICON_RENAMES = {
     "Assets": "Theses and Assets",
@@ -19,6 +20,7 @@ def after_migrate() -> None:
 
     repair_sei_desktop_layout()
     consolidate_prospecting_navigation()
+    remove_stale_workspace_doctype_links()
     ensure_milestone_5_workspace_items()
     ensure_milestone_6_workspace_reports()
     ensure_signal_type_seed_data()
@@ -142,6 +144,42 @@ def consolidate_prospecting_navigation() -> None:
         if len(retained_items) != len(sidebar.items):
             sidebar.set("items", retained_items)
             sidebar.save(ignore_permissions=True)
+
+
+def remove_stale_workspace_doctype_links() -> None:
+    """Remove saved Workspace rows targeting DocTypes removed by migrations.
+
+    Standard workspace JSON cannot repair customized/live child rows before later
+    after-migrate helpers save those Workspace documents. Removing stale Dynamic
+    Link and shortcut rows first prevents link validation from blocking deploys.
+    """
+
+    if not frappe.db.table_exists("Workspace"):
+        return
+
+    for name in frappe.get_all("Workspace", pluck="name"):
+        workspace = frappe.get_doc("Workspace", name)
+        links = [
+            row
+            for row in workspace.links
+            if not (
+                row.get("link_type") == "DocType"
+                and row.get("link_to") in SEI_REMOVED_WORKSPACE_TARGETS
+            )
+        ]
+        shortcuts = [
+            row
+            for row in workspace.shortcuts
+            if not (
+                row.get("type") == "DocType"
+                and row.get("link_to") in SEI_REMOVED_WORKSPACE_TARGETS
+            )
+        ]
+        if len(links) == len(workspace.links) and len(shortcuts) == len(workspace.shortcuts):
+            continue
+        workspace.set("links", links)
+        workspace.set("shortcuts", shortcuts)
+        workspace.save(ignore_permissions=True)
 
 
 def ensure_signal_type_seed_data() -> None:
