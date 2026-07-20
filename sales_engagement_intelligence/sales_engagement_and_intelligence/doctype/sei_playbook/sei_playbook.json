@@ -11,20 +11,20 @@
   "description",
   "thesis",
   "typical_prospect_types",
-  "research_arenas_section",
-  "research_arenas",
-  "contact_roles_section",
-  "contact_roles",
   "default_offer",
   "default_asset",
   "qualifying_signal_guidance",
   "disqualifying_guidance",
   "recommended_first_action",
   "follow_up_guidance",
+  "notes",
+  "research_arenas_section",
+  "research_arenas",
+  "contact_roles_section",
+  "contact_roles",
   "signal_types_section",
   "signal_types",
-  "signal_rules",
-  "notes"
+  "signal_rules"
  ],
  "fields": [
   {
