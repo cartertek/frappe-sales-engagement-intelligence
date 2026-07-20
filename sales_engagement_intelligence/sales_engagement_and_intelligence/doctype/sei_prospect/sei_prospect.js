@@ -17,6 +17,44 @@ frappe.ui.form.on('SEI Prospect', {
             prompt_message_template(frm);
         }, __('Outreach Drafting'));
 
+        if (['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
+            && !frm.doc.do_not_contact && !frm.doc.crm_lead) {
+            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
+                call_and_reload(frm, 'mark_ready_for_crm_conversion', { prospect: frm.doc.name });
+            }, __('CRM Preparation'));
+        }
+
+        if (can_prepare_crm(frm)) {
+            frm.add_custom_button(__('Find CRM Duplicates'), () => {
+                show_conversion_preview(frm);
+            }, __('CRM Preparation'));
+            frm.add_custom_button(__('Preview CRM Conversion'), () => {
+                show_conversion_preview(frm);
+            }, __('CRM Preparation'));
+
+            if (is_manager_or_admin()) {
+                if (!frm.doc.crm_lead) {
+                    frm.add_custom_button(__('Create CRM Lead'), () => {
+                        confirm_create(frm, 'CRM Lead', 'create_crm_lead');
+                    }, __('CRM Preparation'));
+                }
+                frm.add_custom_button(__('Create CRM Organization'), () => {
+                    confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
+                }, __('CRM Preparation'));
+                if (has_contact_path(frm)) {
+                    frm.add_custom_button(__('Create CRM Contact'), () => {
+                        confirm_create(frm, 'CRM Contact', 'create_or_link_crm_contact');
+                    }, __('CRM Preparation'));
+                }
+                frm.add_custom_button(__('Create CRM Deal'), () => {
+                    prompt_deal_options(frm);
+                }, __('CRM Preparation'));
+                add_link_button(frm, 'CRM Lead', 'crm_lead');
+                add_link_button(frm, 'CRM Organization', 'crm_organization');
+                add_link_button(frm, 'Contact', 'crm_contact');
+                add_link_button(frm, 'CRM Deal', 'crm_deal');
+            }
+        }
 
         if (frm.doc.lifecycle_status === 'Ready for CRM Conversion' && is_manager_or_admin()) {
             frm.add_custom_button(__('Convert to CRM Lead'), () => {
