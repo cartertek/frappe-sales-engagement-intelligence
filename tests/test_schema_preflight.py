@@ -226,3 +226,26 @@ def test_removed_doctypes_are_not_loaded_through_document_api_in_patches():
                     f"through frappe.{node.func.attr}()"
                 )
     assert not failures, "\n" + "\n".join(failures)
+
+
+def test_after_migrate_cleans_removed_workspace_targets_before_workspace_saves():
+    setup_path = APP / "setup" / "__init__.py"
+    tree = ast.parse(setup_path.read_text(), filename=str(setup_path))
+    after_migrate = next(
+        node for node in tree.body if isinstance(node, ast.FunctionDef) and node.name == "after_migrate"
+    )
+    calls = [
+        node.func.id
+        for node in after_migrate.body
+        if isinstance(node, ast.Expr)
+        and isinstance(node.value, ast.Call)
+        and isinstance(node.value.func, ast.Name)
+        for node in [node.value]
+    ]
+    cleanup = "remove_stale_workspace_doctype_links"
+    assert cleanup in calls
+    assert calls.index(cleanup) < calls.index("ensure_milestone_5_workspace_items")
+
+    source = setup_path.read_text()
+    for removed in REMOVED_DOCTYPES:
+        assert removed in source, f"workspace cleanup does not enumerate removed target {removed}"
