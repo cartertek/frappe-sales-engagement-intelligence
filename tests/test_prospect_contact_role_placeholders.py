@@ -54,6 +54,8 @@ def test_contact_grid_renders_ui_only_missing_role_placeholders():
     assert "get_missing_prospect_contact_roles" in source
     assert "render_missing_contact_role_placeholders(frm, field)" in source
     assert "materialize_contact_role(frm, field, role)" in source
+    assert "field.grid.wrapper.find('.grid-body').first()" in source
+    assert "grid-row sei-contact-role-placeholder" in source
     assert "frm.add_child('contacts', { contact_role: role })" in source
 
 

@@ -840,7 +840,12 @@ function configure_contact_grid(frm) {
 
 
 function render_missing_contact_role_placeholders(frm, field) {
-    field.$wrapper.children('.sei-contact-role-placeholders').remove();
+    const $gridBody = field.grid && field.grid.wrapper
+        ? field.grid.wrapper.find('.grid-body').first()
+        : field.$wrapper.find('.grid-body').first();
+    if (!$gridBody.length) return;
+
+    $gridBody.children('.sei-contact-role-placeholder').remove();
     if (!frm.doc.name || frm.is_new()) return;
 
     frappe.call({
@@ -848,25 +853,36 @@ function render_missing_contact_role_placeholders(frm, field) {
         args: { prospect: frm.doc.name },
         callback(r) {
             const roles = (r.message && r.message.data) || [];
-            field.$wrapper.children('.sei-contact-role-placeholders').remove();
-            if (!roles.length) return;
-
-            const $container = $('<div class="sei-contact-role-placeholders mt-2"></div>');
-            $('<div class="text-muted small mb-1"></div>')
-                .text(__('Missing Playbook contact roles'))
-                .appendTo($container);
+            $gridBody.children('.sei-contact-role-placeholder').remove();
             roles.forEach(role => {
-                $('<button type="button" class="btn btn-default btn-xs mr-1 mb-1"></button>')
-                    .text(__(role))
-                    .attr('title', __('Add a contact for this Playbook role'))
-                    .on('click', () => materialize_contact_role(frm, field, role))
-                    .appendTo($container);
+                const escapedRole = frappe.utils.escape_html(__(role));
+                const $row = $(
+                    `<div class="grid-row sei-contact-role-placeholder">
+                        <div class="data-row row">
+                            <div class="row-index sortable-handle col">
+                                <span class="text-muted">&mdash;</span>
+                            </div>
+                            <div class="col grid-static-col col-xs-3">
+                                <div class="static-area ellipsis">${escapedRole}</div>
+                            </div>
+                            <div class="col grid-static-col col-xs-7">
+                                <div class="static-area text-muted">${__('Add contact for this Playbook role')}</div>
+                            </div>
+                            <div class="col grid-static-col col-xs-1 text-right">
+                                <button type="button" class="btn btn-xs btn-default sei-materialize-contact-role">${__('Edit')}</button>
+                            </div>
+                        </div>
+                    </div>`
+                );
+                $row.on('click', event => {
+                    event.preventDefault();
+                    materialize_contact_role(frm, field, role);
+                });
+                $gridBody.append($row);
             });
-            $container.appendTo(field.$wrapper);
         }
     });
 }
-
 
 function materialize_contact_role(frm, field, role) {
     const row = frm.add_child('contacts', { contact_role: role });
