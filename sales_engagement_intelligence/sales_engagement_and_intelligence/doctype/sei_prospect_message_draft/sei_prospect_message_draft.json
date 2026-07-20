@@ -45,7 +45,7 @@
   {
    "fieldname": "cc",
    "label": "Cc",
-   "fieldtype": "Small Text",
+   "fieldtype": "Data",
    "idx": 4
   },
   {

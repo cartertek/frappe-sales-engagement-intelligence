@@ -47,3 +47,8 @@ def test_existing_drafts_are_migrated_idempotently():
     assert 'legacy_message_draft' in text
     assert 'if row.name in existing' in text
     assert 'doc.append(' in text
+
+
+def test_message_draft_cc_is_single_line_input():
+    fields = {field["fieldname"]: field for field in json.loads(CHILD_JSON.read_text())["fields"]}
+    assert fields["cc"]["fieldtype"] == "Data"
