@@ -78,7 +78,7 @@
   },
   {
    "fieldname": "crm_email",
-   "label": "CRM Lead Email",
+   "label": "CRM Communication",
    "fieldtype": "Data",
    "read_only": 1
   }

@@ -1260,26 +1260,28 @@ def mark_message_draft_sent(draft: str) -> dict:
         or not prospect.crm_lead
     ):
         frappe.throw("The prospect must be converted to a CRM Lead before a draft can be marked sent.")
-    if not frappe.db.exists("DocType", "CRM Lead Email"):
-        frappe.throw("CRM Lead Email is unavailable in the installed Frappe CRM schema.")
-    payload = {"doctype": "CRM Lead Email"}
-    meta = frappe.get_meta("CRM Lead Email")
-    values = {
-        "lead": prospect.crm_lead,
-        "from": doc.from_user,
-        "from_email": doc.from_user,
-        "to": doc.to_contact,
-        "to_email": doc.to_contact,
+    payload = {
+        "doctype": "Communication",
+        "communication_type": "Communication",
+        "communication_medium": "Email",
+        "sent_or_received": "Sent",
+        "status": "Linked",
+        "delivery_status": "Sent",
+        "sender": doc.from_user,
+        "recipients": doc.to_contact,
         "cc": doc.cc,
-        "subject": doc.subject,
-        "body": doc.body,
-        "content": doc.body,
-        "platform": doc.platform,
+        "subject": doc.subject or f"Message to {doc.to_contact}",
+        "content": doc.body or "",
+        "reference_doctype": "CRM Lead",
+        "reference_name": prospect.crm_lead,
     }
-    for key, value in values.items():
-        if meta.has_field(key):
-            payload[key] = value
-    email = frappe.get_doc(payload)
-    email.insert()
-    doc.db_set({"sent": 1, "sent_on": frappe.utils.now_datetime(), "crm_email": email.name})
-    return {"crm_email": email.name, "sent": True}
+    communication = frappe.get_doc(payload)
+    communication.insert(ignore_permissions=True)
+    doc.db_set(
+        {
+            "sent": 1,
+            "sent_on": frappe.utils.now_datetime(),
+            "crm_email": communication.name,
+        }
+    )
+    return {"crm_email": communication.name, "sent": True}
