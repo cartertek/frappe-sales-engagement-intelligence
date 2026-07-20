@@ -627,12 +627,30 @@ function configure_message_draft_grid(frm) {
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_prospect_contact_options',
         args: { prospect: frm.doc.name },
         callback(r) {
-            const options = ((r.message && r.message.data) || []).join('\n');
-            field.grid.update_docfield_property('to_contact', 'options', options);
+            const available = (r.message && r.message.data) || [];
+            const saved = (frm.doc.message_drafts || [])
+                .map(row => row.to_contact)
+                .filter(Boolean);
+            const options = [...new Set([...available, ...saved])];
+            field.grid.update_docfield_property('to_contact', 'options', options.join('\n'));
+            refresh_open_message_draft_recipient(field);
         }
     });
     normalize_managed_grid_editor(field, 'message-draft');
     isolate_message_draft_sent_checkbox(field);
+}
+
+
+function refresh_open_message_draft_recipient(field) {
+    const openRow = field.grid && field.grid.open_grid_row;
+    if (!openRow || !openRow.doc) return;
+    const control = openRow.grid_form
+        && openRow.grid_form.fields_dict
+        && openRow.grid_form.fields_dict.to_contact;
+    if (!control) return;
+    control.df.options = field.grid.get_field('to_contact').options;
+    control.refresh();
+    control.set_value(openRow.doc.to_contact || '');
 }
 
 
