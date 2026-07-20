@@ -31,7 +31,9 @@
    "fieldname": "emails",
    "label": "Emails",
    "fieldtype": "Small Text",
-   "description": "One email address per line."
+   "description": "One email address per line.",
+   "in_list_view": 1,
+   "columns": 3
   },
   {
    "fieldname": "notes",
@@ -60,5 +62,6 @@
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],
- "track_changes": 0
+ "track_changes": 0,
+ "editable_grid": 1
 }

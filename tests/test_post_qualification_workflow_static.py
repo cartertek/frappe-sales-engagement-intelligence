@@ -47,7 +47,8 @@ def test_unified_conversion_and_crm_routes():
     api = (ROOT / "api.py").read_text()
     js = (ROOT / "doctype/sei_prospect/sei_prospect.js").read_text()
     assert "def convert_to_crm_lead" in api
-    assert "def mark_ready_for_crm_conversion" not in api
+    assert "def mark_ready_for_crm_conversion" in api
+    assert "def mark_not_ready_for_crm_conversion" in api
     assert "Convert to CRM Lead" in js
     assert "/crm/${collections[doctype]}" in js
 

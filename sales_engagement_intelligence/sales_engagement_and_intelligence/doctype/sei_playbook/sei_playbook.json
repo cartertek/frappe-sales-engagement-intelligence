@@ -11,20 +11,20 @@
   "description",
   "thesis",
   "typical_prospect_types",
-  "research_arenas_section",
-  "research_arenas",
-  "contact_roles_section",
-  "contact_roles",
   "default_offer",
   "default_asset",
   "qualifying_signal_guidance",
   "disqualifying_guidance",
   "recommended_first_action",
   "follow_up_guidance",
+  "notes",
+  "research_arenas_section",
+  "research_arenas",
+  "contact_roles_section",
+  "contact_roles",
   "signal_types_section",
   "signal_types",
-  "signal_rules",
-  "notes"
+  "signal_rules"
  ],
  "fields": [
   {
@@ -32,105 +32,124 @@
    "label": "Playbook Name",
    "fieldtype": "Data",
    "reqd": 1,
-   "unique": 1
+   "unique": 1,
+   "idx": 1
   },
   {
    "fieldname": "active",
    "label": "Active",
    "fieldtype": "Check",
-   "default": 1
+   "default": 1,
+   "idx": 2
   },
   {
    "fieldname": "description",
    "label": "Description",
-   "fieldtype": "Small Text"
+   "fieldtype": "Small Text",
+   "idx": 3
   },
   {
    "fieldname": "thesis",
    "label": "Thesis",
    "fieldtype": "Small Text",
-   "description": "The outreach thesis: why a prospect with this playbook may care now."
+   "description": "The outreach thesis: why a prospect with this playbook may care now.",
+   "idx": 4
   },
   {
    "fieldname": "typical_prospect_types",
    "label": "Typical Prospect Types",
-   "fieldtype": "Small Text"
-  },
-  {
-   "fieldname": "research_arenas_section",
-   "label": "Research Arenas",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "research_arenas",
-   "label": "Research Arenas",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Research Arena"
-  },
-  {
-   "fieldname": "contact_roles_section",
-   "label": "Contact Roles",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "contact_roles",
-   "label": "Contact Roles",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Contact Role"
+   "fieldtype": "Small Text",
+   "idx": 5
   },
   {
    "fieldname": "default_offer",
    "label": "Default Offer",
-   "fieldtype": "Data"
+   "fieldtype": "Data",
+   "idx": 6
   },
   {
    "fieldname": "default_asset",
    "label": "Default Asset",
    "fieldtype": "Link",
-   "options": "SEI Asset"
+   "options": "SEI Asset",
+   "idx": 7
   },
   {
    "fieldname": "qualifying_signal_guidance",
    "label": "Qualifying Signal Guidance",
-   "fieldtype": "Long Text"
+   "fieldtype": "Long Text",
+   "idx": 8
   },
   {
    "fieldname": "disqualifying_guidance",
    "label": "Disqualifying Guidance",
-   "fieldtype": "Long Text"
+   "fieldtype": "Long Text",
+   "idx": 9
   },
   {
    "fieldname": "recommended_first_action",
    "label": "Recommended First Action",
-   "fieldtype": "Data"
+   "fieldtype": "Data",
+   "idx": 10
   },
   {
    "fieldname": "follow_up_guidance",
    "label": "Follow-Up Guidance",
-   "fieldtype": "Long Text"
-  },
-  {
-   "fieldname": "signal_rules",
-   "label": "Signal Rules",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Signal Rule"
+   "fieldtype": "Long Text",
+   "idx": 11
   },
   {
    "fieldname": "notes",
    "label": "Notes",
-   "fieldtype": "Long Text"
+   "fieldtype": "Long Text",
+   "idx": 12
+  },
+  {
+   "fieldname": "research_arenas_section",
+   "label": "Research Arenas",
+   "fieldtype": "Section Break",
+   "idx": 13
+  },
+  {
+   "fieldname": "research_arenas",
+   "label": "Research Arenas",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Research Arena",
+   "idx": 14
+  },
+  {
+   "fieldname": "contact_roles_section",
+   "label": "Contact Roles",
+   "fieldtype": "Section Break",
+   "idx": 15
+  },
+  {
+   "fieldname": "contact_roles",
+   "label": "Contact Roles",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Contact Role",
+   "idx": 16
   },
   {
    "fieldname": "signal_types_section",
    "label": "Signal Types",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "idx": 17
   },
   {
    "fieldname": "signal_types",
    "label": "Signal Types",
    "fieldtype": "Table",
    "options": "SEI Playbook Signal Type",
-   "description": "Signal Types assigned to this Playbook. Adding a Signal Type here moves it from its previous Playbook."
+   "description": "Signal Types assigned to this Playbook. Adding a Signal Type here moves it from its previous Playbook.",
+   "idx": 18
+  },
+  {
+   "fieldname": "signal_rules",
+   "label": "Signal Rules",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Signal Rule",
+   "idx": 19
   }
  ],
  "links": [],

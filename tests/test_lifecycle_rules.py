@@ -241,3 +241,84 @@ def test_rejected_qualification_maps_to_rejected_lifecycle(monkeypatch):
     assert result == {"old_lifecycle_status": "Needs Research", "lifecycle_status": "Rejected"}
     assert doc.lifecycle_status == "Rejected"
     assert doc.qualification_status == "Rejected"
+
+
+def configure_persistence(monkeypatch, lifecycle, doc):
+    writes = []
+    doc.notify_update = lambda: None
+    lifecycle.frappe.get_doc = lambda *args: doc
+    lifecycle.frappe.db.set_value = lambda *args, **kwargs: writes.append((args, kwargs))
+    return writes
+
+
+def test_mark_ready_enters_find_contact_without_primary_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Find Contact"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Find Contact")
+
+
+def test_mark_ready_enters_ready_status_with_usable_primary_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Qualified",
+        contacts=[Prospect(contact_name="Buyer", emails="buyer@example.com", is_primary=1)],
+    )
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Ready for CRM Conversion"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Ready for CRM Conversion")
+
+
+def test_mark_ready_returns_original_readiness_checklist_when_blocked(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(
+        qualification_status="Unqualified",
+        lifecycle_status="Do Not Contact",
+        do_not_contact=1,
+        crm_lead="CRM-LEAD-1",
+    )
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result["ok"] is False
+    assert result["error"]["code"] == "CRM_READINESS_REQUIREMENTS_NOT_MET"
+    requirements = {row["key"]: row["met"] for row in result["error"]["details"]["requirements"]}
+    assert requirements == {
+        "qualified": False,
+        "not_do_not_contact": False,
+        "not_protected_lifecycle": False,
+        "no_crm_lead": False,
+    }
+    assert writes == []
+
+
+def test_mark_not_ready_returns_handoff_to_qualified(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(qualification_status="Qualified", lifecycle_status="Ready for CRM Conversion")
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_not_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Qualified"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Qualified")
+
+
+def test_mark_not_ready_rejects_non_handoff_status(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_not_ready_for_crm_conversion(doc.name)
+
+    assert result["ok"] is False
+    assert result["error"]["code"] == "CRM_HANDOFF_NOT_ACTIVE"
+    assert writes == []

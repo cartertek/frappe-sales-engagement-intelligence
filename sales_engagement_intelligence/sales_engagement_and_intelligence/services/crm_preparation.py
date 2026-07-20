@@ -122,6 +122,128 @@ def _set_prospect_values(prospect_name: str, values: dict):
         frappe.db.set_value("SEI Prospect", prospect_name, values, update_modified=True)
 
 
+def _copy_prospect_metadata(prospect_name: str, target_doctype: str, target_name: str) -> dict:
+    """Copy Frappe collaboration metadata from a prospect to a CRM record, idempotently."""
+    source_doctype = "SEI Prospect"
+    copied = {"assignments": 0, "attachments": 0, "tags": 0, "shares": 0}
+
+    assignments = frappe.get_all(
+        "ToDo",
+        filters={"reference_type": source_doctype, "reference_name": prospect_name},
+        fields=[
+            "status",
+            "priority",
+            "color",
+            "date",
+            "allocated_to",
+            "description",
+            "role",
+            "assigned_by",
+            "sender",
+            "assignment_rule",
+        ],
+    )
+    for assignment in assignments:
+        duplicate_filters = {
+            "reference_type": target_doctype,
+            "reference_name": target_name,
+            "allocated_to": assignment.get("allocated_to"),
+            "role": assignment.get("role"),
+            "assignment_rule": assignment.get("assignment_rule"),
+        }
+        if frappe.db.exists("ToDo", duplicate_filters):
+            continue
+        frappe.get_doc({
+            "doctype": "ToDo",
+            "reference_type": target_doctype,
+            "reference_name": target_name,
+            **{key: value for key, value in assignment.items() if value is not None},
+        }).insert(ignore_permissions=True)
+        copied["assignments"] += 1
+
+    attachments = frappe.get_all(
+        "File",
+        filters={"attached_to_doctype": source_doctype, "attached_to_name": prospect_name},
+        fields=[
+            "file_name",
+            "file_url",
+            "is_private",
+            "file_size",
+            "file_type",
+            "thumbnail_url",
+            "folder",
+            "content_hash",
+            "attached_to_field",
+        ],
+    )
+    for attachment in attachments:
+        duplicate_filters = {
+            "attached_to_doctype": target_doctype,
+            "attached_to_name": target_name,
+            "file_url": attachment.get("file_url"),
+            "attached_to_field": attachment.get("attached_to_field"),
+        }
+        if frappe.db.exists("File", duplicate_filters):
+            continue
+        frappe.get_doc({
+            "doctype": "File",
+            "attached_to_doctype": target_doctype,
+            "attached_to_name": target_name,
+            **{key: value for key, value in attachment.items() if value is not None},
+        }).insert(ignore_permissions=True)
+        copied["attachments"] += 1
+
+    tags = frappe.get_all(
+        "Tag Link",
+        filters={"document_type": source_doctype, "document_name": prospect_name},
+        fields=["tag", "title"],
+    )
+    for tag in tags:
+        duplicate_filters = {
+            "document_type": target_doctype,
+            "document_name": target_name,
+            "tag": tag.get("tag"),
+        }
+        if frappe.db.exists("Tag Link", duplicate_filters):
+            continue
+        frappe.get_doc({
+            "doctype": "Tag Link",
+            "document_type": target_doctype,
+            "document_name": target_name,
+            **{key: value for key, value in tag.items() if value is not None},
+        }).insert(ignore_permissions=True)
+        copied["tags"] += 1
+
+    shares = frappe.get_all(
+        "DocShare",
+        filters={"share_doctype": source_doctype, "share_name": prospect_name},
+        fields=["user", "read", "write", "share", "submit", "everyone"],
+    )
+    for share in shares:
+        duplicate_filters = {
+            "share_doctype": target_doctype,
+            "share_name": target_name,
+            "user": share.get("user"),
+            "everyone": share.get("everyone") or 0,
+        }
+        existing = frappe.db.get_value("DocShare", duplicate_filters, "name")
+        values = {key: share.get(key) or 0 for key in ("read", "write", "share", "submit")}
+        if existing:
+            frappe.db.set_value("DocShare", existing, values, update_modified=False)
+            continue
+        frappe.get_doc({
+            "doctype": "DocShare",
+            "share_doctype": target_doctype,
+            "share_name": target_name,
+            "user": share.get("user"),
+            "everyone": share.get("everyone") or 0,
+            **values,
+        }).insert(ignore_permissions=True)
+        copied["shares"] += 1
+
+    return copied
+
+
 def _assert_not_protected(prospect) -> None:
     if prospect.do_not_contact or prospect.lifecycle_status in PROTECTED_LIFECYCLES:
         frappe.throw("Rejected or Do Not Contact prospects cannot be converted or linked to CRM records.")
@@ -571,6 +693,7 @@ def create_crm_lead_from_prospect(prospect_name: str, options: Optional[dict] = 
     payload = build_crm_lead_payload(prospect_name)
     lead = frappe.get_doc(payload)
     lead.insert()
+    metadata = _copy_prospect_metadata(prospect_name, "CRM Lead", lead.name)
 
     _set_prospect_values(prospect_name, {"crm_lead": lead.name})
     sync = sync_sei_context_to_crm(prospect_name)
@@ -586,7 +709,7 @@ def create_crm_lead_from_prospect(prospect_name: str, options: Optional[dict] = 
         crm_lead=lead.name,
         notes="Duplicate override used." if duplicate_override else None,
     )
-    return {"crm_lead": lead.name, **lifecycle, "sync": sync, "audit": audit}
+    return {"crm_lead": lead.name, **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def create_or_link_crm_organization(prospect_name: str, options: Optional[dict] = None) -> dict:
@@ -612,12 +735,13 @@ def create_or_link_crm_organization(prospect_name: str, options: Optional[dict] 
     payload = build_crm_organization_payload(prospect_name)
     organization = frappe.get_doc(payload)
     organization.insert()
+    metadata = _copy_prospect_metadata(prospect_name, "CRM Organization", organization.name)
     _set_prospect_values(prospect_name, {"crm_organization": organization.name})
     sync = sync_sei_context_to_crm(prospect_name)
     audit = _record_conversion_attribution(
         prospect_name, "Created CRM Organization", notes=f"CRM Organization: {organization.name}"
     )
-    return {"crm_organization": organization.name, "sync": sync, "audit": audit}
+    return {"crm_organization": organization.name, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def create_or_link_crm_contact(prospect_name: str, options: Optional[dict] = None) -> dict:
@@ -641,6 +765,7 @@ def create_or_link_crm_contact(prospect_name: str, options: Optional[dict] = Non
     payload = build_crm_contact_payload(prospect_name)
     contact = frappe.get_doc(payload)
     contact.insert()
+    metadata = _copy_prospect_metadata(prospect_name, "Contact", contact.name)
     if prospect.crm_deal and _has_field("CRM Deal", "contact"):
         frappe.db.set_value("CRM Deal", prospect.crm_deal, "contact", contact.name, update_modified=True)
     _set_prospect_values(prospect_name, {"crm_contact": contact.name})
@@ -648,7 +773,7 @@ def create_or_link_crm_contact(prospect_name: str, options: Optional[dict] = Non
     audit = _record_conversion_attribution(
         prospect_name, "Created CRM Contact", notes=f"CRM Contact: {contact.name}"
     )
-    return {"crm_contact": contact.name, "sync": sync, "audit": audit}
+    return {"crm_contact": contact.name, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def create_crm_deal_from_prospect(prospect_name: str, options: Optional[dict] = None) -> dict:
@@ -709,6 +834,11 @@ def link_existing_crm_record(prospect_name: str, doctype: str, record_name: str)
     if _has_field(doctype, "sei_prospect"):
         frappe.db.set_value(doctype, record_name, "sei_prospect", prospect_name, update_modified=True)
 
+    metadata = (
+        _copy_prospect_metadata(prospect_name, doctype, record_name)
+        if doctype in ("CRM Lead", "CRM Organization", "Contact")
+        else {}
+    )
     sync = sync_sei_context_to_crm(prospect_name)
 
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
@@ -723,7 +853,7 @@ def link_existing_crm_record(prospect_name: str, doctype: str, record_name: str)
         crm_deal=record_name if doctype == "CRM Deal" else prospect.crm_deal,
         notes=f"Linked {doctype} {record_name}.",
     )
-    return {fieldname: record_name, **lifecycle, "sync": sync, "audit": audit}
+    return {fieldname: record_name, **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def _contact_payload_for_row(prospect, row) -> dict:
@@ -770,12 +900,18 @@ def _upsert_contact_row(prospect, row):
     if name:
         doc = frappe.get_doc("Contact", name)
         for key, value in payload.items():
-            if key != "doctype" and value not in (None, "") and hasattr(doc, key):
+            if key == "doctype" or value in (None, "") or not hasattr(doc, key):
+                continue
+            field = frappe.get_meta("Contact").get_field(key)
+            if field and field.fieldtype in ("Table", "Table MultiSelect"):
+                doc.set(key, value)
+            else:
                 setattr(doc, key, value)
         doc.save()
     else:
         doc = frappe.get_doc(payload)
         doc.insert()
+    _copy_prospect_metadata(prospect.name, "Contact", doc.name)
     row.db_set("crm_contact", doc.name, update_modified=False)
     if prospect.crm_organization:
         _safe_set_link_on_related_doc("Contact", doc.name, "CRM Organization", prospect.crm_organization)
@@ -822,6 +958,7 @@ def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
     else:
         org = frappe.get_doc(build_crm_organization_payload(prospect_name))
         org.insert()
+    _copy_prospect_metadata(prospect_name, "CRM Organization", org.name)
     _set_prospect_values(prospect_name, {"crm_organization": org.name})
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     contacts = [_upsert_contact_row(prospect, row) for row in populated_contacts(prospect)]
@@ -841,6 +978,7 @@ def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
         else:
             lead = frappe.get_doc(_lead_payload_for_contact(prospect, row))
             lead.insert()
+        _copy_prospect_metadata(prospect_name, "CRM Lead", lead.name)
         leads.append(lead.name)
     _set_prospect_values(
         prospect_name,

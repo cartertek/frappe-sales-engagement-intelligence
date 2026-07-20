@@ -23,7 +23,7 @@
    "label": "Signal Type",
    "fieldtype": "Link",
    "options": "SEI Signal Type",
-   "reqd": null
+   "reqd": 1
   },
   {
    "fieldname": "minimum_strength",

@@ -212,3 +212,47 @@ def suggest_pre_crm_handoff_status(prospect: Document) -> str:
     if prospect.qualification_status in ("Unqualified", None, ""):
         return "Needs Research" if has_research_evidence(prospect) else "New"
     return "New"
+
+
+def mark_ready_for_crm_conversion(prospect_name: str) -> dict:
+    prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    requirements = get_crm_readiness_requirements(prospect)
+    unmet = [requirement for requirement in requirements if not requirement["met"]]
+    if unmet:
+        return {
+            "ok": False,
+            "error": {
+                "code": "CRM_READINESS_REQUIREMENTS_NOT_MET",
+                "message": "This prospect is not ready to enter the CRM handoff workflow.",
+                "details": {"requirements": requirements},
+            },
+            "warnings": [],
+        }
+
+    lifecycle_status = "Ready for CRM Conversion" if has_contact_path(prospect) else "Find Contact"
+    frappe.db.set_value(
+        "SEI Prospect", prospect_name, "lifecycle_status", lifecycle_status, update_modified=True
+    )
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
+    return {"lifecycle_status": lifecycle_status}
+
+
+def mark_not_ready_for_crm_conversion(prospect_name: str) -> dict:
+    prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    if prospect.lifecycle_status not in ("Find Contact", "Ready for CRM Conversion"):
+        return {
+            "ok": False,
+            "error": {
+                "code": "CRM_HANDOFF_NOT_ACTIVE",
+                "message": "This prospect is not currently in the CRM handoff workflow.",
+                "details": {},
+            },
+            "warnings": [],
+        }
+
+    lifecycle_status = suggest_pre_crm_handoff_status(prospect)
+    frappe.db.set_value(
+        "SEI Prospect", prospect_name, "lifecycle_status", lifecycle_status, update_modified=True
+    )
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
+    return {"lifecycle_status": lifecycle_status}

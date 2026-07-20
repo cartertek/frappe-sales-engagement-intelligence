@@ -627,6 +627,26 @@ def apply_lifecycle_suggestion(prospect: str) -> dict:
 
 
 @api_endpoint
+def mark_ready_for_crm_conversion(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+        mark_ready_for_crm_conversion,
+    )
+
+    return mark_ready_for_crm_conversion(prospect)
+
+
+@api_endpoint
+def mark_not_ready_for_crm_conversion(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+        mark_not_ready_for_crm_conversion,
+    )
+
+    return mark_not_ready_for_crm_conversion(prospect)
+
+
+@api_endpoint
 def mark_rejected(prospect: str, reason: Optional[str] = None) -> dict:
     _check_prospect_permission(prospect, "write")
     _require_manager()
@@ -1150,6 +1170,56 @@ def get_interaction_attributions(
 
 
 @api_endpoint
+def get_linked_crm_records(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "read")
+    doc = frappe.get_doc("SEI Prospect", prospect)
+    groups = {
+        "crm_leads": [],
+        "crm_organizations": [],
+        "crm_contacts": [],
+        "crm_deals": [],
+    }
+    seen = {key: set() for key in groups}
+
+    def add(group: str, doctype: str, name: str | None):
+        if not name or name in seen[group] or not frappe.db.exists(doctype, name):
+            return
+        seen[group].add(name)
+        title_fields = {
+            "CRM Lead": ("lead_name", "first_name", "organization"),
+            "CRM Organization": ("organization_name",),
+            "Contact": ("full_name", "first_name"),
+            "CRM Deal": ("deal_name", "lead_name", "organization_name"),
+        }[doctype]
+        title = None
+        for fieldname in title_fields:
+            if fieldname in _meta_fields(doctype):
+                title = frappe.db.get_value(doctype, name, fieldname)
+                if title:
+                    break
+        groups[group].append({"name": name, "title": title or name})
+
+    add("crm_leads", "CRM Lead", doc.get("crm_lead"))
+    add("crm_organizations", "CRM Organization", doc.get("crm_organization"))
+    add("crm_contacts", "Contact", doc.get("crm_contact"))
+    add("crm_deals", "CRM Deal", doc.get("crm_deal"))
+    for row in doc.get("contacts") or []:
+        add("crm_contacts", "Contact", row.get("crm_contact"))
+
+    for group, doctype in (
+        ("crm_leads", "CRM Lead"),
+        ("crm_organizations", "CRM Organization"),
+        ("crm_contacts", "Contact"),
+        ("crm_deals", "CRM Deal"),
+    ):
+        if "sei_prospect" in _meta_fields(doctype):
+            for name in frappe.get_all(doctype, filters={"sei_prospect": prospect}, pluck="name"):
+                add(group, doctype, name)
+
+    return groups
+
+
+@api_endpoint
 def convert_to_crm_lead(prospect: str) -> dict:
     _check_prospect_permission(prospect, "write")
     _require_manager()
@@ -1175,36 +1245,112 @@ def get_prospect_contact_options(prospect: str) -> list[str]:
     ]
 
 
+def _message_draft_recipient(prospect, value: str | None) -> str:
+    from email.utils import parseaddr
+
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import emails
+
+    raw = (value or "").strip()
+    parsed = parseaddr(raw)[1]
+    if parsed and "@" in parsed:
+        return parsed
+    for row in prospect.get("contacts") or []:
+        if raw in {
+            (row.get("contact_name") or "").strip(),
+            (row.get("crm_contact") or "").strip(),
+        }:
+            addresses = emails(row)
+            if addresses:
+                return addresses[0]
+    frappe.throw(f"No email address is available for message recipient {raw or '(blank)' }.")
+
+
+def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
+    from email.utils import parseaddr
+
+    raw = (value or "").strip()
+    display_name, parsed = parseaddr(raw)
+    if parsed and "@" in parsed:
+        user = frappe.db.get_value(
+            "User", {"email": parsed}, ["email", "full_name"], as_dict=True
+        )
+        return parsed, (user.full_name if user else display_name or None)
+
+    user = frappe.db.get_value(
+        "User", raw, ["email", "full_name"], as_dict=True
+    )
+    if user and user.email and "@" in user.email:
+        return user.email, user.full_name or None
+
+    frappe.throw(f"No email address is available for message sender {raw or '(blank)' }.")
+
+
+def _optional_email_list(value: str | None) -> str | None:
+    from email.utils import getaddresses
+
+    addresses = [address for _, address in getaddresses([value or ""]) if "@" in address]
+    return ", ".join(dict.fromkeys(addresses)) or None
+
+
 @api_endpoint
 def mark_message_draft_sent(draft: str) -> dict:
-    _check_doc_permission("SEI Message Draft", draft, "write")
-    doc = frappe.get_doc("SEI Message Draft", draft)
-    prospect = frappe.get_doc("SEI Prospect", doc.prospect)
+    if frappe.db.exists("SEI Prospect Message Draft", draft):
+        doc = frappe.get_doc("SEI Prospect Message Draft", draft)
+        _check_doc_permission("SEI Prospect", doc.parent, "write")
+        prospect = frappe.get_doc("SEI Prospect", doc.parent)
+    else:
+        _check_doc_permission("SEI Message Draft", draft, "write")
+        doc = frappe.get_doc("SEI Message Draft", draft)
+        prospect = frappe.get_doc("SEI Prospect", doc.prospect)
     if (
         prospect.lifecycle_status not in ("Converted to CRM Lead", "Converted to CRM Deal")
         or not prospect.crm_lead
     ):
         frappe.throw("The prospect must be converted to a CRM Lead before a draft can be marked sent.")
-    if not frappe.db.exists("DocType", "CRM Lead Email"):
-        frappe.throw("CRM Lead Email is unavailable in the installed Frappe CRM schema.")
-    payload = {"doctype": "CRM Lead Email"}
-    meta = frappe.get_meta("CRM Lead Email")
-    values = {
-        "lead": prospect.crm_lead,
-        "from": doc.from_user,
-        "from_email": doc.from_user,
-        "to": doc.to_contact,
-        "to_email": doc.to_contact,
-        "cc": doc.cc,
-        "subject": doc.subject,
-        "body": doc.body,
-        "content": doc.body,
-        "platform": doc.platform,
+    sender, sender_full_name = _message_draft_sender(doc.from_user)
+    payload = {
+        "doctype": "Communication",
+        "communication_type": "Communication",
+        "communication_medium": "Email",
+        "sent_or_received": "Sent",
+        "status": "Linked",
+        "delivery_status": "Sent",
+        "sender": sender,
+        "sender_full_name": sender_full_name,
+        "recipients": _message_draft_recipient(prospect, doc.to_contact),
+        "cc": _optional_email_list(doc.cc),
+        "subject": doc.subject or f"Message to {doc.to_contact}",
+        "content": doc.body or "",
+        "reference_doctype": "CRM Lead",
+        "reference_name": prospect.crm_lead,
     }
-    for key, value in values.items():
-        if meta.has_field(key):
-            payload[key] = value
-    email = frappe.get_doc(payload)
-    email.insert()
-    doc.db_set({"sent": 1, "sent_on": frappe.utils.now_datetime(), "crm_email": email.name})
-    return {"crm_email": email.name, "sent": True}
+    communication = frappe.get_doc(payload)
+    communication.insert(ignore_permissions=True)
+    doc.db_set(
+        {
+            "sent": 1,
+            "sent_on": frappe.utils.now_datetime(),
+            "crm_email": communication.name,
+        }
+    )
+    return {"crm_email": communication.name, "sent": True}
+
+
+@api_endpoint
+def mark_message_draft_unsent(draft: str) -> dict:
+    if frappe.db.exists("SEI Prospect Message Draft", draft):
+        doc = frappe.get_doc("SEI Prospect Message Draft", draft)
+        _check_doc_permission("SEI Prospect", doc.parent, "write")
+    else:
+        _check_doc_permission("SEI Message Draft", draft, "write")
+        doc = frappe.get_doc("SEI Message Draft", draft)
+
+    communication_name = doc.get("crm_email")
+    if communication_name and frappe.db.exists("Communication", communication_name):
+        communication = frappe.get_doc("Communication", communication_name)
+        if communication.sent_or_received != "Sent":
+            frappe.throw("The linked CRM Communication is not an outgoing sent message.")
+        communication.delete(ignore_permissions=True)
+
+    doc.db_set({"sent": 0, "sent_on": None, "crm_email": None})
+    return {"crm_email": None, "sent": False}
