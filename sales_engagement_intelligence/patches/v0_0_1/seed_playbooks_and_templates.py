@@ -84,7 +84,7 @@ PLAYBOOKS = [
         "default_offer": "Depends on current signal",
         "typical_prospect_types": "Agency, Startup, SMB, Enterprise, Ecosystem Partner, Directory Lead, Community Lead, Procurement Lead, Referral Partner, Other",
         "legacy_source_arenas": "Prior SEI records, CRM history, renewed public signals, follow-up windows",
-        "legacy_contact_roles": "Original contact, new role owner, founder, CTO, operations lead",
+        "legacy_contact_roles": "Primary Contact, owner, Founder, CTO, operations lead",
         "qualifying_signal_guidance": "New launch, role remains open, second signal appears, prior not-now window expires, new initiative, prospect changes role/company.",
         "disqualifying_guidance": "Do not reactivate Do Not Contact prospects. Avoid reactivation without a fresh signal, new owner, or elapsed not-now window.",
         "recommended_first_action": "Review prior notes and verify the new signal before drafting.",
