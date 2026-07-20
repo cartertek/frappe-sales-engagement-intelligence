@@ -27,6 +27,11 @@ def test_crm_links_use_frontend_routes_and_multi_record_api():
     assert 'filters={"sei_prospect": prospect}' in API
 
 
+def test_crm_links_open_in_the_current_tab():
+    assert 'target="_blank"' not in SCRIPT
+    assert "target='_blank'" not in SCRIPT
+
+
 def test_visible_crm_links_are_html_not_single_link_inputs():
     fields = {field["fieldname"]: field for field in META["fields"] if "fieldname" in field}
     assert fields["crm_links_html"]["fieldtype"] == "HTML"

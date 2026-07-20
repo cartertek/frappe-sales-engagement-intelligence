@@ -354,7 +354,7 @@ function render_crm_links(frm) {
             ];
             const html = groups.map(([label, doctype, rows]) => {
                 const links = rows.length
-                    ? rows.map(row => `<a class="btn btn-default btn-sm mr-2 mb-2" href="${crm_frontend_route(doctype, row.name)}" target="_blank" rel="noopener">${frappe.utils.escape_html(row.title || row.name)}</a>`).join('')
+                    ? rows.map(row => `<a class="btn btn-default btn-sm mr-2 mb-2" href="${crm_frontend_route(doctype, row.name)}">${frappe.utils.escape_html(row.title || row.name)}</a>`).join('')
                     : `<span class="text-muted">${__('None')}</span>`;
                 return `<div class="mb-3"><div class="text-muted small mb-1">${label}</div><div>${links}</div></div>`;
             }).join('');
