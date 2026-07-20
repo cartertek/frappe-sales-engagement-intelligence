@@ -30,7 +30,8 @@ def test_expanded_contact_editor_uses_single_x_close_control():
     assert "normalize_managed_grid_editor(field, 'contact')" in script
     assert ".grid-collapse-row" in script
     assert ".html('&times;')" in script
-    assert "__('Done')" not in script
+    assert ".grid-footer-toolbar .row-actions" in script
+    assert ".text(__('Done'))" in script
 
 
 def test_expanded_contact_editor_removes_duplicate_insert_below_controls():

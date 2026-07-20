@@ -11,7 +11,6 @@
   "cc",
   "subject",
   "body",
-  "mark_as_sent",
   "sent",
   "sent_on",
   "crm_email",
@@ -63,33 +62,25 @@
    "idx": 6
   },
   {
-   "fieldname": "mark_as_sent",
-   "label": "Send",
-   "fieldtype": "Button",
-   "in_list_view": 1,
-   "idx": 7
-  },
-  {
    "fieldname": "sent",
    "label": "Sent",
    "fieldtype": "Check",
-   "read_only": 1,
    "in_list_view": 1,
-   "idx": 8
+   "idx": 7
   },
   {
    "fieldname": "sent_on",
    "label": "Sent On",
    "fieldtype": "Datetime",
    "read_only": 1,
-   "idx": 9
+   "idx": 8
   },
   {
    "fieldname": "crm_email",
    "label": "CRM Lead Email",
    "fieldtype": "Data",
    "read_only": 1,
-   "idx": 10
+   "idx": 9
   },
   {
    "fieldname": "legacy_message_draft",
@@ -98,7 +89,7 @@
    "options": "SEI Message Draft",
    "read_only": 1,
    "hidden": 1,
-   "idx": 11
+   "idx": 10
   }
  ],
  "istable": 1,

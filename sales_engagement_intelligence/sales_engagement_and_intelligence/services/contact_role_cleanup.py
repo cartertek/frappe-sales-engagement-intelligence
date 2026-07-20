@@ -77,3 +77,31 @@ def execute() -> dict:
     prospect_signal_type_sync.sync_all_prospect_signal_types()
     frappe.db.commit()
     return {"renamed": renamed}
+
+
+def merge_semantic_duplicates() -> dict:
+    merges = (("Operations Owner", "Operations Lead"), ("Engineering Lead", "Technical Lead"))
+    merged = []
+    for source, target in merges:
+        if frappe.db.exists("SEI Contact Role", source):
+            frappe.rename_doc(
+                "SEI Contact Role", source, target, force=True, merge=True, ignore_permissions=True
+            )
+            merged.append((source, target))
+
+    for parent in frappe.get_all("SEI Playbook Contact Role", pluck="parent", distinct=True):
+        rows = frappe.get_all(
+            "SEI Playbook Contact Role",
+            filters={"parent": parent},
+            fields=["name", "contact_role", "idx"],
+            order_by="idx asc",
+        )
+        seen = set()
+        for row in rows:
+            if row.contact_role in seen:
+                frappe.delete_doc("SEI Playbook Contact Role", row.name, force=True, ignore_permissions=True)
+            else:
+                seen.add(row.contact_role)
+
+    frappe.db.commit()
+    return {"merged": merged}

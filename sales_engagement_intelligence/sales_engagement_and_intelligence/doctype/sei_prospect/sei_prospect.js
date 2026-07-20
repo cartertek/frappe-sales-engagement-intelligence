@@ -583,25 +583,44 @@ function configure_message_draft_grid(frm) {
         }
     });
     normalize_managed_grid_editor(field, 'message-draft');
-    configure_message_draft_send_action(field);
+    isolate_message_draft_sent_checkbox(field);
 }
 
 
-function configure_message_draft_send_action(field) {
-    if (!field || !field.$wrapper || field.__sei_send_action_bound) return;
-    field.__sei_send_action_bound = true;
-    field.$wrapper.on(
-        'mousedown click',
-        '[data-fieldname="mark_as_sent"], [data-fieldname="mark_as_sent"] button',
-        function (event) {
+function isolate_message_draft_sent_checkbox(field) {
+    if (!field || !field.$wrapper || field.__sei_sent_checkbox_bound) return;
+    field.__sei_sent_checkbox_bound = true;
+    const wrapper = field.$wrapper.get(0);
+    const stopRowOpen = event => {
+        if (event.target.closest('[data-fieldname="sent"]')) {
             event.stopPropagation();
         }
-    );
+    };
+    wrapper.addEventListener('pointerdown', stopRowOpen, true);
+    wrapper.addEventListener('mousedown', stopRowOpen, true);
+    wrapper.addEventListener('click', stopRowOpen, true);
 }
 
 
 function normalize_managed_grid_editor(field, key) {
     if (!field || !field.$wrapper) return;
+
+    const meaningfulFields = key === 'contact'
+        ? ['contact_role', 'contact_name', 'emails', 'notes', 'is_primary']
+        : ['platform', 'to_contact', 'cc', 'subject', 'body'];
+
+    const removeEmptyLocalRow = $form => {
+        const cdn = $form.closest('.grid-row').attr('data-name');
+        const row = cdn && locals[field.grid.doctype] && locals[field.grid.doctype][cdn];
+        if (!row || !row.__islocal) return false;
+        const hasMeaningfulValue = meaningfulFields.some(name => {
+            const value = row[name];
+            return typeof value === 'string' ? value.trim() : Boolean(value);
+        });
+        if (hasMeaningfulValue) return false;
+        field.grid.grid_rows_by_docname[cdn]?.remove();
+        return true;
+    };
 
     const normalize = () => {
         field.$wrapper.find('.form-in-grid').each(function () {
@@ -615,7 +634,25 @@ function normalize_managed_grid_editor(field, key) {
                     .attr('aria-label', __('Close'))
                     .attr('title', __('Close'))
                     .empty()
-                    .html('&times;');
+                    .html('&times;')
+                    .on('click.sei-empty-row', function (event) {
+                        if (removeEmptyLocalRow($form)) {
+                            event.preventDefault();
+                            event.stopImmediatePropagation();
+                        }
+                    });
+            }
+
+            const $footerActions = $form.find('.grid-footer-toolbar .row-actions');
+            if ($footerActions.length && !$footerActions.find('.sei-grid-done').length) {
+                $('<button type="button" class="btn btn-primary btn-sm sei-grid-done"></button>')
+                    .text(__('Done'))
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        event.stopImmediatePropagation();
+                        $close.trigger('click');
+                    })
+                    .appendTo($footerActions);
             }
         });
     };
@@ -656,10 +693,17 @@ function configure_contact_grid(frm) {
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
-    mark_as_sent(frm, cdt, cdn) {
+    sent(frm, cdt, cdn) {
         const row = locals[cdt][cdn];
-        if (row.sent) {
-            frappe.msgprint(__('This message draft is already marked as sent.'));
+        if (!row.sent) {
+            if (row.sent_on || row.crm_email) {
+                frappe.model.set_value(cdt, cdn, 'sent', 1);
+            }
+            return;
+        }
+        if (row.__islocal) {
+            frappe.model.set_value(cdt, cdn, 'sent', 0);
+            frappe.msgprint(__('Save the message draft before marking it as sent.'));
             return;
         }
         frappe.call({
@@ -668,6 +712,9 @@ frappe.ui.form.on('SEI Prospect Message Draft', {
             freeze: true,
             callback() {
                 frm.reload_doc();
+            },
+            error() {
+                frappe.model.set_value(cdt, cdn, 'sent', 0);
             }
         });
     }

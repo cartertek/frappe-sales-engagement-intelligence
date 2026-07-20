@@ -58,19 +58,21 @@ def test_expanded_message_draft_editor_has_x_close_and_no_duplicate_insert_contr
     script = PROSPECT_JS.read_text()
     assert "normalize_managed_grid_editor(field, 'message-draft')" in script
     assert ".html('&times;')" in script
-    assert "__('Done')" not in script
+    assert ".grid-footer-toolbar .row-actions" in script
+    assert ".text(__('Done'))" in script
     assert ".grid-insert-row-below, .grid-append-row" in script
     assert ".remove()" in script
 
 
-def test_message_draft_rows_have_dedicated_send_button():
+def test_message_draft_rows_use_sent_checkbox():
     fields = {field["fieldname"]: field for field in json.loads(CHILD_JSON.read_text())["fields"]}
-    assert fields["mark_as_sent"]["fieldtype"] == "Button"
-    assert fields["mark_as_sent"]["in_list_view"] == 1
+    assert "mark_as_sent" not in fields
+    assert fields["sent"]["fieldtype"] == "Check"
+    assert not fields["sent"].get("read_only")
     script = PROSPECT_JS.read_text()
-    assert "frappe.ui.form.on('SEI Prospect Message Draft'" in script
-    assert "mark_as_sent(frm, cdt, cdn)" in script
+    assert "sent(frm, cdt, cdn)" in script
     assert "args: { draft: row.name }" in script
+
 
 
 def test_send_api_supports_managed_child_drafts():
@@ -81,8 +83,9 @@ def test_send_api_supports_managed_child_drafts():
     assert 'prospect = frappe.get_doc("SEI Prospect", doc.parent)' in api
 
 
-def test_message_draft_send_action_does_not_open_row_editor():
+def test_message_draft_sent_checkbox_does_not_open_row_editor():
     script = PROSPECT_JS.read_text()
-    assert "configure_message_draft_send_action(field)" in script
-    assert '[data-fieldname="mark_as_sent"]' in script
+    assert "isolate_message_draft_sent_checkbox(field)" in script
+    assert "addEventListener('pointerdown', stopRowOpen, true)" in script
+    assert '[data-fieldname="sent"]' in script
     assert "event.stopPropagation()" in script
