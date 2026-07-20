@@ -237,23 +237,38 @@ function show_conversion_preview(frm, options = {}) {
         freeze: true,
         callback(r) {
             const data = unwrap_api_data(r);
-            const eligible = Boolean(data.eligibility && data.eligibility.eligible);
             const fields = [{ fieldtype: 'HTML', fieldname: 'preview_html' }];
             const dialog_options = {
-                title: __('CRM Conversion Preview'),
+                title: options.allow_convert ? __('Convert to CRM Lead') : __('CRM Conversion Preview'),
                 size: 'extra-large',
                 fields
             };
-            if (options.allow_convert && eligible) {
+            if (options.allow_convert) {
                 dialog_options.primary_action_label = __('Convert to CRM Lead');
-                dialog_options.primary_action = () => {
-                    dialog.hide();
-                    call_and_reload(frm, 'convert_to_crm_lead', { prospect: frm.doc.name });
-                };
+                dialog_options.primary_action = () => convert_from_preview(frm, dialog);
             }
             const dialog = new frappe.ui.Dialog(dialog_options);
             dialog.fields_dict.preview_html.$wrapper.html(render_preview_html(data));
             dialog.show();
+        }
+    });
+}
+
+
+function convert_from_preview(frm, dialog) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.convert_to_crm_lead',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const message = unwrap_api_message(r) || {};
+            if (message.ok === false) {
+                show_crm_readiness_checklist(message);
+                return;
+            }
+            dialog.hide();
+            frappe.show_alert({ message: __('Prospect converted to CRM Lead.'), indicator: 'green' });
+            frm.reload_doc();
         }
     });
 }

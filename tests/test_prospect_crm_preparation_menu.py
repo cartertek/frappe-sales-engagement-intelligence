@@ -36,7 +36,10 @@ def test_convert_to_crm_lead_is_always_registered_for_authorized_users():
     assert "lifecycle_status === 'Ready for CRM Conversion'" not in refresh
 
 
-def test_conversion_popup_only_enables_primary_action_when_eligible():
-    assert "options.allow_convert && eligible" in SCRIPT
+def test_conversion_popup_always_exposes_real_conversion_action():
+    assert "if (options.allow_convert)" in SCRIPT
+    assert "options.allow_convert && eligible" not in SCRIPT
     assert "primary_action_label = __('Convert to CRM Lead')" in SCRIPT
-    assert "call_and_reload(frm, 'convert_to_crm_lead'" in SCRIPT
+    assert "convert_from_preview(frm, dialog)" in SCRIPT
+    assert "api.convert_to_crm_lead" in SCRIPT
+    assert "show_crm_readiness_checklist(message)" in SCRIPT
