@@ -36,8 +36,18 @@ def _merge_theses_into_playbooks():
     mapping = {}
     if not frappe.db.table_exists("SEI Thesis"):
         return mapping
-    for thesis_name in frappe.get_all("SEI Thesis", pluck="name"):
-        thesis = frappe.get_doc("SEI Thesis", thesis_name)
+    thesis_fields = [
+        "name",
+        "active",
+        "description",
+        "default_offer",
+        "default_asset",
+        "typical_prospect_types",
+        "typical_contact_roles",
+        "notes",
+    ]
+    for thesis in frappe.get_all("SEI Thesis", fields=thesis_fields):
+        thesis_name = thesis.name
         candidates = []
         if frappe.db.has_column("SEI Playbook", "default_thesis"):
             candidates = frappe.get_all(
@@ -69,9 +79,22 @@ def _merge_theses_into_playbooks():
             pb.default_asset = pb.default_asset or thesis.default_asset
             pb.typical_prospect_types = pb.typical_prospect_types or thesis.typical_prospect_types
             existing_arenas = {r.research_arena for r in (pb.get("research_arenas") or [])}
-            for row in thesis.get("research_arenas") or []:
-                if row.research_arena not in existing_arenas:
-                    pb.append("research_arenas", {"research_arena": row.research_arena})
+            legacy_arenas = (
+                frappe.get_all(
+                    "SEI Thesis Research Arena",
+                    filters={
+                        "parent": thesis_name,
+                        "parenttype": "SEI Thesis",
+                        "parentfield": "research_arenas",
+                    },
+                    pluck="research_arena",
+                )
+                if frappe.db.table_exists("SEI Thesis Research Arena")
+                else []
+            )
+            for research_arena in legacy_arenas:
+                if research_arena not in existing_arenas:
+                    pb.append("research_arenas", {"research_arena": research_arena})
             existing_roles = {r.contact_role for r in (pb.get("contact_roles") or [])}
             roles = _split_roles(getattr(thesis, "typical_contact_roles", None))
             if frappe.db.has_column("SEI Playbook", "likely_contact_roles"):

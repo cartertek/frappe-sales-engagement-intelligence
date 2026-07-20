@@ -199,3 +199,30 @@ def test_patches_after_thesis_replacement_do_not_reference_removed_doctypes():
             if removed in text:
                 failures.append(f"{dotted} references removed DocType {removed}")
     assert not failures, "\n" + "\n".join(failures)
+
+
+def test_removed_doctypes_are_not_loaded_through_document_api_in_patches():
+    forbidden_calls = {"get_doc", "new_doc", "get_cached_doc"}
+    failures: list[str] = []
+    patch_lines = [
+        line.strip()
+        for line in PATCHES_FILE.read_text().splitlines()
+        if line.strip() and not line.startswith("[") and not line.startswith("#")
+    ]
+    marker = "sales_engagement_intelligence.patches.v0_0_1.replace_theses_with_playbooks"
+    assert marker in patch_lines, "replacement patch is not registered"
+    for dotted in patch_lines[patch_lines.index(marker) :]:
+        path = _module_path(dotted)
+        tree = ast.parse(path.read_text(), filename=str(path))
+        for node in ast.walk(tree):
+            if not isinstance(node, ast.Call) or not isinstance(node.func, ast.Attribute):
+                continue
+            if node.func.attr not in forbidden_calls or not node.args:
+                continue
+            first = node.args[0]
+            if isinstance(first, ast.Constant) and first.value in REMOVED_DOCTYPES:
+                failures.append(
+                    f"{dotted}:{node.lineno} loads removed DocType {first.value} "
+                    f"through frappe.{node.func.attr}()"
+                )
+    assert not failures, "\n" + "\n".join(failures)
