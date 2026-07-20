@@ -182,7 +182,18 @@ function mark_ready_for_crm_conversion(frm) {
         callback(r) {
             const message = unwrap_api_message(r) || {};
             if (message.ok === false) {
-                show_crm_readiness_checklist(message);
+                const code = message.error && message.error.code;
+                if (code === 'CRM_READINESS_REQUIREMENTS_NOT_MET' || code === 'CRM_CONVERSION_BLOCKED') {
+                    show_crm_readiness_checklist(message);
+                } else {
+                    frappe.msgprint({
+                        title: __('CRM Conversion Failed'),
+                        indicator: 'red',
+                        message: frappe.utils.escape_html(
+                            (message.error && message.error.message) || __('Unexpected CRM conversion error.')
+                        )
+                    });
+                }
                 return;
             }
             frappe.show_alert({

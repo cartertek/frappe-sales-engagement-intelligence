@@ -770,7 +770,12 @@ def _upsert_contact_row(prospect, row):
     if name:
         doc = frappe.get_doc("Contact", name)
         for key, value in payload.items():
-            if key != "doctype" and value not in (None, "") and hasattr(doc, key):
+            if key == "doctype" or value in (None, "") or not hasattr(doc, key):
+                continue
+            field = frappe.get_meta("Contact").get_field(key)
+            if field and field.fieldtype in ("Table", "Table MultiSelect"):
+                doc.set(key, value)
+            else:
                 setattr(doc, key, value)
         doc.save()
     else:
