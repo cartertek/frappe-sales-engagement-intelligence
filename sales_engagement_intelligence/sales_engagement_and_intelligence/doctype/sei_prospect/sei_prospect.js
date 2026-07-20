@@ -26,11 +26,7 @@ frappe.ui.form.on('SEI Prospect', {
             }, __('CRM Conversion'));
         }
 
-        frm.add_custom_button(__('New Message Draft'), () => {
-            frappe.new_doc('SEI Message Draft', { prospect: frm.doc.name });
-        }, __('Outreach'));
-
-        render_message_drafts(frm);
+        configure_message_draft_grid(frm);
         render_signals_embedded_list(frm);
 
         add_open_button(frm, 'CRM Lead', frm.doc.crm_lead);
@@ -469,10 +465,16 @@ function render_signal_badge(strength) {
 }
 
 
-function render_message_drafts(frm) {
-    if (!frm.fields_dict.message_drafts_html) return;
-    frappe.db.get_list('SEI Message Draft', {filters:{prospect:frm.doc.name},fields:['name','platform','subject','sent','modified'],order_by:'modified desc',limit:100}).then(rows => {
-        const html = rows.length ? rows.map(row => `<div class="list-row"><a href="/app/sei-message-draft/${encodeURIComponent(row.name)}"><b>${frappe.utils.escape_html(row.subject || row.name)}</b></a> — ${frappe.utils.escape_html(row.platform || '')} ${row.sent ? '<span class="indicator-pill green">Sent</span>' : '<span class="indicator-pill orange">Draft</span>'}</div>`).join('') : `<p class="text-muted">${__('No message drafts yet.')}</p>`;
-        frm.fields_dict.message_drafts_html.$wrapper.html(html);
+
+function configure_message_draft_grid(frm) {
+    const field = frm.fields_dict.message_drafts;
+    if (!field || !field.grid || !frm.doc.name) return;
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_prospect_contact_options',
+        args: { prospect: frm.doc.name },
+        callback(r) {
+            const options = ((r.message && r.message.data) || []).join('\n');
+            field.grid.update_docfield_property('to_contact', 'options', options);
+        }
     });
 }

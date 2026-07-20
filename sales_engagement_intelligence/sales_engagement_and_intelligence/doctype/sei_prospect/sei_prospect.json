@@ -53,7 +53,7 @@
   "contacts",
   "message_drafting_section",
   "suggested_message_template",
-  "message_drafts_html",
+  "message_drafts",
   "crm_conversion_tab",
   "conversion_preparation_section",
   "crm_conversion_notes",
@@ -372,9 +372,10 @@
    "idx": 45
   },
   {
-   "fieldname": "message_drafts_html",
+   "fieldname": "message_drafts",
    "label": "Message Drafts",
-   "fieldtype": "HTML",
+   "fieldtype": "Table",
+   "options": "SEI Prospect Message Draft",
    "idx": 46
   },
   {
