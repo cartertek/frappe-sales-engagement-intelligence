@@ -5,7 +5,7 @@ frappe.ui.form.on('SEI Prospect', {
         reload_if_cached_document_is_stale(frm);
 
         configure_prospect_actions(frm);
-        configure_primary_prospect_action(frm);
+        schedule_primary_prospect_action(frm);
 
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
@@ -71,10 +71,26 @@ function configure_prospect_actions(frm) {
 
     add_prospect_action(frm, 'Preview Message Draft', () => prompt_message_template(frm));
 
+    if (!['Converted to CRM Lead', 'Converted to CRM Deal', 'Do Not Contact'].includes(frm.doc.lifecycle_status)) {
+        add_prospect_action(frm, 'Mark Rejected', () => mark_rejected(frm));
+    }
+
+    if (frm.doc.lifecycle_status !== 'Do Not Contact') {
+        add_prospect_action(frm, 'Mark Do Not Contact', () => mark_do_not_contact(frm));
+    }
+
+    if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status) && is_manager_or_admin()) {
+        add_prospect_action(
+            frm,
+            frm.doc.lifecycle_status === 'Do Not Contact' ? 'Remove Do Not Contact' : 'Reopen Prospect',
+            () => reopen_prospect(frm)
+        );
+    }
+
     if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
-        add_crm_action(frm, 'Mark as Not Ready for CRM', () => mark_not_ready_for_crm_conversion(frm));
+        add_prospect_action(frm, 'Mark as Not Ready for CRM', () => mark_not_ready_for_crm_conversion(frm));
     } else if (!is_terminal(frm)) {
-        add_crm_action(frm, 'Mark as Ready for CRM Conversion', () => mark_ready_for_crm_conversion(frm));
+        add_prospect_action(frm, 'Mark as Ready for CRM Conversion', () => mark_ready_for_crm_conversion(frm));
     }
 
     if (can_prepare_crm(frm)) {
@@ -114,21 +130,12 @@ function configure_prospect_actions(frm) {
         });
     }
 
-    if (!['Converted to CRM Lead', 'Converted to CRM Deal', 'Do Not Contact'].includes(frm.doc.lifecycle_status)) {
-        add_prospect_action(frm, 'Mark Rejected', () => mark_rejected(frm));
-    }
+}
 
-    if (frm.doc.lifecycle_status !== 'Do Not Contact') {
-        add_prospect_action(frm, 'Mark Do Not Contact', () => mark_do_not_contact(frm));
-    }
-
-    if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status) && is_manager_or_admin()) {
-        add_prospect_action(
-            frm,
-            frm.doc.lifecycle_status === 'Do Not Contact' ? 'Remove Do Not Contact' : 'Reopen Prospect',
-            () => reopen_prospect(frm)
-        );
-    }
+function schedule_primary_prospect_action(frm) {
+    // Frappe rebuilds the standard toolbar after custom refresh handlers run.
+    // Apply the lifecycle action on the next event-loop turn so it remains visible.
+    window.setTimeout(() => configure_primary_prospect_action(frm), 0);
 }
 
 function configure_primary_prospect_action(frm) {
