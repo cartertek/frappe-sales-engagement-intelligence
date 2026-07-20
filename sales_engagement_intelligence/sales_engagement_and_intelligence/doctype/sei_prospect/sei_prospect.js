@@ -4,108 +4,149 @@ frappe.ui.form.on('SEI Prospect', {
 
         reload_if_cached_document_is_stale(frm);
 
-        frm.add_custom_button(__('Recalculate Qualification'), () => {
-            call_and_reload(frm, 'recalculate_qualification', { prospect: frm.doc.name });
-        }, __('SEI Actions'));
-
-        if (!is_terminal(frm)) {
-            frm.add_custom_button(__('Apply Lifecycle Suggestion'), () => {
-                call_and_reload(frm, 'apply_lifecycle_suggestion', { prospect: frm.doc.name });
-            }, __('SEI Actions'));
-        }
-        frm.add_custom_button(__('Preview Message Draft'), () => {
-            prompt_message_template(frm);
-        }, __('Outreach Drafting'));
-
-        if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
-            frm.add_custom_button(__('Mark as Not Ready for CRM'), () => {
-                mark_not_ready_for_crm_conversion(frm);
-            }, __('CRM Preparation'));
-        } else if (!is_terminal(frm)) {
-            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
-                mark_ready_for_crm_conversion(frm);
-            }, __('CRM Preparation'));
-        }
-
-        if (can_prepare_crm(frm)) {
-            frm.add_custom_button(__('Find CRM Duplicates'), () => {
-                show_conversion_preview(frm);
-            }, __('CRM Preparation'));
-            frm.add_custom_button(__('Preview CRM Conversion'), () => {
-                show_conversion_preview(frm);
-            }, __('CRM Preparation'));
-
-            if (is_manager_or_admin()) {
-                if (!frm.doc.crm_lead) {
-                    frm.add_custom_button(__('Create CRM Lead'), () => {
-                        confirm_create(frm, 'CRM Lead', 'create_crm_lead');
-                    }, __('CRM Preparation'));
-                }
-                frm.add_custom_button(__('Create CRM Organization'), () => {
-                    confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
-                }, __('CRM Preparation'));
-                if (has_contact_path(frm)) {
-                    frm.add_custom_button(__('Create CRM Contact'), () => {
-                        confirm_create(frm, 'CRM Contact', 'create_or_link_crm_contact');
-                    }, __('CRM Preparation'));
-                }
-                frm.add_custom_button(__('Create CRM Deal'), () => {
-                    prompt_deal_options(frm);
-                }, __('CRM Preparation'));
-                add_link_button(frm, 'CRM Lead', 'crm_lead');
-                add_link_button(frm, 'CRM Organization', 'crm_organization');
-                add_link_button(frm, 'Contact', 'crm_contact');
-                add_link_button(frm, 'CRM Deal', 'crm_deal');
-            }
-        }
-
-        if (is_manager_or_admin()) {
-            frm.add_custom_button(__('Convert to CRM Lead'), () => {
-                show_conversion_preview(frm, { allow_convert: true });
-            }, __('CRM Preparation'));
-        }
+        configure_prospect_actions(frm);
+        configure_primary_prospect_action(frm);
 
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
         render_crm_links(frm);
         render_signals_embedded_list(frm);
-
-
-        if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
-            && is_manager_or_admin()) {
-            frm.add_custom_button(__('Sync SEI Context to CRM'), () => {
-                call_and_reload(frm, 'sync_sei_context_to_crm', { prospect: frm.doc.name });
-            }, __('CRM Preparation'));
-        }
-
-        if (!['Converted to CRM Lead', 'Converted to CRM Deal', 'Do Not Contact'].includes(frm.doc.lifecycle_status)) {
-            frm.add_custom_button(__('Mark Rejected'), () => {
-                prompt_reason(__('Rejected Reason'), (reason) => {
-                    call_and_reload(frm, 'mark_rejected', { prospect: frm.doc.name, reason });
-                });
-            }, __('SEI Actions'));
-        }
-
-        if (frm.doc.lifecycle_status !== 'Do Not Contact') {
-            frm.add_custom_button(__('Mark Do Not Contact'), () => {
-                frappe.confirm(__('Mark this prospect Do Not Contact? This blocks CRM preparation.'), () => {
-                    prompt_reason(__('Reason'), (reason) => {
-                        call_and_reload(frm, 'mark_do_not_contact', { prospect: frm.doc.name, reason });
-                    });
-                });
-            }, __('SEI Actions'));
-        }
-
-        if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status)
-            && is_manager_or_admin()) {
-            frm.add_custom_button(__('Reopen Prospect'), () => {
-                frappe.confirm(__('Reopen this protected prospect and recalculate qualification?'), () => {
-                    call_and_reload(frm, 'reopen_prospect', { prospect: frm.doc.name });
-                });
-            }, __('SEI Actions'));
-        }
     }
 });
+
+
+const PROSPECT_ACTIONS_MENU = __('Prospect Actions');
+
+function add_prospect_action(frm, label, handler) {
+    frm.add_custom_button(__(label), handler, PROSPECT_ACTIONS_MENU);
+}
+
+function add_crm_action(frm, label, handler) {
+    add_prospect_action(frm, `CRM — ${label}`, handler);
+}
+
+function reopen_prospect(frm) {
+    frappe.confirm(__('Reopen this protected prospect and recalculate qualification?'), () => {
+        call_and_reload(frm, 'reopen_prospect', { prospect: frm.doc.name });
+    });
+}
+
+function mark_do_not_contact(frm) {
+    frappe.confirm(__('Mark this prospect Do Not Contact? This blocks CRM preparation.'), () => {
+        prompt_reason(__('Reason'), (reason) => {
+            call_and_reload(frm, 'mark_do_not_contact', { prospect: frm.doc.name, reason });
+        });
+    });
+}
+
+function mark_rejected(frm) {
+    prompt_reason(__('Rejected Reason'), (reason) => {
+        call_and_reload(frm, 'mark_rejected', { prospect: frm.doc.name, reason });
+    });
+}
+
+function convert_to_crm_lead(frm) {
+    show_conversion_preview(frm, { allow_convert: true });
+}
+
+function configure_prospect_actions(frm) {
+    add_prospect_action(frm, 'Recalculate Qualification', () => {
+        call_and_reload(frm, 'recalculate_qualification', { prospect: frm.doc.name });
+    });
+
+    if (!is_terminal(frm)) {
+        add_prospect_action(frm, 'Apply Lifecycle Suggestion', () => {
+            call_and_reload(frm, 'apply_lifecycle_suggestion', { prospect: frm.doc.name });
+        });
+    }
+
+    add_prospect_action(frm, 'Preview Message Draft', () => prompt_message_template(frm));
+
+    if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
+        add_crm_action(frm, 'Mark as Not Ready for CRM', () => mark_not_ready_for_crm_conversion(frm));
+    } else if (!is_terminal(frm)) {
+        add_crm_action(frm, 'Mark as Ready for CRM Conversion', () => mark_ready_for_crm_conversion(frm));
+    }
+
+    if (can_prepare_crm(frm)) {
+        add_crm_action(frm, 'Find Duplicates', () => show_conversion_preview(frm));
+        add_crm_action(frm, 'Preview Conversion', () => show_conversion_preview(frm));
+
+        if (is_manager_or_admin()) {
+            if (!frm.doc.crm_lead) {
+                add_crm_action(frm, 'Create Lead', () => {
+                    confirm_create(frm, 'CRM Lead', 'create_crm_lead');
+                });
+            }
+            add_crm_action(frm, 'Create Organization', () => {
+                confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
+            });
+            if (has_contact_path(frm)) {
+                add_crm_action(frm, 'Create Contact', () => {
+                    confirm_create(frm, 'CRM Contact', 'create_or_link_crm_contact');
+                });
+            }
+            add_crm_action(frm, 'Create Deal', () => prompt_deal_options(frm));
+            add_link_button(frm, 'CRM Lead', 'crm_lead', 'CRM — Link Existing Lead');
+            add_link_button(frm, 'CRM Organization', 'crm_organization', 'CRM — Link Existing Organization');
+            add_link_button(frm, 'Contact', 'crm_contact', 'CRM — Link Existing Contact');
+            add_link_button(frm, 'CRM Deal', 'crm_deal', 'CRM — Link Existing Deal');
+        }
+    }
+
+    if (is_manager_or_admin()) {
+        add_crm_action(frm, 'Convert to CRM Lead', () => convert_to_crm_lead(frm));
+    }
+
+    if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
+        && is_manager_or_admin()) {
+        add_crm_action(frm, 'Sync SEI Context', () => {
+            call_and_reload(frm, 'sync_sei_context_to_crm', { prospect: frm.doc.name });
+        });
+    }
+
+    if (!['Converted to CRM Lead', 'Converted to CRM Deal', 'Do Not Contact'].includes(frm.doc.lifecycle_status)) {
+        add_prospect_action(frm, 'Mark Rejected', () => mark_rejected(frm));
+    }
+
+    if (frm.doc.lifecycle_status !== 'Do Not Contact') {
+        add_prospect_action(frm, 'Mark Do Not Contact', () => mark_do_not_contact(frm));
+    }
+
+    if (['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status) && is_manager_or_admin()) {
+        add_prospect_action(
+            frm,
+            frm.doc.lifecycle_status === 'Do Not Contact' ? 'Remove Do Not Contact' : 'Reopen Prospect',
+            () => reopen_prospect(frm)
+        );
+    }
+}
+
+function configure_primary_prospect_action(frm) {
+    const lifecycle = frm.doc.lifecycle_status;
+    let label;
+    let handler;
+
+    if (lifecycle === 'Qualified') {
+        label = __('Mark as Ready for CRM Conversion');
+        handler = () => mark_ready_for_crm_conversion(frm);
+    } else if (lifecycle === 'Ready for CRM Conversion' && is_manager_or_admin()) {
+        label = __('Convert to CRM Lead');
+        handler = () => convert_to_crm_lead(frm);
+    } else if (lifecycle === 'Rejected' && is_manager_or_admin()) {
+        label = __('Reopen Prospect');
+        handler = () => reopen_prospect(frm);
+    } else if (lifecycle === 'Do Not Contact' && is_manager_or_admin()) {
+        label = __('Remove Do Not Contact');
+        handler = () => reopen_prospect(frm);
+    }
+
+    if (label && handler) {
+        frm.page.set_primary_action(label, handler);
+    } else {
+        frm.page.clear_primary_action();
+    }
+}
 
 
 function reload_if_cached_document_is_stale(frm) {
@@ -395,9 +436,9 @@ function prompt_deal_options(frm) {
     );
 }
 
-function add_link_button(frm, doctype, fieldname) {
+function add_link_button(frm, doctype, fieldname, action_label = null) {
     if (frm.doc[fieldname]) return;
-    const label = __(`Link Existing ${doctype}`);
+    const label = __(action_label || `Link Existing ${doctype}`);
     frm.add_custom_button(label, () => {
         frappe.prompt(
             [{ fieldtype: 'Link', fieldname: 'record_name', label: doctype, options: doctype, reqd: 1 }],
@@ -410,7 +451,7 @@ function add_link_button(frm, doctype, fieldname) {
             },
             label
         );
-    }, __('CRM Preparation'));
+    }, PROSPECT_ACTIONS_MENU);
 }
 
 function prompt_reason(label, callback) {
