@@ -50,8 +50,9 @@
   },
   {
    "fieldname": "cc",
-   "label": "Cc",
-   "fieldtype": "Small Text"
+   "label": "CC",
+   "fieldtype": "Small Text",
+   "description": "Optional. Enter valid email addresses separated by commas or semicolons."
   },
   {
    "fieldname": "subject",

@@ -44,9 +44,10 @@
   },
   {
    "fieldname": "cc",
-   "label": "Cc",
+   "label": "CC",
    "fieldtype": "Data",
-   "idx": 4
+   "idx": 4,
+   "description": "Optional. Enter valid email addresses separated by commas or semicolons."
   },
   {
    "fieldname": "subject",
