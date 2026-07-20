@@ -37,7 +37,10 @@ def test_playbook_scalar_fields_precede_managed_tables():
         'signal_types',
         'signal_rules',
     ]
-    assert field_order == scalar_fields + managed_fields
+    expected = scalar_fields + managed_fields
+    assert field_order == expected
+    assert [field['fieldname'] for field in data['fields']] == expected
+    assert [field.get('idx') for field in data['fields']] == list(range(1, len(expected) + 1))
 
 
 def test_playbook_textareas_match_signal_form_height():

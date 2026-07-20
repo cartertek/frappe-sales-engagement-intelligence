@@ -54,3 +54,57 @@ def ensure_required_contact_roles(prospect) -> bool:
             prospect.append("contacts", {"contact_role": role})
             changed = True
     return changed
+
+
+def sync_required_contact_roles(prospect_name: str) -> bool:
+    """Persist missing Playbook contact-role placeholders without running Prospect validation."""
+    if not prospect_name or not frappe.db.exists("SEI Prospect", prospect_name):
+        return False
+
+    playbooks = frappe.db.get_value("SEI Prospect", prospect_name, "playbooks") or ""
+    names = [value.strip() for value in playbooks.split(",") if value.strip()]
+    required = {
+        row.contact_role
+        for name in names
+        for row in frappe.get_all(
+            "SEI Playbook Contact Role",
+            filters={"parent": name, "parenttype": "SEI Playbook"},
+            fields=["contact_role"],
+            order_by="idx",
+        )
+        if row.contact_role
+    }
+    existing = set(
+        frappe.get_all(
+            "SEI Prospect Contact",
+            filters={
+                "parent": prospect_name,
+                "parenttype": "SEI Prospect",
+                "parentfield": "contacts",
+            },
+            pluck="contact_role",
+        )
+    )
+    changed = False
+    next_idx = (
+        frappe.db.sql(
+            """SELECT COALESCE(MAX(idx), 0) FROM `tabSEI Prospect Contact`
+            WHERE parent=%s AND parenttype='SEI Prospect' AND parentfield='contacts'""",
+            prospect_name,
+        )[0][0]
+        + 1
+    )
+    for role in sorted(required - existing, key=str.casefold):
+        frappe.get_doc(
+            {
+                "doctype": "SEI Prospect Contact",
+                "parent": prospect_name,
+                "parenttype": "SEI Prospect",
+                "parentfield": "contacts",
+                "idx": next_idx,
+                "contact_role": role,
+            }
+        ).db_insert()
+        next_idx += 1
+        changed = True
+    return changed
