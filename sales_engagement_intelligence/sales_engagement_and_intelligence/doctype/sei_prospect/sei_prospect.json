@@ -28,7 +28,7 @@
   "contact_target_notes",
   "notes",
   "status_tab",
-  "lifecycle_/_queue_section",
+  "lifecycle_queue_section",
   "lifecycle_status",
   "next_action",
   "next_action_date",
@@ -201,7 +201,7 @@
    "idx": 43
   },
   {
-   "fieldname": "lifecycle_/_queue_section",
+   "fieldname": "lifecycle_queue_section",
    "label": "Lifecycle / Queue",
    "fieldtype": "Section Break",
    "idx": 44

@@ -29,9 +29,9 @@ def effective_primary_contact(prospect):
     return rows[0] if rows else None
 
 
-def ensure_required_contact_roles(prospect) -> None:
+def ensure_required_contact_roles(prospect) -> bool:
     if not prospect.get("name"):
-        return
+        return False
     playbooks = (
         frappe.db.get_value("SEI Prospect", prospect.name, "playbooks") or prospect.get("playbooks") or ""
     )
@@ -48,6 +48,9 @@ def ensure_required_contact_roles(prospect) -> None:
             )
         ]
     existing = {c.contact_role for c in prospect.get("contacts") or []}
+    changed = False
     for role in sorted(set(required), key=str.casefold):
         if role not in existing:
             prospect.append("contacts", {"contact_role": role})
+            changed = True
+    return changed
