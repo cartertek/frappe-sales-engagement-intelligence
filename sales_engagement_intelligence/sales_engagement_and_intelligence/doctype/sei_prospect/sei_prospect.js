@@ -17,6 +17,7 @@ frappe.ui.form.on('SEI Prospect', {
 
     before_save(frm) {
         remove_local_contact_role_placeholders(frm);
+        normalize_contact_row_indices(frm);
     }
 >>>>>>> 25a22d7 (Render playbook roles as native contact rows)
 });
@@ -862,6 +863,7 @@ function render_missing_contact_role_placeholders(frm, field) {
                 const row = frm.add_child('contacts', { contact_role: role });
                 row.__sei_contact_role_placeholder = 1;
             });
+            normalize_contact_row_indices(frm);
             frm.refresh_field('contacts');
             if (!wasDirty) {
                 frm.doc.__unsaved = 0;
@@ -876,6 +878,12 @@ function render_missing_contact_role_placeholders(frm, field) {
 function remove_local_contact_role_placeholders(frm) {
     const placeholders = (frm.doc.contacts || []).filter(row => row.__sei_contact_role_placeholder);
     placeholders.forEach(row => frappe.model.clear_doc(row.doctype, row.name));
+}
+
+function normalize_contact_row_indices(frm) {
+    (frm.doc.contacts || []).forEach((row, index) => {
+        row.idx = index + 1;
+    });
 }
 
 function materialize_contact_role_placeholder(cdt, cdn) {

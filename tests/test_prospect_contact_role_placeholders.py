@@ -57,6 +57,8 @@ def test_contact_grid_renders_native_unsaved_placeholder_rows():
     assert "remove_local_contact_role_placeholders(frm)" in source
     assert "frappe.model.clear_doc(row.doctype, row.name)" in source
     assert "materialize_contact_role_placeholder(cdt, cdn)" in source
+    assert "normalize_contact_row_indices(frm)" in source
+    assert "row.idx = index + 1" in source
     assert "grid-row sei-contact-role-placeholder" not in source
     assert "Add contact for this Playbook role" not in source
 
