@@ -582,6 +582,44 @@ function configure_message_draft_grid(frm) {
             field.grid.update_docfield_property('to_contact', 'options', options);
         }
     });
+    normalize_managed_grid_editor(field, 'message-draft');
+}
+
+
+function normalize_managed_grid_editor(field, key) {
+    if (!field || !field.$wrapper) return;
+
+    const normalize = () => {
+        field.$wrapper.find('.form-in-grid').each(function () {
+            const $form = $(this);
+            $form.find('.grid-insert-row-below, .grid-append-row').remove();
+
+            const $close = $form.find('.grid-collapse-row');
+            const $actions = $form.find('.grid-form-heading .row-actions');
+            const buttonClass = `sei-${key}-done`;
+            if ($actions.length && !$actions.find(`.${buttonClass}`).length) {
+                $('<button type="button" class="btn btn-primary btn-sm pull-right"></button>')
+                    .addClass(buttonClass)
+                    .text(__('Done'))
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        $close.trigger('click');
+                    })
+                    .prependTo($actions);
+            }
+        });
+    };
+
+    normalize();
+    const observerKey = `__sei_${key.replace('-', '_')}_grid_observer`;
+    if (!field[observerKey]) {
+        field[observerKey] = new MutationObserver(normalize);
+        field[observerKey].observe(field.$wrapper.get(0), {
+            childList: true,
+            subtree: true
+        });
+    }
 }
 
 
@@ -604,39 +642,5 @@ function configure_contact_grid(frm) {
         }
     }
 
-    const normalize = () => {
-        field.$wrapper.find('.form-in-grid').each(function () {
-            const $form = $(this);
-            $form.find('.grid-insert-row-below, .grid-append-row').remove();
-
-            const $close = $form.find('.grid-collapse-row');
-            if ($close.length && !$close.attr('data-sei-contact-close')) {
-                $close
-                    .attr('data-sei-contact-close', '1')
-                    .empty()
-                    .text(__('Close'));
-            }
-
-            const $actions = $form.find('.grid-form-heading .row-actions');
-            if ($actions.length && !$actions.find('.sei-contact-done').length) {
-                $('<button type="button" class="btn btn-primary btn-sm pull-right sei-contact-done"></button>')
-                    .text(__('Done'))
-                    .on('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        $close.trigger('click');
-                    })
-                    .prependTo($actions);
-            }
-        });
-    };
-
-    normalize();
-    if (!field.__sei_contact_grid_observer) {
-        field.__sei_contact_grid_observer = new MutationObserver(normalize);
-        field.__sei_contact_grid_observer.observe(field.$wrapper.get(0), {
-            childList: true,
-            subtree: true
-        });
-    }
+    normalize_managed_grid_editor(field, 'contact');
 }

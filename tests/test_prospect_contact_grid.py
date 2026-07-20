@@ -28,7 +28,7 @@ def test_expanded_contact_editor_has_done_and_close_controls():
     ).read_text()
     assert "configure_contact_grid(frm)" in script
     assert "__('Done')" in script
-    assert "__('Close')" in script
+    assert "normalize_managed_grid_editor(field, 'contact')" in script
     assert ".grid-collapse-row" in script
 
 

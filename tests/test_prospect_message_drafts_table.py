@@ -52,3 +52,11 @@ def test_existing_drafts_are_migrated_idempotently():
 def test_message_draft_cc_is_single_line_input():
     fields = {field["fieldname"]: field for field in json.loads(CHILD_JSON.read_text())["fields"]}
     assert fields["cc"]["fieldtype"] == "Data"
+
+
+def test_expanded_message_draft_editor_has_done_and_no_duplicate_insert_controls():
+    script = PROSPECT_JS.read_text()
+    assert "normalize_managed_grid_editor(field, 'message-draft')" in script
+    assert "__('Done')" in script
+    assert ".grid-insert-row-below, .grid-append-row" in script
+    assert ".remove()" in script
