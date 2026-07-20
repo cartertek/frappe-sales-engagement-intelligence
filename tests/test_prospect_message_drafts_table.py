@@ -54,10 +54,11 @@ def test_message_draft_cc_is_single_line_input():
     assert fields["cc"]["fieldtype"] == "Data"
 
 
-def test_expanded_message_draft_editor_has_done_and_no_duplicate_insert_controls():
+def test_expanded_message_draft_editor_has_x_close_and_no_duplicate_insert_controls():
     script = PROSPECT_JS.read_text()
     assert "normalize_managed_grid_editor(field, 'message-draft')" in script
-    assert "__('Done')" in script
+    assert ".html('&times;')" in script
+    assert "__('Done')" not in script
     assert ".grid-insert-row-below, .grid-append-row" in script
     assert ".remove()" in script
 
@@ -78,3 +79,10 @@ def test_send_api_supports_managed_child_drafts():
     assert 'frappe.db.exists("SEI Prospect Message Draft", draft)' in api
     assert '_check_doc_permission("SEI Prospect", doc.parent, "write")' in api
     assert 'prospect = frappe.get_doc("SEI Prospect", doc.parent)' in api
+
+
+def test_message_draft_send_action_does_not_open_row_editor():
+    script = PROSPECT_JS.read_text()
+    assert "configure_message_draft_send_action(field)" in script
+    assert '[data-fieldname="mark_as_sent"]' in script
+    assert "event.stopPropagation()" in script

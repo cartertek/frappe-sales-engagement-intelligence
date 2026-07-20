@@ -583,6 +583,20 @@ function configure_message_draft_grid(frm) {
         }
     });
     normalize_managed_grid_editor(field, 'message-draft');
+    configure_message_draft_send_action(field);
+}
+
+
+function configure_message_draft_send_action(field) {
+    if (!field || !field.$wrapper || field.__sei_send_action_bound) return;
+    field.__sei_send_action_bound = true;
+    field.$wrapper.on(
+        'mousedown click',
+        '[data-fieldname="mark_as_sent"], [data-fieldname="mark_as_sent"] button',
+        function (event) {
+            event.stopPropagation();
+        }
+    );
 }
 
 
@@ -595,18 +609,13 @@ function normalize_managed_grid_editor(field, key) {
             $form.find('.grid-insert-row-below, .grid-append-row').remove();
 
             const $close = $form.find('.grid-collapse-row');
-            const $actions = $form.find('.grid-form-heading .row-actions');
-            const buttonClass = `sei-${key}-done`;
-            if ($actions.length && !$actions.find(`.${buttonClass}`).length) {
-                $('<button type="button" class="btn btn-primary btn-sm pull-right"></button>')
-                    .addClass(buttonClass)
-                    .text(__('Done'))
-                    .on('click', function (event) {
-                        event.preventDefault();
-                        event.stopPropagation();
-                        $close.trigger('click');
-                    })
-                    .prependTo($actions);
+            if ($close.length && !$close.attr('data-sei-close-icon')) {
+                $close
+                    .attr('data-sei-close-icon', '1')
+                    .attr('aria-label', __('Close'))
+                    .attr('title', __('Close'))
+                    .empty()
+                    .html('&times;');
             }
         });
     };
