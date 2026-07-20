@@ -1272,6 +1272,13 @@ def _optional_email(value: str | None) -> str | None:
     return parsed if parsed and "@" in parsed else None
 
 
+def _optional_email_list(value: str | None) -> str | None:
+    from email.utils import getaddresses
+
+    addresses = [address for _, address in getaddresses([value or ""]) if "@" in address]
+    return ", ".join(dict.fromkeys(addresses)) or None
+
+
 @api_endpoint
 def mark_message_draft_sent(draft: str) -> dict:
     if frappe.db.exists("SEI Prospect Message Draft", draft):
@@ -1296,7 +1303,7 @@ def mark_message_draft_sent(draft: str) -> dict:
         "delivery_status": "Sent",
         "sender": _optional_email(doc.from_user),
         "recipients": _message_draft_recipient(prospect, doc.to_contact),
-        "cc": doc.cc,
+        "cc": _optional_email_list(doc.cc),
         "subject": doc.subject or f"Message to {doc.to_contact}",
         "content": doc.body or "",
         "reference_doctype": "CRM Lead",

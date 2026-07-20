@@ -20,3 +20,8 @@ def test_mark_sent_resolves_contact_display_name_to_email():
     assert "def _message_draft_recipient" in API
     assert '_message_draft_recipient(prospect, doc.to_contact)' in API
     assert '_optional_email(doc.from_user)' in API
+
+
+def test_mark_sent_ignores_invalid_optional_cc():
+    assert "def _optional_email_list" in API
+    assert '"cc": _optional_email_list(doc.cc)' in API
