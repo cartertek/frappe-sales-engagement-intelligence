@@ -12,9 +12,7 @@ def emails(contact) -> list[str]:
 
 
 def populated_contacts(prospect) -> list:
-    return [
-        c for c in (prospect.get("contacts") or []) if c.get("contact_name") or emails(c) or c.get("notes")
-    ]
+    return [c for c in (prospect.get("contacts") or []) if c.get("contact_name") or emails(c)]
 
 
 def primary_contacts(prospect) -> list:

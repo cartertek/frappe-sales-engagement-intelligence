@@ -65,6 +65,7 @@ frappe.ui.form.on('SEI Prospect', {
             }, __('CRM Preparation'));
         }
 
+        configure_contact_grid(frm);
         configure_message_draft_grid(frm);
         render_signals_embedded_list(frm);
 
@@ -581,4 +582,61 @@ function configure_message_draft_grid(frm) {
             field.grid.update_docfield_property('to_contact', 'options', options);
         }
     });
+}
+
+
+function configure_contact_grid(frm) {
+    const field = frm.fields_dict.contacts;
+    if (!field || !field.$wrapper) return;
+
+    if (field.grid) {
+        const email_field = field.grid.get_field('emails');
+        if (email_field) {
+            email_field.formatter = value => {
+                const display = String(value || '')
+                    .split(/[\n,;]+/)
+                    .map(email => email.trim())
+                    .filter(Boolean)
+                    .join(', ');
+                const escaped = frappe.utils.escape_html(display);
+                return `<span class="ellipsis" title="${escaped}">${escaped}</span>`;
+            };
+        }
+    }
+
+    const normalize = () => {
+        field.$wrapper.find('.form-in-grid').each(function () {
+            const $form = $(this);
+            $form.find('.grid-insert-row-below, .grid-append-row').remove();
+
+            const $close = $form.find('.grid-collapse-row');
+            if ($close.length && !$close.attr('data-sei-contact-close')) {
+                $close
+                    .attr('data-sei-contact-close', '1')
+                    .empty()
+                    .text(__('Close'));
+            }
+
+            const $actions = $form.find('.grid-form-heading .row-actions');
+            if ($actions.length && !$actions.find('.sei-contact-done').length) {
+                $('<button type="button" class="btn btn-primary btn-sm pull-right sei-contact-done"></button>')
+                    .text(__('Done'))
+                    .on('click', function (event) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        $close.trigger('click');
+                    })
+                    .prependTo($actions);
+            }
+        });
+    };
+
+    normalize();
+    if (!field.__sei_contact_grid_observer) {
+        field.__sei_contact_grid_observer = new MutationObserver(normalize);
+        field.__sei_contact_grid_observer.observe(field.$wrapper.get(0), {
+            childList: true,
+            subtree: true
+        });
+    }
 }

@@ -31,7 +31,9 @@
    "fieldname": "emails",
    "label": "Emails",
    "fieldtype": "Small Text",
-   "description": "One email address per line."
+   "description": "One email address per line.",
+   "in_list_view": 1,
+   "columns": 3
   },
   {
    "fieldname": "notes",
