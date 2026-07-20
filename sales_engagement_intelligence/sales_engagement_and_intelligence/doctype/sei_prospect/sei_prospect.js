@@ -60,6 +60,15 @@ function configure_prospect_actions(frm) {
         });
     }
 
+    if (!is_terminal(frm)) {
+        add_prospect_action(frm, 'Apply Playbook Defaults', () => {
+            frappe.confirm(
+                __('Apply defaults from the first derived Playbook to blank fields only? Existing values will not be overwritten.'),
+                () => call_and_reload(frm, 'apply_playbook_defaults', { prospect: frm.doc.name })
+            );
+        });
+    }
+
     add_prospect_action(frm, 'Preview Message Draft', () => prompt_message_template(frm));
 
     if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {

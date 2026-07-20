@@ -25,7 +25,7 @@ def test_every_prospect_call_and_reload_action_has_api_method():
 def test_retired_mark_ready_action_is_not_rendered():
     assert "mark_ready_for_crm_conversion" in SCRIPT
     assert "mark_not_ready_for_crm_conversion" in SCRIPT
-    assert "Mark Ready for CRM Conversion" in SCRIPT
+    assert "Mark as Ready for CRM Conversion" in SCRIPT
     assert "Mark as Not Ready for CRM" in SCRIPT
 
 
