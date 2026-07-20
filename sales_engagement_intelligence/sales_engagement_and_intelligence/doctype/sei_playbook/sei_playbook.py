@@ -6,6 +6,7 @@ from frappe.model.document import Document
 
 class SEIPlaybook(Document):
     def validate(self) -> None:
+        self.remove_blank_signal_rules()
         self.validate_signal_types()
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
             playbook_arena_sync,
@@ -20,6 +21,23 @@ class SEIPlaybook(Document):
         )
 
         playbook_arena_sync.sync_from_playbook(self)
+
+
+    def remove_blank_signal_rules(self) -> None:
+        """Discard placeholder rows that contain no rule data."""
+        rows = []
+        for row in self.get("signal_rules") or []:
+            if any(
+                (
+                    row.get("signal_type"),
+                    row.get("minimum_strength"),
+                    row.get("evidence_basis_required"),
+                    row.get("exclude_from_qualification"),
+                    row.get("notes"),
+                )
+            ):
+                rows.append(row)
+        self.set("signal_rules", rows)
 
     def validate_signal_types(self) -> None:
         seen: set[str] = set()
