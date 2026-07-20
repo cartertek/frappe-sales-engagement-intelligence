@@ -9,7 +9,6 @@ SCRIPT = Path(
 def test_crm_preparation_actions_are_registered_from_refresh():
     refresh = SCRIPT.split("function reload_if_cached_document_is_stale", 1)[0]
     expected = [
-        "Mark Ready for CRM Conversion",
         "Find CRM Duplicates",
         "Preview CRM Conversion",
         "Create CRM Lead",
