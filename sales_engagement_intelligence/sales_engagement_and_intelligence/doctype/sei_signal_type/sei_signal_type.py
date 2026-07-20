@@ -10,6 +10,13 @@ class SEISignalType(Document):
 
     def on_update(self) -> None:
         self.sync_playbook_child_row()
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_signal_type_sync,
+        )
+
+        prospects = frappe.get_all("SEI Signal", filters={"signal_type": self.name}, pluck="prospect")
+        for prospect in dict.fromkeys(prospects):
+            prospect_signal_type_sync.sync_prospect_signal_types(prospect)
 
     def validate_playbook_arena_pair(self) -> None:
         if not self.playbook or not self.research_arena:

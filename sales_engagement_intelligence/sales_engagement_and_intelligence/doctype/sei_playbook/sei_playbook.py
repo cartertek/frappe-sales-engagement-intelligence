@@ -7,9 +7,19 @@ from frappe.model.document import Document
 class SEIPlaybook(Document):
     def validate(self) -> None:
         self.validate_signal_types()
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            playbook_arena_sync,
+        )
+
+        playbook_arena_sync.validate_playbook_relationships(self)
 
     def on_update(self) -> None:
         self.sync_signal_type_links()
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            playbook_arena_sync,
+        )
+
+        playbook_arena_sync.sync_from_playbook(self)
 
     def validate_signal_types(self) -> None:
         seen: set[str] = set()
