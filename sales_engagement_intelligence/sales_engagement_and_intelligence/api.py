@@ -1170,6 +1170,56 @@ def get_interaction_attributions(
 
 
 @api_endpoint
+def get_linked_crm_records(prospect: str) -> dict:
+    _check_prospect_permission(prospect, "read")
+    doc = frappe.get_doc("SEI Prospect", prospect)
+    groups = {
+        "crm_leads": [],
+        "crm_organizations": [],
+        "crm_contacts": [],
+        "crm_deals": [],
+    }
+    seen = {key: set() for key in groups}
+
+    def add(group: str, doctype: str, name: str | None):
+        if not name or name in seen[group] or not frappe.db.exists(doctype, name):
+            return
+        seen[group].add(name)
+        title_fields = {
+            "CRM Lead": ("lead_name", "first_name", "organization"),
+            "CRM Organization": ("organization_name",),
+            "Contact": ("full_name", "first_name"),
+            "CRM Deal": ("deal_name", "lead_name", "organization_name"),
+        }[doctype]
+        title = None
+        for fieldname in title_fields:
+            if fieldname in _meta_fields(doctype):
+                title = frappe.db.get_value(doctype, name, fieldname)
+                if title:
+                    break
+        groups[group].append({"name": name, "title": title or name})
+
+    add("crm_leads", "CRM Lead", doc.get("crm_lead"))
+    add("crm_organizations", "CRM Organization", doc.get("crm_organization"))
+    add("crm_contacts", "Contact", doc.get("crm_contact"))
+    add("crm_deals", "CRM Deal", doc.get("crm_deal"))
+    for row in doc.get("contacts") or []:
+        add("crm_contacts", "Contact", row.get("crm_contact"))
+
+    for group, doctype in (
+        ("crm_leads", "CRM Lead"),
+        ("crm_organizations", "CRM Organization"),
+        ("crm_contacts", "Contact"),
+        ("crm_deals", "CRM Deal"),
+    ):
+        if "sei_prospect" in _meta_fields(doctype):
+            for name in frappe.get_all(doctype, filters={"sei_prospect": prospect}, pluck="name"):
+                add(group, doctype, name)
+
+    return groups
+
+
+@api_endpoint
 def convert_to_crm_lead(prospect: str) -> dict:
     _check_prospect_permission(prospect, "write")
     _require_manager()

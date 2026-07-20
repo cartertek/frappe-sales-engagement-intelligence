@@ -58,6 +58,7 @@
   "conversion_preparation_section",
   "crm_conversion_notes",
   "frappe_crm_links_section",
+  "crm_links_html",
   "crm_lead",
   "crm_deal",
   "column_break_4",
@@ -403,7 +404,14 @@
    "idx": 50
   },
   {
+   "fieldname": "crm_links_html",
+   "label": "CRM Records",
+   "fieldtype": "HTML",
+   "idx": 51
+  },
+  {
    "fieldname": "crm_lead",
+   "hidden": 1,
    "label": "CRM Lead",
    "fieldtype": "Link",
    "options": "CRM Lead",
@@ -414,6 +422,7 @@
   },
   {
    "fieldname": "crm_deal",
+   "hidden": 1,
    "label": "CRM Deal",
    "fieldtype": "Link",
    "options": "CRM Deal",
@@ -430,6 +439,7 @@
   },
   {
    "fieldname": "crm_organization",
+   "hidden": 1,
    "label": "CRM Organization",
    "fieldtype": "Link",
    "options": "CRM Organization",
@@ -438,6 +448,7 @@
   },
   {
    "fieldname": "crm_contact",
+   "hidden": 1,
    "label": "CRM Contact",
    "fieldtype": "Link",
    "options": "Contact",

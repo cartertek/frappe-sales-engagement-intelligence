@@ -67,12 +67,9 @@ frappe.ui.form.on('SEI Prospect', {
 
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
+        render_crm_links(frm);
         render_signals_embedded_list(frm);
 
-        add_open_button(frm, 'CRM Lead', frm.doc.crm_lead);
-        add_open_button(frm, 'CRM Deal', frm.doc.crm_deal);
-        add_open_button(frm, 'CRM Organization', frm.doc.crm_organization);
-        add_open_button(frm, 'Contact', frm.doc.crm_contact);
 
         if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
             && is_manager_or_admin()) {
@@ -323,11 +320,47 @@ function render_duplicate_group(label, rows, doctype) {
     const items = rows.map(row => {
         const title = row.title || row.name;
         const reason = row.reason || '';
-        const collections = {'CRM Lead':'leads','CRM Deal':'deals','CRM Organization':'organizations','Contact':'contacts'};
-        const route = `/crm/${collections[doctype]}/${encodeURIComponent(row.name)}`;
+        const route = crm_frontend_route(doctype, row.name);
         return `<li><a href="${route}">${frappe.utils.escape_html(title)}</a> — ${frappe.utils.escape_html(reason)}</li>`;
     }).join('');
     return `<p><b>${label}</b></p><ul>${items}</ul>`;
+}
+
+
+function crm_frontend_route(doctype, record_name) {
+    const collections = {
+        'CRM Lead': 'leads',
+        'CRM Deal': 'deals',
+        'CRM Organization': 'organizations',
+        'Contact': 'contacts'
+    };
+    return `/crm/${collections[doctype]}/${encodeURIComponent(record_name)}`;
+}
+
+function render_crm_links(frm) {
+    const field = frm.fields_dict.crm_links_html;
+    if (!field) return;
+    field.$wrapper.html(`<p class="text-muted">${__('Loading CRM records…')}</p>`);
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_linked_crm_records',
+        args: { prospect: frm.doc.name },
+        callback(r) {
+            const data = unwrap_api_data(r) || {};
+            const groups = [
+                [__('CRM Leads'), 'CRM Lead', data.crm_leads || []],
+                [__('CRM Organizations'), 'CRM Organization', data.crm_organizations || []],
+                [__('CRM Contacts'), 'Contact', data.crm_contacts || []],
+                [__('CRM Deals'), 'CRM Deal', data.crm_deals || []]
+            ];
+            const html = groups.map(([label, doctype, rows]) => {
+                const links = rows.length
+                    ? rows.map(row => `<a class="btn btn-default btn-sm mr-2 mb-2" href="${crm_frontend_route(doctype, row.name)}" target="_blank" rel="noopener">${frappe.utils.escape_html(row.title || row.name)}</a>`).join('')
+                    : `<span class="text-muted">${__('None')}</span>`;
+                return `<div class="mb-3"><div class="text-muted small mb-1">${label}</div><div>${links}</div></div>`;
+            }).join('');
+            field.$wrapper.html(`<div class="sei-crm-links">${html}</div>`);
+        }
+    });
 }
 
 function confirm_create(frm, label, action, options = {}) {
@@ -378,16 +411,6 @@ function add_link_button(frm, doctype, fieldname) {
             label
         );
     }, __('CRM Preparation'));
-}
-
-function add_open_button(frm, doctype, record_name) {
-    if (!record_name) return;
-    const routes = {'CRM Lead':'leads','CRM Deal':'deals','CRM Organization':'organizations','Contact':'contacts'};
-    frm.add_custom_button(__(`Open ${doctype}`), () => {
-        const collection = routes[doctype];
-        if (collection) window.location.href = `/crm/${collection}/${encodeURIComponent(record_name)}`;
-        else frappe.set_route('Form', doctype, record_name);
-    }, __('CRM Records'));
 }
 
 function prompt_reason(label, callback) {
