@@ -59,3 +59,12 @@ def test_reject_action_precedes_crm_action_block():
     reject_index = SCRIPT.index("add_prospect_action(frm, 'Mark Rejected'")
     crm_index = SCRIPT.index("add_crm_action(frm, 'Find Duplicates'")
     assert reject_index < crm_index
+
+
+def test_freshness_check_does_not_clear_primary_action():
+    start = SCRIPT.index("function reload_if_cached_document_is_stale")
+    end = SCRIPT.index("function can_prepare_crm", start)
+    freshness = SCRIPT[start:end]
+    assert "frm.disable_save()" not in freshness
+    assert "frm.enable_save()" not in freshness
+    assert "frm.page.clear_primary_action()" not in freshness

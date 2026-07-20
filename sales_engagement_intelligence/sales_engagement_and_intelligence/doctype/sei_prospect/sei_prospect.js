@@ -170,7 +170,6 @@ function reload_if_cached_document_is_stale(frm) {
     if (!frm.doc?.name || !frm.doc?.modified) return;
 
     frm.__sei_freshness_check_in_progress = true;
-    frm.disable_save();
 
     frappe.db.get_value('SEI Prospect', frm.doc.name, 'modified')
         .then((r) => {
@@ -192,7 +191,6 @@ function reload_if_cached_document_is_stale(frm) {
         .always(() => {
             frm.__sei_freshness_check_in_progress = false;
             frm.__sei_reloading_stale_cache = false;
-            frm.enable_save();
         });
 }
 
