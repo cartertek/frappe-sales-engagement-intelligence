@@ -16,6 +16,14 @@ STANDALONE = (
     / "sei_message_draft"
     / "sei_message_draft.py"
 ).read_text()
+PROSPECT = (
+    ROOT
+    / "sales_engagement_intelligence"
+    / "sales_engagement_and_intelligence"
+    / "doctype"
+    / "sei_prospect"
+    / "sei_prospect.py"
+).read_text()
 CHILD = (
     ROOT
     / "sales_engagement_intelligence"
@@ -29,6 +37,8 @@ CHILD = (
 def test_cc_validation_is_applied_to_both_draft_doctypes():
     assert "normalize_email_list(self.cc" in STANDALONE
     assert "normalize_email_list(self.cc" in CHILD
+    assert "validate_message_draft_cc_addresses" in PROSPECT
+    assert 'self.get("message_drafts")' in PROSPECT
 
 
 def test_cc_validation_accepts_lists_and_rejects_invalid_addresses():

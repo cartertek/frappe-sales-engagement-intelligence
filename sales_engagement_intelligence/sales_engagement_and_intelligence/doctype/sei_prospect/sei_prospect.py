@@ -11,10 +11,19 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.co
 class SEIProspect(Document):
     def validate(self):
         ensure_required_contact_roles(self)
+        self.validate_message_draft_cc_addresses()
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()
         self.validate_manual_override_reason()
         self.apply_milestone_3_workflow_updates()
+
+    def validate_message_draft_cc_addresses(self):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            message_draft_validation,
+        )
+
+        for row in self.get("message_drafts") or []:
+            row.cc = message_draft_validation.normalize_email_list(row.cc, label="CC")
 
     def set_normalized_domain(self):
         if not self.website:
