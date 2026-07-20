@@ -2,22 +2,20 @@ from __future__ import annotations
 
 import frappe
 
-SYNC_FLAG = "sei_syncing_thesis_arenas"
+SYNC_FLAG = "sei_syncing_playbook_arenas"
 
 
-def validate_thesis_relationships(thesis) -> None:
-    if getattr(frappe.flags, SYNC_FLAG, False) or thesis.is_new():
+def validate_playbook_relationships(playbook) -> None:
+    if getattr(frappe.flags, SYNC_FLAG, False) or playbook.is_new():
         return
-    selected = {row.research_arena for row in thesis.get("research_arenas") or [] if row.research_arena}
+    selected = {row.research_arena for row in playbook.get("research_arenas") or [] if row.research_arena}
     rows = frappe.get_all(
-        "SEI Signal Type",
-        filters={"thesis": thesis.name},
-        fields=["name", "research_arena"],
+        "SEI Signal Type", filters={"playbook": playbook.name}, fields=["name", "research_arena"]
     )
     for row in rows:
         if row.research_arena and row.research_arena not in selected:
             frappe.throw(
-                f"Thesis {thesis.name} cannot be unassigned from Research Arena "
+                f"Playbook {playbook.name} cannot be unassigned from Research Arena "
                 f"{row.research_arena} because Signal Type {row.name} uses this pairing."
             )
 
@@ -25,29 +23,27 @@ def validate_thesis_relationships(thesis) -> None:
 def validate_arena_relationships(arena) -> None:
     if getattr(frappe.flags, SYNC_FLAG, False) or arena.is_new():
         return
-    selected = {row.thesis for row in arena.get("assigned_theses") or [] if row.thesis}
+    selected = {row.playbook for row in arena.get("assigned_playbooks") or [] if row.playbook}
     rows = frappe.get_all(
-        "SEI Signal Type",
-        filters={"research_arena": arena.name},
-        fields=["name", "thesis"],
+        "SEI Signal Type", filters={"research_arena": arena.name}, fields=["name", "playbook"]
     )
     for row in rows:
-        if row.thesis and row.thesis not in selected:
+        if row.playbook and row.playbook not in selected:
             frappe.throw(
-                f"Thesis {row.thesis} cannot be unassigned from Research Arena {arena.name} "
+                f"Playbook {row.playbook} cannot be unassigned from Research Arena {arena.name} "
                 f"because Signal Type {row.name} uses this pairing."
             )
 
 
-def sync_from_thesis(thesis) -> None:
+def sync_from_playbook(playbook) -> None:
     if getattr(frappe.flags, SYNC_FLAG, False):
         return
-    selected = {row.research_arena for row in thesis.get("research_arenas") or [] if row.research_arena}
+    selected = {row.research_arena for row in playbook.get("research_arenas") or [] if row.research_arena}
     _sync_counterpart_rows(
         counterpart_doctype="SEI Research Arena",
-        counterpart_field="assigned_theses",
-        link_field="thesis",
-        source_name=thesis.name,
+        counterpart_field="assigned_playbooks",
+        link_field="playbook",
+        source_name=playbook.name,
         selected_names=selected,
     )
 
@@ -55,9 +51,9 @@ def sync_from_thesis(thesis) -> None:
 def sync_from_arena(arena) -> None:
     if getattr(frappe.flags, SYNC_FLAG, False):
         return
-    selected = {row.thesis for row in arena.get("assigned_theses") or [] if row.thesis}
+    selected = {row.playbook for row in arena.get("assigned_playbooks") or [] if row.playbook}
     _sync_counterpart_rows(
-        counterpart_doctype="SEI Thesis",
+        counterpart_doctype="SEI Playbook",
         counterpart_field="research_arenas",
         link_field="research_arena",
         source_name=arena.name,
@@ -66,13 +62,8 @@ def sync_from_arena(arena) -> None:
 
 
 def _sync_counterpart_rows(
-    *,
-    counterpart_doctype: str,
-    counterpart_field: str,
-    link_field: str,
-    source_name: str,
-    selected_names: set[str],
-) -> None:
+    *, counterpart_doctype, counterpart_field, link_field, source_name, selected_names
+):
     setattr(frappe.flags, SYNC_FLAG, True)
     try:
         for name in frappe.get_all(counterpart_doctype, pluck="name"):

@@ -1,9 +1,8 @@
 {
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "hash",
  "doctype": "DocType",
- "name": "SEI Thesis Research Arena",
- "module": "Sales Engagement and Intelligence",
- "istable": 1,
- "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
   "research_arena"
@@ -18,8 +17,13 @@
    "in_list_view": 1
   }
  ],
- "permissions": [],
- "actions": [],
+ "istable": 1,
  "links": [],
- "states": []
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Playbook Research Arena",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0
 }

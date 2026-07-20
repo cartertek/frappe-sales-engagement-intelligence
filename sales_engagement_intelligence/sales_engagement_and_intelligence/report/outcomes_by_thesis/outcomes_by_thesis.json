@@ -10,11 +10,11 @@
  "modified": "2026-07-09 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Outcomes by Thesis",
+ "name": "Outcomes by Playbook",
  "owner": "Administrator",
  "prepared_report": 0,
  "ref_doctype": "SEI Prospect",
- "report_name": "Outcomes by Thesis",
+ "report_name": "Outcomes by Playbook",
  "report_type": "Script Report",
  "roles": [
   {

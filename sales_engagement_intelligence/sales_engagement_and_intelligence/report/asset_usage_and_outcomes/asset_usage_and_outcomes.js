@@ -1,10 +1,10 @@
 frappe.query_reports["Asset Usage and Outcomes"] = {
   filters: [
     {
-      fieldname: "sei_thesis",
-      label: __("Related Thesis"),
+      fieldname: "sei_playbook",
+      label: __("Related Playbook"),
       fieldtype: "Link",
-      options: "SEI Thesis"
+      options: "SEI Playbook"
     },
     {
       fieldname: "asset_type",

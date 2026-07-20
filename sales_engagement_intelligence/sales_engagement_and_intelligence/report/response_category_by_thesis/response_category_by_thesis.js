@@ -1,10 +1,10 @@
-frappe.query_reports["Response Category by Thesis"] = {
+frappe.query_reports["Response Category by Playbook"] = {
   filters: [
     {
-      fieldname: "sei_thesis",
-      label: __("Thesis"),
+      fieldname: "sei_playbook",
+      label: __("Playbook"),
       fieldtype: "Link",
-      options: "SEI Thesis"
+      options: "SEI Playbook"
     },
     {
       fieldname: "channel",

@@ -4,4 +4,4 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.reporting.r
 
 
 def execute(filters=None):
-    return execute_report('Outcomes by Thesis', filters)
+    return execute_report('Outcomes by Playbook', filters)

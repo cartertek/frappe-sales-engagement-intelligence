@@ -10,11 +10,11 @@
  "modified": "2026-07-09 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "Response Category by Thesis",
+ "name": "Response Category by Playbook",
  "owner": "Administrator",
  "prepared_report": 0,
  "ref_doctype": "SEI Interaction Attribution",
- "report_name": "Response Category by Thesis",
+ "report_name": "Response Category by Playbook",
  "report_type": "Script Report",
  "roles": [
   {

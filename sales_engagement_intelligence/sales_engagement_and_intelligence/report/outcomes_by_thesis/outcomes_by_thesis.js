@@ -1,4 +1,4 @@
-frappe.query_reports["Outcomes by Thesis"] = {
+frappe.query_reports["Outcomes by Playbook"] = {
   filters: [
     {
       fieldname: "source_arena",

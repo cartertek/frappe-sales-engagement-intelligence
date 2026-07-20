@@ -9,7 +9,7 @@
  "field_order": [
   "signal_type_name",
   "description",
-  "thesis",
+  "playbook",
   "research_arena",
   "active",
   "evidence_criteria_section",
@@ -42,11 +42,11 @@
    "label": "Description"
   },
   {
-   "fieldname": "thesis",
+   "fieldname": "playbook",
    "fieldtype": "Link",
    "in_list_view": 1,
-   "label": "Thesis",
-   "options": "SEI Thesis",
+   "label": "Playbook",
+   "options": "SEI Playbook",
    "reqd": 1
   },
   {
@@ -174,7 +174,7 @@
   }
  ],
  "quick_entry": 0,
- "search_fields": "signal_type_name,thesis,research_arena",
+ "search_fields": "signal_type_name,playbook,research_arena",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

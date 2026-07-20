@@ -13,62 +13,24 @@ frappe.ui.form.on('SEI Prospect', {
                 call_and_reload(frm, 'apply_lifecycle_suggestion', { prospect: frm.doc.name });
             }, __('SEI Actions'));
         }
-        if (frm.doc.sei_playbook && !is_terminal(frm)) {
-            frm.add_custom_button(__('Apply Playbook Defaults'), () => {
-                frappe.confirm(__('Apply playbook defaults to blank fields only? Existing values will not be overwritten.'), () => {
-                    call_and_reload(frm, 'apply_playbook_defaults', { prospect: frm.doc.name });
-                });
-            }, __('Outreach Drafting'));
-        }
-
         frm.add_custom_button(__('Preview Message Draft'), () => {
             prompt_message_template(frm);
         }, __('Outreach Drafting'));
 
 
-        if (['Find Contact', 'Ready for CRM Conversion'].includes(frm.doc.lifecycle_status)) {
-            frm.add_custom_button(__('Mark as Not Ready for CRM'), () => {
-                mark_not_ready_for_crm_conversion(frm);
-            }, __('CRM Preparation'));
-        } else {
-            frm.add_custom_button(__('Mark Ready for CRM Conversion'), () => {
-                mark_ready_for_crm_conversion(frm);
-            }, __('CRM Preparation'));
+        if (frm.doc.lifecycle_status === 'Ready for CRM Conversion' && is_manager_or_admin()) {
+            frm.add_custom_button(__('Convert to CRM Lead'), () => {
+                frappe.confirm(__('Upsert the CRM Organization, a CRM Contact for every populated contact, and a CRM Lead for every primary contact?'), () => {
+                    call_and_reload(frm, 'convert_to_crm_lead', { prospect: frm.doc.name });
+                });
+            }, __('CRM Conversion'));
         }
 
-        if (can_prepare_crm(frm)) {
-            frm.add_custom_button(__('Find CRM Duplicates'), () => show_conversion_preview(frm), __('CRM Preparation'));
+        frm.add_custom_button(__('New Message Draft'), () => {
+            frappe.new_doc('SEI Message Draft', { prospect: frm.doc.name });
+        }, __('Outreach'));
 
-            frm.add_custom_button(__('Preview CRM Conversion'), () => show_conversion_preview(frm), __('CRM Preparation'));
-
-            if (is_manager_or_admin()) {
-                if (!frm.doc.crm_lead) {
-                    frm.add_custom_button(__('Create CRM Lead'), () => {
-                        confirm_create(frm, 'CRM Lead', 'create_crm_lead');
-                    }, __('CRM Preparation'));
-                }
-
-                frm.add_custom_button(__('Create CRM Organization'), () => {
-                    confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
-                }, __('CRM Preparation'));
-
-                if (has_contact_path(frm)) {
-                    frm.add_custom_button(__('Create CRM Contact'), () => {
-                        confirm_create(frm, 'CRM Contact', 'create_or_link_crm_contact');
-                    }, __('CRM Preparation'));
-                }
-
-                frm.add_custom_button(__('Create CRM Deal'), () => {
-                    prompt_deal_options(frm);
-                }, __('CRM Preparation'));
-
-                add_link_button(frm, 'CRM Lead', 'crm_lead');
-                add_link_button(frm, 'CRM Organization', 'crm_organization');
-                add_link_button(frm, 'Contact', 'crm_contact');
-                add_link_button(frm, 'CRM Deal', 'crm_deal');
-            }
-        }
-
+        render_message_drafts(frm);
         render_signals_embedded_list(frm);
 
         add_open_button(frm, 'CRM Lead', frm.doc.crm_lead);
@@ -151,7 +113,7 @@ function can_prepare_crm(frm) {
 }
 
 function has_contact_path(frm) {
-    return Boolean(frm.doc.primary_contact_name || frm.doc.primary_contact_email || frm.doc.primary_contact_url);
+    return (frm.doc.contacts || []).some(row => row.is_primary && (row.contact_name || row.emails || row.notes));
 }
 
 function is_terminal(frm) {
@@ -173,77 +135,6 @@ function call_and_reload(frm, action, args) {
             }
             frm.reload_doc();
         }
-    });
-}
-
-function mark_ready_for_crm_conversion(frm) {
-    frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_ready_for_crm_conversion',
-        args: { prospect: frm.doc.name },
-        freeze: true,
-        callback(r) {
-            const message = unwrap_api_message(r) || {};
-            if (message.ok === false) {
-                show_crm_readiness_checklist(message);
-                return;
-            }
-            frappe.show_alert({
-                message: message.data && message.data.lifecycle_status === 'Find Contact'
-                    ? __('CRM handoff approved. Add contact information to become Ready for CRM Conversion.')
-                    : __('Prospect marked ready for CRM conversion.'),
-                indicator: 'green'
-            }, 6);
-            frm.reload_doc();
-        }
-    });
-}
-
-function mark_not_ready_for_crm_conversion(frm) {
-    frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_not_ready_for_crm_conversion',
-        args: { prospect: frm.doc.name },
-        freeze: true,
-        callback(r) {
-            const message = unwrap_api_message(r) || {};
-            if (message.ok === false) {
-                frappe.show_alert({
-                    message: (message.error && message.error.message) || __('Unable to undo CRM readiness.'),
-                    indicator: 'red'
-                }, 7);
-                return;
-            }
-            frappe.show_alert({
-                message: __('Prospect marked as not ready for CRM.'),
-                indicator: 'green'
-            });
-            frm.reload_doc();
-        }
-    });
-}
-
-function show_crm_readiness_checklist(message) {
-    const details = message.error && message.error.details ? message.error.details : {};
-    const requirements = details.requirements || [];
-    const rows = requirements.map((requirement) => {
-        const met = Boolean(requirement.met);
-        const icon = met ? '✓' : '✕';
-        const color = met ? 'green' : 'red';
-        return `
-            <li style="margin-bottom: var(--margin-xs);">
-                <span class="indicator-pill ${color}" style="margin-right: var(--margin-xs);">${icon}</span>
-                ${frappe.utils.escape_html(requirement.label || '')}
-            </li>
-        `;
-    }).join('');
-    const fallback = frappe.utils.escape_html((message.error && message.error.message) || __('Requirements not met.'));
-
-    frappe.msgprint({
-        title: __('CRM Readiness Requirements'),
-        message: `
-            <p>${fallback}</p>
-            <ul style="list-style: none; padding-left: 0; margin-bottom: 0;">${rows}</ul>
-        `,
-        indicator: 'red'
     });
 }
 
@@ -305,8 +196,8 @@ function render_duplicate_group(label, rows, doctype) {
     const items = rows.map(row => {
         const title = row.title || row.name;
         const reason = row.reason || '';
-        const route_doctype = doctype.toLowerCase().replace(/ /g, '-');
-        const route = `/app/${route_doctype}/${encodeURIComponent(row.name)}`;
+        const collections = {'CRM Lead':'leads','CRM Deal':'deals','CRM Organization':'organizations','Contact':'contacts'};
+        const route = `/crm/${collections[doctype]}/${encodeURIComponent(row.name)}`;
         return `<li><a href="${route}">${frappe.utils.escape_html(title)}</a> — ${frappe.utils.escape_html(reason)}</li>`;
     }).join('');
     return `<p><b>${label}</b></p><ul>${items}</ul>`;
@@ -364,8 +255,11 @@ function add_link_button(frm, doctype, fieldname) {
 
 function add_open_button(frm, doctype, record_name) {
     if (!record_name) return;
+    const routes = {'CRM Lead':'leads','CRM Deal':'deals','CRM Organization':'organizations','Contact':'contacts'};
     frm.add_custom_button(__(`Open ${doctype}`), () => {
-        frappe.set_route('Form', doctype, record_name);
+        const collection = routes[doctype];
+        if (collection) window.location.href = `/crm/${collection}/${encodeURIComponent(record_name)}`;
+        else frappe.set_route('Form', doctype, record_name);
     }, __('CRM Records'));
 }
 
@@ -395,7 +289,6 @@ function prompt_message_template(frm) {
             reqd: 1,
             get_query() {
                 const filters = { active: 1 };
-                if (frm.doc.sei_playbook) filters.playbook = frm.doc.sei_playbook;
                 return { filters };
             }
         }
@@ -573,4 +466,13 @@ function render_signal_badge(strength) {
         Weak: 'gray'
     }[strength] || 'gray';
     return `<span class="indicator-pill ${color}">${frappe.utils.escape_html(strength)}</span>`;
+}
+
+
+function render_message_drafts(frm) {
+    if (!frm.fields_dict.message_drafts_html) return;
+    frappe.db.get_list('SEI Message Draft', {filters:{prospect:frm.doc.name},fields:['name','platform','subject','sent','modified'],order_by:'modified desc',limit:100}).then(rows => {
+        const html = rows.length ? rows.map(row => `<div class="list-row"><a href="/app/sei-message-draft/${encodeURIComponent(row.name)}"><b>${frappe.utils.escape_html(row.subject || row.name)}</b></a> — ${frappe.utils.escape_html(row.platform || '')} ${row.sent ? '<span class="indicator-pill green">Sent</span>' : '<span class="indicator-pill orange">Draft</span>'}</div>`).join('') : `<p class="text-muted">${__('No message drafts yet.')}</p>`;
+        frm.fields_dict.message_drafts_html.$wrapper.html(html);
+    });
 }

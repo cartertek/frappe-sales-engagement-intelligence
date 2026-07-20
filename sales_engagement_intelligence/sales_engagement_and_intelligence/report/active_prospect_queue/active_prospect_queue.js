@@ -24,10 +24,10 @@ frappe.query_reports["Active Prospect Queue"] = {
       fieldtype: "Data"
     },
     {
-      fieldname: "sei_thesis",
-      label: __("Thesis"),
+      fieldname: "sei_playbook",
+      label: __("Playbook"),
       fieldtype: "Link",
-      options: "SEI Thesis"
+      options: "SEI Playbook"
     },
     {
       fieldname: "next_action_date",

@@ -38,7 +38,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Hiring-Gap Substitution",
+        "playbook": "Failed Hiring",
     },
     {
         "signal_type_name": "Technical Distress",
@@ -54,7 +54,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Project Rescue",
+        "playbook": "Technical Distress",
     },
     {
         "signal_type_name": "Launch Aftermath",
@@ -73,7 +73,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Post-Launch Stabilization",
+        "playbook": "Launch Aftermath",
     },
     {
         "signal_type_name": "Agency Overflow",
@@ -92,7 +92,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Agency Technical Reinforcement",
+        "playbook": "Agency Overflow",
     },
     {
         "signal_type_name": "Ecosystem Adjacency",
@@ -111,7 +111,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Agency Technical Reinforcement",
+        "playbook": "Agency Overflow",
     },
     {
         "signal_type_name": "Vendor/Directory Presence",
@@ -130,7 +130,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Technical Diagnostic / Second Set of Eyes",
+        "playbook": "Technical Distress",
     },
     {
         "signal_type_name": "Community Request",
@@ -149,7 +149,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Project Rescue",
+        "playbook": "Technical Distress",
     },
     {
         "signal_type_name": "Procurement Visibility",
@@ -168,7 +168,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Workflow Integration",
+        "playbook": "Technical Distress",
     },
     {
         "signal_type_name": "Credibility/Referral Signal",
@@ -187,7 +187,7 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Agency Technical Reinforcement",
+        "playbook": "Agency Overflow",
     },
     {
         "signal_type_name": "Reactivation Signal",
@@ -203,15 +203,15 @@ SIGNAL_TYPES = [
         "moderate_guidance": COMMON_MODERATE_GUIDANCE,
         "strong_guidance": COMMON_STRONG_GUIDANCE,
         "evidence_notes_requirements": COMMON_EVIDENCE_NOTES_REQUIREMENTS,
-        "thesis": "Technical Diagnostic / Second Set of Eyes",
+        "playbook": "Technical Distress",
     },
 ]
 
 
 def execute() -> None:
     for row in SIGNAL_TYPES:
-        thesis = row.get("thesis")
-        if thesis and not frappe.db.exists("SEI Thesis", thesis):
+        playbook = row.get("playbook")
+        if playbook and not frappe.db.exists("SEI Playbook", playbook):
             continue
         if frappe.db.exists("SEI Signal Type", row["signal_type_name"]):
             doc = frappe.get_doc("SEI Signal Type", row["signal_type_name"])

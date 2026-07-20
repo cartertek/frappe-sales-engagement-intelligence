@@ -23,21 +23,19 @@
   "offer",
   "signal_summary",
   "signals",
+  "playbooks",
   "arenas",
   "contact_target_notes",
   "notes",
-  "playbook_drafting_tab",
-  "playbook_section",
-  "sei_playbook",
-  "playbook_guidance",
-  "suggested_message_template",
-  "contact_path_tab",
-  "contact_path_section",
-  "primary_contact_name",
-  "primary_contact_role",
-  "primary_contact_email",
-  "primary_contact_url",
-  "primary_contact_notes",
+  "status_tab",
+  "lifecycle_/_queue_section",
+  "lifecycle_status",
+  "next_action",
+  "next_action_date",
+  "assigned_to",
+  "column_break_3",
+  "rejected_reason",
+  "do_not_contact",
   "qualification_tab",
   "qualification_section",
   "qualification_status",
@@ -50,19 +48,14 @@
   "qualification_explanation",
   "signals_section",
   "signals_embedded_list",
-  "lifecycle_safety_tab",
-  "lifecycle_/_queue_section",
-  "lifecycle_status",
-  "next_action",
-  "next_action_date",
-  "assigned_to",
-  "column_break_3",
-  "rejected_reason",
-  "do_not_contact",
+  "outreach_tab",
+  "address_book_section",
+  "contacts",
+  "message_drafting_section",
+  "suggested_message_template",
+  "message_drafts_html",
   "crm_conversion_tab",
   "conversion_preparation_section",
-  "ready_for_crm_conversion",
-  "conversion_target",
   "crm_conversion_notes",
   "frappe_crm_links_section",
   "crm_lead",
@@ -174,6 +167,14 @@
    "description": "Synchronized unique Signal Types from Signals linked to this prospect."
   },
   {
+   "fieldname": "playbooks",
+   "label": "Playbooks",
+   "fieldtype": "Data",
+   "read_only": 1,
+   "in_standard_filter": 1,
+   "description": "Synchronized unique Playbooks from Signals linked to this prospect."
+  },
+  {
    "fieldname": "arenas",
    "label": "Research Arenas",
    "fieldtype": "Data",
@@ -194,79 +195,66 @@
    "idx": 18
   },
   {
-   "fieldname": "playbook_drafting_tab",
+   "fieldname": "status_tab",
    "fieldtype": "Tab Break",
-   "label": "Playbook & Drafting",
-   "idx": 19
+   "label": "Status",
+   "idx": 43
   },
   {
-   "fieldname": "playbook_section",
-   "label": "Playbook Guidance",
+   "fieldname": "lifecycle_/_queue_section",
+   "label": "Lifecycle / Queue",
    "fieldtype": "Section Break",
-   "idx": 20
+   "idx": 44
   },
   {
-   "fieldname": "sei_playbook",
-   "label": "SEI Playbook",
+   "fieldname": "lifecycle_status",
+   "label": "Lifecycle Status",
+   "fieldtype": "Select",
+   "options": "New\nNeeds Research\nResearch Complete\nQualified\nFind Contact\nReady for CRM Conversion\nConverted to CRM Lead\nConverted to CRM Deal\nRejected\nDo Not Contact",
+   "default": "New",
+   "reqd": 1,
+   "in_list_view": 0,
+   "in_standard_filter": 1,
+   "idx": 45
+  },
+  {
+   "fieldname": "next_action",
+   "label": "Next Action",
+   "fieldtype": "Data",
+   "idx": 46
+  },
+  {
+   "fieldname": "next_action_date",
+   "label": "Next Action Date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "idx": 47
+  },
+  {
+   "fieldname": "assigned_to",
+   "label": "Assigned To",
    "fieldtype": "Link",
-   "options": "SEI Playbook",
-   "idx": 21
+   "options": "User",
+   "in_list_view": 0,
+   "idx": 48
   },
   {
-   "fieldname": "playbook_guidance",
-   "label": "Playbook Guidance",
+   "fieldname": "column_break_3",
+   "label": "",
+   "fieldtype": "Column Break",
+   "idx": 49
+  },
+  {
+   "fieldname": "rejected_reason",
+   "label": "Rejected Reason",
    "fieldtype": "Small Text",
-   "read_only": 1,
-   "idx": 22
+   "idx": 50
   },
   {
-   "fieldname": "suggested_message_template",
-   "label": "Suggested Message Template",
-   "fieldtype": "Link",
-   "options": "SEI Message Template",
-   "idx": 23
-  },
-  {
-   "fieldname": "contact_path_tab",
-   "fieldtype": "Tab Break",
-   "label": "Contact Path",
-   "idx": 24
-  },
-  {
-   "fieldname": "contact_path_section",
-   "label": "Contact Path",
-   "fieldtype": "Section Break",
-   "idx": 25
-  },
-  {
-   "fieldname": "primary_contact_name",
-   "label": "Primary Contact Name",
-   "fieldtype": "Data",
-   "idx": 26
-  },
-  {
-   "fieldname": "primary_contact_role",
-   "label": "Primary Contact Role",
-   "fieldtype": "Data",
-   "idx": 27
-  },
-  {
-   "fieldname": "primary_contact_email",
-   "label": "Primary Contact Email",
-   "fieldtype": "Data",
-   "idx": 28
-  },
-  {
-   "fieldname": "primary_contact_url",
-   "label": "Primary Contact URL",
-   "fieldtype": "Data",
-   "idx": 29
-  },
-  {
-   "fieldname": "primary_contact_notes",
-   "label": "Primary Contact Notes",
-   "fieldtype": "Small Text",
-   "idx": 30
+   "fieldname": "do_not_contact",
+   "label": "Do Not Contact",
+   "fieldtype": "Check",
+   "idx": 51
   },
   {
    "fieldname": "qualification_tab",
@@ -349,66 +337,36 @@
    "idx": 42
   },
   {
-   "fieldname": "lifecycle_safety_tab",
+   "fieldname": "outreach_tab",
    "fieldtype": "Tab Break",
-   "label": "Lifecycle & Safety",
-   "idx": 43
+   "label": "Outreach"
   },
   {
-   "fieldname": "lifecycle_/_queue_section",
-   "label": "Lifecycle / Queue",
+   "fieldname": "address_book_section",
    "fieldtype": "Section Break",
-   "idx": 44
+   "label": "Address Book"
   },
   {
-   "fieldname": "lifecycle_status",
-   "label": "Lifecycle Status",
-   "fieldtype": "Select",
-   "options": "New\nNeeds Research\nResearch Complete\nQualified\nFind Contact\nReady for CRM Conversion\nConverted to CRM Lead\nConverted to CRM Deal\nRejected\nDo Not Contact",
-   "default": "New",
-   "reqd": 1,
-   "in_list_view": 0,
-   "in_standard_filter": 1,
-   "idx": 45
+   "fieldname": "contacts",
+   "label": "Contacts",
+   "fieldtype": "Table",
+   "options": "SEI Prospect Contact"
   },
   {
-   "fieldname": "next_action",
-   "label": "Next Action",
-   "fieldtype": "Data",
-   "idx": 46
+   "fieldname": "message_drafting_section",
+   "fieldtype": "Section Break",
+   "label": "Message Drafting"
   },
   {
-   "fieldname": "next_action_date",
-   "label": "Next Action Date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "idx": 47
-  },
-  {
-   "fieldname": "assigned_to",
-   "label": "Assigned To",
+   "fieldname": "suggested_message_template",
+   "label": "Suggested Message Template",
    "fieldtype": "Link",
-   "options": "User",
-   "in_list_view": 0,
-   "idx": 48
+   "options": "SEI Message Template"
   },
   {
-   "fieldname": "column_break_3",
-   "label": "",
-   "fieldtype": "Column Break",
-   "idx": 49
-  },
-  {
-   "fieldname": "rejected_reason",
-   "label": "Rejected Reason",
-   "fieldtype": "Small Text",
-   "idx": 50
-  },
-  {
-   "fieldname": "do_not_contact",
-   "label": "Do Not Contact",
-   "fieldtype": "Check",
-   "idx": 51
+   "fieldname": "message_drafts_html",
+   "label": "Message Drafts",
+   "fieldtype": "HTML"
   },
   {
    "fieldname": "crm_conversion_tab",
@@ -421,19 +379,6 @@
    "label": "Conversion Preparation",
    "fieldtype": "Section Break",
    "idx": 53
-  },
-  {
-   "fieldname": "ready_for_crm_conversion",
-   "label": "Ready for CRM Conversion",
-   "fieldtype": "Check",
-   "idx": 54
-  },
-  {
-   "fieldname": "conversion_target",
-   "label": "Conversion Target",
-   "fieldtype": "Select",
-   "options": "CRM Lead Only\nCRM Lead + CRM Organization\nCRM Lead + CRM Organization + CRM Contact\nCRM Deal",
-   "idx": 55
   },
   {
    "fieldname": "crm_conversion_notes",
@@ -541,7 +486,7 @@
    "parenttype": "DocType"
   }
  ],
- "search_fields": "prospect_name, website, normalized_domain, prospect_type, lifecycle_status, qualification_status",
+ "search_fields": "prospect_name, website, normalized_domain, prospect_type, lifecycle_status, qualification_status, playbooks",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

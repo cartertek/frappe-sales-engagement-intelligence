@@ -10,8 +10,8 @@
  "field_order": [
   "arena_name",
   "description",
-  "assigned_theses_section",
-  "assigned_theses",
+  "assigned_playbooks_section",
+  "assigned_playbooks",
   "active",
   "notes"
  ],
@@ -31,16 +31,16 @@
    "fieldtype": "Small Text"
   },
   {
-   "fieldname": "assigned_theses_section",
+   "fieldname": "assigned_playbooks_section",
    "fieldtype": "Section Break",
-   "label": "Assigned Theses"
+   "label": "Assigned Playbooks"
   },
   {
-   "fieldname": "assigned_theses",
+   "fieldname": "assigned_playbooks",
    "fieldtype": "Table",
-   "label": "Assigned Theses",
-   "options": "SEI Research Arena Thesis",
-   "description": "Theses assigned to this Research Arena."
+   "label": "Assigned Playbooks",
+   "options": "SEI Research Arena Playbook",
+   "description": "Playbooks assigned to this Research Arena."
   },
   {
    "fieldname": "active",

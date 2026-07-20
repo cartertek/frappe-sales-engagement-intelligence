@@ -5,15 +5,13 @@
  "document_type": "Document",
  "editable_grid": 1,
  "engine": "InnoDB",
- "field_order": [
-  "thesis"
- ],
+ "field_order": ["playbook"],
  "fields": [
   {
-   "fieldname": "thesis",
+   "fieldname": "playbook",
    "fieldtype": "Link",
-   "label": "Thesis",
-   "options": "SEI Thesis",
+   "label": "Playbook",
+   "options": "SEI Playbook",
    "reqd": 1,
    "in_list_view": 1
   }
@@ -23,7 +21,7 @@
  "modified": "2026-07-19 00:00:00.000000",
  "modified_by": "Administrator",
  "module": "Sales Engagement and Intelligence",
- "name": "SEI Research Arena Thesis",
+ "name": "SEI Research Arena Playbook",
  "owner": "Administrator",
  "permissions": [],
  "sort_field": "modified",

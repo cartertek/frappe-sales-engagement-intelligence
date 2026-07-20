@@ -25,10 +25,10 @@ def resolve_signal_type(value: str | None) -> str | None:
     frappe.throw(f"SEI Signal Type not found: {value}")
 
 
-def get_signal_type_thesis(signal_type: str | None) -> str | None:
+def get_signal_type_playbook(signal_type: str | None) -> str | None:
     if not signal_type:
         return None
-    return frappe.db.get_value("SEI Signal Type", signal_type, "thesis")
+    return frappe.db.get_value("SEI Signal Type", signal_type, "playbook")
 
 
 def get_signal_type_arena(signal_type: str | None) -> str | None:
@@ -54,13 +54,13 @@ def _get_prospect_signal_type_values(prospect: str | None, fieldname: str) -> li
     return [row.value for row in rows if row.value]
 
 
-def get_prospect_theses(prospect: str | None) -> list[str]:
-    """Return the ordered unique thesis list derived from prospect signals."""
-    return _get_prospect_signal_type_values(prospect, "thesis")
+def get_prospect_playbooks(prospect: str | None) -> list[str]:
+    """Return the ordered unique playbook list derived from prospect signals."""
+    return _get_prospect_signal_type_values(prospect, "playbook")
 
 
-def get_prospect_theses_display(prospect: str | None) -> str:
-    return ", ".join(get_prospect_theses(prospect))
+def get_prospect_playbooks_display(prospect: str | None) -> str:
+    return ", ".join(get_prospect_playbooks(prospect))
 
 
 def get_prospect_arenas(prospect: str | None) -> list[str]:
@@ -72,11 +72,11 @@ def get_prospect_arenas_display(prospect: str | None) -> str:
     return ", ".join(get_prospect_arenas(prospect))
 
 
-def add_derived_theses(row: dict, prospect_field: str = "name") -> dict:
+def add_derived_playbooks(row: dict, prospect_field: str = "name") -> dict:
     prospect = row.get(prospect_field) or row.get("prospect")
-    theses = get_prospect_theses(prospect)
-    row["theses"] = theses
-    row["theses_display"] = ", ".join(theses)
+    playbooks = get_prospect_playbooks(prospect)
+    row["playbooks"] = playbooks
+    row["playbooks_display"] = ", ".join(playbooks)
     return row
 
 
@@ -88,8 +88,8 @@ def add_derived_arenas(row: dict, prospect_field: str = "name") -> dict:
     return row
 
 
-def prospect_matches_any_thesis(prospect: str | None, theses: str | Iterable[str] | None) -> bool:
-    wanted = set(_as_list(theses))
+def prospect_matches_any_playbook(prospect: str | None, playbooks: str | Iterable[str] | None) -> bool:
+    wanted = set(_as_list(playbooks))
     if not wanted:
         return True
-    return bool(set(get_prospect_theses(prospect)) & wanted)
+    return bool(set(get_prospect_playbooks(prospect)) & wanted)
