@@ -1231,6 +1231,16 @@ def convert_to_crm_lead(prospect: str) -> dict:
 
 
 @api_endpoint
+def get_missing_prospect_contact_roles(prospect: str) -> list[str]:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        missing_required_contact_roles,
+    )
+
+    return missing_required_contact_roles(frappe.get_doc("SEI Prospect", prospect))
+
+
+@api_endpoint
 def get_prospect_contact_options(prospect: str) -> list[str]:
     _check_prospect_permission(prospect, "read")
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
@@ -1262,7 +1272,7 @@ def _message_draft_recipient(prospect, value: str | None) -> str:
             addresses = emails(row)
             if addresses:
                 return addresses[0]
-    frappe.throw(f"No email address is available for message recipient {raw or '(blank)' }.")
+    frappe.throw(f"No email address is available for message recipient {raw or '(blank)'}.")
 
 
 def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
@@ -1271,18 +1281,14 @@ def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
     raw = (value or "").strip()
     display_name, parsed = parseaddr(raw)
     if parsed and "@" in parsed:
-        user = frappe.db.get_value(
-            "User", {"email": parsed}, ["email", "full_name"], as_dict=True
-        )
+        user = frappe.db.get_value("User", {"email": parsed}, ["email", "full_name"], as_dict=True)
         return parsed, (user.full_name if user else display_name or None)
 
-    user = frappe.db.get_value(
-        "User", raw, ["email", "full_name"], as_dict=True
-    )
+    user = frappe.db.get_value("User", raw, ["email", "full_name"], as_dict=True)
     if user and user.email and "@" in user.email:
         return user.email, user.full_name or None
 
-    frappe.throw(f"No email address is available for message sender {raw or '(blank)' }.")
+    frappe.throw(f"No email address is available for message sender {raw or '(blank)'}.")
 
 
 def _optional_email_list(value: str | None) -> str | None:

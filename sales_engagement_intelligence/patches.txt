@@ -24,3 +24,5 @@ sales_engagement_intelligence.patches.v0_0_1.backfill_playbook_arenas
 sales_engagement_intelligence.patches.v0_0_1.migrate_message_drafts_to_prospect_table
 
 sales_engagement_intelligence.patches.v0_0_1.revalidate_ready_for_crm_contacts
+
+sales_engagement_intelligence.patches.v0_0_1.remove_persisted_contact_role_placeholders

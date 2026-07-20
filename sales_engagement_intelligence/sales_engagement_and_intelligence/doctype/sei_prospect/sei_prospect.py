@@ -4,13 +4,13 @@ import frappe
 from frappe.model.document import Document
 
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
-    ensure_required_contact_roles,
+    remove_empty_contact_role_placeholders,
 )
 
 
 class SEIProspect(Document):
     def validate(self):
-        ensure_required_contact_roles(self)
+        remove_empty_contact_role_placeholders(self)
         self.validate_message_draft_cc_addresses()
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()

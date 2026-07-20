@@ -835,6 +835,46 @@ function configure_contact_grid(frm) {
     }
 
     normalize_managed_grid_editor(field, 'contact');
+    render_missing_contact_role_placeholders(frm, field);
+}
+
+
+function render_missing_contact_role_placeholders(frm, field) {
+    field.$wrapper.children('.sei-contact-role-placeholders').remove();
+    if (!frm.doc.name || frm.is_new()) return;
+
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_missing_prospect_contact_roles',
+        args: { prospect: frm.doc.name },
+        callback(r) {
+            const roles = (r.message && r.message.data) || [];
+            field.$wrapper.children('.sei-contact-role-placeholders').remove();
+            if (!roles.length) return;
+
+            const $container = $('<div class="sei-contact-role-placeholders mt-2"></div>');
+            $('<div class="text-muted small mb-1"></div>')
+                .text(__('Missing Playbook contact roles'))
+                .appendTo($container);
+            roles.forEach(role => {
+                $('<button type="button" class="btn btn-default btn-xs mr-1 mb-1"></button>')
+                    .text(__(role))
+                    .attr('title', __('Add a contact for this Playbook role'))
+                    .on('click', () => materialize_contact_role(frm, field, role))
+                    .appendTo($container);
+            });
+            $container.appendTo(field.$wrapper);
+        }
+    });
+}
+
+
+function materialize_contact_role(frm, field, role) {
+    const row = frm.add_child('contacts', { contact_role: role });
+    frm.refresh_field('contacts');
+    const gridRow = field.grid.grid_rows_by_docname[row.name];
+    if (gridRow) {
+        gridRow.toggle_view(true);
+    }
 }
 
 
