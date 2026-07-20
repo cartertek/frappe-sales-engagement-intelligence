@@ -1245,6 +1245,33 @@ def get_prospect_contact_options(prospect: str) -> list[str]:
     ]
 
 
+def _message_draft_recipient(prospect, value: str | None) -> str:
+    from email.utils import parseaddr
+
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import emails
+
+    raw = (value or "").strip()
+    parsed = parseaddr(raw)[1]
+    if parsed and "@" in parsed:
+        return parsed
+    for row in prospect.get("contacts") or []:
+        if raw in {
+            (row.get("contact_name") or "").strip(),
+            (row.get("crm_contact") or "").strip(),
+        }:
+            addresses = emails(row)
+            if addresses:
+                return addresses[0]
+    frappe.throw(f"No email address is available for message recipient {raw or '(blank)' }.")
+
+
+def _optional_email(value: str | None) -> str | None:
+    from email.utils import parseaddr
+
+    parsed = parseaddr((value or "").strip())[1]
+    return parsed if parsed and "@" in parsed else None
+
+
 @api_endpoint
 def mark_message_draft_sent(draft: str) -> dict:
     if frappe.db.exists("SEI Prospect Message Draft", draft):
@@ -1267,8 +1294,8 @@ def mark_message_draft_sent(draft: str) -> dict:
         "sent_or_received": "Sent",
         "status": "Linked",
         "delivery_status": "Sent",
-        "sender": doc.from_user,
-        "recipients": doc.to_contact,
+        "sender": _optional_email(doc.from_user),
+        "recipients": _message_draft_recipient(prospect, doc.to_contact),
         "cc": doc.cc,
         "subject": doc.subject or f"Message to {doc.to_contact}",
         "content": doc.body or "",

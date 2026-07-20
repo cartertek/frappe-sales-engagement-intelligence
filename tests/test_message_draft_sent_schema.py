@@ -14,3 +14,9 @@ def test_mark_sent_uses_standard_communication_doctype():
 def test_mark_sent_logs_without_sending_email():
     assert 'frappe.core.doctype.communication.email.make' not in API
     assert 'communication.insert(ignore_permissions=True)' in API
+
+
+def test_mark_sent_resolves_contact_display_name_to_email():
+    assert "def _message_draft_recipient" in API
+    assert '_message_draft_recipient(prospect, doc.to_contact)' in API
+    assert '_optional_email(doc.from_user)' in API
