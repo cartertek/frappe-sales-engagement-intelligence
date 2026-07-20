@@ -58,7 +58,7 @@ def test_expanded_message_draft_editor_has_x_close_and_no_duplicate_insert_contr
     script = PROSPECT_JS.read_text()
     assert "normalize_managed_grid_editor(field, 'message-draft')" in script
     assert ".html('&times;')" in script
-    assert ".grid-footer-toolbar .row-actions" in script
+    assert "$form.children('.grid-footer-toolbar')" in script
     assert ".text(__('Done'))" in script
     assert ".grid-insert-row-below, .grid-append-row" in script
     assert ".remove()" in script

@@ -14,7 +14,7 @@ SCRIPT = (
 
 def test_both_managed_grids_use_footer_done_and_x_close():
     assert ".sei-grid-done" in SCRIPT
-    assert ".grid-footer-toolbar .row-actions" in SCRIPT
+    assert "$form.children('.grid-footer-toolbar')" in SCRIPT
     assert ".html('&times;')" in SCRIPT
     assert "normalize_managed_grid_editor(field, 'contact')" in SCRIPT
     assert "normalize_managed_grid_editor(field, 'message-draft')" in SCRIPT

@@ -703,7 +703,16 @@ function normalize_managed_grid_editor(field, key) {
                     });
             }
 
-            const $footerActions = $form.find('.grid-footer-toolbar .row-actions');
+            const $body = $form.children('.grid-form-body');
+            const $footer = $body.children('.grid-footer-toolbar');
+            if ($footer.length && !$footer.attr('data-sei-fixed-footer')) {
+                $footer
+                    .attr('data-sei-fixed-footer', '1')
+                    .removeClass('hidden-xs')
+                    .insertAfter($body);
+            }
+
+            const $footerActions = $form.children('.grid-footer-toolbar').find('.row-actions');
             if ($footerActions.length && !$footerActions.find('.sei-grid-done').length) {
                 $('<button type="button" class="btn btn-primary btn-sm sei-grid-done"></button>')
                     .text(__('Done'))
@@ -756,9 +765,18 @@ frappe.ui.form.on('SEI Prospect Message Draft', {
     sent(frm, cdt, cdn) {
         const row = locals[cdt][cdn];
         if (!row.sent) {
-            if (row.sent_on || row.crm_email) {
-                frappe.model.set_value(cdt, cdn, 'sent', 1);
-            }
+            if (!row.sent_on && !row.crm_email) return;
+            frappe.call({
+                method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.mark_message_draft_unsent',
+                args: { draft: row.name },
+                freeze: true,
+                callback() {
+                    frm.reload_doc();
+                },
+                error() {
+                    frappe.model.set_value(cdt, cdn, 'sent', 1);
+                }
+            });
             return;
         }
         if (row.__islocal) {

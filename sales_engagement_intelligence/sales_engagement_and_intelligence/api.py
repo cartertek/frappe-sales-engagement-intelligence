@@ -1319,3 +1319,23 @@ def mark_message_draft_sent(draft: str) -> dict:
         }
     )
     return {"crm_email": communication.name, "sent": True}
+
+
+@api_endpoint
+def mark_message_draft_unsent(draft: str) -> dict:
+    if frappe.db.exists("SEI Prospect Message Draft", draft):
+        doc = frappe.get_doc("SEI Prospect Message Draft", draft)
+        _check_doc_permission("SEI Prospect", doc.parent, "write")
+    else:
+        _check_doc_permission("SEI Message Draft", draft, "write")
+        doc = frappe.get_doc("SEI Message Draft", draft)
+
+    communication_name = doc.get("crm_email")
+    if communication_name and frappe.db.exists("Communication", communication_name):
+        communication = frappe.get_doc("Communication", communication_name)
+        if communication.sent_or_received != "Sent":
+            frappe.throw("The linked CRM Communication is not an outgoing sent message.")
+        communication.delete(ignore_permissions=True)
+
+    doc.db_set({"sent": 0, "sent_on": None, "crm_email": None})
+    return {"crm_email": None, "sent": False}
