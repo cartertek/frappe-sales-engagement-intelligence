@@ -16,6 +16,7 @@ def test_saved_message_draft_recipient_is_preserved_in_dynamic_options():
 
 
 def test_open_message_draft_recipient_control_is_refreshed_after_options_load():
-    assert "refresh_open_message_draft_recipient(field)" in SCRIPT
+    assert "refresh_open_message_draft_editor(field)" in SCRIPT
     assert "control.refresh()" in SCRIPT
-    assert "control.set_value(openRow.doc.to_contact || '')" in SCRIPT
+    assert "openRow.doc[fieldname] ?? ''" in SCRIPT
+    assert "['platform', 'from_user', 'to_contact', 'cc', 'subject', 'body']" in SCRIPT

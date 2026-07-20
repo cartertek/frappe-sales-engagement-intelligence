@@ -633,7 +633,7 @@ function configure_message_draft_grid(frm) {
                 .filter(Boolean);
             const options = [...new Set([...available, ...saved])];
             field.grid.update_docfield_property('to_contact', 'options', options.join('\n'));
-            refresh_open_message_draft_recipient(field);
+            refresh_open_message_draft_editor(field);
         }
     });
     normalize_managed_grid_editor(field, 'message-draft');
@@ -641,16 +641,20 @@ function configure_message_draft_grid(frm) {
 }
 
 
-function refresh_open_message_draft_recipient(field) {
+function refresh_open_message_draft_editor(field) {
     const openRow = field.grid && field.grid.open_grid_row;
-    if (!openRow || !openRow.doc) return;
-    const control = openRow.grid_form
-        && openRow.grid_form.fields_dict
-        && openRow.grid_form.fields_dict.to_contact;
-    if (!control) return;
-    control.df.options = field.grid.get_field('to_contact').options;
-    control.refresh();
-    control.set_value(openRow.doc.to_contact || '');
+    if (!openRow || !openRow.doc || !openRow.grid_form) return;
+    const fields = openRow.grid_form.fields_dict || {};
+    const recipient = fields.to_contact;
+    if (recipient) {
+        recipient.df.options = field.grid.get_field('to_contact').options;
+    }
+    ['platform', 'from_user', 'to_contact', 'cc', 'subject', 'body'].forEach(fieldname => {
+        const control = fields[fieldname];
+        if (!control) return;
+        control.refresh();
+        control.set_value(openRow.doc[fieldname] ?? '');
+    });
 }
 
 
