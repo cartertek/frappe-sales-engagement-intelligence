@@ -184,7 +184,8 @@ def _migrate_primary_contacts():
 def _seed_contact_roles():
     for role in (
         "Founder",
-        "Founder / Operator",
+        "Founder",
+        "Operator",
         "CTO",
         "VP Engineering",
         "Engineering Manager",
@@ -193,7 +194,8 @@ def _seed_contact_roles():
         "Delivery Lead",
         "Account Lead",
         "Technical Lead",
-        "Innovation / AI Lead",
+        "Innovation Lead",
+        "AI Lead",
         "Agency Owner",
         "MSP Owner",
         "Consultant",

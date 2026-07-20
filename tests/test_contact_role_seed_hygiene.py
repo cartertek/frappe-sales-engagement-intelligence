@@ -8,7 +8,7 @@ SEED = Path(
 def test_reactivation_seed_uses_canonical_contact_roles():
     assert "Original contact" not in SEED
     assert "new role owner" not in SEED
-    assert '"Primary Contact, owner, Founder, CTO, operations lead"' in SEED
+    assert '"Primary Contact, Owner, Founder, CTO, Operations Lead"' in SEED
 
 
 def test_founder_operator_role_uses_canonical_punctuation():
