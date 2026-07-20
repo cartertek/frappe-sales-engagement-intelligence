@@ -62,7 +62,7 @@ frappe.ui.form.on('SEI Prospect', {
         if (is_manager_or_admin()) {
             frm.add_custom_button(__('Convert to CRM Lead'), () => {
                 show_conversion_preview(frm, { allow_convert: true });
-            }, __('CRM Conversion'));
+            }, __('CRM Preparation'));
         }
 
         configure_message_draft_grid(frm);

@@ -29,6 +29,10 @@ def test_convert_to_crm_lead_is_always_registered_for_authorized_users():
     assert "if (is_manager_or_admin())" in refresh
     assert "Convert to CRM Lead" in refresh
     assert "show_conversion_preview(frm, { allow_convert: true })" in refresh
+    assert "}, __('CRM Preparation'));" in refresh
+    convert_block = refresh.split("Convert to CRM Lead", 1)[1].split("configure_message_draft_grid", 1)[0]
+    assert "CRM Preparation" in convert_block
+    assert "CRM Conversion" not in convert_block
     assert "lifecycle_status === 'Ready for CRM Conversion'" not in refresh
 
 
