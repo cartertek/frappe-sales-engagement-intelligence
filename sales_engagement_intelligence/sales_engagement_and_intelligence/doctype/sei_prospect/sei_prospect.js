@@ -588,17 +588,28 @@ function configure_message_draft_grid(frm) {
 
 
 function isolate_message_draft_sent_checkbox(field) {
-    if (!field || !field.$wrapper || field.__sei_sent_checkbox_bound) return;
-    field.__sei_sent_checkbox_bound = true;
-    const wrapper = field.$wrapper.get(0);
-    const stopRowOpen = event => {
-        if (event.target.closest('[data-fieldname="sent"]')) {
-            event.stopPropagation();
-        }
+    if (!field || !field.$wrapper) return;
+
+    const bind = () => {
+        field.$wrapper.find('[data-fieldname="sent"] input').each(function () {
+            const $checkbox = $(this);
+            if ($checkbox.attr('data-sei-sent-bound')) return;
+            $checkbox
+                .attr('data-sei-sent-bound', '1')
+                .on('mousedown.sei-sent click.sei-sent', function (event) {
+                    event.stopPropagation();
+                });
+        });
     };
-    wrapper.addEventListener('pointerdown', stopRowOpen, true);
-    wrapper.addEventListener('mousedown', stopRowOpen, true);
-    wrapper.addEventListener('click', stopRowOpen, true);
+
+    bind();
+    if (!field.__sei_sent_checkbox_observer) {
+        field.__sei_sent_checkbox_observer = new MutationObserver(bind);
+        field.__sei_sent_checkbox_observer.observe(field.$wrapper.get(0), {
+            childList: true,
+            subtree: true
+        });
+    }
 }
 
 

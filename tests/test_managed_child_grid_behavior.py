@@ -33,4 +33,4 @@ def test_message_draft_uses_sent_checkbox_not_send_button():
     assert not fields["sent"].get("read_only")
     assert "sent(frm, cdt, cdn)" in SCRIPT
     assert "isolate_message_draft_sent_checkbox(field)" in SCRIPT
-    assert "event.target.closest('[data-fieldname=\"sent\"]')" in SCRIPT
+    assert "data-sei-sent-bound" in SCRIPT

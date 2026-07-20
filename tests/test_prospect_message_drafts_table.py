@@ -86,6 +86,6 @@ def test_send_api_supports_managed_child_drafts():
 def test_message_draft_sent_checkbox_does_not_open_row_editor():
     script = PROSPECT_JS.read_text()
     assert "isolate_message_draft_sent_checkbox(field)" in script
-    assert "addEventListener('pointerdown', stopRowOpen, true)" in script
+    assert "[data-fieldname=\"sent\"] input" in script
     assert '[data-fieldname="sent"]' in script
     assert "event.stopPropagation()" in script
