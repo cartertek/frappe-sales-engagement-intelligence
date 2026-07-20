@@ -11,6 +11,10 @@ frappe.ui.form.on('SEI Prospect', {
         configure_message_draft_grid(frm);
         render_crm_links(frm);
         render_signals_embedded_list(frm);
+    },
+
+    before_save(frm) {
+        remove_local_contact_role_placeholders(frm);
     }
 });
 
@@ -840,58 +844,62 @@ function configure_contact_grid(frm) {
 
 
 function render_missing_contact_role_placeholders(frm, field) {
-    const $gridBody = field.grid && field.grid.wrapper
-        ? field.grid.wrapper.find('.grid-body').first()
-        : field.$wrapper.find('.grid-body').first();
-    if (!$gridBody.length) return;
+    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_contact_placeholders) return;
 
-    $gridBody.children('.sei-contact-role-placeholder').remove();
-    if (!frm.doc.name || frm.is_new()) return;
+    remove_local_contact_role_placeholders(frm);
+    frm.__sei_loading_contact_placeholders = true;
+    const wasDirty = frm.is_dirty();
 
     frappe.call({
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_missing_prospect_contact_roles',
         args: { prospect: frm.doc.name },
         callback(r) {
             const roles = (r.message && r.message.data) || [];
-            $gridBody.children('.sei-contact-role-placeholder').remove();
             roles.forEach(role => {
-                const escapedRole = frappe.utils.escape_html(__(role));
-                const $row = $(
-                    `<div class="grid-row sei-contact-role-placeholder">
-                        <div class="data-row row">
-                            <div class="row-index sortable-handle col">
-                                <span class="text-muted">&mdash;</span>
-                            </div>
-                            <div class="col grid-static-col col-xs-3">
-                                <div class="static-area ellipsis">${escapedRole}</div>
-                            </div>
-                            <div class="col grid-static-col col-xs-7">
-                                <div class="static-area text-muted">${__('Add contact for this Playbook role')}</div>
-                            </div>
-                            <div class="col grid-static-col col-xs-1 text-right">
-                                <button type="button" class="btn btn-xs btn-default sei-materialize-contact-role">${__('Edit')}</button>
-                            </div>
-                        </div>
-                    </div>`
-                );
-                $row.on('click', event => {
-                    event.preventDefault();
-                    materialize_contact_role(frm, field, role);
-                });
-                $gridBody.append($row);
+                const row = frm.add_child('contacts', { contact_role: role });
+                row.__sei_contact_role_placeholder = 1;
             });
+            frm.refresh_field('contacts');
+            if (!wasDirty) {
+                frm.doc.__unsaved = 0;
+            }
+        },
+        always() {
+            frm.__sei_loading_contact_placeholders = false;
         }
     });
 }
 
-function materialize_contact_role(frm, field, role) {
-    const row = frm.add_child('contacts', { contact_role: role });
-    frm.refresh_field('contacts');
-    const gridRow = field.grid.grid_rows_by_docname[row.name];
-    if (gridRow) {
-        gridRow.toggle_view(true);
+function remove_local_contact_role_placeholders(frm) {
+    const placeholders = (frm.doc.contacts || []).filter(row => row.__sei_contact_role_placeholder);
+    placeholders.forEach(row => frappe.model.clear_doc(row.doctype, row.name));
+}
+
+function materialize_contact_role_placeholder(cdt, cdn) {
+    const row = locals[cdt] && locals[cdt][cdn];
+    if (row && row.__sei_contact_role_placeholder) {
+        delete row.__sei_contact_role_placeholder;
     }
 }
+
+
+frappe.ui.form.on('SEI Prospect Contact', {
+    contact_role(frm, cdt, cdn) {
+        materialize_contact_role_placeholder(cdt, cdn);
+    },
+    contact_name(frm, cdt, cdn) {
+        materialize_contact_role_placeholder(cdt, cdn);
+    },
+    emails(frm, cdt, cdn) {
+        materialize_contact_role_placeholder(cdt, cdn);
+    },
+    notes(frm, cdt, cdn) {
+        materialize_contact_role_placeholder(cdt, cdn);
+    },
+    is_primary(frm, cdt, cdn) {
+        materialize_contact_role_placeholder(cdt, cdn);
+    }
+});
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
