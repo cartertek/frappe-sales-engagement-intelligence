@@ -26,6 +26,11 @@ def test_dismissing_empty_new_rows_removes_them():
     assert "grid_rows_by_docname[cdn]?.remove()" in SCRIPT
 
 
+def test_message_draft_grid_is_inline_editable_like_contacts():
+    doctype = json.loads(DOCTYPE.read_text())
+    assert doctype["editable_grid"] == 1
+
+
 def test_message_draft_uses_sent_checkbox_not_send_button():
     fields = {f["fieldname"]: f for f in json.loads(DOCTYPE.read_text())["fields"]}
     assert "mark_as_sent" not in fields
