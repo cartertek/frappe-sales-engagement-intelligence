@@ -49,13 +49,12 @@ def test_contact_service_distinguishes_real_contacts_and_missing_roles():
     assert "def ensure_required_contact_roles" not in CONTACTS.read_text()
 
 
-def test_contact_grid_does_not_mutate_document_with_placeholder_rows():
+def test_contact_grid_renders_ui_only_missing_role_placeholders():
     source = SCRIPT.read_text()
-    assert "frm.add_child('contacts'" not in source
-    assert "__sei_contact_role_placeholder" not in source
-    assert "render_missing_contact_role_placeholders" not in source
-    assert "remove_local_contact_role_placeholders" not in source
-    assert "materialize_contact_role_placeholder" not in source
+    assert "get_missing_prospect_contact_roles" in source
+    assert "render_missing_contact_role_placeholders(frm, field)" in source
+    assert "materialize_contact_role(frm, field, role)" in source
+    assert "frm.add_child('contacts', { contact_role: role })" in source
 
 
 def test_patch_deletes_only_role_only_contact_children():
