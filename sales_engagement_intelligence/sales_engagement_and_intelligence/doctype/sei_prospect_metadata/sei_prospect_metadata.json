@@ -1,0 +1,39 @@
+{
+ "actions": [],
+ "allow_import": 0,
+ "autoname": "hash",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "metadata_name",
+  "metadata_value"
+ ],
+ "fields": [
+  {
+   "fieldname": "metadata_name",
+   "label": "Name",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 5
+  },
+  {
+   "fieldname": "metadata_value",
+   "label": "Value",
+   "fieldtype": "Data",
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 5
+  }
+ ],
+ "istable": 1,
+ "links": [],
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Prospect Metadata",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 0,
+ "editable_grid": 1
+}

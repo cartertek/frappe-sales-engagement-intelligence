@@ -19,6 +19,7 @@
   "column_break_1",
   "first_seen_date",
   "last_researched_date",
+  "prospect_metadata",
   "positioning_section",
   "offer",
   "signal_summary",
@@ -142,22 +143,29 @@
    "idx": 11
   },
   {
+   "fieldname": "prospect_metadata",
+   "label": "Metadata",
+   "fieldtype": "Table",
+   "options": "SEI Prospect Metadata",
+   "idx": 12
+  },
+  {
    "fieldname": "positioning_section",
    "label": "Positioning",
    "fieldtype": "Section Break",
-   "idx": 12
+   "idx": 13
   },
   {
    "fieldname": "offer",
    "label": "Offer",
    "fieldtype": "Data",
-   "idx": 13
+   "idx": 14
   },
   {
    "fieldname": "signal_summary",
    "label": "Signal Summary",
    "fieldtype": "Small Text",
-   "idx": 14
+   "idx": 15
   },
   {
    "fieldname": "signals",
@@ -166,7 +174,7 @@
    "read_only": 1,
    "in_standard_filter": 1,
    "description": "Synchronized unique Signal Types from Signals linked to this prospect.",
-   "idx": 15
+   "idx": 16
   },
   {
    "fieldname": "playbooks",
@@ -175,7 +183,7 @@
    "read_only": 1,
    "in_standard_filter": 1,
    "description": "Synchronized unique Playbooks from Signals linked to this prospect.",
-   "idx": 16
+   "idx": 17
   },
   {
    "fieldname": "arenas",
@@ -184,31 +192,31 @@
    "read_only": 1,
    "in_standard_filter": 1,
    "description": "Synchronized unique Research Arenas from Signals linked to this prospect.",
-   "idx": 17
+   "idx": 18
   },
   {
    "fieldname": "contact_target_notes",
    "label": "Contact Target Notes",
    "fieldtype": "Small Text",
-   "idx": 18
+   "idx": 19
   },
   {
    "fieldname": "notes",
    "label": "Notes",
    "fieldtype": "Long Text",
-   "idx": 19
+   "idx": 20
   },
   {
    "fieldname": "status_tab",
    "fieldtype": "Tab Break",
    "label": "Status",
-   "idx": 20
+   "idx": 21
   },
   {
    "fieldname": "lifecycle_queue_section",
    "label": "Lifecycle / Queue",
    "fieldtype": "Section Break",
-   "idx": 21
+   "idx": 22
   },
   {
    "fieldname": "lifecycle_status",
@@ -219,20 +227,20 @@
    "reqd": 1,
    "in_list_view": 0,
    "in_standard_filter": 1,
-   "idx": 22
+   "idx": 23
   },
   {
    "fieldname": "next_action",
    "label": "Next Action",
    "fieldtype": "Data",
-   "idx": 23
+   "idx": 24
   },
   {
    "fieldname": "next_action_date",
    "label": "Next Action Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 24
+   "idx": 25
   },
   {
    "fieldname": "assigned_to",
@@ -240,37 +248,37 @@
    "fieldtype": "Link",
    "options": "User",
    "in_list_view": 0,
-   "idx": 25
+   "idx": 26
   },
   {
    "fieldname": "column_break_3",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 26
+   "idx": 27
   },
   {
    "fieldname": "rejected_reason",
    "label": "Rejected Reason",
    "fieldtype": "Small Text",
-   "idx": 27
+   "idx": 28
   },
   {
    "fieldname": "do_not_contact",
    "label": "Do Not Contact",
    "fieldtype": "Check",
-   "idx": 28
+   "idx": 29
   },
   {
    "fieldname": "qualification_tab",
    "fieldtype": "Tab Break",
    "label": "Qualification",
-   "idx": 29
+   "idx": 30
   },
   {
    "fieldname": "qualification_section",
    "label": "Qualification",
    "fieldtype": "Section Break",
-   "idx": 30
+   "idx": 31
   },
   {
    "fieldname": "qualification_status",
@@ -280,134 +288,134 @@
    "default": "Unqualified",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 31
+   "idx": 32
   },
   {
    "fieldname": "manual_qualification_override",
    "label": "Manual Qualification Override",
    "fieldtype": "Check",
-   "idx": 32
+   "idx": 33
   },
   {
    "fieldname": "manual_qualification_reason",
    "label": "Manual Qualification Reason",
    "fieldtype": "Small Text",
-   "idx": 33
+   "idx": 34
   },
   {
    "fieldname": "column_break_2",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 34
+   "idx": 35
   },
   {
    "fieldname": "qualified_signal_count",
    "label": "Qualified Signal Count",
    "fieldtype": "Int",
    "read_only": 1,
-   "idx": 35
+   "idx": 36
   },
   {
    "fieldname": "strong_observed_signal_count",
    "label": "Strong Observed Signal Count",
    "fieldtype": "Int",
    "read_only": 1,
-   "idx": 36
+   "idx": 37
   },
   {
    "fieldname": "moderate_observed_signal_count",
    "label": "Moderate Observed Signal Count",
    "fieldtype": "Int",
    "read_only": 1,
-   "idx": 37
+   "idx": 38
   },
   {
    "fieldname": "qualification_explanation",
    "label": "Qualification Explanation",
    "fieldtype": "Small Text",
    "read_only": 1,
-   "idx": 38
+   "idx": 39
   },
   {
    "fieldname": "signals_section",
    "label": "Signals",
    "fieldtype": "Section Break",
-   "idx": 39
+   "idx": 40
   },
   {
    "fieldname": "signals_embedded_list",
    "label": "Signals",
    "fieldtype": "HTML",
-   "idx": 40
+   "idx": 41
   },
   {
    "fieldname": "outreach_tab",
    "fieldtype": "Tab Break",
    "label": "Outreach",
-   "idx": 41
+   "idx": 42
   },
   {
    "fieldname": "address_book_section",
    "fieldtype": "Section Break",
    "label": "Address Book",
-   "idx": 42
+   "idx": 43
   },
   {
    "fieldname": "contacts",
    "label": "Contacts",
    "fieldtype": "Table",
    "options": "SEI Prospect Contact",
-   "idx": 43
+   "idx": 44
   },
   {
    "fieldname": "message_drafting_section",
    "fieldtype": "Section Break",
    "label": "Message Drafting",
-   "idx": 44
+   "idx": 45
   },
   {
    "fieldname": "suggested_message_template",
    "label": "Suggested Message Template",
    "fieldtype": "Link",
    "options": "SEI Message Template",
-   "idx": 45
+   "idx": 46
   },
   {
    "fieldname": "message_drafts",
    "label": "Message Drafts",
    "fieldtype": "Table",
    "options": "SEI Prospect Message Draft",
-   "idx": 46
+   "idx": 47
   },
   {
    "fieldname": "crm_conversion_tab",
    "fieldtype": "Tab Break",
    "label": "CRM Conversion",
-   "idx": 47
+   "idx": 48
   },
   {
    "fieldname": "conversion_preparation_section",
    "label": "Conversion Preparation",
    "fieldtype": "Section Break",
-   "idx": 48
+   "idx": 49
   },
   {
    "fieldname": "crm_conversion_notes",
    "label": "CRM Conversion Notes",
    "fieldtype": "Small Text",
-   "idx": 49
+   "idx": 50
   },
   {
    "fieldname": "frappe_crm_links_section",
    "label": "Frappe CRM Links",
    "fieldtype": "Section Break",
-   "idx": 50
+   "idx": 51
   },
   {
    "fieldname": "crm_links_html",
    "label": "CRM Records",
    "fieldtype": "HTML",
-   "idx": 51
+   "idx": 52
   },
   {
    "fieldname": "crm_lead",
@@ -418,7 +426,7 @@
    "read_only": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 51
+   "idx": 53
   },
   {
    "fieldname": "crm_deal",
@@ -429,13 +437,13 @@
    "read_only": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 52
+   "idx": 54
   },
   {
    "fieldname": "column_break_4",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 53
+   "idx": 55
   },
   {
    "fieldname": "crm_organization",
@@ -444,7 +452,7 @@
    "fieldtype": "Link",
    "options": "CRM Organization",
    "read_only": 1,
-   "idx": 54
+   "idx": 56
   },
   {
    "fieldname": "crm_contact",
@@ -453,7 +461,7 @@
    "fieldtype": "Link",
    "options": "Contact",
    "read_only": 1,
-   "idx": 55
+   "idx": 57
   }
  ],
  "links": [],
