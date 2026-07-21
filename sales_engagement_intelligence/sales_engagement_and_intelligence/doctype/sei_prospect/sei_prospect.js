@@ -879,14 +879,32 @@ function configure_virtual_contact_role_rows(frm, field) {
     });
 }
 
-function load_contact_role_requirements(frm) {
-    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_contact_role_requirements) return;
+function load_contact_role_requirements(frm, row = null) {
+    if (!frm.doc.name || frm.is_new()) return;
+
+    if (row?.name) {
+        frm.__sei_pending_contact_role_rows ||= new Set();
+        frm.__sei_pending_contact_role_rows.add(row.name);
+    }
+
+    if (frm.__sei_contact_role_requirements) {
+        update_open_contact_signal_relevance_placeholder(frm, row);
+        return;
+    }
+    if (frm.__sei_loading_contact_role_requirements) return;
+
     frm.__sei_loading_contact_role_requirements = true;
     frappe.call({
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_prospect_contact_role_requirements',
         args: { prospect: frm.doc.name },
         callback(r) {
             frm.__sei_contact_role_requirements = (r.message && r.message.data) || {};
+            const pending = frm.__sei_pending_contact_role_rows || new Set();
+            pending.forEach(name => {
+                const contact = (frm.doc.contacts || []).find(item => item.name === name);
+                if (contact) update_open_contact_signal_relevance_placeholder(frm, contact);
+            });
+            pending.clear();
             update_open_contact_signal_relevance_placeholder(frm);
         },
         always() {
@@ -1022,10 +1040,10 @@ function materialize_virtual_contact_role(frm, field, role) {
 
 frappe.ui.form.on('SEI Prospect Contact', {
     form_render(frm, cdt, cdn) {
-        update_open_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
+        load_contact_role_requirements(frm, locals[cdt][cdn]);
     },
     contact_role(frm, cdt, cdn) {
-        update_open_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
+        load_contact_role_requirements(frm, locals[cdt][cdn]);
     }
 });
 
