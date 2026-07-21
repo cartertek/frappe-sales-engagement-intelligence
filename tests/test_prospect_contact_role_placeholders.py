@@ -49,22 +49,34 @@ def test_contact_service_distinguishes_real_contacts_and_missing_roles():
     assert "def ensure_required_contact_roles" not in CONTACTS.read_text()
 
 
-def test_contact_grid_renders_native_unsaved_placeholder_rows():
+def test_contact_grid_renders_virtual_roles_without_mutating_the_document_on_load():
     source = SCRIPT.read_text()
-    assert "get_missing_prospect_contact_roles" in source
-    assert "row = frm.add_child('contacts', { contact_role: role })" in source
-    assert "row.__sei_contact_role_placeholder = 1" in source
-    assert "remove_local_contact_role_placeholders(frm)" in source
-    assert "frappe.model.clear_doc(row.doctype, row.name)" in source
-    assert "materialize_contact_role_placeholder(cdt, cdn)" in source
-    assert "normalize_contact_row_indices(frm)" in source
-    assert "row.idx = index + 1" in source
-    assert "grid-row sei-contact-role-placeholder" not in source
-    assert "Add contact for this Playbook role" not in source
+    assert "grid.get_data =" not in source
+    assert "__sei_original_get_data" not in source
+    assert "render_virtual_contact_role_rows(frm, field)" in source
+    assert "template.clone(false, false)" in source
+    assert "rows.append(placeholder)" in source
+    assert "renumber_visible_contact_rows(rows)" in source
+    assert ".find('.row-index span').first().text(index + 1)" in source
+    assert "load_missing_contact_roles(frm, field)" in source
+    render_start = source.index("function render_virtual_contact_role_rows")
+    materialize_start = source.index("function materialize_virtual_contact_role")
+    assert "frm.add_child('contacts'" not in source[render_start:materialize_start]
+    assert "frm.doc.__unsaved" not in source
+    assert "__sei_contact_role_placeholder" not in source
+
+
+def test_virtual_contact_role_materializes_only_after_user_click():
+    source = SCRIPT.read_text()
+    assert "placeholder.on('click.sei_virtual_contact_role'" in source
+    assert "materialize_virtual_contact_role(frm, field, role)" in source
+    assert "const row = frm.add_child('contacts', { contact_role: role, is_primary: 0 })" in source
+    assert "grid_row.toggle_view(true)" in source
 
 
 def test_patch_deletes_only_role_only_contact_children():
     source = PATCH.read_text()
-    for field in ("contact_name", "emails", "notes", "is_primary", "crm_contact"):
+    for field in ("contact_name", "emails", "notes", "crm_contact"):
         assert field in source
+    assert "is_primary" not in source
     assert "DELETE FROM `tabSEI Prospect Contact`" in source

@@ -12,11 +12,6 @@ frappe.ui.form.on('SEI Prospect', {
         render_crm_links(frm);
         render_signals_embedded_list(frm);
     },
-
-    before_save(frm) {
-        remove_local_contact_role_placeholders(frm);
-        normalize_contact_row_indices(frm);
-    }
 });
 
 
@@ -822,92 +817,140 @@ function normalize_managed_grid_editor(field, key) {
 
 function configure_contact_grid(frm) {
     const field = frm.fields_dict.contacts;
-    if (!field || !field.$wrapper) return;
+    if (!field || !field.$wrapper || !field.grid) return;
 
-    if (field.grid) {
-        const email_field = field.grid.get_field('emails');
-        if (email_field) {
-            email_field.formatter = value => {
-                const display = String(value || '')
-                    .split(/[\n,;]+/)
-                    .map(email => email.trim())
-                    .filter(Boolean)
-                    .join(', ');
-                const escaped = frappe.utils.escape_html(display);
-                return `<span class="ellipsis" title="${escaped}">${escaped}</span>`;
-            };
-        }
+    const email_field = field.grid.get_field('emails');
+    if (email_field) {
+        email_field.formatter = value => {
+            const display = String(value || '')
+                .split(/[\n,;]+/)
+                .map(email => email.trim())
+                .filter(Boolean)
+                .join(', ');
+            const escaped = frappe.utils.escape_html(display);
+            return `<span class="ellipsis" title="${escaped}">${escaped}</span>`;
+        };
     }
 
+    configure_virtual_contact_role_rows(frm, field);
     normalize_managed_grid_editor(field, 'contact');
-    render_missing_contact_role_placeholders(frm, field);
+    load_missing_contact_roles(frm, field);
 }
 
+function configure_virtual_contact_role_rows(frm, field) {
+    const grid = field.grid;
+    if (grid.__sei_virtual_contact_roles_configured) return;
 
-function render_missing_contact_role_placeholders(frm, field) {
-    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_contact_placeholders) return;
+    grid.__sei_virtual_contact_roles_configured = true;
+    grid.wrapper.off('change.sei_virtual_contact_roles');
+    grid.wrapper.on('change.sei_virtual_contact_roles', () => {
+        render_virtual_contact_role_rows(frm, field);
+    });
+}
 
-    remove_local_contact_role_placeholders(frm);
-    frm.__sei_loading_contact_placeholders = true;
-    const wasDirty = frm.is_dirty();
+function load_missing_contact_roles(frm, field) {
+    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_missing_contact_roles) return;
 
+    frm.__sei_loading_missing_contact_roles = true;
     frappe.call({
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_missing_prospect_contact_roles',
         args: { prospect: frm.doc.name },
         callback(r) {
-            const roles = (r.message && r.message.data) || [];
-            roles.forEach(role => {
-                const row = frm.add_child('contacts', { contact_role: role });
-                row.__sei_contact_role_placeholder = 1;
-            });
-            normalize_contact_row_indices(frm);
-            frm.refresh_field('contacts');
-            if (!wasDirty) {
-                frm.doc.__unsaved = 0;
-            }
+            frm.__sei_missing_contact_roles = (r.message && r.message.data) || [];
+            render_virtual_contact_role_rows(frm, field);
         },
         always() {
-            frm.__sei_loading_contact_placeholders = false;
+            frm.__sei_loading_missing_contact_roles = false;
         }
     });
 }
 
-function remove_local_contact_role_placeholders(frm) {
-    const placeholders = (frm.doc.contacts || []).filter(row => row.__sei_contact_role_placeholder);
-    placeholders.forEach(row => frappe.model.clear_doc(row.doctype, row.name));
+function render_virtual_contact_role_rows(frm, field) {
+    const grid = field.grid;
+    const rows = grid.wrapper.find('.grid-body .rows').first();
+    if (!rows.length) return;
+
+    rows.children('.sei-virtual-contact-role-row').remove();
+
+    const real_contacts = frm.doc.contacts || [];
+    const real_roles = new Set(
+        real_contacts
+            .map(row => String(row.contact_role || '').trim().toLowerCase())
+            .filter(Boolean)
+    );
+    const missing_roles = (frm.__sei_missing_contact_roles || []).filter(
+        role => !real_roles.has(String(role || '').trim().toLowerCase())
+    );
+    if (!missing_roles.length) return;
+
+    const native_row = rows.children('.grid-row').not('.sei-virtual-contact-role-row').first();
+    const heading_row = grid.wrapper.find('.grid-heading-row .grid-row').first();
+    const template = native_row.length ? native_row : heading_row;
+    if (!template.length) return;
+
+    missing_roles.forEach((role, offset) => {
+        const placeholder = template.clone(false, false);
+        placeholder
+            .removeAttr('data-name data-idx')
+            .addClass('sei-virtual-contact-role-row')
+            .attr('data-sei-contact-role', role);
+        placeholder.find('.grid-form').remove();
+        placeholder.find('.grid-row-check').prop('checked', false).prop('disabled', true);
+        placeholder.find('.row-index span').text(real_contacts.length + offset + 1);
+
+        placeholder.find('[data-fieldname]').each(function() {
+            const cell = $(this);
+            const fieldname = cell.attr('data-fieldname');
+            const value = fieldname === 'contact_role' ? role : '';
+            cell.removeClass('error invalid');
+
+            const static_area = cell.find('.static-area');
+            if (static_area.length) {
+                static_area.empty();
+                if (fieldname === 'is_primary') {
+                    $('<input type="checkbox" disabled>').appendTo(static_area);
+                } else {
+                    static_area.text(value);
+                }
+                cell.find('.field-area').hide();
+            } else {
+                cell.empty().text(value);
+            }
+        });
+
+        placeholder.find('.btn-open-row').removeAttr('data-original-title title');
+        placeholder.on('click.sei_virtual_contact_role', event => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            materialize_virtual_contact_role(frm, field, role);
+        });
+        rows.append(placeholder);
+    });
+
+    renumber_visible_contact_rows(rows);
 }
 
-function normalize_contact_row_indices(frm) {
-    (frm.doc.contacts || []).forEach((row, index) => {
-        row.idx = index + 1;
+function renumber_visible_contact_rows(rows) {
+    rows.children('.grid-row').each((index, element) => {
+        $(element).find('.row-index span').first().text(index + 1);
     });
 }
 
-function materialize_contact_role_placeholder(cdt, cdn) {
-    const row = locals[cdt] && locals[cdt][cdn];
-    if (row && row.__sei_contact_role_placeholder) {
-        delete row.__sei_contact_role_placeholder;
-    }
+function materialize_virtual_contact_role(frm, field, role) {
+    if (frm.__sei_materializing_contact_role) return;
+    frm.__sei_materializing_contact_role = true;
+    frm.__sei_missing_contact_roles = (frm.__sei_missing_contact_roles || []).filter(
+        missing_role => missing_role.toLowerCase() !== role.toLowerCase()
+    );
+
+    const row = frm.add_child('contacts', { contact_role: role, is_primary: 0 });
+    frm.refresh_field('contacts');
+    window.setTimeout(() => {
+        const grid_row = field.grid.grid_rows_by_docname[row.name];
+        if (grid_row) grid_row.toggle_view(true);
+        frm.__sei_materializing_contact_role = false;
+    }, 0);
 }
-
-
-frappe.ui.form.on('SEI Prospect Contact', {
-    contact_role(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    contact_name(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    emails(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    notes(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    is_primary(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    }
-});
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
