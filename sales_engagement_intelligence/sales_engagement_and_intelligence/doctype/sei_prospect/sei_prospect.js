@@ -12,11 +12,6 @@ frappe.ui.form.on('SEI Prospect', {
         render_crm_links(frm);
         render_signals_embedded_list(frm);
     },
-
-    before_save(frm) {
-        remove_local_contact_role_placeholders(frm);
-        normalize_contact_row_indices(frm);
-    }
 });
 
 
@@ -840,74 +835,8 @@ function configure_contact_grid(frm) {
     }
 
     normalize_managed_grid_editor(field, 'contact');
-    render_missing_contact_role_placeholders(frm, field);
 }
 
-
-function render_missing_contact_role_placeholders(frm, field) {
-    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_contact_placeholders) return;
-
-    remove_local_contact_role_placeholders(frm);
-    frm.__sei_loading_contact_placeholders = true;
-    const wasDirty = frm.is_dirty();
-
-    frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_missing_prospect_contact_roles',
-        args: { prospect: frm.doc.name },
-        callback(r) {
-            const roles = (r.message && r.message.data) || [];
-            roles.forEach(role => {
-                const row = frm.add_child('contacts', { contact_role: role });
-                row.__sei_contact_role_placeholder = 1;
-            });
-            normalize_contact_row_indices(frm);
-            frm.refresh_field('contacts');
-            if (!wasDirty) {
-                frm.doc.__unsaved = 0;
-            }
-        },
-        always() {
-            frm.__sei_loading_contact_placeholders = false;
-        }
-    });
-}
-
-function remove_local_contact_role_placeholders(frm) {
-    const placeholders = (frm.doc.contacts || []).filter(row => row.__sei_contact_role_placeholder);
-    placeholders.forEach(row => frappe.model.clear_doc(row.doctype, row.name));
-}
-
-function normalize_contact_row_indices(frm) {
-    (frm.doc.contacts || []).forEach((row, index) => {
-        row.idx = index + 1;
-    });
-}
-
-function materialize_contact_role_placeholder(cdt, cdn) {
-    const row = locals[cdt] && locals[cdt][cdn];
-    if (row && row.__sei_contact_role_placeholder) {
-        delete row.__sei_contact_role_placeholder;
-    }
-}
-
-
-frappe.ui.form.on('SEI Prospect Contact', {
-    contact_role(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    contact_name(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    emails(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    notes(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    },
-    is_primary(frm, cdt, cdn) {
-        materialize_contact_role_placeholder(cdt, cdn);
-    }
-});
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {

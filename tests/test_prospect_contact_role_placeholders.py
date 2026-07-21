@@ -49,18 +49,13 @@ def test_contact_service_distinguishes_real_contacts_and_missing_roles():
     assert "def ensure_required_contact_roles" not in CONTACTS.read_text()
 
 
-def test_contact_grid_renders_native_unsaved_placeholder_rows():
+def test_contact_grid_does_not_mutate_document_with_placeholder_rows():
     source = SCRIPT.read_text()
-    assert "get_missing_prospect_contact_roles" in source
-    assert "row = frm.add_child('contacts', { contact_role: role })" in source
-    assert "row.__sei_contact_role_placeholder = 1" in source
-    assert "remove_local_contact_role_placeholders(frm)" in source
-    assert "frappe.model.clear_doc(row.doctype, row.name)" in source
-    assert "materialize_contact_role_placeholder(cdt, cdn)" in source
-    assert "normalize_contact_row_indices(frm)" in source
-    assert "row.idx = index + 1" in source
-    assert "grid-row sei-contact-role-placeholder" not in source
-    assert "Add contact for this Playbook role" not in source
+    assert "frm.add_child('contacts'" not in source
+    assert "__sei_contact_role_placeholder" not in source
+    assert "render_missing_contact_role_placeholders" not in source
+    assert "remove_local_contact_role_placeholders" not in source
+    assert "materialize_contact_role_placeholder" not in source
 
 
 def test_patch_deletes_only_role_only_contact_children():
