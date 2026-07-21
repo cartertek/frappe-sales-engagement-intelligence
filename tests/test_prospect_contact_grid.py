@@ -76,3 +76,12 @@ def test_signal_relevance_placeholder_targets_contact_grid_row():
     ).read_text()
     assert "grid.grid_rows_by_docname?.[contact.name] || grid.open_grid_row" in script
     assert "grid_row?.grid_form?.fields_dict?.signal_relevance" in script
+
+
+def test_signal_relevance_placeholder_survives_child_row_rerender():
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "const apply_placeholder = () =>" in script
+    assert "window.setTimeout(apply_placeholder, 300)" in script

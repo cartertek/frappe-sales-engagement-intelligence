@@ -928,8 +928,18 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
         ? __('Explain how this contact is relevant to one of the prospect signals')
         : __('Presumed relevant');
     control.df.placeholder = placeholder;
-    control.$input?.attr('placeholder', placeholder);
-    control.$wrapper?.find('textarea, input').attr('placeholder', placeholder);
+
+    const apply_placeholder = () => {
+        control.$input?.attr('placeholder', placeholder);
+        control.$wrapper?.find('textarea, input').attr('placeholder', placeholder);
+        grid_row?.grid_form?.wrapper?.find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
+            .attr('placeholder', placeholder);
+    };
+
+    apply_placeholder();
+    window.setTimeout(apply_placeholder, 0);
+    window.setTimeout(apply_placeholder, 100);
+    window.setTimeout(apply_placeholder, 300);
 }
 
 
