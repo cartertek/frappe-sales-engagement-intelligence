@@ -842,27 +842,9 @@ function configure_virtual_contact_role_rows(frm, field) {
     if (grid.__sei_virtual_contact_roles_configured) return;
 
     grid.__sei_virtual_contact_roles_configured = true;
-    grid.__sei_original_get_data = grid.get_data.bind(grid);
-    grid.get_data = function(filter_field) {
-        const real_contacts = this.__sei_original_get_data(filter_field) || [];
-        if (filter_field || !frm.__sei_missing_contact_roles) return real_contacts;
-
-        const placeholders = frm.__sei_missing_contact_roles.map((role, offset) => ({
-            doctype: this.df.options,
-            name: `__sei_virtual_contact_role_${offset}`,
-            parent: frm.doc.name,
-            parenttype: frm.doc.doctype,
-            parentfield: this.df.fieldname,
-            idx: real_contacts.length + offset + 1,
-            contact_role: role,
-            _sei_virtual_contact_role: role,
-        }));
-        return real_contacts.concat(placeholders);
-    };
-
+    grid.wrapper.off('change.sei_virtual_contact_roles');
     grid.wrapper.on('change.sei_virtual_contact_roles', () => {
-        normalize_managed_grid_editor(field, 'contact');
-        bind_virtual_contact_role_rows(frm, field);
+        render_virtual_contact_role_rows(frm, field);
     });
 }
 
@@ -875,8 +857,7 @@ function load_missing_contact_roles(frm, field) {
         args: { prospect: frm.doc.name },
         callback(r) {
             frm.__sei_missing_contact_roles = (r.message && r.message.data) || [];
-            field.grid.refresh();
-            bind_virtual_contact_role_rows(frm, field);
+            render_virtual_contact_role_rows(frm, field);
         },
         always() {
             frm.__sei_loading_missing_contact_roles = false;
@@ -884,19 +865,66 @@ function load_missing_contact_roles(frm, field) {
     });
 }
 
-function bind_virtual_contact_role_rows(frm, field) {
-    (field.grid.grid_rows || []).forEach(grid_row => {
-        const role = grid_row.doc && grid_row.doc._sei_virtual_contact_role;
-        if (!role || grid_row.__sei_virtual_role_bound) return;
+function render_virtual_contact_role_rows(frm, field) {
+    const grid = field.grid;
+    const rows = grid.wrapper.find('.grid-body .rows').first();
+    if (!rows.length) return;
 
-        grid_row.__sei_virtual_role_bound = true;
-        grid_row.wrapper.addClass('sei-virtual-contact-role-row');
-        grid_row.wrapper.find('.grid-row-check').prop('disabled', true);
-        grid_row.wrapper.get(0).addEventListener('click', event => {
+    rows.children('.sei-virtual-contact-role-row').remove();
+
+    const real_contacts = frm.doc.contacts || [];
+    const real_roles = new Set(
+        real_contacts
+            .map(row => String(row.contact_role || '').trim().toLowerCase())
+            .filter(Boolean)
+    );
+    const missing_roles = (frm.__sei_missing_contact_roles || []).filter(
+        role => !real_roles.has(String(role || '').trim().toLowerCase())
+    );
+    if (!missing_roles.length) return;
+
+    const native_row = rows.children('.grid-row').not('.sei-virtual-contact-role-row').first();
+    const heading_row = grid.wrapper.find('.grid-heading-row .grid-row').first();
+    const template = native_row.length ? native_row : heading_row;
+    if (!template.length) return;
+
+    missing_roles.forEach((role, offset) => {
+        const placeholder = template.clone(false, false);
+        placeholder
+            .removeAttr('data-name data-idx')
+            .addClass('sei-virtual-contact-role-row')
+            .attr('data-sei-contact-role', role);
+        placeholder.find('.grid-form').remove();
+        placeholder.find('.grid-row-check').prop('checked', false).prop('disabled', true);
+        placeholder.find('.row-index span').text(real_contacts.length + offset + 1);
+
+        placeholder.find('[data-fieldname]').each(function() {
+            const cell = $(this);
+            const fieldname = cell.attr('data-fieldname');
+            const value = fieldname === 'contact_role' ? role : '';
+            cell.removeClass('error invalid');
+
+            const static_area = cell.find('.static-area');
+            if (static_area.length) {
+                static_area.empty();
+                if (fieldname === 'is_primary') {
+                    $('<input type="checkbox" disabled>').appendTo(static_area);
+                } else {
+                    static_area.text(value);
+                }
+                cell.find('.field-area').hide();
+            } else {
+                cell.empty().text(value);
+            }
+        });
+
+        placeholder.find('.btn-open-row').removeAttr('data-original-title title');
+        placeholder.on('click.sei_virtual_contact_role', event => {
             event.preventDefault();
             event.stopImmediatePropagation();
             materialize_virtual_contact_role(frm, field, role);
-        }, true);
+        });
+        rows.append(placeholder);
     });
 }
 
@@ -907,7 +935,7 @@ function materialize_virtual_contact_role(frm, field, role) {
         missing_role => missing_role.toLowerCase() !== role.toLowerCase()
     );
 
-    const row = frm.add_child('contacts', { contact_role: role });
+    const row = frm.add_child('contacts', { contact_role: role, is_primary: 0 });
     frm.refresh_field('contacts');
     window.setTimeout(() => {
         const grid_row = field.grid.grid_rows_by_docname[row.name];

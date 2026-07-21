@@ -32,7 +32,6 @@ def is_real_contact(contact) -> bool:
         contact.get("contact_name")
         or emails(contact)
         or contact.get("notes")
-        or contact.get("is_primary")
         or contact.get("crm_contact")
     )
 
