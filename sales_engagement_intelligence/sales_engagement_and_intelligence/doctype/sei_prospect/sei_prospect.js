@@ -12,14 +12,11 @@ frappe.ui.form.on('SEI Prospect', {
         render_crm_links(frm);
         render_signals_embedded_list(frm);
     },
-<<<<<<< HEAD
-=======
 
     before_save(frm) {
         remove_local_contact_role_placeholders(frm);
         normalize_contact_row_indices(frm);
     }
->>>>>>> 25a22d7 (Render playbook roles as native contact rows)
 });
 
 
@@ -894,8 +891,6 @@ function materialize_contact_role_placeholder(cdt, cdn) {
 }
 
 
-<<<<<<< HEAD
-=======
 frappe.ui.form.on('SEI Prospect Contact', {
     contact_role(frm, cdt, cdn) {
         materialize_contact_role_placeholder(cdt, cdn);
@@ -914,7 +909,6 @@ frappe.ui.form.on('SEI Prospect Contact', {
     }
 });
 
->>>>>>> 25a22d7 (Render playbook roles as native contact rows)
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
     sent(frm, cdt, cdn) {
