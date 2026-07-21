@@ -43,7 +43,6 @@
    "fieldname": "signal_relevance",
    "label": "Signal Relevance",
    "fieldtype": "Small Text",
-   "description": "Explain how this contact is relevant to one of the prospect signals when required by the Playbook role.",
    "idx": 4
   },
   {

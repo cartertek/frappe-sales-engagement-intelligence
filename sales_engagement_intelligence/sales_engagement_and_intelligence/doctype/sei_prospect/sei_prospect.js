@@ -906,10 +906,12 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
     if (!control) return;
 
     const signal_specific = contact_role_is_signal_specific(frm, contact.contact_role);
-    control.df.placeholder = signal_specific
+    const placeholder = signal_specific
         ? __('Explain how this contact is relevant to one of the prospect signals')
         : __('Presumed relevant');
-    control.refresh();
+    control.df.placeholder = placeholder;
+    control.$input?.attr('placeholder', placeholder);
+    control.$wrapper?.find('textarea, input').attr('placeholder', placeholder);
 }
 
 
