@@ -914,32 +914,25 @@ function load_contact_role_requirements(frm, row = null) {
 }
 
 function update_open_contact_signal_relevance_placeholder(frm, row = null) {
-    const field = frm.fields_dict.contacts;
-    const grid = field?.grid;
-    const contact = row || grid?.open_grid_row?.doc;
-    if (!contact || !grid) return;
+    const grid = frm.fields_dict.contacts?.grid;
+    const open_form = grid?.open_grid_row;
+    const contact = row || open_form?.row?.doc;
+    if (!grid || !open_form || !contact) return;
+    if (open_form.row?.doc?.name !== contact.name) return;
 
-    const grid_row = grid.grid_rows_by_docname?.[contact.name] || grid.open_grid_row;
-    const control = grid_row?.grid_form?.fields_dict?.signal_relevance;
+    const control = open_form.fields_dict?.signal_relevance;
     if (!control) return;
 
     const signal_specific = contact_role_is_signal_specific(frm, contact.contact_role);
     const placeholder = signal_specific
         ? __('Explain how this contact is relevant to one of the prospect signals')
         : __('Presumed relevant');
+
     control.df.placeholder = placeholder;
-
-    const apply_placeholder = () => {
-        control.$input?.attr('placeholder', placeholder);
-        control.$wrapper?.find('textarea, input').attr('placeholder', placeholder);
-        grid_row?.grid_form?.wrapper?.find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
-            .attr('placeholder', placeholder);
-    };
-
-    apply_placeholder();
-    window.setTimeout(apply_placeholder, 0);
-    window.setTimeout(apply_placeholder, 100);
-    window.setTimeout(apply_placeholder, 300);
+    control.$input?.attr('placeholder', placeholder);
+    open_form.wrapper
+        .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
+        .attr('placeholder', placeholder);
 }
 
 
