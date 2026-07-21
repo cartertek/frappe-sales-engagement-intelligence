@@ -43,3 +43,17 @@ def test_prospect_metadata_child_table_has_name_and_value():
         ("Value", "Data", 1),
     ]
     assert all(field["in_list_view"] == 1 for field in fields)
+
+
+def test_metadata_migration_reattaches_existing_rows():
+    patch = (
+        ROOT
+        / "sales_engagement_intelligence"
+        / "patches"
+        / "v0_0_1"
+        / "reattach_prospect_metadata_rows.py"
+    ).read_text()
+    assert "parentfield = 'prospect_metadata'" in patch
+    assert "parentfield = 'metadata'" in patch
+    assert "parenttype = 'SEI Prospect'" in patch
+    assert "reattach_prospect_metadata_rows" in (ROOT / "sales_engagement_intelligence" / "patches.txt").read_text()
