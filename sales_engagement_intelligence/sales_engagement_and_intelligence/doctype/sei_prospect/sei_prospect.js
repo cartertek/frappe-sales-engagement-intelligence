@@ -1,4 +1,8 @@
 frappe.ui.form.on('SEI Prospect', {
+    contacts_on_form_rendered(frm) {
+        const row = frm.fields_dict.contacts?.grid?.open_grid_row?.row?.doc;
+        refresh_contact_signal_relevance_placeholder(frm, row);
+    },
     onload_post_render(frm) {
         activate_default_prospect_tab(frm);
     },
@@ -1054,9 +1058,6 @@ function refresh_contact_signal_relevance_placeholder(frm, row) {
 }
 
 frappe.ui.form.on('SEI Prospect Contact', {
-    form_render(frm, cdt, cdn) {
-        refresh_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
-    },
     contact_role(frm, cdt, cdn) {
         refresh_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
     }
