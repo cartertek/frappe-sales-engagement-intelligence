@@ -1038,12 +1038,24 @@ function materialize_virtual_contact_role(frm, field, role) {
 }
 
 
+function refresh_contact_signal_relevance_placeholder(frm, row) {
+    if (!frm.doc.name || frm.is_new() || !row) return;
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_prospect_contact_role_requirements',
+        args: { prospect: frm.doc.name },
+        callback(r) {
+            frm.__sei_contact_role_requirements = (r.message && r.message.data) || {};
+            update_open_contact_signal_relevance_placeholder(frm, row);
+        }
+    });
+}
+
 frappe.ui.form.on('SEI Prospect Contact', {
     form_render(frm, cdt, cdn) {
-        load_contact_role_requirements(frm, locals[cdt][cdn]);
+        refresh_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
     },
     contact_role(frm, cdt, cdn) {
-        load_contact_role_requirements(frm, locals[cdt][cdn]);
+        refresh_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
     }
 });
 
