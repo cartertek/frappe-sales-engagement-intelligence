@@ -36,26 +36,38 @@ def is_real_contact(contact) -> bool:
     )
 
 
-def required_contact_roles(prospect) -> list[str]:
+def contact_role_requirements(prospect) -> dict[str, bool]:
     prospect_name = prospect.get("name") if hasattr(prospect, "get") else str(prospect or "")
-    playbooks = ""
-    if hasattr(prospect, "get"):
-        playbooks = prospect.get("playbooks") or ""
+    playbooks = (prospect.get("playbooks") or "") if hasattr(prospect, "get") else ""
     if prospect_name:
         playbooks = frappe.db.get_value("SEI Prospect", prospect_name, "playbooks") or playbooks
     names = [value.strip() for value in playbooks.split(",") if value.strip()]
-    roles = {
-        row.contact_role
-        for name in names
+    requirements: dict[str, bool] = {}
+    for name in names:
         for row in frappe.get_all(
             "SEI Playbook Contact Role",
             filters={"parent": name, "parenttype": "SEI Playbook"},
-            fields=["contact_role"],
+            fields=["contact_role", "signal_specific_relevance"],
             order_by="idx",
-        )
-        if row.contact_role
-    }
-    return sorted(roles, key=str.casefold)
+        ):
+            role = (row.contact_role or "").strip()
+            if role:
+                requirements[role] = requirements.get(role, False) or bool(
+                    row.signal_specific_relevance
+                )
+    return dict(sorted(requirements.items(), key=lambda item: item[0].casefold()))
+
+
+def contact_role_requires_signal_relevance(prospect, role: str) -> bool:
+    normalized = (role or "").strip().casefold()
+    return any(
+        name.casefold() == normalized and signal_specific
+        for name, signal_specific in contact_role_requirements(prospect).items()
+    )
+
+
+def required_contact_roles(prospect) -> list[str]:
+    return list(contact_role_requirements(prospect))
 
 
 def missing_required_contact_roles(prospect) -> list[str]:

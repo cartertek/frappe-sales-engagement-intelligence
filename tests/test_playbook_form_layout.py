@@ -58,3 +58,11 @@ def test_playbook_textareas_match_signal_form_height():
         assert f"'{fieldname}'" in script
     assert "height: '88px'" in script
     assert "'min-height': '88px'" in script
+
+
+def test_playbook_contact_roles_support_signal_specific_relevance():
+    path = DOCTYPE_DIR.parent / 'sei_playbook_contact_role' / 'sei_playbook_contact_role.json'
+    fields = {field['fieldname']: field for field in json.loads(path.read_text())['fields']}
+    assert fields['signal_specific_relevance']['fieldtype'] == 'Check'
+    assert fields['signal_specific_relevance']['default'] == 0
+    assert fields['signal_specific_relevance']['in_list_view'] == 1

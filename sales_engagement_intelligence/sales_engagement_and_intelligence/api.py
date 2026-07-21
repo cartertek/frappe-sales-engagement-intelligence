@@ -1241,6 +1241,16 @@ def get_missing_prospect_contact_roles(prospect: str) -> list[str]:
 
 
 @api_endpoint
+def get_prospect_contact_role_requirements(prospect: str) -> dict[str, bool]:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        contact_role_requirements,
+    )
+
+    return contact_role_requirements(frappe.get_doc("SEI Prospect", prospect))
+
+
+@api_endpoint
 def get_prospect_contact_options(prospect: str) -> list[str]:
     _check_prospect_permission(prospect, "read")
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
