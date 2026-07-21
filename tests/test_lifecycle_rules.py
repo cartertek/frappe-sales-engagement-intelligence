@@ -18,7 +18,11 @@ class Prospect(dict):
 
 def load_lifecycle_module(monkeypatch):
     frappe = types.ModuleType("frappe")
-    frappe.db = types.SimpleNamespace(exists=lambda *args, **kwargs: False)
+    frappe.db = types.SimpleNamespace(
+        exists=lambda *args, **kwargs: False,
+        sql=lambda *args, **kwargs: [types.SimpleNamespace(value="Hiring Gap")],
+    )
+    frappe.get_all = lambda *args, **kwargs: [types.SimpleNamespace(contact_role="CTO")]
     frappe.get_doc = lambda *args, **kwargs: None
 
     model = types.ModuleType("frappe.model")
@@ -129,6 +133,58 @@ def test_find_contact_without_contact_stays_find_contact(monkeypatch):
     assert (
         lifecycle.suggest_lifecycle_status_for_doc(
             prospect(qualification_status="Qualified", lifecycle_status="Find Contact")
+        )
+        == "Find Contact"
+    )
+
+
+def test_find_contact_with_name_only_primary_contact_stays_find_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Find Contact",
+                contacts=[Prospect(contact_name="Buyer", contact_role="CTO", emails="", is_primary=1)],
+            )
+        )
+        == "Find Contact"
+    )
+
+
+def test_find_contact_with_email_for_non_playbook_role_stays_find_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Find Contact",
+                contacts=[
+                    Prospect(
+                        contact_name="Buyer",
+                        contact_role="Unrelated Role",
+                        emails="buyer@example.com",
+                        is_primary=1,
+                    )
+                ],
+            )
+        )
+        == "Find Contact"
+    )
+
+
+def test_ready_status_without_primary_contact_email_returns_to_find_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Ready for CRM Conversion",
+                contacts=[Prospect(contact_name="Buyer", contact_role="CTO", emails="", is_primary=1)],
+            )
         )
         == "Find Contact"
     )
@@ -262,12 +318,51 @@ def test_mark_ready_enters_find_contact_without_primary_contact(monkeypatch):
     assert writes[0][0][2:] == ("lifecycle_status", "Find Contact")
 
 
+def test_mark_ready_enters_find_contact_with_name_only_primary_contact(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Qualified",
+        contacts=[Prospect(contact_name="Buyer", emails="", is_primary=1)],
+    )
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Find Contact"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Find Contact")
+
+
+def test_mark_ready_enters_find_contact_for_email_on_non_playbook_role(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Qualified",
+        contacts=[
+            Prospect(
+                contact_name="Buyer",
+                contact_role="Unrelated Role",
+                emails="buyer@example.com",
+                is_primary=1,
+            )
+        ],
+    )
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Find Contact"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Find Contact")
+
+
 def test_mark_ready_enters_ready_status_with_usable_primary_contact(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
     doc = prospect(
         qualification_status="Qualified",
         lifecycle_status="Qualified",
-        contacts=[Prospect(contact_name="Buyer", emails="buyer@example.com", is_primary=1)],
+        contacts=[
+            Prospect(contact_name="Buyer", contact_role="CTO", emails="buyer@example.com", is_primary=1)
+        ],
     )
     writes = configure_persistence(monkeypatch, lifecycle, doc)
 
@@ -322,3 +417,16 @@ def test_mark_not_ready_rejects_non_handoff_status(monkeypatch):
     assert result["ok"] is False
     assert result["error"]["code"] == "CRM_HANDOFF_NOT_ACTIVE"
     assert writes == []
+
+
+def test_ready_contact_revalidation_patch_is_registered():
+    from pathlib import Path
+
+    patches = Path("sales_engagement_intelligence/patches.txt").read_text()
+    source = Path(
+        "sales_engagement_intelligence/patches/v0_0_1/revalidate_ready_for_crm_contacts.py"
+    ).read_text()
+
+    assert "revalidate_ready_for_crm_contacts" in patches
+    assert 'filters={"lifecycle_status": "Ready for CRM Conversion"}' in source
+    assert "apply_lifecycle_status(prospect)" in source

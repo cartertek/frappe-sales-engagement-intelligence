@@ -5,7 +5,13 @@ from typing import Optional
 import frappe
 from frappe.model.document import Document
 
-from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import primary_contacts
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+    emails,
+    primary_contacts,
+)
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    get_prospect_playbooks,
+)
 
 TERMINAL_STATUSES = (
     "Rejected",
@@ -19,8 +25,26 @@ def is_terminal_status(status: str) -> bool:
     return status in TERMINAL_STATUSES
 
 
+def get_playbook_contact_roles(prospect: Document) -> set[str]:
+    playbooks = get_prospect_playbooks(prospect.get("name"))
+    return {
+        row.contact_role.casefold()
+        for playbook in playbooks
+        for row in frappe.get_all(
+            "SEI Playbook Contact Role",
+            filters={"parent": playbook, "parenttype": "SEI Playbook"},
+            fields=["contact_role"],
+        )
+        if row.contact_role
+    }
+
+
 def has_contact_path(prospect: Document) -> bool:
-    return bool(primary_contacts(prospect))
+    playbook_roles = get_playbook_contact_roles(prospect)
+    return any(
+        emails(contact) and (contact.get("contact_role") or "").casefold() in playbook_roles
+        for contact in primary_contacts(prospect)
+    )
 
 
 def has_company_identity(prospect: Document) -> bool:
@@ -65,7 +89,7 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
                 return "Ready for CRM Conversion"
             return "Find Contact"
         if prospect.lifecycle_status == "Ready for CRM Conversion":
-            return "Ready for CRM Conversion"
+            return "Ready for CRM Conversion" if has_contact_path(prospect) else "Find Contact"
         return "Qualified"
 
     if prospect.qualification_status == "Needs Review":

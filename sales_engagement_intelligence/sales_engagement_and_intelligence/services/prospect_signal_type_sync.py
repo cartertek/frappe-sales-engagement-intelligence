@@ -26,11 +26,6 @@ def sync_prospect_signal_types(prospect: str | None) -> None:
         },
         update_modified=False,
     )
-    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
-        sync_required_contact_roles,
-    )
-
-    sync_required_contact_roles(prospect)
 
 
 def sync_all_prospect_signal_types() -> None:
