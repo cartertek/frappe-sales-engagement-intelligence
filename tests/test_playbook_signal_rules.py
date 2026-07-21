@@ -16,3 +16,27 @@ def test_playbook_drops_completely_blank_signal_rules_before_validation():
     assert 'self.remove_blank_signal_rules()' in source
     assert 'def remove_blank_signal_rules' in source
     assert 'self.set("signal_rules", rows)' in source
+
+
+def test_playbook_form_removes_blank_signal_rules_on_load_and_before_save():
+    source = (DOCTYPE / 'sei_playbook/sei_playbook.js').read_text()
+    assert 'refresh(frm)' in source
+    assert 'before_save(frm)' in source
+    assert source.count('remove_blank_signal_rule_rows(frm);') == 2
+    assert "frm.doc.signal_rules = retained;" in source
+    assert "frm.refresh_field('signal_rules');" in source
+    assert "value.trim()" in source
+
+
+def test_blank_signal_rule_cleanup_patch_is_registered():
+    patches = (ROOT / 'sales_engagement_intelligence/patches.txt').read_text()
+    entry = 'sales_engagement_intelligence.patches.v0_0_1.remove_blank_playbook_signal_rules'
+    assert entry in patches.splitlines()
+
+    patch = (
+        ROOT
+        / 'sales_engagement_intelligence/patches/v0_0_1/remove_blank_playbook_signal_rules.py'
+    ).read_text()
+    assert 'DELETE FROM `tabSEI Playbook Signal Rule`' in patch
+    assert "TRIM(COALESCE(signal_type, '')) = ''" in patch
+    assert "TRIM(COALESCE(notes, '')) = ''" in patch
