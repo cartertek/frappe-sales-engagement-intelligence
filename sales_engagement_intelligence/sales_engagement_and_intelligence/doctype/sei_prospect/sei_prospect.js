@@ -897,13 +897,15 @@ function load_contact_role_requirements(frm) {
 
 function update_open_contact_signal_relevance_placeholder(frm, row = null) {
     const field = frm.fields_dict.contacts;
-    const open_row = field?.grid?.open_grid_row;
-    const contact = row || open_row?.doc;
-    const control = open_row?.grid_form?.fields_dict?.signal_relevance;
-    if (!contact || !control) return;
+    const grid = field?.grid;
+    const contact = row || grid?.open_grid_row?.doc;
+    if (!contact || !grid) return;
 
-    const role = String(contact.contact_role || '').trim().toLowerCase();
-    const signal_specific = contact_role_is_signal_specific(frm, role);
+    const grid_row = grid.grid_rows_by_docname?.[contact.name] || grid.open_grid_row;
+    const control = grid_row?.grid_form?.fields_dict?.signal_relevance;
+    if (!control) return;
+
+    const signal_specific = contact_role_is_signal_specific(frm, contact.contact_role);
     control.df.placeholder = signal_specific
         ? __('Explain how this contact is relevant to one of the prospect signals')
         : __('Presumed relevant');

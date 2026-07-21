@@ -67,3 +67,12 @@ def test_contact_editor_exposes_dynamic_signal_relevance_placeholder():
     assert "contact_role_is_signal_specific" in script
     assert "row.signal_relevance" in script
     assert "frappe.ui.form.on('SEI Prospect Contact'" in script
+
+
+def test_signal_relevance_placeholder_targets_contact_grid_row():
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "grid.grid_rows_by_docname?.[contact.name] || grid.open_grid_row" in script
+    assert "grid_row?.grid_form?.fields_dict?.signal_relevance" in script
