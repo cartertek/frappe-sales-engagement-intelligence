@@ -20,15 +20,15 @@ def test_prospect_metadata_table_is_in_identity_section():
     fields = {field["fieldname"]: field for field in prospect["fields"]}
     order = prospect["field_order"]
 
-    assert fields["metadata"] == {
-        "fieldname": "metadata",
+    assert fields["prospect_metadata"] == {
+        "fieldname": "prospect_metadata",
         "label": "Metadata",
         "fieldtype": "Table",
         "options": "SEI Prospect Metadata",
-        "idx": fields["metadata"]["idx"],
+        "idx": fields["prospect_metadata"]["idx"],
     }
-    assert order.index("identity_section") < order.index("metadata")
-    assert order.index("metadata") < order.index("positioning_section")
+    assert order.index("identity_section") < order.index("prospect_metadata")
+    assert order.index("prospect_metadata") < order.index("positioning_section")
 
 
 def test_prospect_metadata_child_table_has_name_and_value():
