@@ -56,4 +56,5 @@ def test_metadata_migration_reattaches_existing_rows():
     assert "parentfield = 'prospect_metadata'" in patch
     assert "parentfield = 'metadata'" in patch
     assert "parenttype = 'SEI Prospect'" in patch
-    assert "reattach_prospect_metadata_rows" in (ROOT / "sales_engagement_intelligence" / "patches.txt").read_text()
+    patches = (ROOT / "sales_engagement_intelligence" / "patches.txt").read_text()
+    assert "reattach_prospect_metadata_rows" in patches
