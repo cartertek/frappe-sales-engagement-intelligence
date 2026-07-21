@@ -56,6 +56,8 @@ def test_contact_grid_renders_virtual_roles_without_mutating_the_document_on_loa
     assert "render_virtual_contact_role_rows(frm, field)" in source
     assert "template.clone(false, false)" in source
     assert "rows.append(placeholder)" in source
+    assert "renumber_visible_contact_rows(rows)" in source
+    assert ".find('.row-index span').first().text(index + 1)" in source
     assert "load_missing_contact_roles(frm, field)" in source
     render_start = source.index("function render_virtual_contact_role_rows")
     materialize_start = source.index("function materialize_virtual_contact_role")

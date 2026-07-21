@@ -926,6 +926,14 @@ function render_virtual_contact_role_rows(frm, field) {
         });
         rows.append(placeholder);
     });
+
+    renumber_visible_contact_rows(rows);
+}
+
+function renumber_visible_contact_rows(rows) {
+    rows.children('.grid-row').each((index, element) => {
+        $(element).find('.row-index span').first().text(index + 1);
+    });
 }
 
 function materialize_virtual_contact_role(frm, field, role) {
