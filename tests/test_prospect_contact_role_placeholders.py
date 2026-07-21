@@ -49,13 +49,25 @@ def test_contact_service_distinguishes_real_contacts_and_missing_roles():
     assert "def ensure_required_contact_roles" not in CONTACTS.read_text()
 
 
-def test_contact_grid_does_not_mutate_document_with_placeholder_rows():
+def test_contact_grid_renders_virtual_roles_without_mutating_the_document_on_load():
     source = SCRIPT.read_text()
-    assert "frm.add_child('contacts'" not in source
+    assert "grid.__sei_original_get_data = grid.get_data.bind(grid)" in source
+    assert "return real_contacts.concat(placeholders)" in source
+    assert "_sei_virtual_contact_role: role" in source
+    assert "load_missing_contact_roles(frm, field)" in source
+    load_start = source.index("function load_missing_contact_roles")
+    materialize_start = source.index("function materialize_virtual_contact_role")
+    assert "frm.add_child('contacts'" not in source[load_start:materialize_start]
+    assert "frm.doc.__unsaved" not in source
     assert "__sei_contact_role_placeholder" not in source
-    assert "render_missing_contact_role_placeholders" not in source
-    assert "remove_local_contact_role_placeholders" not in source
-    assert "materialize_contact_role_placeholder" not in source
+
+
+def test_virtual_contact_role_materializes_only_after_user_click():
+    source = SCRIPT.read_text()
+    assert "addEventListener('click'" in source
+    assert "materialize_virtual_contact_role(frm, field, role)" in source
+    assert "const row = frm.add_child('contacts', { contact_role: role })" in source
+    assert "grid_row.toggle_view(true)" in source
 
 
 def test_patch_deletes_only_role_only_contact_children():

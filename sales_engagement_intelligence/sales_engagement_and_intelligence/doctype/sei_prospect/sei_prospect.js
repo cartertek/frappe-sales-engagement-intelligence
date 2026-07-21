@@ -817,26 +817,104 @@ function normalize_managed_grid_editor(field, key) {
 
 function configure_contact_grid(frm) {
     const field = frm.fields_dict.contacts;
-    if (!field || !field.$wrapper) return;
+    if (!field || !field.$wrapper || !field.grid) return;
 
-    if (field.grid) {
-        const email_field = field.grid.get_field('emails');
-        if (email_field) {
-            email_field.formatter = value => {
-                const display = String(value || '')
-                    .split(/[\n,;]+/)
-                    .map(email => email.trim())
-                    .filter(Boolean)
-                    .join(', ');
-                const escaped = frappe.utils.escape_html(display);
-                return `<span class="ellipsis" title="${escaped}">${escaped}</span>`;
-            };
-        }
+    const email_field = field.grid.get_field('emails');
+    if (email_field) {
+        email_field.formatter = value => {
+            const display = String(value || '')
+                .split(/[\n,;]+/)
+                .map(email => email.trim())
+                .filter(Boolean)
+                .join(', ');
+            const escaped = frappe.utils.escape_html(display);
+            return `<span class="ellipsis" title="${escaped}">${escaped}</span>`;
+        };
     }
 
+    configure_virtual_contact_role_rows(frm, field);
     normalize_managed_grid_editor(field, 'contact');
+    load_missing_contact_roles(frm, field);
 }
 
+function configure_virtual_contact_role_rows(frm, field) {
+    const grid = field.grid;
+    if (grid.__sei_virtual_contact_roles_configured) return;
+
+    grid.__sei_virtual_contact_roles_configured = true;
+    grid.__sei_original_get_data = grid.get_data.bind(grid);
+    grid.get_data = function(filter_field) {
+        const real_contacts = this.__sei_original_get_data(filter_field) || [];
+        if (filter_field || !frm.__sei_missing_contact_roles) return real_contacts;
+
+        const placeholders = frm.__sei_missing_contact_roles.map((role, offset) => ({
+            doctype: this.df.options,
+            name: `__sei_virtual_contact_role_${offset}`,
+            parent: frm.doc.name,
+            parenttype: frm.doc.doctype,
+            parentfield: this.df.fieldname,
+            idx: real_contacts.length + offset + 1,
+            contact_role: role,
+            _sei_virtual_contact_role: role,
+        }));
+        return real_contacts.concat(placeholders);
+    };
+
+    grid.wrapper.on('change.sei_virtual_contact_roles', () => {
+        normalize_managed_grid_editor(field, 'contact');
+        bind_virtual_contact_role_rows(frm, field);
+    });
+}
+
+function load_missing_contact_roles(frm, field) {
+    if (!frm.doc.name || frm.is_new() || frm.__sei_loading_missing_contact_roles) return;
+
+    frm.__sei_loading_missing_contact_roles = true;
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_missing_prospect_contact_roles',
+        args: { prospect: frm.doc.name },
+        callback(r) {
+            frm.__sei_missing_contact_roles = (r.message && r.message.data) || [];
+            field.grid.refresh();
+            bind_virtual_contact_role_rows(frm, field);
+        },
+        always() {
+            frm.__sei_loading_missing_contact_roles = false;
+        }
+    });
+}
+
+function bind_virtual_contact_role_rows(frm, field) {
+    (field.grid.grid_rows || []).forEach(grid_row => {
+        const role = grid_row.doc && grid_row.doc._sei_virtual_contact_role;
+        if (!role || grid_row.__sei_virtual_role_bound) return;
+
+        grid_row.__sei_virtual_role_bound = true;
+        grid_row.wrapper.addClass('sei-virtual-contact-role-row');
+        grid_row.wrapper.find('.grid-row-check').prop('disabled', true);
+        grid_row.wrapper.get(0).addEventListener('click', event => {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            materialize_virtual_contact_role(frm, field, role);
+        }, true);
+    });
+}
+
+function materialize_virtual_contact_role(frm, field, role) {
+    if (frm.__sei_materializing_contact_role) return;
+    frm.__sei_materializing_contact_role = true;
+    frm.__sei_missing_contact_roles = (frm.__sei_missing_contact_roles || []).filter(
+        missing_role => missing_role.toLowerCase() !== role.toLowerCase()
+    );
+
+    const row = frm.add_child('contacts', { contact_role: role });
+    frm.refresh_field('contacts');
+    window.setTimeout(() => {
+        const grid_row = field.grid.grid_rows_by_docname[row.name];
+        if (grid_row) grid_row.toggle_view(true);
+        frm.__sei_materializing_contact_role = false;
+    }, 0);
+}
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
