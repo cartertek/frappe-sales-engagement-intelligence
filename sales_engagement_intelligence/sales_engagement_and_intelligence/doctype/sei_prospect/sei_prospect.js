@@ -1,4 +1,8 @@
 frappe.ui.form.on('SEI Prospect', {
+    onload_post_render(frm) {
+        activate_default_prospect_tab(frm);
+    },
+
     refresh(frm) {
         if (frm.is_new()) return;
 
@@ -13,6 +17,21 @@ frappe.ui.form.on('SEI Prospect', {
         render_signals_embedded_list(frm);
     },
 });
+
+
+const PROSPECT_DEFAULT_TAB_BY_STATUS = {
+    'Needs Research': 'qualification_tab',
+    'Research Complete': 'qualification_tab',
+    Qualified: 'qualification_tab',
+    'Find Contact': 'outreach_tab',
+    'Ready for CRM Conversion': 'outreach_tab'
+};
+
+function activate_default_prospect_tab(frm) {
+    const fieldname = PROSPECT_DEFAULT_TAB_BY_STATUS[frm.doc.lifecycle_status] || 'overview_tab';
+    const tab = (frm.layout?.tabs || []).find(item => item.df?.fieldname === fieldname);
+    tab?.set_active();
+}
 
 
 const PROSPECT_ACTIONS_MENU = __('Prospect Actions');
