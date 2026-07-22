@@ -919,63 +919,28 @@ function load_contact_role_requirements(frm, row = null) {
 }
 
 function update_open_contact_signal_relevance_placeholder(frm, row = null) {
-    const grid = frm.fields_dict.contacts?.grid;
-    const open_form = grid?.open_grid_row;
+    const open_form = frm.fields_dict.contacts?.grid?.open_grid_row;
     const contact = row || open_form?.row?.doc;
-    if (!grid || !open_form || !contact) return;
-    if (open_form.row?.doc?.name !== contact.name) return;
-
-    const control = open_form.fields_dict?.signal_relevance;
-    if (!control) return;
-
-    const signal_specific = contact_role_is_signal_specific(frm, contact.contact_role);
-    const placeholder = signal_specific
-        ? __('Explain how this contact is relevant to one of the prospect signals')
-        : __('Presumed relevant');
+    const control = open_form?.fields_dict?.signal_relevance;
+    if (!frm.doc.name || !contact?.contact_role || !control) return;
 
     frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.log_contact_placeholder_debug',
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.prospect_contact_role_requires_signal_relevance',
         args: {
-            payload: JSON.stringify({
-                stage: 'placeholder-function',
-                prospect: frm.doc.name,
-                row_name: contact.name,
-                role: contact.contact_role,
-                role_map: frm.__sei_contact_role_requirements || null,
-                signal_specific,
-                placeholder,
-                open_row_name: open_form.row?.doc?.name || null,
-                control_found: Boolean(control),
-                dom_before: control.$input?.attr('placeholder') || null
-            })
+            prospect: frm.doc.name,
+            contact_role: contact.contact_role
         },
-        silent: true
-    });
-
-    control.df.placeholder = placeholder;
-    control.$input?.attr('placeholder', placeholder);
-    open_form.wrapper
-        .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
-        .attr('placeholder', placeholder);
-
-    frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.log_contact_placeholder_debug',
-        args: {
-            payload: JSON.stringify({
-                stage: 'placeholder-applied',
-                prospect: frm.doc.name,
-                row_name: contact.name,
-                role: contact.contact_role,
-                signal_specific,
-                dom_after: control.$input?.attr('placeholder') || null,
-                wrapper_after: open_form.wrapper
-                    .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
-                    .attr('placeholder') || null
-            })
-        },
-        silent: true
+        callback(r) {
+            const signal_specific = Boolean(r.message?.data);
+            const placeholder = signal_specific
+                ? __('Explain how this contact is relevant to one of the prospect signals')
+                : __('Presumed relevant');
+            control.df.placeholder = placeholder;
+            control.$input?.attr('placeholder', placeholder);
+        }
     });
 }
+
 
 
 function load_missing_contact_roles(frm, field) {
@@ -1083,21 +1048,9 @@ function materialize_virtual_contact_role(frm, field, role) {
 }
 
 
-function refresh_contact_signal_relevance_placeholder(frm, row) {
-    if (!frm.doc.name || frm.is_new() || !row) return;
-    frappe.call({
-        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_prospect_contact_role_requirements',
-        args: { prospect: frm.doc.name },
-        callback(r) {
-            frm.__sei_contact_role_requirements = (r.message && r.message.data) || {};
-            update_open_contact_signal_relevance_placeholder(frm, row);
-        }
-    });
-}
-
 frappe.ui.form.on('SEI Prospect Contact', {
     contact_role(frm, cdt, cdn) {
-        refresh_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
+        update_open_contact_signal_relevance_placeholder(frm, locals[cdt][cdn]);
     }
 });
 

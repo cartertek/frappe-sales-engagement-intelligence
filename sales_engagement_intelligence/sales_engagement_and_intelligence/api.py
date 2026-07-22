@@ -1251,6 +1251,18 @@ def get_prospect_contact_role_requirements(prospect: str) -> dict[str, bool]:
 
 
 @api_endpoint
+def prospect_contact_role_requires_signal_relevance(prospect: str, contact_role: str) -> bool:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        contact_role_requires_signal_relevance,
+    )
+
+    return contact_role_requires_signal_relevance(
+        frappe.get_doc("SEI Prospect", prospect), contact_role
+    )
+
+
+@api_endpoint
 def get_prospect_contact_options(prospect: str) -> list[str]:
     _check_prospect_permission(prospect, "read")
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
