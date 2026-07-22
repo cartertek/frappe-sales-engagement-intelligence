@@ -774,7 +774,7 @@ function isolate_message_draft_sent_checkbox(field) {
 }
 
 
-function normalize_managed_grid_editor(field, key) {
+function normalize_managed_grid_editor(field, key, frm = null) {
     if (!field || !field.$wrapper) return;
 
     const meaningfulFields = key === 'contact'
@@ -824,6 +824,17 @@ function normalize_managed_grid_editor(field, key) {
                     .insertAfter($body);
             }
 
+            if (key === 'contact' && frm) {
+                const cdn = $form.closest('.grid-row').attr('data-name');
+                const row = cdn && locals[field.grid.doctype]?.[cdn];
+                const role = String(row?.contact_role || '').trim();
+                const lookupKey = `${cdn || ''}:${role}`;
+                if (row && role && $form.attr('data-sei-placeholder-lookup') !== lookupKey) {
+                    $form.attr('data-sei-placeholder-lookup', lookupKey);
+                    update_open_contact_signal_relevance_placeholder(frm, row);
+                }
+            }
+
             const $footerActions = $form.children('.grid-footer-toolbar').find('.row-actions');
             if ($footerActions.length && !$footerActions.find('.sei-grid-done').length) {
                 $('<button type="button" class="btn btn-primary btn-sm sei-grid-done"></button>')
@@ -868,7 +879,7 @@ function configure_contact_grid(frm) {
     }
 
     configure_virtual_contact_role_rows(frm, field);
-    normalize_managed_grid_editor(field, 'contact');
+    normalize_managed_grid_editor(field, 'contact', frm);
     load_missing_contact_roles(frm, field);
     load_contact_role_requirements(frm);
 }
