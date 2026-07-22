@@ -934,6 +934,7 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
     const contact = row || open_form?.row?.doc;
     const control = open_form?.fields_dict?.signal_relevance;
     if (!frm.doc.name || !contact?.contact_role || !control) return;
+    if (open_form?.row?.doc?.name !== contact.name) return;
 
     frappe.call({
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.prospect_contact_role_requires_signal_relevance',
@@ -942,6 +943,7 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
             contact_role: contact.contact_role
         },
         callback(r) {
+            if (open_form?.row?.doc?.name !== contact.name) return;
             const signal_specific = Boolean(r.message?.data?.requires_signal_relevance);
             const placeholder = signal_specific
                 ? __('Explain how this contact is relevant to one of the prospect signals')
