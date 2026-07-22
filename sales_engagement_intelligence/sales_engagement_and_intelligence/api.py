@@ -1370,3 +1370,22 @@ def mark_message_draft_unsent(draft: str) -> dict:
 
     doc.db_set({"sent": 0, "sent_on": None, "crm_email": None})
     return {"crm_email": None, "sent": False}
+
+
+@frappe.whitelist()
+def log_contact_placeholder_debug(payload: str | dict | None = None) -> dict:
+    """Temporary browser-to-server diagnostics for Prospect contact placeholder debugging."""
+    if isinstance(payload, str):
+        try:
+            payload = json.loads(payload)
+        except Exception:
+            payload = {"raw": payload}
+    entry = {
+        "timestamp": frappe.utils.now_datetime().isoformat(),
+        "user": frappe.session.user,
+        "payload": payload or {},
+    }
+    frappe.logger("sei_contact_placeholder_debug", allow_site=True, file_count=5).info(
+        json.dumps(entry, default=str, sort_keys=True)
+    )
+    return {"logged": True}

@@ -1,3 +1,4 @@
+window.__sei_prospect_controller_marker = 'SEI_PROSPECT_CONTROLLER_20260721';
 frappe.ui.form.on('SEI Prospect', {
     contacts_on_form_rendered(frm) {
         const row = frm.fields_dict.contacts?.grid?.open_grid_row?.row?.doc;
