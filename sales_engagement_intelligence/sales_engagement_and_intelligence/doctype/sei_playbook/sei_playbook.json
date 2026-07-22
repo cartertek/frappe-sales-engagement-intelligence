@@ -6,135 +6,101 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "overview_tab",
   "playbook_name",
   "active",
   "description",
   "thesis",
   "typical_prospect_types",
-  "default_offer",
-  "default_asset",
-  "qualifying_signal_guidance",
-  "disqualifying_guidance",
-  "recommended_first_action",
-  "follow_up_guidance",
   "notes",
+  "qualification_tab",
   "research_arenas_section",
   "research_arenas",
-  "contact_roles_section",
-  "contact_roles",
   "signal_types_section",
   "signal_types",
-  "signal_rules"
+  "signal_rules",
+  "qualification_guidance_section",
+  "qualifying_signal_guidance",
+  "disqualifying_guidance",
+  "outreach_tab",
+  "default_offer",
+  "default_asset",
+  "recommended_first_action",
+  "follow_up_guidance",
+  "contact_roles_section",
+  "contact_roles"
  ],
  "fields": [
+  {
+   "fieldname": "overview_tab",
+   "label": "Overview",
+   "fieldtype": "Tab Break",
+   "idx": 1
+  },
   {
    "fieldname": "playbook_name",
    "label": "Playbook Name",
    "fieldtype": "Data",
    "reqd": 1,
    "unique": 1,
-   "idx": 1
+   "idx": 2
   },
   {
    "fieldname": "active",
    "label": "Active",
    "fieldtype": "Check",
    "default": 1,
-   "idx": 2
+   "idx": 3
   },
   {
    "fieldname": "description",
    "label": "Description",
    "fieldtype": "Small Text",
-   "idx": 3
+   "idx": 4
   },
   {
    "fieldname": "thesis",
    "label": "Thesis",
    "fieldtype": "Small Text",
    "description": "The outreach thesis: why a prospect with this playbook may care now.",
-   "idx": 4
+   "idx": 5
   },
   {
    "fieldname": "typical_prospect_types",
    "label": "Typical Prospect Types",
    "fieldtype": "Small Text",
-   "idx": 5
-  },
-  {
-   "fieldname": "default_offer",
-   "label": "Default Offer",
-   "fieldtype": "Data",
    "idx": 6
-  },
-  {
-   "fieldname": "default_asset",
-   "label": "Default Asset",
-   "fieldtype": "Link",
-   "options": "SEI Asset",
-   "idx": 7
-  },
-  {
-   "fieldname": "qualifying_signal_guidance",
-   "label": "Qualifying Signal Guidance",
-   "fieldtype": "Long Text",
-   "idx": 8
-  },
-  {
-   "fieldname": "disqualifying_guidance",
-   "label": "Disqualifying Guidance",
-   "fieldtype": "Long Text",
-   "idx": 9
-  },
-  {
-   "fieldname": "recommended_first_action",
-   "label": "Recommended First Action",
-   "fieldtype": "Data",
-   "idx": 10
-  },
-  {
-   "fieldname": "follow_up_guidance",
-   "label": "Follow-Up Guidance",
-   "fieldtype": "Long Text",
-   "idx": 11
   },
   {
    "fieldname": "notes",
    "label": "Notes",
    "fieldtype": "Long Text",
-   "idx": 12
+   "idx": 7
+  },
+  {
+   "fieldname": "qualification_tab",
+   "label": "Qualification",
+   "fieldtype": "Tab Break",
+   "idx": 8
   },
   {
    "fieldname": "research_arenas_section",
    "label": "Research Arenas",
    "fieldtype": "Section Break",
-   "idx": 13
+   "idx": 9
   },
   {
    "fieldname": "research_arenas",
    "label": "Research Arenas",
    "fieldtype": "Table",
    "options": "SEI Playbook Research Arena",
-   "idx": 14
-  },
-  {
-   "fieldname": "contact_roles_section",
-   "label": "Contact Roles",
-   "fieldtype": "Section Break",
-   "idx": 15
-  },
-  {
-   "fieldname": "contact_roles",
-   "label": "Contact Roles",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Contact Role",
-   "idx": 16
+   "idx": 10
   },
   {
    "fieldname": "signal_types_section",
    "label": "Signal Types",
    "fieldtype": "Section Break",
-   "idx": 17
+   "idx": 11
   },
   {
    "fieldname": "signal_types",
@@ -142,14 +108,76 @@
    "fieldtype": "Table",
    "options": "SEI Playbook Signal Type",
    "description": "Signal Types assigned to this Playbook. Adding a Signal Type here moves it from its previous Playbook.",
-   "idx": 18
+   "idx": 12
   },
   {
    "fieldname": "signal_rules",
    "label": "Signal Rules",
    "fieldtype": "Table",
    "options": "SEI Playbook Signal Rule",
+   "idx": 13
+  },
+  {
+   "fieldname": "qualification_guidance_section",
+   "label": "Qualification Guidance",
+   "fieldtype": "Section Break",
+   "idx": 14
+  },
+  {
+   "fieldname": "qualifying_signal_guidance",
+   "label": "Qualifying Signal Guidance",
+   "fieldtype": "Long Text",
+   "idx": 15
+  },
+  {
+   "fieldname": "disqualifying_guidance",
+   "label": "Disqualifying Guidance",
+   "fieldtype": "Long Text",
+   "idx": 16
+  },
+  {
+   "fieldname": "outreach_tab",
+   "label": "Outreach",
+   "fieldtype": "Tab Break",
+   "idx": 17
+  },
+  {
+   "fieldname": "default_offer",
+   "label": "Default Offer",
+   "fieldtype": "Data",
+   "idx": 18
+  },
+  {
+   "fieldname": "default_asset",
+   "label": "Default Asset",
+   "fieldtype": "Link",
+   "options": "SEI Asset",
    "idx": 19
+  },
+  {
+   "fieldname": "recommended_first_action",
+   "label": "Recommended First Action",
+   "fieldtype": "Data",
+   "idx": 20
+  },
+  {
+   "fieldname": "follow_up_guidance",
+   "label": "Follow-Up Guidance",
+   "fieldtype": "Long Text",
+   "idx": 21
+  },
+  {
+   "fieldname": "contact_roles_section",
+   "label": "Contact Roles",
+   "fieldtype": "Section Break",
+   "idx": 22
+  },
+  {
+   "fieldname": "contact_roles",
+   "label": "Contact Roles",
+   "fieldtype": "Table",
+   "options": "SEI Playbook Contact Role",
+   "idx": 23
   }
  ],
  "links": [],
