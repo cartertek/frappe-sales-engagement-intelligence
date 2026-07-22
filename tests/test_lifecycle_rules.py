@@ -20,9 +20,12 @@ def load_lifecycle_module(monkeypatch):
     frappe = types.ModuleType("frappe")
     frappe.db = types.SimpleNamespace(
         exists=lambda *args, **kwargs: False,
+        get_value=lambda *args, **kwargs: "Hiring Gap",
         sql=lambda *args, **kwargs: [types.SimpleNamespace(value="Hiring Gap")],
     )
-    frappe.get_all = lambda *args, **kwargs: [types.SimpleNamespace(contact_role="CTO")]
+    frappe.get_all = lambda *args, **kwargs: [
+        types.SimpleNamespace(contact_role="CTO", signal_specific_relevance=0)
+    ]
     frappe.get_doc = lambda *args, **kwargs: None
 
     model = types.ModuleType("frappe.model")
@@ -33,7 +36,11 @@ def load_lifecycle_module(monkeypatch):
     monkeypatch.setitem(sys.modules, "frappe.model", model)
     monkeypatch.setitem(sys.modules, "frappe.model.document", document)
 
+    contacts_module = (
+        "sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts"
+    )
     module_name = "sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle"
+    sys.modules.pop(contacts_module, None)
     sys.modules.pop(module_name, None)
     return importlib.import_module(module_name)
 
@@ -430,3 +437,66 @@ def test_ready_contact_revalidation_patch_is_registered():
     assert "revalidate_ready_for_crm_contacts" in patches
     assert 'filters={"lifecycle_status": "Ready for CRM Conversion"}' in source
     assert "apply_lifecycle_status(prospect)" in source
+
+
+def test_signal_specific_role_requires_signal_relevance(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    sys.modules["frappe"].get_all = lambda *args, **kwargs: [
+        types.SimpleNamespace(contact_role="CTO", signal_specific_relevance=1)
+    ]
+
+    without_relevance = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Find Contact",
+        contacts=[
+            Prospect(
+                contact_name="Buyer",
+                contact_role="CTO",
+                emails="buyer@example.com",
+                is_primary=1,
+                signal_relevance="",
+            )
+        ],
+    )
+    with_relevance = prospect(
+        qualification_status="Qualified",
+        lifecycle_status="Find Contact",
+        contacts=[
+            Prospect(
+                contact_name="Buyer",
+                contact_role="CTO",
+                emails="buyer@example.com",
+                is_primary=1,
+                signal_relevance="Owns the hiring initiative behind SIG-001.",
+            )
+        ],
+    )
+
+    assert lifecycle.suggest_lifecycle_status_for_doc(without_relevance) == "Find Contact"
+    assert lifecycle.suggest_lifecycle_status_for_doc(with_relevance) == "Ready for CRM Conversion"
+
+
+def test_general_role_does_not_require_signal_relevance(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    sys.modules["frappe"].get_all = lambda *args, **kwargs: [
+        types.SimpleNamespace(contact_role="CTO", signal_specific_relevance=0)
+    ]
+
+    assert (
+        lifecycle.suggest_lifecycle_status_for_doc(
+            prospect(
+                qualification_status="Qualified",
+                lifecycle_status="Find Contact",
+                contacts=[
+                    Prospect(
+                        contact_name="Buyer",
+                        contact_role="CTO",
+                        emails="buyer@example.com",
+                        is_primary=1,
+                        signal_relevance="",
+                    )
+                ],
+            )
+        )
+        == "Ready for CRM Conversion"
+    )

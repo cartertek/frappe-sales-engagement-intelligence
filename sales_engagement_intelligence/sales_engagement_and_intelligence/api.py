@@ -1241,6 +1241,30 @@ def get_missing_prospect_contact_roles(prospect: str) -> list[str]:
 
 
 @api_endpoint
+def get_prospect_contact_role_requirements(prospect: str) -> dict[str, bool]:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        contact_role_requirements,
+    )
+
+    return contact_role_requirements(frappe.get_doc("SEI Prospect", prospect))
+
+
+@api_endpoint
+def prospect_contact_role_requires_signal_relevance(prospect: str, contact_role: str) -> bool:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+        contact_role_requires_signal_relevance,
+    )
+
+    return {
+        "requires_signal_relevance": contact_role_requires_signal_relevance(
+            frappe.get_doc("SEI Prospect", prospect), contact_role
+        )
+    }
+
+
+@api_endpoint
 def get_prospect_contact_options(prospect: str) -> list[str]:
     _check_prospect_permission(prospect, "read")
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
@@ -1360,3 +1384,22 @@ def mark_message_draft_unsent(draft: str) -> dict:
 
     doc.db_set({"sent": 0, "sent_on": None, "crm_email": None})
     return {"crm_email": None, "sent": False}
+
+
+@frappe.whitelist()
+def log_contact_placeholder_debug(payload: str | dict | None = None) -> dict:
+    """Temporary browser-to-server diagnostics for Prospect contact placeholder debugging."""
+    if isinstance(payload, str):
+        try:
+            payload = json.loads(payload)
+        except Exception:
+            payload = {"raw": payload}
+    entry = {
+        "timestamp": frappe.utils.now_datetime().isoformat(),
+        "user": frappe.session.user,
+        "payload": payload or {},
+    }
+    frappe.logger("sei_contact_placeholder_debug", allow_site=True, file_count=5).info(
+        json.dumps(entry, default=str, sort_keys=True)
+    )
+    return {"logged": True}

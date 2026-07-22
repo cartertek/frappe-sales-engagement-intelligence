@@ -8,6 +8,7 @@
   "contact_role",
   "contact_name",
   "emails",
+  "signal_relevance",
   "notes",
   "is_primary",
   "crm_contact"
@@ -19,13 +20,15 @@
    "fieldtype": "Link",
    "options": "SEI Contact Role",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "idx": 1
   },
   {
    "fieldname": "contact_name",
    "label": "Name",
    "fieldtype": "Data",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "idx": 2
   },
   {
    "fieldname": "emails",
@@ -33,25 +36,36 @@
    "fieldtype": "Small Text",
    "description": "One email address per line.",
    "in_list_view": 1,
-   "columns": 3
+   "columns": 3,
+   "idx": 3
+  },
+  {
+   "fieldname": "signal_relevance",
+   "label": "Signal Relevance",
+   "fieldtype": "Small Text",
+   "idx": 4,
+   "description": "Explain how this contact is relevant to one of the prospect signals when required by the Playbook role."
   },
   {
    "fieldname": "notes",
    "label": "Notes",
-   "fieldtype": "Small Text"
+   "fieldtype": "Small Text",
+   "idx": 5
   },
   {
    "fieldname": "is_primary",
    "label": "Primary",
    "fieldtype": "Check",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "idx": 6
   },
   {
    "fieldname": "crm_contact",
    "label": "CRM Contact",
    "fieldtype": "Link",
    "options": "Contact",
-   "read_only": 1
+   "read_only": 1,
+   "idx": 7
   }
  ],
  "istable": 1,

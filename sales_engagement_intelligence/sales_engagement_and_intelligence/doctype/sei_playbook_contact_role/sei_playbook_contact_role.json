@@ -5,7 +5,8 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
-  "contact_role"
+  "contact_role",
+  "signal_specific_relevance"
  ],
  "fields": [
   {
@@ -14,7 +15,17 @@
    "fieldtype": "Link",
    "options": "SEI Contact Role",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "idx": 1
+  },
+  {
+   "fieldname": "signal_specific_relevance",
+   "label": "Signal-Specific Relevance",
+   "fieldtype": "Check",
+   "default": 0,
+   "description": "Require contacts in this role to explain their relevance to a prospect signal.",
+   "in_list_view": 1,
+   "idx": 2
   }
  ],
  "istable": 1,

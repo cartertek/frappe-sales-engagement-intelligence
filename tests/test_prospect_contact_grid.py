@@ -51,3 +51,49 @@ def test_contact_grid_formats_emails_as_comma_separated_truncated_text():
     assert "field.grid.get_field('emails')" in script
     assert ".join(', ')" in script
     assert 'class="ellipsis"' in script
+
+
+def test_contact_editor_exposes_dynamic_signal_relevance_placeholder():
+    fields = {field["fieldname"]: field for field in json.loads(CONTACT.read_text())["fields"]}
+    assert fields["signal_relevance"]["fieldtype"] == "Small Text"
+
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "get_prospect_contact_role_requirements" in script
+    assert "Explain how this contact is relevant to one of the prospect signals" in script
+    assert "Presumed relevant" in script
+    assert "contact_role_is_signal_specific" in script
+    assert "row.signal_relevance" in script
+    assert "frappe.ui.form.on('SEI Prospect Contact'" in script
+
+
+def test_signal_relevance_placeholder_targets_open_grid_row_form():
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "const open_form = frm.fields_dict.contacts?.grid?.open_grid_row" in script
+    assert "open_form?.row?.doc" in script
+    assert "open_form?.fields_dict?.signal_relevance" in script
+    assert "open_form.wrapper" in script
+
+
+def test_contact_placeholder_uses_frappe_grid_row_form_api():
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "open_form?.row?.doc" in script
+    assert "open_form?.fields_dict?.signal_relevance" in script
+    assert "open_grid_row?.grid_form" not in script
+
+
+def test_contact_placeholder_uses_direct_role_lookup():
+    script = Path(
+        "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/"
+        "sei_prospect/sei_prospect.js"
+    ).read_text()
+    assert "prospect_contact_role_requires_signal_relevance" in script
+    assert "const signal_specific = Boolean(r.message?.data)" in script

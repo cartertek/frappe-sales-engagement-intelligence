@@ -6,11 +6,9 @@ import frappe
 from frappe.model.document import Document
 
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
+    contact_role_requirements,
     emails,
     primary_contacts,
-)
-from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
-    get_prospect_playbooks,
 )
 
 TERMINAL_STATUSES = (
@@ -25,24 +23,18 @@ def is_terminal_status(status: str) -> bool:
     return status in TERMINAL_STATUSES
 
 
-def get_playbook_contact_roles(prospect: Document) -> set[str]:
-    playbooks = get_prospect_playbooks(prospect.get("name"))
-    return {
-        row.contact_role.casefold()
-        for playbook in playbooks
-        for row in frappe.get_all(
-            "SEI Playbook Contact Role",
-            filters={"parent": playbook, "parenttype": "SEI Playbook"},
-            fields=["contact_role"],
-        )
-        if row.contact_role
-    }
-
-
 def has_contact_path(prospect: Document) -> bool:
-    playbook_roles = get_playbook_contact_roles(prospect)
+    role_requirements = {
+        role.casefold(): signal_specific
+        for role, signal_specific in contact_role_requirements(prospect).items()
+    }
     return any(
-        emails(contact) and (contact.get("contact_role") or "").casefold() in playbook_roles
+        emails(contact)
+        and (contact.get("contact_role") or "").casefold() in role_requirements
+        and (
+            not role_requirements[(contact.get("contact_role") or "").casefold()]
+            or bool((contact.get("signal_relevance") or "").strip())
+        )
         for contact in primary_contacts(prospect)
     )
 
