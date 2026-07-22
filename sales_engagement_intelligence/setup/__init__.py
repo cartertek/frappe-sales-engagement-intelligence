@@ -629,7 +629,7 @@ def ensure_milestone_8_seed_data() -> None:
         execute as seed_playbooks_and_templates,
     )
 
-    seed_playbooks_and_templates()
+    seed_playbooks_and_templates(update_existing=False)
 
 
 def _queue_shortcut_values(label: str) -> dict:

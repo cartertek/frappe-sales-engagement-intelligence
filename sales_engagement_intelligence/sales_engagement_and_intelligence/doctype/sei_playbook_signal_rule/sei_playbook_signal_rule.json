@@ -23,24 +23,32 @@
    "label": "Signal Type",
    "fieldtype": "Link",
    "options": "SEI Signal Type",
-   "reqd": 1
+   "reqd": 1,
+   "in_list_view": 1,
+   "columns": 4
   },
   {
    "fieldname": "minimum_strength",
    "label": "Minimum Strength",
    "fieldtype": "Select",
-   "options": "Weak\nModerate\nStrong"
+   "options": "Weak\nModerate\nStrong",
+   "in_list_view": 1,
+   "columns": 2
   },
   {
    "fieldname": "evidence_basis_required",
    "label": "Evidence Basis Required",
    "fieldtype": "Select",
-   "options": "Observed\nInferred"
+   "options": "Observed\nInferred",
+   "in_list_view": 1,
+   "columns": 2
   },
   {
    "fieldname": "exclude_from_qualification",
    "label": "Exclude from Qualification",
-   "fieldtype": "Check"
+   "fieldtype": "Check",
+   "in_list_view": 1,
+   "columns": 2
   },
   {
    "fieldname": "notes",

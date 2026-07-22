@@ -152,9 +152,9 @@ TEMPLATES = [
 ]
 
 
-def execute() -> None:
-    seed_playbooks()
-    seed_message_templates()
+def execute(*, update_existing: bool = True) -> None:
+    seed_playbooks(update_existing=update_existing)
+    seed_message_templates(update_existing=update_existing)
 
 
 def _ensure_role(role: str) -> None:
@@ -162,13 +162,20 @@ def _ensure_role(role: str) -> None:
         frappe.get_doc({"doctype":"SEI Contact Role","role_name":role,"active":1}).insert(ignore_permissions=True)
 
 
-def seed_playbooks() -> None:
+def seed_playbooks(*, update_existing: bool = True) -> None:
     for row in PLAYBOOKS:
         rules = row["rules"]
         roles = [value.strip() for value in row.get("legacy_contact_roles", "").split(",") if value.strip()]
         values = {key: value for key, value in row.items() if key not in ("rules", "legacy_contact_roles", "legacy_source_arenas")}
         values["active"] = 1
-        doc = frappe.get_doc("SEI Playbook", values["playbook_name"]) if frappe.db.exists("SEI Playbook", values["playbook_name"]) else frappe.get_doc({"doctype":"SEI Playbook"})
+        exists = frappe.db.exists("SEI Playbook", values["playbook_name"])
+        if exists and not update_existing:
+            continue
+        doc = (
+            frappe.get_doc("SEI Playbook", values["playbook_name"])
+            if exists
+            else frappe.get_doc({"doctype": "SEI Playbook"})
+        )
         doc.update(values)
         doc.set("signal_rules", [])
         for signal_type, minimum_strength, evidence_basis_required in rules:
@@ -180,13 +187,15 @@ def seed_playbooks() -> None:
         doc.save(ignore_permissions=True) if doc.name else doc.insert(ignore_permissions=True)
 
 
-def seed_message_templates() -> None:
+def seed_message_templates(*, update_existing: bool = True) -> None:
     for row in TEMPLATES:
         values = {**row, "active": 1}
         if values.get("playbook") and not frappe.db.exists("SEI Playbook", values["playbook"]):
             continue
         _ensure_role(values.get("contact_role"))
         if frappe.db.exists("SEI Message Template", values["template_name"]):
+            if not update_existing:
+                continue
             doc = frappe.get_doc("SEI Message Template", values["template_name"])
             doc.update(values)
             doc.save(ignore_permissions=True)
