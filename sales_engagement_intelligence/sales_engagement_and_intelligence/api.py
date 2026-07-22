@@ -1257,9 +1257,11 @@ def prospect_contact_role_requires_signal_relevance(prospect: str, contact_role:
         contact_role_requires_signal_relevance,
     )
 
-    return contact_role_requires_signal_relevance(
-        frappe.get_doc("SEI Prospect", prospect), contact_role
-    )
+    return {
+        "requires_signal_relevance": contact_role_requires_signal_relevance(
+            frappe.get_doc("SEI Prospect", prospect), contact_role
+        )
+    }
 
 
 @api_endpoint

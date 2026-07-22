@@ -931,12 +931,15 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
             contact_role: contact.contact_role
         },
         callback(r) {
-            const signal_specific = Boolean(r.message?.data);
+            const signal_specific = Boolean(r.message?.data?.requires_signal_relevance);
             const placeholder = signal_specific
                 ? __('Explain how this contact is relevant to one of the prospect signals')
                 : __('Presumed relevant');
             control.df.placeholder = placeholder;
             control.$input?.attr('placeholder', placeholder);
+            open_form.wrapper
+                .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
+                .attr('placeholder', placeholder);
         }
     });
 }
