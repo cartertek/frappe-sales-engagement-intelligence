@@ -933,11 +933,48 @@ function update_open_contact_signal_relevance_placeholder(frm, row = null) {
         ? __('Explain how this contact is relevant to one of the prospect signals')
         : __('Presumed relevant');
 
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.log_contact_placeholder_debug',
+        args: {
+            payload: JSON.stringify({
+                stage: 'placeholder-function',
+                prospect: frm.doc.name,
+                row_name: contact.name,
+                role: contact.contact_role,
+                role_map: frm.__sei_contact_role_requirements || null,
+                signal_specific,
+                placeholder,
+                open_row_name: open_form.row?.doc?.name || null,
+                control_found: Boolean(control),
+                dom_before: control.$input?.attr('placeholder') || null
+            })
+        },
+        silent: true
+    });
+
     control.df.placeholder = placeholder;
     control.$input?.attr('placeholder', placeholder);
     open_form.wrapper
         .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
         .attr('placeholder', placeholder);
+
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.log_contact_placeholder_debug',
+        args: {
+            payload: JSON.stringify({
+                stage: 'placeholder-applied',
+                prospect: frm.doc.name,
+                row_name: contact.name,
+                role: contact.contact_role,
+                signal_specific,
+                dom_after: control.$input?.attr('placeholder') || null,
+                wrapper_after: open_form.wrapper
+                    .find('[data-fieldname="signal_relevance"] textarea, [data-fieldname="signal_relevance"] input')
+                    .attr('placeholder') || null
+            })
+        },
+        silent: true
+    });
 }
 
 
