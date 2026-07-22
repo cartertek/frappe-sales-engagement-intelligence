@@ -27,15 +27,14 @@ class SEIPlaybook(Document):
         """Discard placeholder rows that contain no rule data."""
         rows = []
         for row in self.get("signal_rules") or []:
-            if any(
-                (
-                    row.get("signal_type"),
-                    row.get("minimum_strength"),
-                    row.get("evidence_basis_required"),
-                    row.get("exclude_from_qualification"),
-                    row.get("notes"),
-                )
-            ):
+            values = (
+                row.get("signal_type"),
+                row.get("minimum_strength"),
+                row.get("evidence_basis_required"),
+                row.get("exclude_from_qualification"),
+                row.get("notes"),
+            )
+            if any(value.strip() if isinstance(value, str) else value for value in values):
                 rows.append(row)
         self.set("signal_rules", rows)
 
