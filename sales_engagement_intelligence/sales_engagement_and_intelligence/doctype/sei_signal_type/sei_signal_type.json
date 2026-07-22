@@ -7,11 +7,13 @@
  "document_type": "Document",
  "engine": "InnoDB",
  "field_order": [
+  "overview_tab",
   "signal_type_name",
   "description",
   "playbook",
   "research_arena",
   "active",
+  "definition_tab",
   "evidence_criteria_section",
   "evidence_summary",
   "qualifying_evidence",
@@ -25,9 +27,18 @@
   "review_expectations_section",
   "evidence_notes_requirements",
   "false_positive_examples",
-  "positive_examples"
+  "positive_examples",
+  "positioning_tab",
+  "likely_business_impact",
+  "cartertek_relevance",
+  "message_guidance"
  ],
  "fields": [
+  {
+   "fieldname": "overview_tab",
+   "fieldtype": "Tab Break",
+   "label": "Overview"
+  },
   {
    "fieldname": "signal_type_name",
    "fieldtype": "Data",
@@ -65,6 +76,11 @@
    "default": 1,
    "in_list_view": 1,
    "in_standard_filter": 1
+  },
+  {
+   "fieldname": "definition_tab",
+   "fieldtype": "Tab Break",
+   "label": "Definition"
   },
   {
    "fieldname": "evidence_criteria_section",
@@ -141,6 +157,29 @@
    "fieldname": "positive_examples",
    "fieldtype": "Long Text",
    "label": "Positive Examples"
+  },
+  {
+   "fieldname": "positioning_tab",
+   "fieldtype": "Tab Break",
+   "label": "Positioning"
+  },
+  {
+   "fieldname": "likely_business_impact",
+   "fieldtype": "Long Text",
+   "label": "Likely Business Impact",
+   "description": "Common operational or commercial consequences associated with this signal type. Treat these as hypotheses until supported by prospect-specific evidence."
+  },
+  {
+   "fieldname": "cartertek_relevance",
+   "fieldtype": "Long Text",
+   "label": "Cartertek Relevance",
+   "description": "How Cartertek can plausibly help when this signal type appears."
+  },
+  {
+   "fieldname": "message_guidance",
+   "fieldtype": "Long Text",
+   "label": "Message Guidance",
+   "description": "How to translate this signal into outreach, including the angle to lead with and claims or assumptions to avoid."
   }
  ],
  "idx": 0,
