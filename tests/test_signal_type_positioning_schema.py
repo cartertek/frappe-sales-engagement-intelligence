@@ -1,7 +1,6 @@
 import json
 from pathlib import Path
 
-
 SCHEMA = Path(
     'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/'
     'sei_signal_type/sei_signal_type.json'
