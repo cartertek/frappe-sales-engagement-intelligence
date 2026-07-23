@@ -56,6 +56,7 @@
   "message_drafting_section",
   "suggested_message_template",
   "message_drafts",
+  "emails_sent",
   "crm_conversion_tab",
   "conversion_preparation_section",
   "crm_conversion_notes",
@@ -391,34 +392,42 @@
    "idx": 48
   },
   {
+   "fieldname": "emails_sent",
+   "label": "Emails Sent",
+   "fieldtype": "Int",
+   "read_only": 1,
+   "default": "0",
+   "idx": 49
+  },
+  {
    "fieldname": "crm_conversion_tab",
    "fieldtype": "Tab Break",
    "label": "CRM Conversion",
-   "idx": 49
+   "idx": 50
   },
   {
    "fieldname": "conversion_preparation_section",
    "label": "Conversion Preparation",
    "fieldtype": "Section Break",
-   "idx": 50
+   "idx": 51
   },
   {
    "fieldname": "crm_conversion_notes",
    "label": "CRM Conversion Notes",
    "fieldtype": "Small Text",
-   "idx": 51
+   "idx": 52
   },
   {
    "fieldname": "frappe_crm_links_section",
    "label": "Frappe CRM Links",
    "fieldtype": "Section Break",
-   "idx": 52
+   "idx": 53
   },
   {
    "fieldname": "crm_links_html",
    "label": "CRM Records",
    "fieldtype": "HTML",
-   "idx": 53
+   "idx": 54
   },
   {
    "fieldname": "crm_lead",
@@ -428,7 +437,7 @@
    "options": "CRM Lead",
    "read_only": 1,
    "in_list_view": 1,
-   "idx": 54
+   "idx": 55
   },
   {
    "fieldname": "crm_deal",
@@ -438,13 +447,13 @@
    "options": "CRM Deal",
    "read_only": 1,
    "in_list_view": 1,
-   "idx": 55
+   "idx": 56
   },
   {
    "fieldname": "column_break_4",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 56
+   "idx": 57
   },
   {
    "fieldname": "crm_organization",
@@ -453,7 +462,7 @@
    "fieldtype": "Link",
    "options": "CRM Organization",
    "read_only": 1,
-   "idx": 57
+   "idx": 58
   },
   {
    "fieldname": "crm_contact",
@@ -462,7 +471,7 @@
    "fieldtype": "Link",
    "options": "Contact",
    "read_only": 1,
-   "idx": 58
+   "idx": 59
   }
  ],
  "links": [],

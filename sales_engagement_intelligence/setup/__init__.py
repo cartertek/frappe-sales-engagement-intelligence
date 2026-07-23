@@ -28,6 +28,7 @@ def after_migrate() -> None:
     ensure_milestone_8_workspace_items()
     ensure_signal_prospect_tag_sync()
     ensure_prospect_signal_type_sync()
+    ensure_prospect_emails_sent_sync()
     frappe.clear_cache()
 
 
@@ -919,6 +920,22 @@ def ensure_prospect_signal_type_sync() -> None:
             message=frappe.get_traceback(),
         )
 
+
+
+def ensure_prospect_emails_sent_sync() -> None:
+    """Backfill the queryable count of sent Prospect message drafts."""
+
+    try:
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_message_draft_sync,
+        )
+
+        prospect_message_draft_sync.sync_all_prospect_emails_sent()
+    except Exception:
+        frappe.log_error(
+            title="SEI prospect emails sent sync failed",
+            message=frappe.get_traceback(),
+        )
 
 def ensure_signal_prospect_tag_sync() -> None:
     """Keep the DB-level prospect-tag sync trigger installed after migrations."""
