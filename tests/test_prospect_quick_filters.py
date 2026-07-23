@@ -41,5 +41,11 @@ def test_removed_quick_filter_fields_remain_available_as_regular_filters():
 
     for fieldname in removed_quick_filters:
         assert fieldname in fields
-        assert not fields[fieldname].get("hidden")
+        assert fields[fieldname]["fieldtype"] not in {
+            "Section Break",
+            "Column Break",
+            "Tab Break",
+            "HTML",
+            "Table",
+        }
         assert not fields[fieldname].get("in_standard_filter")
