@@ -6,22 +6,6 @@ The endpoint returns subject, body, missing variables, resolved variables, and s
 
 Scripts may display or save the preview for human review. They must not auto-send or bulk-send the result.
 
-## Message wording and evidence attribution
-
-Drafts must sound like natural outreach, not compressed research summaries. Apply these rules across all research arenas and source types:
-
-- Identify the actual source accurately, such as a job posting, product announcement, GitHub issue, support thread, company page, directory profile, or public complaint. Do not replace it with a vague label such as “note” or “information.”
-- Explain naturally how Cartertek encountered the evidence.
-- Write from the perspective of an outsider addressing someone inside the company. Use “you” and “your” where appropriate instead of detached language.
-- Attribute claims to the source when Cartertek has not independently verified the underlying condition.
-- Do not compress the source, evidence, interpretation, and pitch into one long sentence. Split dense ideas into short sentences with a spoken cadence.
-- Introduce a list before presenting several details, using natural setup such as “A few things stood out.”
-- Translate formal, promotional, or technical source language into normal speech without changing its meaning.
-- Preserve concrete evidence rather than replacing it with generic phrases such as “technical challenges.”
-- Use the company name to establish context, then shift naturally to “you” and “your.”
-- Avoid language that sounds accusatory, invasive, opportunistic, or like an unsolicited audit.
-- Read the wording aloud. It should sound like something a person might genuinely say in conversation, not a condensed research report.
-
 ## Rich-text body formatting
 
 `SEI Prospect Message Draft.body` is a Frappe **Text Editor** field. Treat its stored value as HTML, not plain text.

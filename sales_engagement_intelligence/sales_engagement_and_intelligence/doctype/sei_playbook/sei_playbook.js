@@ -4,7 +4,6 @@ const COMPACT_PLAYBOOK_TEXT_FIELDS = [
     'typical_prospect_types',
     'qualifying_signal_guidance',
     'disqualifying_guidance',
-    'message_guidance',
     'follow_up_guidance',
     'notes',
 ];

@@ -16,7 +16,6 @@
   "qualifying_signal_guidance",
   "disqualifying_guidance",
   "recommended_first_action",
-  "message_guidance",
   "follow_up_guidance",
   "notes",
   "research_arenas_section",
@@ -92,11 +91,6 @@
    "label": "Recommended First Action",
    "fieldtype": "Data",
    "idx": 10
-  },
-  {
-   "fieldname": "message_guidance",
-   "fieldtype": "Long Text",
-   "label": "Initial Outreach Guidance"
   },
   {
    "fieldname": "follow_up_guidance",
