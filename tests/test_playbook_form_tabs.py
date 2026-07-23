@@ -42,8 +42,6 @@ def test_playbook_fields_are_grouped_by_purpose():
         "research_arenas",
     ]
     assert qualification == [
-        "research_arenas_section",
-        "research_arenas",
         "signal_types_section",
         "signal_types",
         "signal_rules",
