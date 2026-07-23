@@ -738,7 +738,13 @@ function configure_message_draft_grid(frm) {
         callback(r) {
             const available = (r.message && r.message.data) || [];
             const saved = (frm.doc.message_drafts || [])
-                .map(row => row.to_contact)
+                .map(row => {
+                    const canonical = canonical_message_draft_recipient(row.to_contact, available);
+                    if (canonical && canonical !== row.to_contact) {
+                        row.to_contact = canonical;
+                    }
+                    return canonical;
+                })
                 .filter(Boolean);
             const options = [...new Set([...available, ...saved])];
             field.grid.update_docfield_property('to_contact', 'options', options.join('\n'));
@@ -747,6 +753,25 @@ function configure_message_draft_grid(frm) {
     });
     normalize_managed_grid_editor(field, 'message-draft', frm);
     isolate_message_draft_sent_checkbox(field);
+}
+
+
+function canonical_message_draft_recipient(value, available) {
+    const selected = String(value || '').trim();
+    if (!selected) return null;
+
+    const exact = available.find(option => String(option).trim() === selected);
+    if (exact) return exact;
+
+    const selectedName = selected.replace(/\s*<[^<>]+>\s*$/, '').trim().toLowerCase();
+    const matches = available.filter(option => {
+        const optionName = String(option || '')
+            .replace(/\s*<[^<>]+>\s*$/, '')
+            .trim()
+            .toLowerCase();
+        return optionName === selectedName;
+    });
+    return matches.length === 1 ? matches[0] : selected;
 }
 
 

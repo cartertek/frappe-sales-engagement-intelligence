@@ -1324,6 +1324,17 @@ def _optional_email_list(value: str | None) -> str | None:
     return ", ".join(dict.fromkeys(addresses)) or None
 
 
+def _refetch_crm_lead_activity(crm_lead: str | None) -> None:
+    if not crm_lead:
+        return
+    frappe.publish_realtime(
+        "refetch_resource",
+        {"cache_key": ["activity", crm_lead]},
+        user=frappe.session.user,
+        after_commit=True,
+    )
+
+
 @api_endpoint
 def mark_message_draft_sent(draft: str) -> dict:
     if frappe.db.exists("SEI Prospect Message Draft", draft):
@@ -1370,6 +1381,7 @@ def mark_message_draft_sent(draft: str) -> dict:
     )
 
     prospect_message_draft_sync.sync_prospect_emails_sent(prospect.name)
+    _refetch_crm_lead_activity(prospect.crm_lead)
     return {"crm_email": communication.name, "sent": True}
 
 
@@ -1397,6 +1409,9 @@ def mark_message_draft_unsent(draft: str) -> dict:
     )
 
     prospect_message_draft_sync.sync_prospect_emails_sent(prospect_name)
+    _refetch_crm_lead_activity(
+        frappe.db.get_value("SEI Prospect", prospect_name, "crm_lead")
+    )
     return {"crm_email": None, "sent": False}
 
 
