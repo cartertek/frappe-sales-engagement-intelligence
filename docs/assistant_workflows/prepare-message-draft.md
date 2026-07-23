@@ -21,6 +21,8 @@ Drafts must sound like natural outreach, not compressed research summaries. Appl
 - Preserve concrete evidence rather than replacing it with generic phrases such as “technical challenges.”
 - Use the company name to establish context, then shift naturally to “you” and “your.”
 - Avoid language that sounds accusatory, invasive, opportunistic, or like an unsolicited audit.
+- Lead with the outcome, not the delivery mechanics. Outreach should assume Cartertek is professionally capable without explaining how the work would be executed. Avoid listing implementation methods, sprint structures, technical workstreams, or service components unless the recipient needs that detail to understand the offer. State the relevant result Cartertek can help create and leave the execution approach implicit.
+- Avoid duplicate calls to action. Before adding a prospect-specific question or meeting invitation, review the template closing. Do not ask for a conversation, call, or reply twice in the same message. Keep a prospect-specific CTA only when it adds a meaningfully different next step; otherwise rely on the template’s existing invitation.
 - Read the wording aloud. It should sound like something a person might genuinely say in conversation, not a condensed research report.
 
 ## Rich-text body formatting
