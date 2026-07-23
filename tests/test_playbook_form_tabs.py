@@ -54,6 +54,7 @@ def test_playbook_fields_are_grouped_by_purpose():
         "default_asset",
         "default_template",
         "recommended_first_action",
+        "message_guidance",
         "follow_up_guidance",
         "contact_roles_section",
         "contact_roles",
@@ -69,3 +70,10 @@ def test_default_template_links_to_message_template():
         "options": "SEI Message Template",
         "idx": fields["default_template"]["idx"],
     }
+
+
+def test_playbook_initial_outreach_guidance_field():
+    fields = {field["fieldname"]: field for field in _schema()["fields"]}
+    field = fields["message_guidance"]
+    assert field["label"] == "Initial Outreach Guidance"
+    assert field["fieldtype"] == "Long Text"

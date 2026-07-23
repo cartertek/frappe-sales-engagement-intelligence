@@ -27,6 +27,7 @@
   "default_asset",
   "default_template",
   "recommended_first_action",
+  "message_guidance",
   "follow_up_guidance",
   "contact_roles_section",
   "contact_roles"
@@ -167,6 +168,11 @@
    "label": "Recommended First Action",
    "fieldtype": "Data",
    "idx": 21
+  },
+  {
+   "fieldname": "message_guidance",
+   "label": "Initial Outreach Guidance",
+   "fieldtype": "Long Text"
   },
   {
    "fieldname": "follow_up_guidance",
