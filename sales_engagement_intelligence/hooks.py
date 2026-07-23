@@ -44,6 +44,16 @@ before_uninstall = "sales_engagement_intelligence.uninstall.before_uninstall"
 
 
 doc_events = {
+    "CRM Lead": {
+        "on_trash": (
+            "sales_engagement_intelligence.sales_engagement_and_intelligence.services"
+            ".delete_unlinking.unlink_references_before_delete"
+        ),
+        "after_delete": (
+            "sales_engagement_intelligence.sales_engagement_and_intelligence.services"
+            ".delete_unlinking.restore_prospect_lifecycle_after_lead_delete"
+        ),
+    },
     "CRM Deal": {
         "on_trash": (
             "sales_engagement_intelligence.sales_engagement_and_intelligence.services"

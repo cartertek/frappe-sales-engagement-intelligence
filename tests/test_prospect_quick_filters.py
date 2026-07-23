@@ -35,7 +35,6 @@ def test_removed_quick_filter_fields_remain_available_as_regular_filters():
         "prospect_type",
         "signals",
         "qualification_status",
-        "crm_lead",
         "crm_deal",
     }
 

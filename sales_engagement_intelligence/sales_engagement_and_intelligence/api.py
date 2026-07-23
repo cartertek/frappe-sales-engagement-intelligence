@@ -6,6 +6,10 @@ from typing import Any, Callable, Optional
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_crm_links import (
+    get_prospect_crm_leads,
+    has_prospect_crm_leads,
+)
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
     get_prospect_arenas,
     get_prospect_arenas_display,
@@ -48,7 +52,6 @@ PROSPECT_UPDATE_FIELDS = PROSPECT_CREATE_FIELDS | {"first_seen_date", "last_rese
 PROSPECT_RESTRICTED_FIELDS = {
     "qualification_status",
     "lifecycle_status",
-    "crm_lead",
     "crm_organization",
     "crm_contact",
     "crm_deal",
@@ -106,7 +109,6 @@ ATTRIBUTION_FIELDS = {
     "marketing_asset",
     "offer",
     "source_arena",
-    "crm_lead",
     "crm_deal",
     "fcrm_note",
     "crm_task",
@@ -131,7 +133,6 @@ QUEUE_FIELDS = [
     "next_action",
     "next_action_date",
     "assigned_to",
-    "crm_lead",
     "crm_organization",
     "crm_contact",
     "crm_deal",
@@ -360,6 +361,7 @@ def _prospect_row(row) -> dict:
     data["arenas_display"] = ", ".join(data["arenas"])
     data["playbooks"] = get_prospect_playbooks(data["prospect"])
     data["playbooks_display"] = ", ".join(data["playbooks"])
+    data["crm_leads"] = get_prospect_crm_leads(data["prospect"])
     return data
 
 
@@ -399,7 +401,7 @@ def _prospect_summary(prospect: str) -> dict:
         "primary_signal": primary_signal,
         "recent_signals": signals,
         "crm_links": {
-            "crm_lead": doc.crm_lead,
+            "crm_leads": get_prospect_crm_leads(doc.name),
             "crm_organization": doc.crm_organization,
             "crm_contact": doc.crm_contact,
             "crm_deal": doc.crm_deal,
@@ -730,7 +732,7 @@ def preview_crm_conversion(prospect: str) -> dict:
         "eligibility": validate_crm_conversion_eligibility(prospect),
         "duplicates": find_possible_crm_duplicates(prospect),
         "payloads": {
-            "crm_lead": build_crm_lead_payload(prospect),
+            "crm_leads": [build_crm_lead_payload(prospect)],
             "crm_organization": build_crm_organization_payload(prospect),
             "crm_contact": build_crm_contact_payload(prospect),
             "crm_deal": build_crm_deal_payload(prospect),
@@ -1199,7 +1201,6 @@ def get_linked_crm_records(prospect: str) -> dict:
                     break
         groups[group].append({"name": name, "title": title or name})
 
-    add("crm_leads", "CRM Lead", doc.get("crm_lead"))
     add("crm_organizations", "CRM Organization", doc.get("crm_organization"))
     add("crm_contacts", "Contact", doc.get("crm_contact"))
     add("crm_deals", "CRM Deal", doc.get("crm_deal"))
@@ -1299,6 +1300,24 @@ def _message_draft_recipient(prospect, value: str | None) -> str:
     frappe.throw(f"No email address is available for message recipient {raw or '(blank)'}.")
 
 
+def _message_draft_crm_lead(prospect, recipient: str) -> str:
+    filters = {"email": recipient}
+    if "sei_prospect" in _meta_fields("CRM Lead"):
+        filters["sei_prospect"] = prospect.name
+
+    matches = frappe.get_all("CRM Lead", filters=filters, pluck="name", limit=2)
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        frappe.throw(
+            f"Multiple CRM Leads for {recipient} are linked to prospect {prospect.name}."
+        )
+
+    frappe.throw(
+        f"No CRM Lead linked to prospect {prospect.name} has email address {recipient}."
+    )
+
+
 def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
     from email.utils import parseaddr
 
@@ -1347,10 +1366,12 @@ def mark_message_draft_sent(draft: str) -> dict:
         prospect = frappe.get_doc("SEI Prospect", doc.prospect)
     if (
         prospect.lifecycle_status not in ("Converted to CRM Lead", "Converted to CRM Deal")
-        or not prospect.crm_lead
+        or not has_prospect_crm_leads(prospect.name)
     ):
         frappe.throw("The prospect must be converted to a CRM Lead before a draft can be marked sent.")
     sender, sender_full_name = _message_draft_sender(doc.from_user)
+    recipient = _message_draft_recipient(prospect, doc.to_contact)
+    crm_lead = _message_draft_crm_lead(prospect, recipient)
     payload = {
         "doctype": "Communication",
         "communication_type": "Communication",
@@ -1360,12 +1381,12 @@ def mark_message_draft_sent(draft: str) -> dict:
         "delivery_status": "Sent",
         "sender": sender,
         "sender_full_name": sender_full_name,
-        "recipients": _message_draft_recipient(prospect, doc.to_contact),
+        "recipients": recipient,
         "cc": _optional_email_list(doc.cc),
         "subject": doc.subject or f"Message to {doc.to_contact}",
         "content": doc.body or "",
         "reference_doctype": "CRM Lead",
-        "reference_name": prospect.crm_lead,
+        "reference_name": crm_lead,
     }
     communication = frappe.get_doc(payload)
     communication.insert(ignore_permissions=True)
@@ -1381,7 +1402,7 @@ def mark_message_draft_sent(draft: str) -> dict:
     )
 
     prospect_message_draft_sync.sync_prospect_emails_sent(prospect.name)
-    _refetch_crm_lead_activity(prospect.crm_lead)
+    _refetch_crm_lead_activity(crm_lead)
     return {"crm_email": communication.name, "sent": True}
 
 
@@ -1397,8 +1418,11 @@ def mark_message_draft_unsent(draft: str) -> dict:
         prospect_name = doc.prospect
 
     communication_name = doc.get("crm_email")
+    crm_lead = None
     if communication_name and frappe.db.exists("Communication", communication_name):
         communication = frappe.get_doc("Communication", communication_name)
+        if communication.reference_doctype == "CRM Lead":
+            crm_lead = communication.reference_name
         if communication.sent_or_received != "Sent":
             frappe.throw("The linked CRM Communication is not an outgoing sent message.")
         communication.delete(ignore_permissions=True)
@@ -1409,9 +1433,7 @@ def mark_message_draft_unsent(draft: str) -> dict:
     )
 
     prospect_message_draft_sync.sync_prospect_emails_sent(prospect_name)
-    _refetch_crm_lead_activity(
-        frappe.db.get_value("SEI Prospect", prospect_name, "crm_lead")
-    )
+    _refetch_crm_lead_activity(crm_lead)
     return {"crm_email": None, "sent": False}
 
 

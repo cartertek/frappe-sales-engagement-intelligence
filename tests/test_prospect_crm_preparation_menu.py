@@ -15,7 +15,7 @@ def test_crm_actions_are_registered_in_prospect_actions_menu():
         "add_crm_action(frm, 'Create Organization'",
         "add_crm_action(frm, 'Create Contact'",
         "add_crm_action(frm, 'Create Deal'",
-        "add_link_button(frm, 'CRM Lead', 'crm_lead', 'CRM — Link Existing Lead')",
+        "add_crm_lead_link_button(frm);",
         "add_link_button(frm, 'CRM Organization', 'crm_organization', 'CRM — Link Existing Organization')",
         "add_link_button(frm, 'Contact', 'crm_contact', 'CRM — Link Existing Contact')",
         "add_link_button(frm, 'CRM Deal', 'crm_deal', 'CRM — Link Existing Deal')",

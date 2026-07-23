@@ -141,11 +141,9 @@ function configure_prospect_actions(frm) {
         add_crm_action(frm, 'Preview Conversion', () => show_conversion_preview(frm));
 
         if (is_manager_or_admin()) {
-            if (!frm.doc.crm_lead) {
-                add_crm_action(frm, 'Create Lead', () => {
-                    confirm_create(frm, 'CRM Lead', 'create_crm_lead');
-                });
-            }
+            add_crm_action(frm, 'Create Lead', () => {
+                confirm_create(frm, 'CRM Lead', 'create_crm_lead');
+            });
             add_crm_action(frm, 'Create Organization', () => {
                 confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
             });
@@ -155,7 +153,7 @@ function configure_prospect_actions(frm) {
                 });
             }
             add_crm_action(frm, 'Create Deal', () => prompt_deal_options(frm));
-            add_link_button(frm, 'CRM Lead', 'crm_lead', 'CRM — Link Existing Lead');
+            add_crm_lead_link_button(frm);
             add_link_button(frm, 'CRM Organization', 'crm_organization', 'CRM — Link Existing Organization');
             add_link_button(frm, 'Contact', 'crm_contact', 'CRM — Link Existing Contact');
             add_link_button(frm, 'CRM Deal', 'crm_deal', 'CRM — Link Existing Deal');
@@ -166,7 +164,8 @@ function configure_prospect_actions(frm) {
         add_crm_action(frm, 'Convert to CRM Lead', () => convert_to_crm_lead(frm));
     }
 
-    if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
+    if ((['Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status)
+        || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
         && is_manager_or_admin()) {
         add_crm_action(frm, 'Sync SEI Context', () => {
             call_and_reload(frm, 'sync_sei_context_to_crm', { prospect: frm.doc.name });
@@ -488,20 +487,44 @@ function prompt_deal_options(frm) {
                 label: __('Manager override: commercial basis confirmed outside SEI attribution')
             },
             {
+                fieldtype: 'Link',
+                fieldname: 'crm_lead',
+                label: __('CRM Lead for Deal'),
+                options: 'CRM Lead',
+                get_query: () => ({ filters: { sei_prospect: frm.doc.name } })
+            },
+            {
                 fieldtype: 'Check',
                 fieldname: 'allow_direct_deal',
                 label: __('Allow direct Deal creation without linked CRM Lead'),
-                default: frm.doc.crm_lead ? 0 : 1
+                default: 0
             }
         ],
         (values) => {
             confirm_create(frm, 'CRM Deal', 'create_crm_deal', {
                 manager_override: Boolean(values.manager_override),
+                crm_lead: values.crm_lead || null,
                 allow_direct_deal: Boolean(values.allow_direct_deal)
             });
         },
         __('CRM Deal Options')
     );
+}
+
+function add_crm_lead_link_button(frm) {
+    frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
+        frappe.prompt(
+            [{ fieldtype: 'Link', fieldname: 'record_name', label: __('CRM Lead'), options: 'CRM Lead', reqd: 1 }],
+            (values) => {
+                call_and_reload(frm, 'link_existing_crm_record', {
+                    prospect: frm.doc.name,
+                    doctype: 'CRM Lead',
+                    record_name: values.record_name
+                });
+            },
+            __('Link Existing CRM Lead')
+        );
+    }, PROSPECT_ACTIONS_MENU);
 }
 
 function add_link_button(frm, doctype, fieldname, action_label = null) {

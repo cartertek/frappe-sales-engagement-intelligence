@@ -50,7 +50,6 @@ def prospect(**overrides):
         "name": "TEST-PROSPECT",
         "do_not_contact": 0,
         "crm_deal": None,
-        "crm_lead": None,
         "lifecycle_status": "Needs Research",
         "qualification_status": "Unqualified",
         "last_researched_date": None,
@@ -238,12 +237,12 @@ def test_apply_lifecycle_promotes_find_contact_and_syncs_ready_flag(monkeypatch)
 def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
 
+    monkeypatch.setattr(lifecycle, "has_prospect_crm_leads", lambda _name: True)
     requirements = lifecycle.get_crm_readiness_requirements(
         prospect(
             qualification_status="Unqualified",
             lifecycle_status="Do Not Contact",
             do_not_contact=1,
-            crm_lead="CRM-LEAD-1",
         )
     )
 
@@ -252,7 +251,7 @@ def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
         "qualified": False,
         "not_do_not_contact": False,
         "not_protected_lifecycle": False,
-        "no_crm_lead": False,
+        "no_crm_leads": False,
     }
 
 
@@ -381,11 +380,11 @@ def test_mark_ready_enters_ready_status_with_usable_primary_contact(monkeypatch)
 
 def test_mark_ready_returns_original_readiness_checklist_when_blocked(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
+    monkeypatch.setattr(lifecycle, "has_prospect_crm_leads", lambda _name: True)
     doc = prospect(
         qualification_status="Unqualified",
         lifecycle_status="Do Not Contact",
         do_not_contact=1,
-        crm_lead="CRM-LEAD-1",
     )
     writes = configure_persistence(monkeypatch, lifecycle, doc)
 
@@ -398,7 +397,7 @@ def test_mark_ready_returns_original_readiness_checklist_when_blocked(monkeypatc
         "qualified": False,
         "not_do_not_contact": False,
         "not_protected_lifecycle": False,
-        "no_crm_lead": False,
+        "no_crm_leads": False,
     }
     assert writes == []
 

@@ -13,5 +13,6 @@ def test_sent_and_unsent_drafts_invalidate_crm_lead_activity_cache():
     assert '{"cache_key": ["activity", crm_lead]}' in API
     assert "user=frappe.session.user" in API
     assert "after_commit=True" in API
-    assert "_refetch_crm_lead_activity(prospect.crm_lead)" in API
-    assert 'frappe.db.get_value("SEI Prospect", prospect_name, "crm_lead")' in API
+    assert "_refetch_crm_lead_activity(crm_lead)" in API
+    assert "crm_lead = communication.reference_name" in API
+    assert 'communication.reference_doctype == "CRM Lead"' in API

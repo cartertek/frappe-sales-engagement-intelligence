@@ -62,7 +62,6 @@
   "crm_conversion_notes",
   "frappe_crm_links_section",
   "crm_links_html",
-  "crm_lead",
   "crm_deal",
   "column_break_4",
   "crm_organization",
@@ -428,16 +427,6 @@
    "label": "CRM Records",
    "fieldtype": "HTML",
    "idx": 54
-  },
-  {
-   "fieldname": "crm_lead",
-   "hidden": 1,
-   "label": "CRM Lead",
-   "fieldtype": "Link",
-   "options": "CRM Lead",
-   "read_only": 1,
-   "in_list_view": 1,
-   "idx": 55
   },
   {
    "fieldname": "crm_deal",
