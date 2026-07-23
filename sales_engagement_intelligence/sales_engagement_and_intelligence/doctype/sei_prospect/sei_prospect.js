@@ -889,9 +889,22 @@ function add_message_draft_recipient_copy_button(frm, field, $form) {
     const $controlInput = $recipient.find('.control-input').first();
     if (!$controlInput.length) return;
 
-    $controlInput.addClass('d-flex align-items-center gap-2');
-    $('<button type="button" class="btn btn-default btn-sm sei-copy-email-to flex-shrink-0"></button>')
-        .text(__('Copy'))
+    $controlInput.css({ position: 'relative', overflow: 'visible' });
+    $('<button type="button" class="btn btn-default btn-sm sei-copy-email-to"></button>')
+        .html(frappe.utils.icon('copy', 'sm'))
+        .css({
+            position: 'absolute',
+            left: 'calc(100% + 8px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '32px',
+            height: '32px',
+            padding: '0',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1
+        })
         .attr('title', __('Copy Email To header'))
         .attr('aria-label', __('Copy Email To header'))
         .on('click', function (event) {

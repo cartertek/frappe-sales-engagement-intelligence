@@ -14,7 +14,9 @@ def test_message_draft_editor_adds_copy_button_next_to_recipient():
     assert "add_message_draft_recipient_copy_button(frm, field, $form)" in SCRIPT
     assert "[data-fieldname=\"to_contact\"]" in SCRIPT
     assert "sei-copy-email-to" in SCRIPT
-    assert ".text(__('Copy'))" in SCRIPT
+    assert "frappe.utils.icon('copy', 'sm')" in SCRIPT
+    assert "left: 'calc(100% + 8px)'" in SCRIPT
+    assert "$controlInput.addClass('d-flex align-items-center gap-2')" not in SCRIPT
 
 
 def test_copy_button_copies_valid_email_to_header():
