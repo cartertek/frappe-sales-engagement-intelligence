@@ -24,3 +24,22 @@ def test_prospect_quick_filters_are_limited_to_requested_fields():
         "arenas",
         "playbooks",
     }
+
+
+def test_removed_quick_filter_fields_remain_available_as_regular_filters():
+    schema = json.loads(PROSPECT_SCHEMA.read_text())
+    fields = {field["fieldname"]: field for field in schema["fields"]}
+
+    removed_quick_filters = {
+        "website",
+        "prospect_type",
+        "signals",
+        "qualification_status",
+        "crm_lead",
+        "crm_deal",
+    }
+
+    for fieldname in removed_quick_filters:
+        assert fieldname in fields
+        assert not fields[fieldname].get("hidden")
+        assert not fields[fieldname].get("in_standard_filter")
