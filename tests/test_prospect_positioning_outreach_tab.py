@@ -36,11 +36,17 @@ def test_positioning_fields_keep_existing_types():
 
     assert fields["positioning_section"]["fieldtype"] == "Section Break"
     assert fields["offer"]["fieldtype"] == "Data"
-    assert fields["signal_summary"]["fieldtype"] == "Small Text"
-    assert fields["contact_target_notes"]["fieldtype"] == "Small Text"
+    assert fields["signal_summary"]["fieldtype"] == "Long Text"
+    assert fields["contact_target_notes"]["fieldtype"] == "Long Text"
     assert fields["classification_section"] == {
         "fieldname": "classification_section",
         "label": "Classification",
         "fieldtype": "Section Break",
         "idx": fields["classification_section"]["idx"],
     }
+
+def test_positioning_textareas_match_signal_form_default_height():
+    fields = {field["fieldname"]: field for field in _schema()["fields"]}
+
+    assert fields["signal_summary"]["fieldtype"] == "Long Text"
+    assert fields["contact_target_notes"]["fieldtype"] == "Long Text"

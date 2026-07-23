@@ -165,7 +165,7 @@
   {
    "fieldname": "signal_summary",
    "label": "Signal Summary",
-   "fieldtype": "Small Text",
+   "fieldtype": "Long Text",
    "idx": 42
   },
   {
@@ -204,7 +204,7 @@
   {
    "fieldname": "contact_target_notes",
    "label": "Contact Target Notes",
-   "fieldtype": "Small Text",
+   "fieldtype": "Long Text",
    "idx": 43
   },
   {
