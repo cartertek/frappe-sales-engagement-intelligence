@@ -16,16 +16,19 @@ def sync_prospect_signal_types(prospect: str | None) -> None:
         prospect,
         as_dict=True,
     )
-    frappe.db.set_value(
-        "SEI Prospect",
-        prospect,
-        {
-            "signals": ", ".join(dict.fromkeys(r.signal_type for r in rows if r.signal_type)),
-            "playbooks": ", ".join(dict.fromkeys(r.playbook for r in rows if r.playbook)),
-            "arenas": ", ".join(dict.fromkeys(r.research_arena for r in rows if r.research_arena)),
-        },
-        update_modified=False,
-    )
+    values = {
+        "signals": ", ".join(dict.fromkeys(r.signal_type for r in rows if r.signal_type)),
+        "playbooks": ", ".join(dict.fromkeys(r.playbook for r in rows if r.playbook)),
+        "arenas": ", ".join(dict.fromkeys(r.research_arena for r in rows if r.research_arena)),
+    }
+    current = frappe.db.get_value(
+        "SEI Prospect", prospect, tuple(values), as_dict=True
+    ) or {}
+    if all((current.get(field) or "") == value for field, value in values.items()):
+        return
+
+    frappe.db.set_value("SEI Prospect", prospect, values, update_modified=True)
+    frappe.get_doc("SEI Prospect", prospect).notify_update()
 
 
 def sync_all_prospect_signal_types() -> None:

@@ -18,13 +18,19 @@ def count_sent_message_drafts(prospect) -> int:
 def sync_prospect_emails_sent(prospect: str | None) -> None:
     if not prospect or not _can_sync() or not frappe.db.exists("SEI Prospect", prospect):
         return
+    emails_sent = count_sent_message_drafts(prospect)
+    current = frappe.db.get_value("SEI Prospect", prospect, "emails_sent") or 0
+    if int(current) == emails_sent:
+        return
+
     frappe.db.set_value(
         "SEI Prospect",
         prospect,
         "emails_sent",
-        count_sent_message_drafts(prospect),
-        update_modified=False,
+        emails_sent,
+        update_modified=True,
     )
+    frappe.get_doc("SEI Prospect", prospect).notify_update()
 
 
 def sync_all_prospect_emails_sent() -> None:
