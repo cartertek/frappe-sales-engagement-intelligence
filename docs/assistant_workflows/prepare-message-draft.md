@@ -8,6 +8,8 @@ Scripts may display or save the preview for human review. They must not auto-sen
 
 ## Message wording and evidence attribution
 
+Before drafting or revising a prospect-specific message, load the current general drafting guidance, assigned playbook guidance, applicable signal-type guidance, prospect record, linked signal record, and the source evidence that describes the relevant work or problem. Do not begin from the existing wording alone or infer missing responsibilities from the company category, role title, or metadata.
+
 Drafts must sound like natural outreach, not compressed research summaries. Apply these rules across all research arenas and source types:
 
 - Identify the actual source accurately, such as a job posting, product announcement, GitHub issue, support thread, company page, directory profile, or public complaint. Do not replace it with a vague label such as “note” or “information.”
