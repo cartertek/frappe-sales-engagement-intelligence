@@ -52,8 +52,20 @@ def test_playbook_fields_are_grouped_by_purpose():
     assert outreach == [
         "default_offer",
         "default_asset",
+        "default_template",
         "recommended_first_action",
         "follow_up_guidance",
         "contact_roles_section",
         "contact_roles",
     ]
+
+
+def test_default_template_links_to_message_template():
+    fields = {field["fieldname"]: field for field in _schema()["fields"]}
+    assert fields["default_template"] == {
+        "fieldname": "default_template",
+        "label": "Default Template",
+        "fieldtype": "Link",
+        "options": "SEI Message Template",
+        "idx": fields["default_template"]["idx"],
+    }

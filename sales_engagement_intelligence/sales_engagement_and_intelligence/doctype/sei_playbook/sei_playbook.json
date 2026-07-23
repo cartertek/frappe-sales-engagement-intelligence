@@ -25,6 +25,7 @@
   "outreach_tab",
   "default_offer",
   "default_asset",
+  "default_template",
   "recommended_first_action",
   "follow_up_guidance",
   "contact_roles_section",
@@ -81,20 +82,20 @@
    "fieldname": "qualification_tab",
    "label": "Qualification",
    "fieldtype": "Tab Break",
-   "idx": 10
+   "idx": 8
   },
   {
    "fieldname": "research_arenas_section",
    "label": "Research Arenas",
    "fieldtype": "Section Break",
-   "idx": 8
+   "idx": 9
   },
   {
    "fieldname": "research_arenas",
    "label": "Research Arenas",
    "fieldtype": "Table",
    "options": "SEI Playbook Research Arena",
-   "idx": 9
+   "idx": 10
   },
   {
    "fieldname": "signal_types_section",
@@ -155,29 +156,36 @@
    "idx": 19
   },
   {
+   "fieldname": "default_template",
+   "label": "Default Template",
+   "fieldtype": "Link",
+   "options": "SEI Message Template",
+   "idx": 20
+  },
+  {
    "fieldname": "recommended_first_action",
    "label": "Recommended First Action",
    "fieldtype": "Data",
-   "idx": 20
+   "idx": 21
   },
   {
    "fieldname": "follow_up_guidance",
    "label": "Follow-Up Guidance",
    "fieldtype": "Long Text",
-   "idx": 21
+   "idx": 22
   },
   {
    "fieldname": "contact_roles_section",
    "label": "Contact Roles",
    "fieldtype": "Section Break",
-   "idx": 22
+   "idx": 23
   },
   {
    "fieldname": "contact_roles",
    "label": "Contact Roles",
    "fieldtype": "Table",
    "options": "SEI Playbook Contact Role",
-   "idx": 23
+   "idx": 24
   }
  ],
  "links": [],
