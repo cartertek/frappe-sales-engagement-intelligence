@@ -8,6 +8,10 @@ frappe.listview_settings['SEI Prospect'] = {
         'next_action_date',
         'crm_lead',
         'crm_deal',
+        'signals',
+        'playbooks',
+        'arenas',
+        'emails_sent',
         '_user_tags'
     ],
     formatters: {
