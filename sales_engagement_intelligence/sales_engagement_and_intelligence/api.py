@@ -1308,7 +1308,9 @@ def _message_draft_sender(value: str | None) -> tuple[str, str | None]:
         user = frappe.db.get_value("User", {"email": parsed}, ["email", "full_name"], as_dict=True)
         return parsed, (user.full_name if user else display_name or None)
 
-    user = frappe.db.get_value("User", raw, ["email", "full_name"], as_dict=True)
+    user = frappe.db.get_value(
+        "User", raw, ["email", "full_name"], as_dict=True
+    )
     if user and user.email and "@" in user.email:
         return user.email, user.full_name or None
 
@@ -1363,6 +1365,11 @@ def mark_message_draft_sent(draft: str) -> dict:
             "crm_email": communication.name,
         }
     )
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+        prospect_message_draft_sync,
+    )
+
+    prospect_message_draft_sync.sync_prospect_emails_sent(prospect.name)
     return {"crm_email": communication.name, "sent": True}
 
 
@@ -1370,10 +1377,12 @@ def mark_message_draft_sent(draft: str) -> dict:
 def mark_message_draft_unsent(draft: str) -> dict:
     if frappe.db.exists("SEI Prospect Message Draft", draft):
         doc = frappe.get_doc("SEI Prospect Message Draft", draft)
-        _check_doc_permission("SEI Prospect", doc.parent, "write")
+        prospect_name = doc.parent
+        _check_doc_permission("SEI Prospect", prospect_name, "write")
     else:
         _check_doc_permission("SEI Message Draft", draft, "write")
         doc = frappe.get_doc("SEI Message Draft", draft)
+        prospect_name = doc.prospect
 
     communication_name = doc.get("crm_email")
     if communication_name and frappe.db.exists("Communication", communication_name):
@@ -1383,6 +1392,11 @@ def mark_message_draft_unsent(draft: str) -> dict:
         communication.delete(ignore_permissions=True)
 
     doc.db_set({"sent": 0, "sent_on": None, "crm_email": None})
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+        prospect_message_draft_sync,
+    )
+
+    prospect_message_draft_sync.sync_prospect_emails_sent(prospect_name)
     return {"crm_email": None, "sent": False}
 
 

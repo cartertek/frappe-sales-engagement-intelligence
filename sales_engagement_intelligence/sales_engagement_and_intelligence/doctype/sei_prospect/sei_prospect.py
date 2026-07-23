@@ -12,6 +12,7 @@ class SEIProspect(Document):
     def validate(self):
         remove_empty_contact_role_placeholders(self)
         self.validate_message_draft_cc_addresses()
+        self.set_emails_sent()
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()
         self.validate_manual_override_reason()
@@ -24,6 +25,13 @@ class SEIProspect(Document):
 
         for row in self.get("message_drafts") or []:
             row.cc = message_draft_validation.normalize_email_list(row.cc, label="CC")
+
+    def set_emails_sent(self):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+            prospect_message_draft_sync,
+        )
+
+        self.emails_sent = prospect_message_draft_sync.count_sent_message_drafts(self)
 
     def set_normalized_domain(self):
         if not self.website:
