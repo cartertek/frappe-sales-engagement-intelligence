@@ -5,6 +5,10 @@ from urllib.parse import urlparse
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_crm_links import (
+    get_prospect_crm_leads,
+    has_prospect_crm_leads,
+)
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
     get_primary_signal,
 )
@@ -15,7 +19,6 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.ta
 )
 
 CRM_LINK_FIELD_BY_DOCTYPE = {
-    "CRM Lead": "crm_lead",
     "CRM Deal": "crm_deal",
     "CRM Organization": "crm_organization",
     "Contact": "crm_contact",
@@ -347,8 +350,8 @@ def validate_crm_conversion_eligibility(prospect_name: str) -> dict:
         reasons.append("Prospect is marked Do Not Contact.")
     if prospect.lifecycle_status in PROTECTED_LIFECYCLES:
         reasons.append(f"Prospect lifecycle is {prospect.lifecycle_status}.")
-    if prospect.crm_lead:
-        reasons.append("Prospect is already linked to a CRM Lead; use Sync SEI Context instead.")
+    if has_prospect_crm_leads(prospect.name):
+        reasons.append("Prospect is already linked to CRM Leads; use Sync SEI Context instead.")
     if prospect.lifecycle_status != "Ready for CRM Conversion":
         reasons.append("Prospect lifecycle is not Ready for CRM Conversion.")
     if not _has_identity(prospect):
@@ -510,8 +513,15 @@ def _find_crm_deal_duplicates(prospect) -> list[dict]:
         ):
             _append_unique_match(matches, row, "Matched by SEI Prospect link")
 
+    if _has_field(doctype, "lead"):
+        for lead in get_prospect_crm_leads(prospect.name):
+            filters = {"lead": lead}
+            if _has_field(doctype, "status"):
+                filters["status"] = ["not in", ("Won", "Lost", "Closed")]
+            for row in _get_all_if_exists(doctype, filters=filters, fields=fields, limit=10):
+                _append_unique_match(matches, row, "Matched by linked CRM Lead")
+
     for field, value in (
-        ("lead", prospect.crm_lead),
         ("organization", prospect.crm_organization),
         ("organization_name", prospect.prospect_name),
     ):
@@ -599,14 +609,14 @@ def build_crm_contact_payload(prospect_name: str) -> dict:
     return payload
 
 
-def build_crm_deal_payload(prospect_name: str) -> dict:
+def build_crm_deal_payload(prospect_name: str, crm_lead: str | None = None) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     payload = {"doctype": "CRM Deal"}
     title = prospect.prospect_name or _primary_name(prospect) or prospect.name
     _set_if_exists(payload, "CRM Deal", "deal_name", title)
     _set_if_exists(payload, "CRM Deal", "lead_name", title)
     _set_if_exists(payload, "CRM Deal", "organization_name", prospect.prospect_name)
-    _set_if_exists(payload, "CRM Deal", "lead", prospect.crm_lead)
+    _set_if_exists(payload, "CRM Deal", "lead", crm_lead)
     _set_if_exists(payload, "CRM Deal", "organization", prospect.crm_organization)
     _set_if_exists(payload, "CRM Deal", "status", "Qualification")
     _set_if_exists(payload, "CRM Deal", "sei_prospect", prospect.name)
@@ -618,36 +628,41 @@ def build_crm_deal_payload(prospect_name: str) -> dict:
 
 def sync_sei_context_to_crm(prospect_name: str) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    crm_leads = get_prospect_crm_leads(prospect.name)
     result = {
-        "crm_lead_synced": False,
+        "crm_leads_synced": [],
         "crm_deal_synced": False,
         "crm_organization_synced": False,
         "crm_contact_synced": False,
     }
 
-    if prospect.crm_lead and frappe.db.exists("CRM Lead", prospect.crm_lead):
-        values = {}
-        for field, value in {
-            "sei_prospect": prospect.name,
-            "sei_source_arena": get_prospect_arenas_display(prospect.name),
-            "sei_playbook": get_prospect_playbooks_display(prospect.name),
-            "sei_qualification_summary": prospect.qualification_explanation or prospect.signal_summary,
-            "organization": prospect.crm_organization,
-        }.items():
-            if _has_field("CRM Lead", field):
-                values[field] = value
-        if values:
-            frappe.db.set_value("CRM Lead", prospect.crm_lead, values, update_modified=True)
-            result["crm_lead_synced"] = True
+    lead_values = {}
+    for field, value in {
+        "sei_prospect": prospect.name,
+        "sei_source_arena": get_prospect_arenas_display(prospect.name),
+        "sei_playbook": get_prospect_playbooks_display(prospect.name),
+        "sei_qualification_summary": prospect.qualification_explanation or prospect.signal_summary,
+        "organization": prospect.crm_organization,
+    }.items():
+        if _has_field("CRM Lead", field):
+            lead_values[field] = value
+
+    for crm_lead in crm_leads:
+        if lead_values:
+            frappe.db.set_value("CRM Lead", crm_lead, lead_values, update_modified=True)
+        result["crm_leads_synced"].append(crm_lead)
 
     if prospect.crm_deal and frappe.db.exists("CRM Deal", prospect.crm_deal):
         values = {}
+        deal_lead = frappe.db.get_value("CRM Deal", prospect.crm_deal, "lead")
+        if not deal_lead and len(crm_leads) == 1:
+            deal_lead = crm_leads[0]
         for field, value in {
             "sei_prospect": prospect.name,
             "sei_source_arena": get_prospect_arenas_display(prospect.name),
             "sei_playbook": get_prospect_playbooks_display(prospect.name),
             "sei_primary_signal": get_primary_signal(prospect.name),
-            "lead": prospect.crm_lead,
+            "lead": deal_lead,
             "organization": prospect.crm_organization,
         }.items():
             if _has_field("CRM Deal", field):
@@ -656,18 +671,23 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
             frappe.db.set_value("CRM Deal", prospect.crm_deal, values, update_modified=True)
             result["crm_deal_synced"] = True
 
-    if prospect.crm_organization and prospect.crm_lead:
-        result["crm_organization_synced"] = _safe_set_link_on_related_doc(
-            "CRM Lead", prospect.crm_lead, "CRM Organization", prospect.crm_organization
-        )
+    if prospect.crm_organization:
+        organization_links = [
+            _safe_set_link_on_related_doc(
+                "CRM Lead", crm_lead, "CRM Organization", prospect.crm_organization
+            )
+            for crm_lead in crm_leads
+        ]
+        result["crm_organization_synced"] = any(organization_links)
 
     if prospect.crm_contact:
-        lead_linked = bool(
-            prospect.crm_lead
-            and _safe_set_link_on_related_doc(
-                "CRM Contacts", prospect.crm_contact, "CRM Lead", prospect.crm_lead
+        contact_lead_links = [
+            _safe_set_link_on_related_doc(
+                "CRM Contacts", prospect.crm_contact, "CRM Lead", crm_lead
             )
-        )
+            for crm_lead in crm_leads
+        ]
+        lead_linked = any(contact_lead_links)
         org_linked = bool(
             prospect.crm_organization
             and _safe_set_link_on_related_doc(
@@ -695,7 +715,6 @@ def create_crm_lead_from_prospect(prospect_name: str, options: Optional[dict] = 
     lead.insert()
     metadata = _copy_prospect_metadata(prospect_name, "CRM Lead", lead.name)
 
-    _set_prospect_values(prospect_name, {"crm_lead": lead.name})
     sync = sync_sei_context_to_crm(prospect_name)
 
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
@@ -709,7 +728,7 @@ def create_crm_lead_from_prospect(prospect_name: str, options: Optional[dict] = 
         crm_lead=lead.name,
         notes="Duplicate override used." if duplicate_override else None,
     )
-    return {"crm_lead": lead.name, **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
+    return {"crm_leads": [lead.name], **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def create_or_link_crm_organization(prospect_name: str, options: Optional[dict] = None) -> dict:
@@ -781,7 +800,15 @@ def create_crm_deal_from_prospect(prospect_name: str, options: Optional[dict] = 
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     _assert_base_conversion_eligible(prospect)
 
-    if not prospect.crm_lead and not options.get("allow_direct_deal"):
+    crm_leads = get_prospect_crm_leads(prospect.name)
+    crm_lead = (options.get("crm_lead") or "").strip() or None
+    if crm_lead and crm_lead not in crm_leads:
+        frappe.throw(f"CRM Lead {crm_lead} is not linked to prospect {prospect.name}.")
+    if not crm_lead and len(crm_leads) == 1:
+        crm_lead = crm_leads[0]
+    if not crm_lead and len(crm_leads) > 1 and not options.get("allow_direct_deal"):
+        frappe.throw("Select which linked CRM Lead this Deal belongs to.")
+    if not crm_lead and not options.get("allow_direct_deal"):
         frappe.throw("CRM Deal creation requires a linked CRM Lead unless direct Deal creation is confirmed.")
     if not (_has_commercial_basis(prospect.name) or options.get("manager_override")):
         frappe.throw(
@@ -792,7 +819,7 @@ def create_crm_deal_from_prospect(prospect_name: str, options: Optional[dict] = 
     if duplicates and not options.get("allow_duplicate"):
         frappe.throw("Possible CRM Deal duplicate found; link the existing deal or use a manager override.")
 
-    payload = build_crm_deal_payload(prospect_name)
+    payload = build_crm_deal_payload(prospect_name, crm_lead=crm_lead)
     deal = frappe.get_doc(payload)
     deal.insert()
     _set_prospect_values(prospect_name, {"crm_deal": deal.name})
@@ -806,15 +833,16 @@ def create_crm_deal_from_prospect(prospect_name: str, options: Optional[dict] = 
     audit = _record_conversion_attribution(
         prospect_name,
         "Created CRM Deal",
-        crm_lead=prospect.crm_lead,
+        crm_lead=crm_lead,
         crm_deal=deal.name,
         notes="Manager override used." if options.get("manager_override") else None,
     )
-    return {"crm_deal": deal.name, **lifecycle, "sync": sync, "audit": audit}
+    return {"crm_deal": deal.name, "crm_leads": crm_leads, **lifecycle, "sync": sync, "audit": audit}
 
 
 def link_existing_crm_record(prospect_name: str, doctype: str, record_name: str) -> dict:
-    if doctype not in CRM_LINK_FIELD_BY_DOCTYPE:
+    supported = {"CRM Lead", *CRM_LINK_FIELD_BY_DOCTYPE}
+    if doctype not in supported:
         frappe.throw(f"Unsupported CRM record type: {doctype}")
     if not frappe.db.exists(doctype, record_name):
         frappe.throw(f"{doctype} {record_name} does not exist.")
@@ -822,17 +850,27 @@ def link_existing_crm_record(prospect_name: str, doctype: str, record_name: str)
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     _assert_not_protected(prospect)
 
-    fieldname = CRM_LINK_FIELD_BY_DOCTYPE[doctype]
-    current = prospect.get(fieldname)
-    if current and current != record_name:
-        frappe.throw(
-            f"SEI Prospect is already linked to {doctype} {current}; unlink or override manually first."
-        )
-
-    _set_prospect_values(prospect_name, {fieldname: record_name})
-
-    if _has_field(doctype, "sei_prospect"):
-        frappe.db.set_value(doctype, record_name, "sei_prospect", prospect_name, update_modified=True)
+    if doctype == "CRM Lead":
+        if not _has_field("CRM Lead", "sei_prospect"):
+            frappe.throw("CRM Lead does not support the SEI Prospect relationship.")
+        current_prospect = frappe.db.get_value("CRM Lead", record_name, "sei_prospect")
+        if current_prospect and current_prospect != prospect_name:
+            frappe.throw(
+                f"CRM Lead {record_name} is already linked to SEI Prospect {current_prospect}."
+            )
+        frappe.db.set_value("CRM Lead", record_name, "sei_prospect", prospect_name, update_modified=True)
+        response_key = "crm_leads"
+    else:
+        fieldname = CRM_LINK_FIELD_BY_DOCTYPE[doctype]
+        current = prospect.get(fieldname)
+        if current and current != record_name:
+            frappe.throw(
+                f"SEI Prospect is already linked to {doctype} {current}; unlink or override manually first."
+            )
+        _set_prospect_values(prospect_name, {fieldname: record_name})
+        if _has_field(doctype, "sei_prospect"):
+            frappe.db.set_value(doctype, record_name, "sei_prospect", prospect_name, update_modified=True)
+        response_key = fieldname
 
     metadata = (
         _copy_prospect_metadata(prospect_name, doctype, record_name)
@@ -846,14 +884,20 @@ def link_existing_crm_record(prospect_name: str, doctype: str, record_name: str)
     )
 
     lifecycle = apply_lifecycle_status(prospect_name) if doctype in ("CRM Lead", "CRM Deal") else {}
+    linked_deal_lead = (
+        frappe.db.get_value("CRM Deal", record_name, "lead")
+        if doctype == "CRM Deal" and _has_field("CRM Deal", "lead")
+        else None
+    )
     audit = _record_conversion_attribution(
         prospect_name,
         f"Linked Existing {doctype}",
-        crm_lead=record_name if doctype == "CRM Lead" else prospect.crm_lead,
+        crm_lead=record_name if doctype == "CRM Lead" else linked_deal_lead,
         crm_deal=record_name if doctype == "CRM Deal" else prospect.crm_deal,
         notes=f"Linked {doctype} {record_name}.",
     )
-    return {fieldname: record_name, **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
+    response_value = get_prospect_crm_leads(prospect_name) if doctype == "CRM Lead" else record_name
+    return {response_key: response_value, **lifecycle, "sync": sync, "metadata": metadata, "audit": audit}
 
 
 def _contact_payload_for_row(prospect, row) -> dict:
@@ -982,10 +1026,7 @@ def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
         leads.append(lead.name)
     _set_prospect_values(
         prospect_name,
-        {
-            "crm_lead": sorted(leads)[0],
-            "crm_contact": sorted(c.name for c in contacts)[0] if contacts else None,
-        },
+        {"crm_contact": sorted(c.name for c in contacts)[0] if contacts else None},
     )
     frappe.db.set_value(
         "SEI Prospect", prospect_name, "lifecycle_status", "Converted to CRM Lead", update_modified=True

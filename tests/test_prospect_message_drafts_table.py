@@ -56,7 +56,7 @@ def test_message_draft_cc_is_single_line_input():
 
 def test_expanded_message_draft_editor_has_x_close_and_no_duplicate_insert_controls():
     script = PROSPECT_JS.read_text()
-    assert "normalize_managed_grid_editor(field, 'message-draft')" in script
+    assert "normalize_managed_grid_editor(field, 'message-draft', frm)" in script
     assert ".html('&times;')" in script
     assert "$form.children('.grid-footer-toolbar')" in script
     assert ".text(__('Done'))" in script

@@ -10,6 +10,9 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.co
     emails,
     primary_contacts,
 )
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_crm_links import (
+    has_prospect_crm_leads,
+)
 
 TERMINAL_STATUSES = (
     "Rejected",
@@ -44,7 +47,7 @@ def has_company_identity(prospect: Document) -> bool:
 
 
 def has_crm_link(prospect: Document) -> bool:
-    return bool(prospect.get("crm_lead") or prospect.get("crm_deal"))
+    return bool(prospect.get("crm_deal") or has_prospect_crm_leads(prospect.name))
 
 
 def has_signals(prospect: Document) -> bool:
@@ -67,7 +70,7 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
         return "Do Not Contact"
     if prospect.crm_deal:
         return "Converted to CRM Deal"
-    if prospect.crm_lead:
+    if has_prospect_crm_leads(prospect.name):
         return "Converted to CRM Lead"
     if is_terminal_status(prospect.lifecycle_status):
         return prospect.lifecycle_status
@@ -213,9 +216,9 @@ def get_crm_readiness_requirements(prospect: Document) -> list[dict]:
             "met": prospect.lifecycle_status not in ("Rejected", "Do Not Contact"),
         },
         {
-            "key": "no_crm_lead",
-            "label": "No CRM Lead has already been created",
-            "met": not bool(prospect.get("crm_lead")),
+            "key": "no_crm_leads",
+            "label": "No CRM Leads have already been created",
+            "met": not has_prospect_crm_leads(prospect.name),
         },
     ]
 

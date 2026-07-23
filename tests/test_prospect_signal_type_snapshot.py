@@ -39,7 +39,7 @@ def test_prospect_has_synced_signal_type_snapshot():
     signals = fields["signals"]
     assert signals["fieldtype"] == "Data"
     assert signals["read_only"] == 1
-    assert signals["in_standard_filter"] == 1
+    assert not signals.get("in_standard_filter")
 
     controller = (MODULE / "doctype" / "sei_signal" / "sei_signal.py").read_text()
     assert "self.sync_prospect_signal_types()" in controller
@@ -49,9 +49,12 @@ def test_prospect_has_synced_signal_type_snapshot():
     service = (
         MODULE / "services" / "prospect_signal_type_sync.py"
     ).read_text()
-    assert 'filters={"prospect": prospect, "signal_type": ["is", "set"]}' in service
-    assert '", ".join(dict.fromkeys(signal_types))' in service
+    assert "SELECT DISTINCT s.signal_type, st.playbook, st.research_arena" in service
     assert '"signals"' in service
+    assert '"playbooks"' in service
+    assert '"arenas"' in service
+    assert "update_modified=True" in service
+    assert 'frappe.get_doc("SEI Prospect", prospect).notify_update()' in service
 
     setup = (APP / "setup" / "__init__.py").read_text()
     assert "ensure_prospect_signal_type_sync()" in setup

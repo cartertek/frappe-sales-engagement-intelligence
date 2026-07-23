@@ -46,7 +46,9 @@ const PROSPECT_DEFAULT_TAB_BY_STATUS = {
     'Research Complete': 'qualification_tab',
     Qualified: 'qualification_tab',
     'Find Contact': 'outreach_tab',
-    'Ready for CRM Conversion': 'outreach_tab'
+    'Ready for CRM Conversion': 'outreach_tab',
+    'Converted to CRM Lead': 'crm_conversion_tab',
+    'Converted to CRM Deal': 'crm_conversion_tab'
 };
 
 function activate_default_prospect_tab(frm) {
@@ -139,11 +141,9 @@ function configure_prospect_actions(frm) {
         add_crm_action(frm, 'Preview Conversion', () => show_conversion_preview(frm));
 
         if (is_manager_or_admin()) {
-            if (!frm.doc.crm_lead) {
-                add_crm_action(frm, 'Create Lead', () => {
-                    confirm_create(frm, 'CRM Lead', 'create_crm_lead');
-                });
-            }
+            add_crm_action(frm, 'Create Lead', () => {
+                confirm_create(frm, 'CRM Lead', 'create_crm_lead');
+            });
             add_crm_action(frm, 'Create Organization', () => {
                 confirm_create(frm, 'CRM Organization', 'create_or_link_crm_organization');
             });
@@ -153,7 +153,7 @@ function configure_prospect_actions(frm) {
                 });
             }
             add_crm_action(frm, 'Create Deal', () => prompt_deal_options(frm));
-            add_link_button(frm, 'CRM Lead', 'crm_lead', 'CRM — Link Existing Lead');
+            add_crm_lead_link_button(frm);
             add_link_button(frm, 'CRM Organization', 'crm_organization', 'CRM — Link Existing Organization');
             add_link_button(frm, 'Contact', 'crm_contact', 'CRM — Link Existing Contact');
             add_link_button(frm, 'CRM Deal', 'crm_deal', 'CRM — Link Existing Deal');
@@ -164,7 +164,8 @@ function configure_prospect_actions(frm) {
         add_crm_action(frm, 'Convert to CRM Lead', () => convert_to_crm_lead(frm));
     }
 
-    if ((frm.doc.crm_lead || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
+    if ((['Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status)
+        || frm.doc.crm_deal || frm.doc.crm_organization || frm.doc.crm_contact)
         && is_manager_or_admin()) {
         add_crm_action(frm, 'Sync SEI Context', () => {
             call_and_reload(frm, 'sync_sei_context_to_crm', { prospect: frm.doc.name });
@@ -486,20 +487,44 @@ function prompt_deal_options(frm) {
                 label: __('Manager override: commercial basis confirmed outside SEI attribution')
             },
             {
+                fieldtype: 'Link',
+                fieldname: 'crm_lead',
+                label: __('CRM Lead for Deal'),
+                options: 'CRM Lead',
+                get_query: () => ({ filters: { sei_prospect: frm.doc.name } })
+            },
+            {
                 fieldtype: 'Check',
                 fieldname: 'allow_direct_deal',
                 label: __('Allow direct Deal creation without linked CRM Lead'),
-                default: frm.doc.crm_lead ? 0 : 1
+                default: 0
             }
         ],
         (values) => {
             confirm_create(frm, 'CRM Deal', 'create_crm_deal', {
                 manager_override: Boolean(values.manager_override),
+                crm_lead: values.crm_lead || null,
                 allow_direct_deal: Boolean(values.allow_direct_deal)
             });
         },
         __('CRM Deal Options')
     );
+}
+
+function add_crm_lead_link_button(frm) {
+    frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
+        frappe.prompt(
+            [{ fieldtype: 'Link', fieldname: 'record_name', label: __('CRM Lead'), options: 'CRM Lead', reqd: 1 }],
+            (values) => {
+                call_and_reload(frm, 'link_existing_crm_record', {
+                    prospect: frm.doc.name,
+                    doctype: 'CRM Lead',
+                    record_name: values.record_name
+                });
+            },
+            __('Link Existing CRM Lead')
+        );
+    }, PROSPECT_ACTIONS_MENU);
 }
 
 function add_link_button(frm, doctype, fieldname, action_label = null) {
@@ -736,15 +761,40 @@ function configure_message_draft_grid(frm) {
         callback(r) {
             const available = (r.message && r.message.data) || [];
             const saved = (frm.doc.message_drafts || [])
-                .map(row => row.to_contact)
+                .map(row => {
+                    const canonical = canonical_message_draft_recipient(row.to_contact, available);
+                    if (canonical && canonical !== row.to_contact) {
+                        row.to_contact = canonical;
+                    }
+                    return canonical;
+                })
                 .filter(Boolean);
             const options = [...new Set([...available, ...saved])];
             field.grid.update_docfield_property('to_contact', 'options', options.join('\n'));
             refresh_open_message_draft_editor(field);
         }
     });
-    normalize_managed_grid_editor(field, 'message-draft');
+    normalize_managed_grid_editor(field, 'message-draft', frm);
     isolate_message_draft_sent_checkbox(field);
+}
+
+
+function canonical_message_draft_recipient(value, available) {
+    const selected = String(value || '').trim();
+    if (!selected) return null;
+
+    const exact = available.find(option => String(option).trim() === selected);
+    if (exact) return exact;
+
+    const selectedName = selected.replace(/\s*<[^<>]+>\s*$/, '').trim().toLowerCase();
+    const matches = available.filter(option => {
+        const optionName = String(option || '')
+            .replace(/\s*<[^<>]+>\s*$/, '')
+            .trim()
+            .toLowerCase();
+        return optionName === selectedName;
+    });
+    return matches.length === 1 ? matches[0] : selected;
 }
 
 
@@ -852,6 +902,10 @@ function normalize_managed_grid_editor(field, key, frm = null) {
                 }
             }
 
+            if (key === 'message-draft' && frm) {
+                add_message_draft_recipient_copy_button(frm, field, $form);
+            }
+
             const $footerActions = $form.children('.grid-footer-toolbar').find('.row-actions');
             if ($footerActions.length && !$footerActions.find('.sei-grid-done').length) {
                 $('<button type="button" class="btn btn-primary btn-sm sei-grid-done"></button>')
@@ -875,6 +929,82 @@ function normalize_managed_grid_editor(field, key, frm = null) {
             subtree: true
         });
     }
+}
+
+
+function add_message_draft_recipient_copy_button(frm, field, $form) {
+    const $recipient = $form.find('[data-fieldname="to_contact"]').first();
+    if (!$recipient.length || $recipient.find('.sei-copy-email-to').length) return;
+
+    const $controlInput = $recipient.find('.control-input').first();
+    if (!$controlInput.length) return;
+
+    $controlInput.css({ position: 'relative', overflow: 'visible' });
+    $('<button type="button" class="btn btn-default btn-sm sei-copy-email-to"></button>')
+        .html(frappe.utils.icon('copy', 'sm'))
+        .css({
+            position: 'absolute',
+            left: 'calc(100% + 8px)',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            width: '32px',
+            height: '32px',
+            padding: '0',
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1
+        })
+        .attr('title', __('Copy Email To header'))
+        .attr('aria-label', __('Copy Email To header'))
+        .on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const cdn = $form.closest('.grid-row').attr('data-name');
+            const row = cdn && locals[field.grid.doctype]?.[cdn];
+            const header = message_draft_email_to_header(frm, row?.to_contact);
+            if (!header) {
+                frappe.msgprint(__('The selected contact does not have a valid email address.'));
+                return;
+            }
+            frappe.utils.copy_to_clipboard(header, __('Email To header copied'));
+        })
+        .appendTo($controlInput);
+}
+
+
+function message_draft_email_to_header(frm, selectedValue) {
+    const selected = String(selectedValue || '').trim();
+    const parsed = selected.match(/^\s*(.*?)\s*<\s*([^<>\s]+@[^<>\s]+)\s*>\s*$/);
+    if (parsed) {
+        return `${format_email_display_name(parsed[1])} <${parsed[2]}>`;
+    }
+
+    const contact = (frm.doc.contacts || []).find(row => {
+        const names = [row.contact_name, row.contact_role, row.crm_contact]
+            .map(value => String(value || '').trim())
+            .filter(Boolean);
+        return names.includes(selected);
+    });
+    if (!contact) return null;
+
+    const email = String(contact.emails || '')
+        .split(/[\n,;]+/)
+        .map(value => value.trim())
+        .find(value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
+    if (!email) return null;
+
+    const displayName = contact.contact_name || contact.contact_role || email;
+    return `${format_email_display_name(displayName)} <${email}>`;
+}
+
+
+function format_email_display_name(value) {
+    const name = String(value || '').trim();
+    if (!name) return '';
+    if (!/[",;<>@()]/.test(name)) return name;
+    return `"${name.replace(/([\\"])/g, '\\$1')}"`;
 }
 
 

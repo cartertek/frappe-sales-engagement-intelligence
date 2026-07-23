@@ -21,6 +21,8 @@ def test_prospect_activates_status_appropriate_default_tab_after_render():
     assert "Qualified: 'qualification_tab'" in source
     assert "'Find Contact': 'outreach_tab'" in source
     assert "'Ready for CRM Conversion': 'outreach_tab'" in source
+    assert "'Converted to CRM Lead': 'crm_conversion_tab'" in source
+    assert "'Converted to CRM Deal': 'crm_conversion_tab'" in source
     assert "|| 'overview_tab'" in source
     assert "tab?.set_active()" in source
 

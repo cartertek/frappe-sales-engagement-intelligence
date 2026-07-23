@@ -4,6 +4,10 @@ from collections.abc import Iterable
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services.prospect_crm_links import (
+    has_prospect_crm_leads,
+)
+
 REFERENCE_FIELDS: dict[str, tuple[tuple[str, str], ...]] = {
     "SEI Prospect": (
         ("CRM Lead", "sei_prospect"),
@@ -20,6 +24,7 @@ REFERENCE_FIELDS: dict[str, tuple[tuple[str, str], ...]] = {
         ("SEI Signal Disqualifier Check", "signal"),
         ("SEI Signal Type Feedback", "source_signal"),
     ),
+    "CRM Lead": (("SEI Interaction Attribution", "crm_lead"),),
     "CRM Deal": (
         ("SEI Prospect", "crm_deal"),
         ("SEI Interaction Attribution", "crm_deal"),
@@ -31,7 +36,11 @@ def unlink_references_before_delete(doc, method: str | None = None) -> None:
     """Clear SEI-owned links to a record before Frappe validates deletion links."""
 
     del method
-    if doc.doctype == "CRM Deal":
+    if doc.doctype == "CRM Lead":
+        doc.flags.sei_affected_prospects = tuple(
+            sorted({doc.sei_prospect} if getattr(doc, "sei_prospect", None) else set())
+        )
+    elif doc.doctype == "CRM Deal":
         doc.flags.sei_affected_prospects = _linked_prospects_for_deal(doc)
 
     for reference_doctype, fieldname in REFERENCE_FIELDS.get(doc.doctype, ()):
@@ -56,7 +65,7 @@ def restore_prospect_lifecycle_after_deal_delete(doc, method: str | None = None)
 
         lifecycle_status = (
             "Converted to CRM Lead"
-            if prospect.crm_lead
+            if has_prospect_crm_leads(prospect.name)
             else suggest_pre_crm_handoff_status(prospect)
         )
         frappe.db.set_value(
@@ -65,6 +74,34 @@ def restore_prospect_lifecycle_after_deal_delete(doc, method: str | None = None)
             {
                 "lifecycle_status": lifecycle_status,
             },
+            update_modified=True,
+        )
+        frappe.get_doc("SEI Prospect", prospect_name).notify_update()
+
+
+def restore_prospect_lifecycle_after_lead_delete(doc, method: str | None = None) -> None:
+    """Remove stale Converted-to-Lead states after the last linked CRM Lead is deleted."""
+
+    del method
+    prospects: Iterable[str] = getattr(doc.flags, "sei_affected_prospects", ()) or ()
+    for prospect_name in prospects:
+        if not frappe.db.exists("SEI Prospect", prospect_name):
+            continue
+        prospect = frappe.get_doc("SEI Prospect", prospect_name)
+        if prospect.crm_deal or has_prospect_crm_leads(prospect_name):
+            continue
+        if prospect.lifecycle_status != "Converted to CRM Lead":
+            continue
+
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+            suggest_pre_crm_handoff_status,
+        )
+
+        frappe.db.set_value(
+            "SEI Prospect",
+            prospect_name,
+            "lifecycle_status",
+            suggest_pre_crm_handoff_status(prospect),
             update_modified=True,
         )
         frappe.get_doc("SEI Prospect", prospect_name).notify_update()
