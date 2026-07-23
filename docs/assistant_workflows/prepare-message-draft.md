@@ -17,6 +17,7 @@ Drafts must sound like natural outreach, not compressed research summaries. Appl
 - Do not compress the source, evidence, interpretation, and pitch into one long sentence. Split dense ideas into short sentences with a spoken cadence.
 - Introduce a list before presenting several details, using natural setup such as “A few things stood out.”
 - Translate formal, promotional, or technical source language into normal speech without changing its meaning.
+- Summarize source evidence instead of quoting it or closely imitating its wording unless a direct quotation is genuinely necessary. Outreach should sound like the sender understood the source, not like they are analyzing or reciting it. Avoid setups such as “one line stood out,” “the posting said,” or polished source-language constructions that read like quotations. Extract the relevant facts and restate them in ordinary conversational language.
 - Preserve concrete evidence rather than replacing it with generic phrases such as “technical challenges.”
 - Use the company name to establish context, then shift naturally to “you” and “your.”
 - Avoid language that sounds accusatory, invasive, opportunistic, or like an unsolicited audit.
