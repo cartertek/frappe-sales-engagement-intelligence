@@ -46,7 +46,9 @@ const PROSPECT_DEFAULT_TAB_BY_STATUS = {
     'Research Complete': 'qualification_tab',
     Qualified: 'qualification_tab',
     'Find Contact': 'outreach_tab',
-    'Ready for CRM Conversion': 'outreach_tab'
+    'Ready for CRM Conversion': 'outreach_tab',
+    'Converted to CRM Lead': 'crm_conversion_tab',
+    'Converted to CRM Deal': 'crm_conversion_tab'
 };
 
 function activate_default_prospect_tab(frm) {
