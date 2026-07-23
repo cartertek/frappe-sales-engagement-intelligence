@@ -12,7 +12,7 @@ def test_prospect_has_queryable_emails_sent_field():
     assert field["label"] == "Emails Sent"
     assert field["fieldtype"] == "Int"
     assert field["read_only"] == 1
-    assert field["in_standard_filter"] == 1
+    assert not field.get("in_standard_filter")
     assert schema["field_order"].index("emails_sent") == schema["field_order"].index("message_drafts") + 1
 
 
