@@ -13,9 +13,9 @@
   "thesis",
   "typical_prospect_types",
   "notes",
-  "qualification_tab",
   "research_arenas_section",
   "research_arenas",
+  "qualification_tab",
   "signal_types_section",
   "signal_types",
   "signal_rules",
@@ -81,20 +81,20 @@
    "fieldname": "qualification_tab",
    "label": "Qualification",
    "fieldtype": "Tab Break",
-   "idx": 8
+   "idx": 10
   },
   {
    "fieldname": "research_arenas_section",
    "label": "Research Arenas",
    "fieldtype": "Section Break",
-   "idx": 9
+   "idx": 8
   },
   {
    "fieldname": "research_arenas",
    "label": "Research Arenas",
    "fieldtype": "Table",
    "options": "SEI Playbook Research Arena",
-   "idx": 10
+   "idx": 9
   },
   {
    "fieldname": "signal_types_section",
