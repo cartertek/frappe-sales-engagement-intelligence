@@ -38,6 +38,8 @@ def test_playbook_fields_are_grouped_by_purpose():
         "thesis",
         "typical_prospect_types",
         "notes",
+        "research_arenas_section",
+        "research_arenas",
     ]
     assert qualification == [
         "research_arenas_section",
