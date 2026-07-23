@@ -743,7 +743,7 @@ function configure_message_draft_grid(frm) {
             refresh_open_message_draft_editor(field);
         }
     });
-    normalize_managed_grid_editor(field, 'message-draft');
+    normalize_managed_grid_editor(field, 'message-draft', frm);
     isolate_message_draft_sent_checkbox(field);
 }
 
@@ -852,6 +852,10 @@ function normalize_managed_grid_editor(field, key, frm = null) {
                 }
             }
 
+            if (key === 'message-draft' && frm) {
+                add_message_draft_recipient_copy_button(frm, field, $form);
+            }
+
             const $footerActions = $form.children('.grid-footer-toolbar').find('.row-actions');
             if ($footerActions.length && !$footerActions.find('.sei-grid-done').length) {
                 $('<button type="button" class="btn btn-primary btn-sm sei-grid-done"></button>')
@@ -875,6 +879,69 @@ function normalize_managed_grid_editor(field, key, frm = null) {
             subtree: true
         });
     }
+}
+
+
+function add_message_draft_recipient_copy_button(frm, field, $form) {
+    const $recipient = $form.find('[data-fieldname="to_contact"]').first();
+    if (!$recipient.length || $recipient.find('.sei-copy-email-to').length) return;
+
+    const $controlInput = $recipient.find('.control-input').first();
+    if (!$controlInput.length) return;
+
+    $controlInput.addClass('d-flex align-items-center gap-2');
+    $('<button type="button" class="btn btn-default btn-sm sei-copy-email-to flex-shrink-0"></button>')
+        .text(__('Copy'))
+        .attr('title', __('Copy Email To header'))
+        .attr('aria-label', __('Copy Email To header'))
+        .on('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            const cdn = $form.closest('.grid-row').attr('data-name');
+            const row = cdn && locals[field.grid.doctype]?.[cdn];
+            const header = message_draft_email_to_header(frm, row?.to_contact);
+            if (!header) {
+                frappe.msgprint(__('The selected contact does not have a valid email address.'));
+                return;
+            }
+            frappe.utils.copy_to_clipboard(header, __('Email To header copied'));
+        })
+        .appendTo($controlInput);
+}
+
+
+function message_draft_email_to_header(frm, selectedValue) {
+    const selected = String(selectedValue || '').trim();
+    const parsed = selected.match(/^\s*(.*?)\s*<\s*([^<>\s]+@[^<>\s]+)\s*>\s*$/);
+    if (parsed) {
+        return `${format_email_display_name(parsed[1])} <${parsed[2]}>`;
+    }
+
+    const contact = (frm.doc.contacts || []).find(row => {
+        const names = [row.contact_name, row.contact_role, row.crm_contact]
+            .map(value => String(value || '').trim())
+            .filter(Boolean);
+        return names.includes(selected);
+    });
+    if (!contact) return null;
+
+    const email = String(contact.emails || '')
+        .split(/[\n,;]+/)
+        .map(value => value.trim())
+        .find(value => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value));
+    if (!email) return null;
+
+    const displayName = contact.contact_name || contact.contact_role || email;
+    return `${format_email_display_name(displayName)} <${email}>`;
+}
+
+
+function format_email_display_name(value) {
+    const name = String(value || '').trim();
+    if (!name) return '';
+    if (!/[",;<>@()]/.test(name)) return name;
+    return `"${name.replace(/([\\"])/g, '\\$1')}"`;
 }
 
 
