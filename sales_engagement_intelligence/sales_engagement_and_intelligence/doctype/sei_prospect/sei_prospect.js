@@ -6,9 +6,11 @@ frappe.ui.form.on('SEI Prospect', {
     },
     onload_post_render(frm) {
         activate_default_prospect_tab(frm);
+        size_prospect_positioning_textareas(frm);
     },
 
     refresh(frm) {
+        size_prospect_positioning_textareas(frm);
         if (frm.is_new()) return;
 
         reload_if_cached_document_is_stale(frm);
@@ -22,6 +24,21 @@ frappe.ui.form.on('SEI Prospect', {
         render_signals_embedded_list(frm);
     },
 });
+
+
+const PROSPECT_POSITIONING_TEXT_FIELDS = [
+    'signal_summary',
+    'contact_target_notes',
+];
+
+function size_prospect_positioning_textareas(frm) {
+    PROSPECT_POSITIONING_TEXT_FIELDS.forEach((fieldname) => {
+        const field = frm.get_field(fieldname);
+        if (field && field.$input) {
+            field.$input.css({ height: '88px', 'min-height': '88px' });
+        }
+    });
+}
 
 
 const PROSPECT_DEFAULT_TAB_BY_STATUS = {
