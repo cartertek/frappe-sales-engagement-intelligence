@@ -25,3 +25,5 @@ Workflow:
 6. Copy and send manually outside SEI only after review.
 
 Preview Message Draft does not send email, create a Communication, create a task, create CRM records, or change lifecycle status.
+
+Assistant and script implementations must also follow the rich-text storage, whitespace-preservation, and template-variable validation rules in [`../assistant_workflows/prepare-message-draft.md`](../assistant_workflows/prepare-message-draft.md).
