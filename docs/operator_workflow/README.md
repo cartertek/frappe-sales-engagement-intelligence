@@ -67,6 +67,7 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [AI-assisted research](ai_assisted_research.md)
 - [Research to import](research-to-import.md)
 - [Prospect review](prospect-review.md)
+- [Prospect identity and contact research](identity-contact-research.md)
 - [Qualification](qualification.md)
 - [CRM conversion](crm-conversion.md)
 - [Message drafting](message-drafting.md)
