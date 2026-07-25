@@ -27,10 +27,10 @@ def test_expanded_contact_editor_uses_single_x_close_control():
         "sei_prospect/sei_prospect.js"
     ).read_text()
     assert "configure_contact_grid(frm)" in script
-    assert "normalize_managed_grid_editor(field, 'contact')" in script
+    assert "normalize_managed_grid_editor(field, 'contact', frm)" in script
     assert ".grid-collapse-row" in script
     assert ".html('&times;')" in script
-    assert ".grid-footer-toolbar .row-actions" in script
+    assert "$form.children('.grid-footer-toolbar').find('.row-actions')" in script
     assert ".text(__('Done'))" in script
 
 
@@ -96,4 +96,4 @@ def test_contact_placeholder_uses_direct_role_lookup():
         "sei_prospect/sei_prospect.js"
     ).read_text()
     assert "prospect_contact_role_requires_signal_relevance" in script
-    assert "const signal_specific = Boolean(r.message?.data)" in script
+    assert "const signal_specific = Boolean(r.message?.data?.requires_signal_relevance)" in script

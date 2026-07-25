@@ -9,7 +9,7 @@ CONTACTS = SERVICES / "contacts.py"
 def test_taxonomy_sync_only_updates_taxonomy_snapshots():
     source = SYNC.read_text()
     assert "sync_required_contact_roles" not in source
-    assert 'frappe.get_doc("SEI Prospect", prospect)' not in source
+    assert 'frappe.get_doc("SEI Prospect", prospect).notify_update()' in source
 
 
 def test_contact_service_no_longer_persists_required_roles():

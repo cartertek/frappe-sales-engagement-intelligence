@@ -18,7 +18,7 @@ EXPECTED_REPORTS = {
     "Inferred Signal Review",
     "Missing Evidence Report",
     "Prospects by Source Arena",
-    "Outcomes by Thesis",
+    "Outcomes by Playbook",
     "Asset Usage and Outcomes",
     "Offer Performance",
     "CRM Conversion Summary",
@@ -31,7 +31,7 @@ EXPECTED_REPORTS = {
     "Import Source Quality",
     "Data Hygiene Dashboard",
     "Interaction Attribution Summary",
-    "Response Category by Thesis",
+    "Response Category by Playbook",
     "Channel Outcome Report",
 }
 
@@ -88,10 +88,10 @@ FILTERED_REPORTS = {
         "qualification_status",
         "assigned_to",
         "source_arena",
-        "sei_thesis",
+        "sei_playbook",
         "next_action_date",
     },
-    "Ready for CRM Conversion": {"source_arena", "sei_thesis", "next_action_date"},
+    "Ready for CRM Conversion": {"source_arena", "sei_playbook", "next_action_date"},
     "Signals by Type and Strength": {
         "signal_type",
         "signal_strength",
@@ -109,7 +109,7 @@ FILTERED_REPORTS = {
         "interaction_type",
         "channel",
         "response_category",
-        "sei_thesis",
+        "sei_playbook",
         "sei_asset",
     },
 }

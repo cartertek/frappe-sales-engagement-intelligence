@@ -16,8 +16,8 @@ def test_both_managed_grids_use_footer_done_and_x_close():
     assert ".sei-grid-done" in SCRIPT
     assert "$form.children('.grid-footer-toolbar')" in SCRIPT
     assert ".html('&times;')" in SCRIPT
-    assert "normalize_managed_grid_editor(field, 'contact')" in SCRIPT
-    assert "normalize_managed_grid_editor(field, 'message-draft')" in SCRIPT
+    assert "normalize_managed_grid_editor(field, 'contact', frm)" in SCRIPT
+    assert "normalize_managed_grid_editor(field, 'message-draft', frm)" in SCRIPT
 
 
 def test_dismissing_empty_new_rows_removes_them():
@@ -46,5 +46,5 @@ def test_crm_contact_path_requires_primary_contact_email():
         "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js"
     ).read_text()
 
-    assert "row.is_primary && Boolean((row.emails || '').trim())" in source
+    assert "!row.is_primary || !Boolean((row.emails || '').trim())" in source
     assert "row.contact_name || row.emails || row.notes" not in source

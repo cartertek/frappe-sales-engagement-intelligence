@@ -19,9 +19,12 @@ def test_research_arena_is_first_class_doctype():
     assert field(arena, "arena_name")["reqd"] == 1
 
 
-def test_signal_type_belongs_to_exactly_one_thesis_and_arena():
+def test_signal_type_belongs_to_exactly_one_playbook_and_arena():
     signal_type = load("sei_signal_type")
-    assert field(signal_type, "thesis")["reqd"] == 1
+    playbook = field(signal_type, "playbook")
+    assert playbook["fieldtype"] == "Link"
+    assert playbook["options"] == "SEI Playbook"
+    assert playbook["reqd"] == 1
     arena = field(signal_type, "research_arena")
     assert arena["fieldtype"] == "Link"
     assert arena["options"] == "SEI Research Arena"
@@ -36,11 +39,11 @@ def test_signal_does_not_duplicate_thesis_or_arena():
     assert field(signal, "thesis") is None
 
 
-def test_thesis_preserves_many_to_many_arena_relationship():
-    thesis = load("sei_thesis")
-    arenas = field(thesis, "research_arenas")
+def test_playbook_preserves_many_to_many_arena_relationship():
+    playbook = load("sei_playbook")
+    arenas = field(playbook, "research_arenas")
     assert arenas and arenas["fieldtype"] == "Table"
-    assert arenas["options"] == "SEI Thesis Research Arena"
+    assert arenas["options"] == "SEI Playbook Research Arena"
 
 
 def test_prospect_arenas_are_derived_and_snapshotted_for_queries():
@@ -64,7 +67,7 @@ def test_prospect_arenas_are_derived_and_snapshotted_for_queries():
 def test_inactive_signal_type_is_blocked_only_for_new_signals():
     source = (DT / "sei_signal" / "sei_signal.py").read_text()
     assert "self.is_new() and not signal_type.active" in source
-    assert "Signal Type must belong to exactly one Thesis and one Research Arena" in source
+    assert "Signal Type must belong to exactly one Playbook and one Research Arena" in source
 
 
 def test_migration_backfills_signal_types():
@@ -80,7 +83,7 @@ def test_migration_backfills_signal_types():
     assert "Legacy / Unclassified" in source
 
 
-def test_signal_type_validates_thesis_arena_pair():
+def test_signal_type_validates_playbook_arena_pair():
     controller_path = (
         ROOT
         / "sales_engagement_intelligence"
@@ -90,5 +93,5 @@ def test_signal_type_validates_thesis_arena_pair():
         / "sei_signal_type.py"
     )
     source = controller_path.read_text()
-    assert "SEI Thesis Research Arena" in source
-    assert "Thesis" in source and "is not assigned to Research Arena" in source
+    assert "SEI Playbook Research Arena" in source
+    assert "Research Arena" in source and "is not assigned to Playbook" in source

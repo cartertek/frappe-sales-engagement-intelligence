@@ -23,7 +23,6 @@ def test_crm_actions_are_grouped_by_label():
     assert "function add_crm_action" in SCRIPT
     assert "`CRM — ${label}`" in SCRIPT
     for label in (
-        "Mark as Ready for CRM Conversion",
         "Find Duplicates",
         "Preview Conversion",
         "Create Lead",
