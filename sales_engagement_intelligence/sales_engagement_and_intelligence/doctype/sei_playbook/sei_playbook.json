@@ -117,7 +117,8 @@
    "label": "Signals Qualification Script",
    "fieldtype": "Code",
    "options": "JavaScript",
-   "description": "JavaScript function body evaluated with one application global: signals. Return a truthy value to qualify every eligible signal in this playbook group."
+   "description": "JavaScript function body evaluated with one application global: signals. Return a truthy value to qualify every eligible signal in this playbook group.",
+   "default": "return signals.some(it => it.strength == \"Strong\") || signals.filter(it => it.strength == \"Moderate\").length > 1;"
   },
   {
    "fieldname": "qualification_guidance_section",
