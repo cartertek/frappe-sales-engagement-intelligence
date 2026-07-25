@@ -10,4 +10,4 @@ def execute() -> None:
         frappe.delete_doc("DocType", LEGACY_DOCTYPE, ignore_permissions=True, force=True)
 
     if frappe.db.table_exists("SEI Signal") and frappe.db.has_column("SEI Signal", "is_strength_capped"):
-        frappe.db.sql("ALTER TABLE `tabSEI Signal` DROP COLUMN `is_strength_capped`")
+        frappe.db.sql_ddl("ALTER TABLE `tabSEI Signal` DROP COLUMN `is_strength_capped`")

@@ -93,3 +93,11 @@ def test_legacy_disqualifier_check_feature_is_removed():
     assert "has_applied_disqualifier" not in signal_py
     assert "disqualifier_checks" not in signal_js
     assert "is_strength_capped" not in qualification
+
+
+def test_disqualifier_cleanup_patch_uses_ddl_api_for_schema_changes():
+    patch = (
+        APP / "patches" / "v0_0_1" / "remove_signal_disqualifier_checks.py"
+    ).read_text()
+    assert 'frappe.db.sql_ddl("ALTER TABLE `tabSEI Signal` DROP COLUMN `is_strength_capped`")' in patch
+    assert 'frappe.db.sql("ALTER TABLE' not in patch
