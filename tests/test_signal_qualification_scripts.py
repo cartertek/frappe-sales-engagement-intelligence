@@ -55,18 +55,21 @@ def test_default_script_preserves_previous_threshold():
     assert ".length > 1" in source
 
 
-def test_migration_is_registered_and_handles_default_legacy_rule():
-    entry = (
+def test_playbook_schema_supplies_default_qualification_script_without_migration():
+    data = json.loads((DOCTYPE / "sei_playbook" / "sei_playbook.json").read_text())
+    fields = {field["fieldname"]: field for field in data["fields"]}
+    assert fields["signal_qualification_script"]["default"] == (
+        'return signals.some(it => it.strength == "Strong") || '
+        'signals.filter(it => it.strength == "Moderate").length > 1;'
+    )
+    migration_entry = (
         "sales_engagement_intelligence.patches.v0_0_1."
         "replace_playbook_signal_rules_with_qualification_scripts"
     )
-    assert entry in PATCHES.read_text().splitlines()
-    patch = (
+    assert migration_entry not in PATCHES.read_text().splitlines()
+    assert not (
         APP / "patches" / "v0_0_1" / "replace_playbook_signal_rules_with_qualification_scripts.py"
-    ).read_text()
-    assert "len(rows) == 1 and _is_blank_rule(rows[0])" in patch
-    assert "DEFAULT_SIGNAL_QUALIFICATION_SCRIPT" in patch
-    assert 'frappe.delete_doc("DocType", LEGACY_DOCTYPE' in patch
+    ).exists()
 
 
 def test_playbook_script_changes_recalculate_affected_prospects():
