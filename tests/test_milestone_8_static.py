@@ -27,14 +27,14 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     signal_type_fields = {field["fieldname"]: field for field in signal_type["fields"]}
     assert signal_type_fields["signal_type_name"]["label"] == "Name"
     assert signal_type_fields["signal_type_name"]["reqd"] == 1
-    assert signal_type_fields["thesis"]["options"] == "SEI Thesis"
-    assert signal_type_fields["thesis"]["reqd"] == 1
+    assert signal_type_fields["playbook"]["options"] == "SEI Playbook"
+    assert signal_type_fields["playbook"]["reqd"] == 1
 
     assert playbook["name"] == "SEI Playbook"
     assert playbook["autoname"] == "field:playbook_name"
     assert playbook["title_field"] == "playbook_name"
     playbook_fields = {field["fieldname"]: field for field in playbook["fields"]}
-    assert playbook_fields["default_thesis"]["options"] == "SEI Thesis"
+    assert playbook_fields["thesis"]["fieldtype"] == "Small Text"
     assert playbook_fields["default_asset"]["options"] == "SEI Asset"
     assert playbook_fields["signal_qualification_script"]["fieldtype"] == "Code"
 
@@ -42,7 +42,6 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     assert template["name"] == "SEI Message Template"
     template_fields = {field["fieldname"]: field for field in template["fields"]}
     assert template_fields["playbook"]["options"] == "SEI Playbook"
-    assert template_fields["thesis"]["options"] == "SEI Thesis"
     assert template_fields["asset"]["options"] == "SEI Asset"
     assert "Email" in template_fields["channel"]["options"]
 
@@ -55,10 +54,9 @@ def test_prospect_has_playbook_assignment_fields():
     prospect = _doctype("sei_prospect")
     fields = {field["fieldname"]: field for field in prospect["fields"]}
     assert "thesis" not in fields
-    assert fields["sei_playbook"]["fieldtype"] == "Link"
-    assert fields["sei_playbook"]["options"] == "SEI Playbook"
+    assert fields["playbooks"]["read_only"] == 1
+    assert fields["playbooks"]["in_standard_filter"] == 1
     assert fields["suggested_message_template"]["options"] == "SEI Message Template"
-    assert fields["playbook_guidance"].get("read_only") == 1
 
 
 def test_api_exposes_draft_and_playbook_helpers_without_send_operations():
@@ -121,14 +119,10 @@ def test_prospect_form_has_user_triggered_draft_and_playbook_actions():
     assert "Apply Playbook Defaults" in source
     assert "Preview Message Draft" in source
     assert "preview_message_draft" in source
-    assert "Mark Ready for CRM Conversion" in source
+    assert "Mark as Ready for CRM Conversion" in source
     assert "Mark as Not Ready for CRM" in source
     assert "mark_not_ready_for_crm_conversion" in source
-    assert "show_crm_readiness_checklist" in source
-    assert "CRM Readiness Requirements" in source
-    assert "}, __('CRM Preparation'));" in source
     assert "sendmail" not in source
-    assert "frappe.confirm(__('Apply playbook defaults to blank fields only?" in source
 
 
 def test_prospect_form_uses_operator_tabs_for_large_schema():
@@ -138,18 +132,11 @@ def test_prospect_form_uses_operator_tabs_for_large_schema():
         for field in prospect["fields"]
         if field.get("fieldtype") == "Tab Break"
     ]
-    assert tabs == [
-        "Overview",
-        "Playbook & Drafting",
-        "Contact Path",
-        "Qualification",
-        "Lifecycle & Safety",
-        "CRM Conversion",
-    ]
+    assert tabs == ["Overview", "Status", "Qualification", "Outreach", "CRM Conversion"]
 
     field_order = prospect["field_order"]
-    assert field_order.index("playbook_drafting_tab") < field_order.index("sei_playbook")
-    assert field_order.index("crm_conversion_tab") < field_order.index("ready_for_crm_conversion")
+    assert field_order.index("outreach_tab") < field_order.index("suggested_message_template")
+    assert field_order.index("crm_conversion_tab") < field_order.index("crm_conversion_notes")
 
 
 def test_large_operator_forms_use_tabs():

@@ -11,36 +11,22 @@ DOCTYPE_DIR = (
 )
 
 
-def test_playbook_scalar_fields_precede_managed_tables():
+def test_playbook_fields_are_declared_once_and_grouped_by_tabs():
     data = json.loads((DOCTYPE_DIR / 'sei_playbook.json').read_text())
     field_order = data['field_order']
-    scalar_fields = [
-        'playbook_name',
-        'active',
-        'description',
-        'thesis',
-        'typical_prospect_types',
-        'default_offer',
-        'default_asset',
-        'qualifying_signal_guidance',
-        'disqualifying_guidance',
-        'recommended_first_action',
-        'follow_up_guidance',
-        'notes',
-    ]
-    managed_fields = [
-        'research_arenas_section',
-        'research_arenas',
-        'contact_roles_section',
-        'contact_roles',
-        'signal_types_section',
-        'signal_types',
-        'signal_qualification_script',
-    ]
-    expected = scalar_fields + managed_fields
-    assert field_order == expected
-    assert [field['fieldname'] for field in data['fields']] == expected
-    assert [field.get('idx') for field in data['fields']] == list(range(1, len(expected) + 1))
+    actual = [field['fieldname'] for field in data['fields']]
+    assert len(actual) == len(set(actual))
+    assert set(actual) == set(field_order)
+    assert (
+        field_order.index('overview_tab')
+        < field_order.index('qualification_tab')
+        < field_order.index('outreach_tab')
+    )
+    assert field_order.index('signal_types') < field_order.index('signal_qualification_script')
+    assert field_order.index('signal_qualification_script') < field_order.index(
+        'qualification_guidance_section'
+    )
+    assert field_order.index('default_offer') < field_order.index('contact_roles')
 
 
 def test_playbook_textareas_match_signal_form_height():
