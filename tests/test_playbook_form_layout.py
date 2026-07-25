@@ -35,7 +35,7 @@ def test_playbook_scalar_fields_precede_managed_tables():
         'contact_roles',
         'signal_types_section',
         'signal_types',
-        'signal_rules',
+        'signal_qualification_script',
     ]
     expected = scalar_fields + managed_fields
     assert field_order == expected

@@ -3,6 +3,10 @@ from __future__ import annotations
 
 import frappe
 
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+    signal_qualification_script,
+)
+
 PLAYBOOKS = [
     {
         "playbook_name": "Agency Overflow",
@@ -16,10 +20,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Disqualify agencies that clearly have deep internal engineering capacity, only sell media/creative services, or appear to need low-cost staffing rather than senior implementation support.",
         "recommended_first_action": "Review service positioning and identify the likely delivery gap before drafting.",
         "follow_up_guidance": "Follow up around a specific client-delivery bottleneck or technical backup use case; do not imply the agency is failing.",
-        "rules": [
-            ("Agency Overflow", "Moderate", "Observed"),
-            ("Ecosystem Adjacency", "Moderate", "Observed"),
-        ],
     },
     {
         "playbook_name": "Failed Hiring",
@@ -33,7 +33,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Disqualify normal healthy hiring, broad evergreen roles, staffing-agency posts, and prospects where the role does not map to Cartertek delivery work.",
         "recommended_first_action": "Compare the role requirements to visible product or workflow needs.",
         "follow_up_guidance": "Position the offer as progress while hiring continues, not as replacement recruiting or staff augmentation.",
-        "rules": [("Failed Recruitment", "Moderate", "Observed")],
     },
     {
         "playbook_name": "Launch Aftermath",
@@ -47,7 +46,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Disqualify launches with no visible technical friction, purely marketing launches, or issues unrelated to software delivery.",
         "recommended_first_action": "Capture the launch context and one concrete stabilization angle.",
         "follow_up_guidance": "Follow up with a pragmatic cleanup/readiness framing tied to the launch date or issue pattern.",
-        "rules": [("Launch Aftermath", "Moderate", "Observed")],
     },
     {
         "playbook_name": "Technical Distress",
@@ -61,7 +59,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Disqualify unsupported open-source hobby projects, stale issues with no commercial owner, and problems outside Cartertek's delivery scope.",
         "recommended_first_action": "Summarize the technical distress evidence and the likely business impact.",
         "follow_up_guidance": "Offer a diagnostic or stabilization sprint; avoid exaggerating or shaming the current implementation.",
-        "rules": [("Technical Distress", "Moderate", "Observed")],
     },
     {
         "playbook_name": "Partner / Referral",
@@ -75,7 +72,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Disqualify direct competitors with overlapping delivery capability, referral partners serving unrelated buyers, and purely transactional lead sellers.",
         "recommended_first_action": "Identify the partner's client base and where Cartertek complements their offer.",
         "follow_up_guidance": "Follow up around mutual-fit referral mechanics and technical backup, not a generic vendor pitch.",
-        "rules": [("Credibility/Referral Signal", "Moderate", "Observed"), ("Ecosystem Adjacency", "Moderate", "Observed")],
     },
     {
         "playbook_name": "Reactivation",
@@ -89,7 +85,6 @@ PLAYBOOKS = [
         "disqualifying_guidance": "Do not reactivate Do Not Contact prospects. Avoid reactivation without a fresh signal, new owner, or elapsed not-now window.",
         "recommended_first_action": "Review prior notes and verify the new signal before drafting.",
         "follow_up_guidance": "Reference the current signal or timing change; do not pretend the prior context does not exist.",
-        "rules": [("Reactivation Signal", "Moderate", "Observed")],
     },
 ]
 
@@ -164,9 +159,12 @@ def _ensure_role(role: str) -> None:
 
 def seed_playbooks(*, update_existing: bool = True) -> None:
     for row in PLAYBOOKS:
-        rules = row["rules"]
         roles = [value.strip() for value in row.get("legacy_contact_roles", "").split(",") if value.strip()]
-        values = {key: value for key, value in row.items() if key not in ("rules", "legacy_contact_roles", "legacy_source_arenas")}
+        values = {key: value for key, value in row.items() if key not in ("legacy_contact_roles", "legacy_source_arenas")}
+        values.setdefault(
+            "signal_qualification_script",
+            signal_qualification_script.DEFAULT_SIGNAL_QUALIFICATION_SCRIPT,
+        )
         values["active"] = 1
         exists = frappe.db.exists("SEI Playbook", values["playbook_name"])
         if exists and not update_existing:
@@ -177,9 +175,6 @@ def seed_playbooks(*, update_existing: bool = True) -> None:
             else frappe.get_doc({"doctype": "SEI Playbook"})
         )
         doc.update(values)
-        doc.set("signal_rules", [])
-        for signal_type, minimum_strength, evidence_basis_required in rules:
-            doc.append("signal_rules", {"signal_type":signal_type,"minimum_strength":minimum_strength,"evidence_basis_required":evidence_basis_required,"exclude_from_qualification":0})
         doc.set("contact_roles", [])
         for role in roles:
             _ensure_role(role)

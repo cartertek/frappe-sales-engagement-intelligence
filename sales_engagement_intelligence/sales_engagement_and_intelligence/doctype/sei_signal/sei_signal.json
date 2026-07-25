@@ -29,10 +29,8 @@
   "evidence_gap_reason",
   "legacy_notes_section",
   "evidence_notes",
-  "disqualifier_checks",
   "qualification_section",
   "exclude_from_qualification",
-  "is_strength_capped",
   "manual_override_reason",
   "manual_override_by",
   "manual_override_date",
@@ -208,13 +206,6 @@
    "description": "Legacy/general notes. Structured evidence fields are the source of truth for Moderate/Strong validation."
   },
   {
-   "fieldname": "disqualifier_checks",
-   "fieldtype": "Table",
-   "label": "Disqualifier Checks",
-   "options": "SEI Signal Disqualifier Check",
-   "idx": 22
-  },
-  {
    "fieldname": "qualification_section",
    "fieldtype": "Section Break",
    "label": "Qualification Controls",
@@ -227,13 +218,6 @@
    "fieldtype": "Check",
    "in_list_view": 1,
    "idx": 24
-  },
-  {
-   "fieldname": "is_strength_capped",
-   "fieldtype": "Check",
-   "label": "Strength Capped at Weak",
-   "read_only": 1,
-   "idx": 25
   },
   {
    "fieldname": "manual_override_reason",

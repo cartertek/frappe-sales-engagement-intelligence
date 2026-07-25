@@ -228,8 +228,7 @@ def remove_deprecated_signal_type(signal_type: str) -> None:
         return
 
     linked_signal = frappe.db.exists("SEI Signal", {"signal_type": signal_type})
-    linked_rule = frappe.db.exists("SEI Playbook Signal Rule", {"signal_type": signal_type})
-    if linked_signal or linked_rule:
+    if linked_signal:
         return
 
     frappe.delete_doc("SEI Signal Type", signal_type, ignore_permissions=True, force=True)

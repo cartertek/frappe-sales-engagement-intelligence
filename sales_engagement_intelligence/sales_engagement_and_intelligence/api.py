@@ -85,7 +85,6 @@ SIGNAL_FIELDS = {
     "disqualifiers_checked",
     "evidence_gap_reason",
     "evidence_notes",
-    "disqualifier_checks",
     "exclude_from_qualification",
     "manual_override_reason",
     "reviewed_by",
@@ -582,7 +581,7 @@ def get_signals(prospect: str) -> dict:
         filters={"prospect": prospect},
         fields=[
             "name",
-            *[field for field in SIGNAL_FIELDS if field not in {"attachment", "disqualifier_checks"}],
+            *[field for field in SIGNAL_FIELDS if field != "attachment"],
         ],
         order_by="source_date desc, creation desc",
     )

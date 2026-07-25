@@ -21,7 +21,6 @@ REFERENCE_FIELDS: dict[str, tuple[tuple[str, str], ...]] = {
         ("CRM Deal", "sei_primary_signal"),
         ("SEI Interaction Attribution", "signal"),
         ("SEI Import Batch Row", "signal"),
-        ("SEI Signal Disqualifier Check", "signal"),
         ("SEI Signal Type Feedback", "source_signal"),
     ),
     "CRM Lead": (("SEI Interaction Attribution", "crm_lead"),),

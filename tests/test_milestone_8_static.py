@@ -21,7 +21,6 @@ def _doctype(folder: str) -> dict:
 def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     playbook = _doctype("sei_playbook")
     template = _doctype("sei_message_template")
-    rule = _doctype("sei_playbook_signal_rule")
     signal_type = _doctype("sei_signal_type")
 
     assert signal_type["name"] == "SEI Signal Type"
@@ -37,13 +36,8 @@ def test_milestone_8_doctypes_exist_with_required_links_and_no_sending_fields():
     playbook_fields = {field["fieldname"]: field for field in playbook["fields"]}
     assert playbook_fields["default_thesis"]["options"] == "SEI Thesis"
     assert playbook_fields["default_asset"]["options"] == "SEI Asset"
-    assert playbook_fields["signal_rules"]["options"] == "SEI Playbook Signal Rule"
+    assert playbook_fields["signal_qualification_script"]["fieldtype"] == "Code"
 
-    assert rule.get("istable") == 1
-    rule_fields = {field["fieldname"]: field for field in rule["fields"]}
-    assert rule_fields["signal_type"]["fieldtype"] == "Link"
-    assert rule_fields["signal_type"]["options"] == "SEI Signal Type"
-    assert rule_fields["exclude_from_qualification"]["fieldtype"] == "Check"
 
     assert template["name"] == "SEI Message Template"
     template_fields = {field["fieldname"]: field for field in template["fields"]}

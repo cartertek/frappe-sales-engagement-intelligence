@@ -18,7 +18,7 @@
   "qualification_tab",
   "signal_types_section",
   "signal_types",
-  "signal_rules",
+  "signal_qualification_script",
   "qualification_guidance_section",
   "qualifying_signal_guidance",
   "disqualifying_guidance",
@@ -113,11 +113,11 @@
    "idx": 12
   },
   {
-   "fieldname": "signal_rules",
-   "label": "Signal Rules",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Signal Rule",
-   "idx": 13
+   "fieldname": "signal_qualification_script",
+   "label": "Signals Qualification Script",
+   "fieldtype": "Code",
+   "options": "JavaScript",
+   "description": "JavaScript function body evaluated with one application global: signals. Return a truthy value to qualify every eligible signal in this playbook group."
   },
   {
    "fieldname": "qualification_guidance_section",
