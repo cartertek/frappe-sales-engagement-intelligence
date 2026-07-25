@@ -45,5 +45,4 @@ def _recalculate_prospects() -> None:
 
 def execute() -> None:
     _migrate_table("SEI Signal")
-    _migrate_table("SEI Playbook Signal Rule")
     _recalculate_prospects()

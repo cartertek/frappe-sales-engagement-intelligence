@@ -44,7 +44,7 @@ def test_playbook_fields_are_grouped_by_purpose():
     assert qualification == [
         "signal_types_section",
         "signal_types",
-        "signal_rules",
+        "signal_qualification_script",
         "qualification_guidance_section",
         "qualifying_signal_guidance",
         "disqualifying_guidance",

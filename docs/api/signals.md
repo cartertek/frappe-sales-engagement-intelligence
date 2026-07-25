@@ -56,12 +56,8 @@ review_date
 attachment
 ```
 
-## Qualification counting
+## Qualification by Playbook script
 
-Qualification counts only evidence-valid observed signals:
+Qualification first excludes inferred signals, signals marked `exclude_from_qualification`, signals capped by a disqualifier without override, and signals that do not satisfy their strength-specific evidence guardrails. Remaining observed signals, including Weak signals, are grouped by the Playbook assigned to their Signal Type.
 
-- one Strong observed signal, or
-- two Moderate observed signals, or
-- manual prospect approval with documented reasoning
-
-Qualification excludes Weak signals, inferred signals, signals marked `exclude_from_qualification`, signals capped by a disqualifier without override, and signals missing required structured evidence fields.
+Each Playbook's `signal_qualification_script` receives its group through the JavaScript global `signals`. A truthy script result means every eligible signal in that group passes the qualification test. The Prospect is qualified when at least one signal passes. Manual Prospect approval with documented reasoning remains available as an override.
