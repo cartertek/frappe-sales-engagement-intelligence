@@ -47,7 +47,7 @@ def is_evidence_valid_for_qualification(signal: dict) -> bool:
     """Return whether a signal may be presented to its playbook qualification script."""
     if signal.get("evidence_basis") != "Observed":
         return False
-    if signal.get("exclude_from_qualification") or signal.get("is_strength_capped"):
+    if signal.get("exclude_from_qualification"):
         return False
     if signal.get("signal_strength") in ("Moderate", "Strong"):
         return all(_has_value(signal.get(fieldname)) for fieldname in STRUCTURED_EVIDENCE_FIELDS)
@@ -59,7 +59,6 @@ def _signal_filters(prospect_name: str) -> dict:
         "prospect": prospect_name,
         "exclude_from_qualification": 0,
         "evidence_basis": "Observed",
-        "is_strength_capped": 0,
     }
 
 
@@ -71,7 +70,7 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
     rows = frappe.get_all(
         "SEI Signal",
         filters=_signal_filters(prospect_name),
-        fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification", "is_strength_capped"],
+        fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification"],
         order_by="source_date desc, creation desc",
     )
     return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]

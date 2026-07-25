@@ -27,8 +27,6 @@ Weak signals require either `observed_fact` or `evidence_gap_reason` so review c
 
 Inferred signals are automatically excluded from qualification. Inferred signals cannot be Strong unless `manual_override_reason` is documented.
 
-Signals with an applied disqualifier check are capped at Weak unless `manual_override_reason` is documented.
-
 ## Payload fields
 
 Supported signal payload fields include:
@@ -48,7 +46,6 @@ why_not_weak
 disqualifiers_checked
 evidence_gap_reason
 evidence_notes
-disqualifier_checks
 exclude_from_qualification
 manual_override_reason
 reviewed_by
@@ -58,6 +55,6 @@ attachment
 
 ## Qualification by Playbook script
 
-Qualification first excludes inferred signals, signals marked `exclude_from_qualification`, signals capped by a disqualifier without override, and signals that do not satisfy their strength-specific evidence guardrails. Remaining observed signals, including Weak signals, are grouped by the Playbook assigned to their Signal Type.
+Qualification first excludes inferred signals, signals marked `exclude_from_qualification`, and signals that do not satisfy their strength-specific evidence guardrails. Remaining observed signals, including Weak signals, are grouped by the Playbook assigned to their Signal Type.
 
 Each Playbook's `signal_qualification_script` receives its group through the JavaScript global `signals`. A truthy script result means every eligible signal in that group passes the qualification test. The Prospect is qualified when at least one signal passes. Manual Prospect approval with documented reasoning remains available as an override.

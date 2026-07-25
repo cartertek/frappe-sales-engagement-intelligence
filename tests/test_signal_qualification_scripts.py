@@ -30,7 +30,6 @@ def test_qualification_groups_eligible_observed_signals_by_signal_type_playbook(
     source = QUALIFICATION.read_text()
     assert '"evidence_basis": "Observed"' in source
     assert '"exclude_from_qualification": 0' in source
-    assert '"is_strength_capped": 0' in source
     assert 'fields=["name", "playbook"]' in source
     assert 'grouped[playbook].append(signal)' in source
     assert 'evaluate_signal_qualification_script(' in source
@@ -77,3 +76,20 @@ def test_playbook_script_changes_recalculate_affected_prospects():
     assert "recalculate_prospects_for_playbook" in controller
     assert 'filters={"playbook": playbook}' in source
     assert 'filters={"signal_type": ["in", signal_types]}' in source
+
+
+def test_legacy_disqualifier_check_feature_is_removed():
+    signal = json.loads(
+        (DOCTYPE / "sei_signal" / "sei_signal.json").read_text()
+    )
+    fields = {field["fieldname"] for field in signal["fields"]}
+    assert "disqualifier_checks" not in fields
+    assert "is_strength_capped" not in fields
+    assert not (DOCTYPE / "sei_signal_disqualifier_check").exists()
+
+    signal_py = (DOCTYPE / "sei_signal" / "sei_signal.py").read_text()
+    signal_js = (DOCTYPE / "sei_signal" / "sei_signal.js").read_text()
+    qualification = (APP / "sales_engagement_and_intelligence" / "services" / "qualification.py").read_text()
+    assert "has_applied_disqualifier" not in signal_py
+    assert "disqualifier_checks" not in signal_js
+    assert "is_strength_capped" not in qualification

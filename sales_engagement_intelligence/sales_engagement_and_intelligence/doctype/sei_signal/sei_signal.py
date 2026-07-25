@@ -22,7 +22,6 @@ class SEISignal(Document):
         self.validate_signal_type_and_arena()
         self.set_prospect_name()
         self.set_prospect_tags()
-        self.sync_disqualifier_check_rows()
         self.apply_evidence_guardrails()
 
     def validate_signal_type_and_arena(self) -> None:
@@ -58,14 +57,7 @@ class SEISignal(Document):
             'prospect_name',
         )
 
-    def sync_disqualifier_check_rows(self) -> None:
-        for row in self.get("disqualifier_checks") or []:
-            row.signal = self.name
-            row.signal_type = self.signal_type
-
     def apply_evidence_guardrails(self) -> None:
-        self.is_strength_capped = 1 if self.has_applied_disqualifier() else 0
-
         if self.evidence_basis == "Observed" and not _has_value(self.observed_fact):
             frappe.throw("Observed Fact is required when Evidence Basis is Observed.")
 
@@ -103,19 +95,8 @@ class SEISignal(Document):
                     alert=True,
                 )
 
-        if self.is_strength_capped and self.signal_strength in QUALIFYING_STRENGTHS:
-            if not self.has_manual_override():
-                frappe.throw(
-                    "One or more disqualifier checks apply, so this signal is capped at Weak unless "
-                    "Manual Override Reason is documented."
-                )
-            self.mark_manual_override_audit_fields()
-
         if self.has_manual_override():
             self.mark_manual_override_audit_fields()
-
-    def has_applied_disqualifier(self) -> bool:
-        return any(row.applies for row in self.get("disqualifier_checks") or [])
 
     def has_manual_override(self) -> bool:
         return _has_value(self.manual_override_reason)
