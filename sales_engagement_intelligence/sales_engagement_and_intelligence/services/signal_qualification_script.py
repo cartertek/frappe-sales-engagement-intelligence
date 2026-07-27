@@ -35,12 +35,12 @@ process.stdin.on('end', () => {
   try {
     const payload = JSON.parse(input);
     const QualificationStatus = Object.freeze({
-      Qualified: 'Qualified',
-      NeedsReview: 'Needs Review',
-      ManuallyApproved: 'Manually Approved',
-      Rejected: 'Rejected',
-      DoNotContact: 'Do Not Contact',
-      Unqualified: 'Unqualified',
+      Qualified: Object.freeze({ value: 'Qualified' }),
+      NeedsReview: Object.freeze({ value: 'Needs Review' }),
+      ManuallyApproved: Object.freeze({ value: 'Manually Approved' }),
+      Rejected: Object.freeze({ value: 'Rejected' }),
+      DoNotContact: Object.freeze({ value: 'Do Not Contact' }),
+      Unqualified: Object.freeze({ value: 'Unqualified' }),
     });
     const allowedStatuses = new Set(Object.values(QualificationStatus));
     const sandbox = Object.create(null);
@@ -54,7 +54,7 @@ process.stdin.on('end', () => {
     if (!allowedStatuses.has(result)) {
       throw new Error('Qualification script must return a QualificationStatus value.');
     }
-    process.stdout.write(JSON.stringify({ ok: true, result }));
+    process.stdout.write(JSON.stringify({ ok: true, result: result.value }));
   } catch (error) {
     process.stdout.write(JSON.stringify({ ok: false, error: String(error && error.message || error) }));
   }
