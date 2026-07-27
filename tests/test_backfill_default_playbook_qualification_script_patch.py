@@ -41,7 +41,7 @@ def test_backfill_updates_only_blank_existing_scripts():
     assert "UPDATE `tabSEI Playbook`" in query
     assert "signal_qualification_script IS NULL" in query
     assert "TRIM(signal_qualification_script) = ''" in query
-    assert value == patch.DEFAULT_SCRIPT
+    assert value == patch.signal_qualification_script.DEFAULT_SIGNAL_QUALIFICATION_SCRIPT
 
 
 def test_backfill_is_safe_when_playbook_table_is_missing():

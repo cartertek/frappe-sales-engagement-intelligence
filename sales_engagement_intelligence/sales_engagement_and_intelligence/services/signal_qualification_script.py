@@ -5,12 +5,27 @@ import shutil
 import subprocess
 from typing import Any
 
-DEFAULT_SIGNAL_QUALIFICATION_SCRIPT = (
-    'return signals.some(it => it.strength == "Strong") '
-    '|| signals.filter(it => it.strength == "Moderate").length > 1;'
+QUALIFICATION_STATUSES = (
+    "Qualified",
+    "Needs Review",
+    "Manually Approved",
+    "Rejected",
+    "Do Not Contact",
+    "Unqualified",
 )
 
-NODE_RUNNER = r'''
+DEFAULT_SIGNAL_QUALIFICATION_SCRIPT = """if (signals.some(it => it.strength == \"Strong\")) {
+    return QualificationStatus.Qualified;
+}
+if (signals.filter(it => it.strength == \"Moderate\").length > 1) {
+    return QualificationStatus.Qualified;
+}
+if (signals.some(it => it.strength == \"Moderate\")) {
+    return QualificationStatus.NeedsReview;
+}
+return QualificationStatus.Unqualified;"""
+
+NODE_RUNNER = r"""
 const vm = require('vm');
 let input = '';
 process.stdin.setEncoding('utf8');
@@ -18,29 +33,42 @@ process.stdin.on('data', chunk => { input += chunk; });
 process.stdin.on('end', () => {
   try {
     const payload = JSON.parse(input);
+    const QualificationStatus = Object.freeze({
+      Qualified: 'Qualified',
+      NeedsReview: 'Needs Review',
+      ManuallyApproved: 'Manually Approved',
+      Rejected: 'Rejected',
+      DoNotContact: 'Do Not Contact',
+      Unqualified: 'Unqualified',
+    });
+    const allowedStatuses = new Set(Object.values(QualificationStatus));
     const sandbox = Object.create(null);
     sandbox.signals = Object.freeze(payload.signals.map(it => Object.freeze(it)));
+    sandbox.QualificationStatus = QualificationStatus;
     const context = vm.createContext(sandbox, {
       codeGeneration: { strings: false, wasm: false },
     });
-    const source = `Boolean((function () {\n${payload.script}\n})())`;
+    const source = `(function () {\n${payload.script}\n})()`;
     const result = new vm.Script(source).runInContext(context, { timeout: 50 });
-    process.stdout.write(JSON.stringify({ ok: true, result: Boolean(result) }));
+    if (!allowedStatuses.has(result)) {
+      throw new Error('Qualification script must return a QualificationStatus value.');
+    }
+    process.stdout.write(JSON.stringify({ ok: true, result }));
   } catch (error) {
     process.stdout.write(JSON.stringify({ ok: false, error: String(error && error.message || error) }));
   }
 });
-'''
+"""
 
 
 class SignalQualificationScriptError(RuntimeError):
     pass
 
 
-def evaluate_signal_qualification_script(script: str, signals: list[dict[str, Any]]) -> bool:
-    """Evaluate a playbook JavaScript function body in a constrained Node VM subprocess."""
+def evaluate_signal_qualification_script(script: str, signals: list[dict[str, Any]]) -> str:
+    """Evaluate a playbook JavaScript function body and return a qualification status."""
     if not str(script or "").strip():
-        return False
+        raise SignalQualificationScriptError("Signals Qualification Script is blank.")
 
     node = shutil.which("node") or shutil.which("nodejs")
     if not node:
@@ -74,7 +102,10 @@ def evaluate_signal_qualification_script(script: str, signals: list[dict[str, An
         raise SignalQualificationScriptError("Script runner returned an invalid response.") from exc
     if not result.get("ok"):
         raise SignalQualificationScriptError(str(result.get("error") or "Script execution failed."))
-    return bool(result.get("result"))
+    status = result.get("result")
+    if status not in QUALIFICATION_STATUSES:
+        raise SignalQualificationScriptError("Script runner returned an invalid qualification status.")
+    return status
 
 
 def _json_default(value: Any) -> str:

@@ -2,9 +2,8 @@ from __future__ import annotations
 
 import frappe
 
-DEFAULT_SCRIPT = (
-    'return signals.some(it => it.strength == "Strong") || '
-    'signals.filter(it => it.strength == "Moderate").length > 1;'
+from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
+    signal_qualification_script,
 )
 
 
@@ -19,5 +18,5 @@ def execute() -> None:
         WHERE signal_qualification_script IS NULL
            OR TRIM(signal_qualification_script) = ''
         """,
-        DEFAULT_SCRIPT,
+        signal_qualification_script.DEFAULT_SIGNAL_QUALIFICATION_SCRIPT,
     )

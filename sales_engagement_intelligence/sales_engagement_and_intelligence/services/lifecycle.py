@@ -75,6 +75,8 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
     if is_terminal_status(prospect.lifecycle_status):
         return prospect.lifecycle_status
 
+    if prospect.qualification_status == "Do Not Contact":
+        return "Do Not Contact"
     if prospect.qualification_status == "Rejected":
         return "Rejected"
 
@@ -110,7 +112,10 @@ def apply_lifecycle_to_doc(prospect: Document) -> dict:
     new_status = suggest_lifecycle_status_for_doc(prospect)
     if old_status != new_status:
         prospect.lifecycle_status = new_status
-    if new_status == "Rejected":
+    if new_status == "Do Not Contact":
+        prospect.do_not_contact = 1
+        prospect.qualification_status = "Do Not Contact"
+    elif new_status == "Rejected":
         prospect.qualification_status = "Rejected"
     return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
 
@@ -122,7 +127,9 @@ def apply_lifecycle_status(prospect_name: str) -> dict:
 
     if old_status != new_status:
         values = {"lifecycle_status": new_status}
-        if new_status == "Rejected":
+        if new_status == "Do Not Contact":
+            values.update({"do_not_contact": 1, "qualification_status": "Do Not Contact"})
+        elif new_status == "Rejected":
             values.update({"qualification_status": "Rejected"})
         frappe.db.set_value(
             "SEI Prospect",

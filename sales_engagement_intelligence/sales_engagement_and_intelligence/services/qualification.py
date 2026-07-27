@@ -83,11 +83,11 @@ def _signal_for_script(signal: dict) -> dict:
     return data
 
 
-def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], list[str]]:
-    """Return signals whose playbook group script passed, plus any script errors."""
+def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[str]]:
+    """Evaluate each playbook group and aggregate its qualification status."""
     eligible = get_eligible_signals(prospect_name)
     if not eligible:
-        return [], []
+        return [], "Unqualified", []
 
     signal_types = sorted({row.signal_type for row in eligible if row.signal_type})
     type_rows = frappe.get_all(
@@ -103,12 +103,21 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], list[str]]:
         if playbook:
             grouped[playbook].append(signal)
 
-    passed: list[dict] = []
+    precedence = {
+        "Unqualified": 0,
+        "Needs Review": 1,
+        "Qualified": 2,
+        "Manually Approved": 3,
+        "Rejected": 4,
+        "Do Not Contact": 5,
+    }
+    aggregate_status = "Unqualified"
+    counted_signals: list[dict] = []
     errors: list[str] = []
     for playbook, signals in grouped.items():
         script = frappe.db.get_value("SEI Playbook", playbook, "signal_qualification_script") or ""
         try:
-            group_passed = signal_qualification_script.evaluate_signal_qualification_script(
+            group_status = signal_qualification_script.evaluate_signal_qualification_script(
                 script,
                 [_signal_for_script(signal) for signal in signals],
             )
@@ -118,17 +127,20 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], list[str]]:
                 title=f"SEI qualification script failed: {playbook}",
                 message=str(exc),
             )
-            group_passed = False
-        if group_passed:
-            passed.extend(signals)
+            group_status = "Unqualified"
 
-    return passed, errors
+        if precedence[group_status] > precedence[aggregate_status]:
+            aggregate_status = group_status
+        if group_status in ("Qualified", "Needs Review", "Manually Approved"):
+            counted_signals.extend(signals)
+
+    return counted_signals, aggregate_status, errors
 
 
 def get_qualifying_signals(prospect_name: str) -> list[dict]:
-    """Return all eligible signals belonging to playbook groups whose script passes."""
-    passed, _errors = evaluate_signal_groups(prospect_name)
-    return passed
+    """Return signals from groups that qualify, need review, or are manually approved."""
+    signals, _status, _errors = evaluate_signal_groups(prospect_name)
+    return signals
 
 
 def get_primary_signal(prospect_name: str) -> Optional[str]:
@@ -167,15 +179,16 @@ def get_primary_signal(prospect_name: str) -> Optional[str]:
 
 
 def calculate_prospect_qualification_for_doc(prospect: Document) -> dict:
-    qualified_signals: list[dict] = []
+    counted_signals: list[dict] = []
+    script_status = "Unqualified"
     script_errors: list[str] = []
 
     if prospect.name and not prospect.do_not_contact and prospect.lifecycle_status != "Rejected":
-        qualified_signals, script_errors = evaluate_signal_groups(prospect.name)
+        counted_signals, script_status, script_errors = evaluate_signal_groups(prospect.name)
 
-    qualified_count = len(qualified_signals)
-    strong_count = sum(1 for signal in qualified_signals if signal.signal_strength == "Strong")
-    moderate_count = sum(1 for signal in qualified_signals if signal.signal_strength == "Moderate")
+    qualified_count = len(counted_signals)
+    strong_count = sum(1 for signal in counted_signals if signal.signal_strength == "Strong")
+    moderate_count = sum(1 for signal in counted_signals if signal.signal_strength == "Moderate")
     primary_signal = get_primary_signal(prospect.name) if prospect.name else None
 
     if prospect.do_not_contact:
@@ -191,17 +204,27 @@ def calculate_prospect_qualification_for_doc(prospect: Document) -> dict:
             )
         status = "Manually Approved"
         explanation = f"Manually approved: {prospect.manual_qualification_reason}"
-    elif qualified_count:
-        status = "Qualified"
-        explanation = f"Qualified by {qualified_count} signal(s) passing playbook qualification scripts."
-    elif script_errors:
+    elif script_errors and script_status == "Unqualified":
         status = "Unqualified"
         explanation = (
             "No signal passed qualification; one or more playbook qualification scripts failed to execute."
         )
     else:
-        status = "Unqualified"
-        explanation = "No eligible signal passed its playbook qualification script."
+        status = script_status
+        if status == "Qualified":
+            explanation = f"Qualified by {qualified_count} signal(s) under playbook qualification scripts."
+        elif status == "Needs Review":
+            explanation = (
+                f"Needs review based on {qualified_count} signal(s) under playbook qualification scripts."
+            )
+        elif status == "Manually Approved":
+            explanation = "Manually approved by a playbook qualification script."
+        elif status == "Rejected":
+            explanation = "Rejected by a playbook qualification script."
+        elif status == "Do Not Contact":
+            explanation = "Marked Do Not Contact by a playbook qualification script."
+        else:
+            explanation = "No eligible signal qualified under its playbook qualification script."
 
     return {
         "qualification_status": status,
@@ -250,9 +273,7 @@ def apply_qualification_result(prospect_name: str) -> dict:
 
 def recalculate_prospects_for_playbook(playbook: str) -> None:
     """Recalculate prospects with at least one Signal Type assigned to this playbook."""
-    signal_types = frappe.get_all(
-        "SEI Signal Type", filters={"playbook": playbook}, pluck="name"
-    )
+    signal_types = frappe.get_all("SEI Signal Type", filters={"playbook": playbook}, pluck="name")
     if not signal_types:
         return
     prospects = frappe.get_all(

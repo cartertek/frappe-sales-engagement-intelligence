@@ -33,9 +33,9 @@ def test_qualification_groups_eligible_observed_signals_by_signal_type_playbook(
     assert 'fields=["name", "playbook"]' in source
     assert 'grouped[playbook].append(signal)' in source
     assert 'evaluate_signal_qualification_script(' in source
-    assert 'if group_passed:' in source
-    assert 'passed.extend(signals)' in source
-    assert 'elif qualified_count:' in source
+    assert 'if precedence[group_status] > precedence[aggregate_status]:' in source
+    assert 'group_status in ("Qualified", "Needs Review", "Manually Approved")' in source
+    assert 'status = script_status' in source
 
 
 def test_runner_constrains_node_vm_and_exposes_only_signal_data():
@@ -45,23 +45,25 @@ def test_runner_constrains_node_vm_and_exposes_only_signal_data():
     assert "sandbox.signals" in source
     assert "--max-old-space-size=32" in source
     assert "timeout=0.5" in source
-    assert "Boolean((function ()" in source
+    assert "sandbox.QualificationStatus = QualificationStatus" in source
+    assert "Qualification script must return a QualificationStatus value." in source
 
 
 def test_default_script_preserves_previous_threshold():
     source = RUNNER.read_text()
-    assert 'it.strength == "Strong"' in source
-    assert 'it.strength == "Moderate"' in source
+    assert 'strength == \\"Strong\\"' in source
+    assert 'strength == \\"Moderate\\"' in source
     assert ".length > 1" in source
+    assert "QualificationStatus.NeedsReview" in source
 
 
 def test_playbook_schema_supplies_default_qualification_script_and_backfill_migration():
     data = json.loads((DOCTYPE / "sei_playbook" / "sei_playbook.json").read_text())
     fields = {field["fieldname"]: field for field in data["fields"]}
-    assert fields["signal_qualification_script"]["default"] == (
-        'return signals.some(it => it.strength == "Strong") || '
-        'signals.filter(it => it.strength == "Moderate").length > 1;'
-    )
+    default = fields["signal_qualification_script"]["default"]
+    assert "QualificationStatus.Qualified" in default
+    assert "QualificationStatus.NeedsReview" in default
+    assert "QualificationStatus.Unqualified" in default
     legacy_migration_entry = (
         "sales_engagement_intelligence.patches.v0_0_1."
         "replace_playbook_signal_rules_with_qualification_scripts"
@@ -73,6 +75,10 @@ def test_playbook_schema_supplies_default_qualification_script_and_backfill_migr
     patch_lines = PATCHES.read_text().splitlines()
     assert legacy_migration_entry not in patch_lines
     assert backfill_migration_entry in patch_lines
+    assert (
+        "sales_engagement_intelligence.patches.v0_0_1."
+        "upgrade_default_playbook_qualification_script_enum"
+    ) in patch_lines
     assert not (
         APP / "patches" / "v0_0_1" / "replace_playbook_signal_rules_with_qualification_scripts.py"
     ).exists()
