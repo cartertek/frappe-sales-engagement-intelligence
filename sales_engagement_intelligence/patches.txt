@@ -34,3 +34,4 @@ sales_engagement_intelligence.patches.v0_0_1.remove_singular_prospect_crm_lead
 
 
 sales_engagement_intelligence.patches.v0_0_1.remove_signal_disqualifier_checks
+sales_engagement_intelligence.patches.v0_0_1.backfill_default_playbook_qualification_script

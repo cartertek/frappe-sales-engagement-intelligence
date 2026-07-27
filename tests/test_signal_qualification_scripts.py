@@ -55,21 +55,34 @@ def test_default_script_preserves_previous_threshold():
     assert ".length > 1" in source
 
 
-def test_playbook_schema_supplies_default_qualification_script_without_migration():
+def test_playbook_schema_supplies_default_qualification_script_and_backfill_migration():
     data = json.loads((DOCTYPE / "sei_playbook" / "sei_playbook.json").read_text())
     fields = {field["fieldname"]: field for field in data["fields"]}
     assert fields["signal_qualification_script"]["default"] == (
         'return signals.some(it => it.strength == "Strong") || '
         'signals.filter(it => it.strength == "Moderate").length > 1;'
     )
-    migration_entry = (
+    legacy_migration_entry = (
         "sales_engagement_intelligence.patches.v0_0_1."
         "replace_playbook_signal_rules_with_qualification_scripts"
     )
-    assert migration_entry not in PATCHES.read_text().splitlines()
+    backfill_migration_entry = (
+        "sales_engagement_intelligence.patches.v0_0_1."
+        "backfill_default_playbook_qualification_script"
+    )
+    patch_lines = PATCHES.read_text().splitlines()
+    assert legacy_migration_entry not in patch_lines
+    assert backfill_migration_entry in patch_lines
     assert not (
         APP / "patches" / "v0_0_1" / "replace_playbook_signal_rules_with_qualification_scripts.py"
     ).exists()
+
+    backfill = (
+        APP / "patches" / "v0_0_1" / "backfill_default_playbook_qualification_script.py"
+    ).read_text()
+    assert "UPDATE `tabSEI Playbook`" in backfill
+    assert "signal_qualification_script IS NULL" in backfill
+    assert "TRIM(signal_qualification_script) = ''" in backfill
 
 
 def test_playbook_script_changes_recalculate_affected_prospects():
