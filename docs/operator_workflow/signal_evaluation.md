@@ -16,6 +16,12 @@ Ask these questions in order:
 5. Do any disqualifiers apply?
 6. Why is this not Weak?
 
+## Signal name
+
+When creating a signal, give it a short descriptive name that identifies the specific observed event, condition, or evidence. The name should distinguish the signal from other signals on the same prospect without repeating only the Signal Type. Prefer a concise phrase such as `Backend role reposted for four months` or `Post-launch checkout failures reported`.
+
+Do not use the generated SEI record ID, the prospect name alone, or the Signal Type alone as the descriptive name.
+
 ## Assistant-created signal default
 
 Assistant-created signals default to Weak and excluded from qualification unless `observed_fact` contains a direct quotation copied verbatim from the source. The quotation must be at least one complete sentence long and must directly support the selected managed Signal Type.
