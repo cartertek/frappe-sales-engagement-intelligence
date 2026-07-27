@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 import shutil
 import subprocess
+from pathlib import Path
 from typing import Any
 
 QUALIFICATION_STATUSES = (
@@ -70,7 +71,7 @@ def evaluate_signal_qualification_script(script: str, signals: list[dict[str, An
     if not str(script or "").strip():
         raise SignalQualificationScriptError("Signals Qualification Script is blank.")
 
-    node = shutil.which("node") or shutil.which("nodejs")
+    node = _find_node()
     if not node:
         raise SignalQualificationScriptError("Node.js is required to evaluate Signals Qualification Scripts.")
 
@@ -113,3 +114,16 @@ def _json_default(value: Any) -> str:
     if callable(isoformat):
         return isoformat()
     return str(value)
+
+
+def _find_node() -> str | None:
+    node = shutil.which("node") or shutil.which("nodejs")
+    if node:
+        return node
+
+    nvm_root = Path.home() / ".nvm" / "versions" / "node"
+    candidates = sorted(nvm_root.glob("*/bin/node"), reverse=True)
+    for candidate in candidates:
+        if candidate.is_file():
+            return str(candidate)
+    return None

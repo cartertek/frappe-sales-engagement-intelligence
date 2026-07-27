@@ -13,9 +13,7 @@ runner = importlib.import_module(
     "sales_engagement_intelligence.sales_engagement_and_intelligence.services.signal_qualification_script"
 )
 
-pytestmark = pytest.mark.skipif(
-    not (runner.shutil.which("node") or runner.shutil.which("nodejs")), reason="Node unavailable"
-)
+pytestmark = pytest.mark.skipif(not runner._find_node(), reason="Node unavailable")
 
 
 def test_default_script_preserves_three_way_threshold():
@@ -58,3 +56,13 @@ def test_runner_exposes_every_qualification_status_enum_item():
 def test_runner_rejects_non_enum_results():
     with pytest.raises(runner.SignalQualificationScriptError, match="QualificationStatus"):
         runner.evaluate_signal_qualification_script('return "Qualified";', [])
+
+
+def test_find_node_falls_back_to_nvm(monkeypatch, tmp_path):
+    fake_home = tmp_path
+    node = fake_home / ".nvm" / "versions" / "node" / "v24.12.0" / "bin" / "node"
+    node.parent.mkdir(parents=True)
+    node.write_text("")
+    monkeypatch.setattr(runner.shutil, "which", lambda _name: None)
+    monkeypatch.setattr(runner.Path, "home", lambda: fake_home)
+    assert runner._find_node() == str(node)
