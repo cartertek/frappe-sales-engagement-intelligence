@@ -654,6 +654,7 @@ function render_signals_embedded_list(frm) {
     frappe.db.get_list('SEI Signal', {
         fields: [
             'name',
+            'signal_name',
             'signal_type',
             'signal_strength',
             'evidence_basis',
@@ -705,7 +706,8 @@ function render_signals_table(frm, signals) {
 
         return `
             <tr>
-                <td><a href="${route}">${frappe.utils.escape_html(signal.signal_type || signal.name)}</a></td>
+                <td><a href="${route}">${frappe.utils.escape_html(signal.signal_name || signal.signal_type || signal.name)}</a></td>
+                <td>${frappe.utils.escape_html(signal.signal_type || '')}</td>
                 <td>${render_signal_badge(signal.signal_strength)}</td>
                 <td>${frappe.utils.escape_html(signal.evidence_basis || '')}</td>
                 <td>${excluded}</td>
@@ -725,6 +727,7 @@ function render_signals_table(frm, signals) {
                 <table class="table table-bordered table-hover">
                     <thead>
                         <tr>
+                            <th>${__('Name')}</th>
                             <th>${__('Signal Type')}</th>
                             <th>${__('Strength')}</th>
                             <th>${__('Evidence')}</th>

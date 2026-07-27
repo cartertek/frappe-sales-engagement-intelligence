@@ -39,3 +39,5 @@ sales_engagement_intelligence.patches.v0_0_1.upgrade_default_playbook_qualificat
 sales_engagement_intelligence.patches.v0_0_1.repair_playbook_script_false_rejections
 
 sales_engagement_intelligence.patches.v0_0_1.reorder_playbook_research_arenas
+
+sales_engagement_intelligence.patches.v0_0_1.backfill_signal_names
