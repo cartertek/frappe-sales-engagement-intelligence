@@ -44,7 +44,7 @@ def test_runner_constrains_node_vm_and_exposes_only_signal_data():
     assert "codeGeneration: { strings: false, wasm: false }" in source
     assert "sandbox.signals" in source
     assert "--max-old-space-size=32" in source
-    assert "timeout=2.0" in source
+    assert "timeout=5.0" in source
     assert "sandbox.QualificationStatus = QualificationStatus" in source
     assert "Qualification script must return a QualificationStatus value." in source
 

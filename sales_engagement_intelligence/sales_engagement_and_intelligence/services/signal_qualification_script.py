@@ -86,7 +86,7 @@ def evaluate_signal_qualification_script(script: str, signals: list[dict[str, An
             input=payload,
             text=True,
             capture_output=True,
-            timeout=2.0,
+            timeout=5.0,
             check=False,
             env={"PATH": ""},
         )
