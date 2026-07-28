@@ -55,3 +55,12 @@ def test_primary_actions_reuse_menu_handlers():
     assert "handler = () => mark_ready_for_crm_conversion(frm);" in SCRIPT
     assert "handler = () => convert_to_crm_lead(frm);" in SCRIPT
     assert SCRIPT.count("handler = () => reopen_prospect(frm);") == 2
+
+
+def test_action_menu_and_primary_action_are_rebuilt_together():
+    assert "schedule_prospect_actions(frm)" in SCRIPT
+    assert "frm.clear_custom_buttons()" in SCRIPT
+    assert "try {" in SCRIPT
+    assert "configure_prospect_actions(frm);" in SCRIPT
+    assert "finally {" in SCRIPT
+    assert "configure_primary_prospect_action(frm);" in SCRIPT

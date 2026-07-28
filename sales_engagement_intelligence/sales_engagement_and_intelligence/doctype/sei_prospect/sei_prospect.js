@@ -15,8 +15,7 @@ frappe.ui.form.on('SEI Prospect', {
 
         reload_if_cached_document_is_stale(frm);
 
-        configure_prospect_actions(frm);
-        schedule_primary_prospect_action(frm);
+        schedule_prospect_actions(frm);
 
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
@@ -173,10 +172,18 @@ function configure_prospect_actions(frm) {
 
 }
 
-function schedule_primary_prospect_action(frm) {
-    // Frappe rebuilds the standard toolbar after custom refresh handlers run.
-    // Apply the lifecycle action on the next event-loop turn so it remains visible.
-    window.setTimeout(() => configure_primary_prospect_action(frm), 0);
+function schedule_prospect_actions(frm) {
+    // Frappe rebuilds the toolbar after custom refresh handlers run. Rebuild the
+    // complete SEI action surface afterward so menu items and the primary action persist.
+    window.clearTimeout(frm.__sei_prospect_actions_timer);
+    frm.__sei_prospect_actions_timer = window.setTimeout(() => {
+        frm.clear_custom_buttons();
+        try {
+            configure_prospect_actions(frm);
+        } finally {
+            configure_primary_prospect_action(frm);
+        }
+    }, 0);
 }
 
 function configure_primary_prospect_action(frm) {
