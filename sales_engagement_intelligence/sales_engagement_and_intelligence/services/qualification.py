@@ -17,20 +17,10 @@ STRUCTURED_EVIDENCE_FIELDS = (
     "why_not_weak",
     "disqualifiers_checked",
 )
-SCRIPT_SIGNAL_FIELDS = (
-    "name",
-    "signal_type",
-    "signal_strength",
-    "confidence",
-    "signal_claim",
-    "why_this_signal_type",
-    "why_not_weak",
-    "disqualifiers_checked",
-    "evidence_gap_reason",
-    "evidence_notes",
-    "review_date",
-    "creation",
-)
+def _doctype_database_fields(doctype: str) -> list[str]:
+    """Return every stored parent-table field exposed by a DocType."""
+    return list(frappe.get_meta(doctype).get_valid_columns())
+
 
 
 def _has_value(value) -> bool:
@@ -68,7 +58,7 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
     rows = frappe.get_all(
         "SEI Signal",
         filters=_signal_filters(prospect_name),
-        fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification"],
+        fields=_doctype_database_fields("SEI Signal"),
         order_by="creation desc",
     )
     names = [row.name for row in rows]
@@ -103,9 +93,11 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
     return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]
 
 
-def _signal_for_script(signal: dict) -> dict:
-    data = {field: signal.get(field) for field in SCRIPT_SIGNAL_FIELDS}
-    # `strength` is the concise public name used by qualification scripts; keep the stored field too.
+def _signal_for_script(signal: dict, signal_type: dict) -> dict:
+    """Build the complete, structured signal object exposed to qualification scripts."""
+    data = dict(signal)
+    data.pop("signal_type", None)
+    data["type"] = dict(signal_type)
     data["observed_facts"] = signal.get("observed_facts") or []
     data["strength"] = signal.get("signal_strength")
     return data
@@ -121,8 +113,9 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[st
     type_rows = frappe.get_all(
         "SEI Signal Type",
         filters={"name": ["in", signal_types]},
-        fields=["name", "playbook"],
+        fields=_doctype_database_fields("SEI Signal Type"),
     )
+    type_by_name = {row.name: row for row in type_rows}
     playbook_by_type = {row.name: row.playbook for row in type_rows if row.playbook}
 
     grouped: dict[str, list[dict]] = defaultdict(list)
@@ -147,7 +140,10 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[st
         try:
             group_status = signal_qualification_script.evaluate_signal_qualification_script(
                 script,
-                [_signal_for_script(signal) for signal in signals],
+                [
+                    _signal_for_script(signal, type_by_name[signal.signal_type])
+                    for signal in signals
+                ],
             )
         except signal_qualification_script.SignalQualificationScriptError as exc:
             errors.append(f"{playbook}: {exc}")

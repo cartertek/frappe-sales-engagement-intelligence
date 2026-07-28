@@ -66,3 +66,20 @@ def test_find_node_falls_back_to_nvm(monkeypatch, tmp_path):
     monkeypatch.setattr(runner.shutil, "which", lambda _name: None)
     monkeypatch.setattr(runner.Path, "home", lambda: fake_home)
     assert runner._find_node() == str(node)
+
+
+def test_runner_supports_nested_signal_type_objects():
+    script = '''
+if (signals.some(it => it.type.category == "Launch" && it.strength == "Strong")) {
+    return QualificationStatus.Qualified;
+}
+return QualificationStatus.Unqualified;
+'''
+    assert runner.evaluate_signal_qualification_script(
+        script,
+        [{"strength": "Strong", "type": {"name": "release", "category": "Launch"}}],
+    ) == "Qualified"
+    assert runner.evaluate_signal_qualification_script(
+        script,
+        [{"strength": "Strong", "type": {"name": "defect", "category": "Aftermath"}}],
+    ) == "Unqualified"
