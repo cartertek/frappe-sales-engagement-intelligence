@@ -66,7 +66,8 @@ def test_fact_grid_wraps_and_uses_half_width():
     assert "flex-grow: 0 !important;" in css
     assert "flex-wrap: nowrap !important;" in css
     assert "white-space: pre-wrap !important;" in css
-    assert "overflow: hidden !important;" in css
+    assert "overflow: visible !important;" in css
+    assert "max-height: none !important;" in css
 
     js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
     assert "getBoundingClientRect().width" in js
@@ -74,3 +75,8 @@ def test_fact_grid_wraps_and_uses_half_width():
     assert "flex: `0 0 ${allocated}px`" in js
     assert "height: auto !important;" in css
     assert "text-overflow: clip !important;" in css
+
+    js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
+    assert ".removeClass('ellipsis')" in js
+    assert "fact_area.scrollHeight + vertical_padding" in js
+    assert "height: `${row_height}px`" in js

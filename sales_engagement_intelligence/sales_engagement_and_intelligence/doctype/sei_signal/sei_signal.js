@@ -82,20 +82,44 @@ function style_observed_facts_grid(frm) {
                 });
         });
 
-        $grid.find('.grid-static-col[data-fieldname="fact"] .static-area').css({
+        const $fact_areas = $grid.find('.grid-body .grid-static-col[data-fieldname="fact"] .static-area');
+        $fact_areas.removeClass('ellipsis').css({
             display: 'block',
             height: 'auto',
+            'max-height': 'none',
             'max-width': '100%',
-            overflow: 'hidden',
+            overflow: 'visible',
             'overflow-wrap': 'anywhere',
             'text-overflow': 'clip',
             'white-space': 'pre-wrap',
             width: '100%',
         });
-        $grid.find('.grid-row .data-row').css({
-            height: 'auto',
-            'align-items': 'stretch',
-            'flex-wrap': 'nowrap',
+
+        $grid.find('.grid-body .grid-row .data-row').each((_, row) => {
+            const $row = $(row);
+            const fact_area = $row.find('.grid-static-col[data-fieldname="fact"] .static-area')[0];
+            if (!fact_area) {
+                return;
+            }
+
+            const $fact_cell = $(fact_area).closest('.grid-static-col');
+            const vertical_padding = parseFloat($fact_cell.css('padding-top') || 0)
+                + parseFloat($fact_cell.css('padding-bottom') || 0);
+            const row_height = Math.max(
+                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--input-height')) || 38,
+                Math.ceil(fact_area.scrollHeight + vertical_padding)
+            );
+
+            $row.css({
+                height: `${row_height}px`,
+                'min-height': `${row_height}px`,
+                'align-items': 'stretch',
+                'flex-wrap': 'nowrap',
+            });
+            $row.children().css({
+                height: `${row_height}px`,
+                'min-height': `${row_height}px`,
+            });
         });
     };
 

@@ -62,6 +62,7 @@
   flex-wrap: nowrap !important;
   height: auto !important;
   min-height: var(--input-height);
+  overflow: visible !important;
 }
 
 .sei-observed-facts-grid .grid-static-col[data-fieldname] {
@@ -81,10 +82,18 @@
   height: auto !important;
   min-height: var(--input-height);
   max-width: 100%;
-  overflow: hidden !important;
+  max-height: none !important;
+  overflow: visible !important;
   overflow-wrap: anywhere;
   text-overflow: clip !important;
   white-space: pre-wrap !important;
   width: 100%;
   word-break: normal;
+}
+
+.sei-observed-facts-grid .grid-body .grid-row,
+.sei-observed-facts-grid .grid-body .grid-static-col,
+.sei-observed-facts-grid .grid-body .row-check,
+.sei-observed-facts-grid .grid-body .row-index {
+  overflow: visible !important;
 }
