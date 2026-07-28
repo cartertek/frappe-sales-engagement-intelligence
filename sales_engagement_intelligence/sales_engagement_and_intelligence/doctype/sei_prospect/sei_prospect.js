@@ -194,7 +194,7 @@ function configure_primary_prospect_action(frm) {
     let label;
     let handler;
 
-    if (lifecycle === 'Research Complete' && can_prepare_crm(frm)) {
+    if (lifecycle === 'Research Complete') {
         label = __('Mark as Ready for CRM Conversion');
         handler = () => mark_ready_for_crm_conversion(frm);
     } else if (lifecycle === 'Ready for CRM Conversion' && is_manager_or_admin()) {
@@ -246,9 +246,9 @@ function reload_if_cached_document_is_stale(frm) {
 }
 
 function can_prepare_crm(frm) {
-    return ['Research Complete', 'Find Contact', 'Ready for CRM Conversion'].includes(
-        frm.doc.lifecycle_status
-    ) && !frm.doc.do_not_contact;
+    return ['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
+        && !frm.doc.do_not_contact
+        && !['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status);
 }
 
 function contact_role_is_signal_specific(frm, role) {

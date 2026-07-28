@@ -39,7 +39,7 @@ def test_primary_action_matches_supported_lifecycles_only():
     block = SCRIPT.split("function configure_primary_prospect_action", 1)[1].split(
         "function reload_if_cached_document_is_stale", 1
     )[0]
-    assert "lifecycle === 'Research Complete' && can_prepare_crm(frm)" in block
+    assert "lifecycle === 'Research Complete'" in block
     assert "label = __('Mark as Ready for CRM Conversion')" in block
     assert "lifecycle === 'Ready for CRM Conversion'" in block
     assert "label = __('Convert to CRM Lead')" in block
@@ -64,11 +64,14 @@ def test_action_menu_and_primary_action_are_built_in_refresh():
     assert "frm.clear_custom_buttons()" not in SCRIPT
 
 
-def test_research_complete_needs_review_still_gets_action_surface():
+def test_research_complete_needs_review_shows_primary_action_but_keeps_gate():
+    primary = SCRIPT.split("function configure_primary_prospect_action", 1)[1]
+    primary = primary.split("function reload_if_cached_document_is_stale", 1)[0]
+    assert "if (lifecycle === 'Research Complete')" in primary
+    assert "Mark as Ready for CRM Conversion" in primary
+
     can_prepare = SCRIPT.split("function can_prepare_crm", 1)[1]
     can_prepare = can_prepare.split("function contact_role_is_signal_specific", 1)[0]
-    assert "Research Complete" in can_prepare
-    assert "Find Contact" in can_prepare
-    assert "Ready for CRM Conversion" in can_prepare
-    assert "qualification_status" not in can_prepare
-
+    assert "qualification_status" in can_prepare
+    assert "Qualified" in can_prepare
+    assert "Manually Approved" in can_prepare

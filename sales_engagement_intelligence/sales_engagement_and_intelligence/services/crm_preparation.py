@@ -25,7 +25,7 @@ CRM_LINK_FIELD_BY_DOCTYPE = {
 }
 
 PROTECTED_LIFECYCLES = ("Rejected", "Do Not Contact")
-CONVERTIBLE_LIFECYCLES = ("Research Complete", "Find Contact", "Ready for CRM Conversion")
+CONVERTIBLE_QUALIFICATIONS = ("Qualified", "Manually Approved")
 COMMERCIAL_RESPONSE_CATEGORIES = ("Positive", "Interested", "Meeting Booked", "Converted to Deal")
 
 
@@ -254,8 +254,8 @@ def _assert_not_protected(prospect) -> None:
 
 def _assert_base_conversion_eligible(prospect) -> None:
     _assert_not_protected(prospect)
-    if prospect.lifecycle_status not in CONVERTIBLE_LIFECYCLES:
-        frappe.throw("Only prospects in the CRM handoff lifecycle can be converted to CRM.")
+    if prospect.qualification_status not in CONVERTIBLE_QUALIFICATIONS:
+        frappe.throw("Only Qualified or Manually Approved prospects can be converted to CRM.")
 
 
 def _has_identity(prospect) -> bool:
@@ -344,8 +344,8 @@ def validate_crm_conversion_eligibility(prospect_name: str) -> dict:
     prospect = frappe.get_doc("SEI Prospect", prospect_name)
     reasons = []
 
-    if prospect.lifecycle_status not in CONVERTIBLE_LIFECYCLES:
-        reasons.append("Prospect has not entered the CRM handoff lifecycle.")
+    if prospect.qualification_status not in CONVERTIBLE_QUALIFICATIONS:
+        reasons.append("Prospect is not Qualified or Manually Approved.")
     if prospect.do_not_contact:
         reasons.append("Prospect is marked Do Not Contact.")
     if prospect.lifecycle_status in PROTECTED_LIFECYCLES:
