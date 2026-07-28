@@ -72,7 +72,7 @@ def test_fact_grid_wraps_and_supports_horizontal_overflow():
     assert "white-space: nowrap !important;" in css
 
     js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
-    assert "visible_width * 0.4" in js
+    assert "visible_width * 0.35" in js
     assert "source_url: wide_column_width" in js
     assert "area.scrollWidth + 24" in js
     assert "total_width" in js

@@ -48,7 +48,7 @@ function style_observed_facts_grid(frm) {
         }
 
         const visible_width = $container[0].clientWidth;
-        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.4));
+        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.35));
         const content_columns = ['source_date', 'evidence_basis', 'evidence_specificity'];
         const measured_widths = {};
 
