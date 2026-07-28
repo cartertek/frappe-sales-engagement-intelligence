@@ -10,6 +10,7 @@ frappe.ui.form.on('SEI Signal', {
 
     refresh(frm) {
         shorten_signal_textareas(frm);
+        style_observed_facts_grid(frm);
         render_signal_type_criteria(frm);
         show_evidence_guardrail_warning(frm);
     },
@@ -28,6 +29,36 @@ frappe.ui.form.on('SEI Signal', {
     },
 
 });
+
+
+function style_observed_facts_grid(frm) {
+    const field = frm.get_field('observed_facts');
+    if (!field || !field.grid || !field.grid.wrapper) {
+        return;
+    }
+
+    const apply = () => {
+        const $grid = field.grid.wrapper;
+        $grid.addClass('sei-observed-facts-grid');
+        $grid.find('.grid-static-col[data-fieldname="fact"]').css({
+            flex: '0 0 50%',
+            'max-width': '50%',
+            width: '50%',
+        });
+        $grid.find('.grid-static-col[data-fieldname="fact"] .static-area').css({
+            display: 'block',
+            height: 'auto',
+            overflow: 'visible',
+            'overflow-wrap': 'anywhere',
+            'text-overflow': 'clip',
+            'white-space': 'pre-wrap',
+        });
+        $grid.find('.grid-row .data-row').css({ height: 'auto', 'align-items': 'stretch' });
+    };
+
+    apply();
+    setTimeout(apply, 0);
+}
 
 function show_evidence_guardrail_warning(frm) {
     const messages = [];
