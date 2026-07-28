@@ -24,6 +24,24 @@ def _observed_fact_values(signal) -> list[str]:
 
 
 class SEISignal(Document):
+    @property
+    def observed_fact(self):
+        """Backward-compatible view of the first managed Observed Fact row."""
+        facts = _observed_fact_values(self)
+        return facts[0] if facts else None
+
+    @observed_fact.setter
+    def observed_fact(self, value):
+        """Map legacy single-fact writes into the managed Observed Facts table."""
+        if not _has_value(value):
+            self.set("observed_facts", [])
+            return
+        rows = self.get("observed_facts") or []
+        if rows:
+            rows[0].fact = str(value).strip()
+            return
+        self.append("observed_facts", {"fact": str(value).strip()})
+
     def validate(self):
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)

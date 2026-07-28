@@ -52,3 +52,10 @@ def test_api_accepts_and_returns_observed_facts():
     assert '"observed_facts",' in source
     assert "_normalize_observed_facts" in source
     assert "_attach_observed_facts" in source
+
+
+def test_signal_controller_keeps_legacy_observed_fact_compatibility():
+    controller = CONTROLLER.read_text()
+    assert "def observed_fact(self):" in controller
+    assert "@observed_fact.setter" in controller
+    assert 'self.append("observed_facts", {"fact": str(value).strip()})' in controller
