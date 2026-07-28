@@ -33,8 +33,8 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 ## Evidence-first research flow
 
 1. Find a candidate source.
-2. Copy at least one complete source sentence verbatim into Observed Fact. Do not paraphrase or combine passages.
-3. Put any paraphrase or interpretation in Signal Claim, then compare the quoted Observed Fact against the managed Signal Type definition.
+2. Add at least one complete source sentence verbatim to Observed Facts. Use separate rows for separate facts, and add as many facts as needed to support every claim. Do not paraphrase or splice passages together.
+3. Put any paraphrase or interpretation in Signal Claim, then compare the quoted Observed Facts against the managed Signal Type definition.
 4. Check obvious disqualifiers.
 5. Assign strength conservatively.
 6. Record the evidence note and structured evidence fields.

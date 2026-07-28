@@ -15,6 +15,14 @@ def _has_value(value) -> bool:
     return bool(str(value or "").strip())
 
 
+def _observed_fact_values(signal) -> list[str]:
+    return [
+        str(row.fact).strip()
+        for row in (signal.get("observed_facts") or [])
+        if _has_value(row.fact)
+    ]
+
+
 class SEISignal(Document):
     def validate(self):
         if self.signal_type:
@@ -58,14 +66,14 @@ class SEISignal(Document):
         )
 
     def apply_evidence_guardrails(self) -> None:
-        if self.evidence_basis == "Observed" and not _has_value(self.observed_fact):
-            frappe.throw("Observed Fact is required when Evidence Basis is Observed.")
+        observed_facts = _observed_fact_values(self)
+        if self.evidence_basis == "Observed" and not observed_facts:
+            frappe.throw("At least one Observed Fact is required when Evidence Basis is Observed.")
 
         if self.signal_strength in QUALIFYING_STRENGTHS:
             missing = [
                 label
                 for fieldname, label in (
-                    ("observed_fact", "Observed Fact"),
                     ("signal_claim", "Signal Claim"),
                     ("why_this_signal_type", "Why This Signal Type"),
                     ("why_not_weak", "Why Not Weak"),
@@ -73,6 +81,8 @@ class SEISignal(Document):
                 )
                 if not _has_value(self.get(fieldname))
             ]
+            if not observed_facts:
+                missing.insert(0, "Observed Facts")
             if missing:
                 frappe.throw(
                     "Moderate or Strong signals require structured evidence fields: "
@@ -80,9 +90,9 @@ class SEISignal(Document):
                 )
 
         if self.signal_strength == "Weak" and not (
-            _has_value(self.observed_fact) or _has_value(self.evidence_gap_reason)
+            observed_facts or _has_value(self.evidence_gap_reason)
         ):
-            frappe.throw("Weak signals require either Observed Fact or Evidence Gap Reason.")
+            frappe.throw("Weak signals require either Observed Facts or Evidence Gap Reason.")
 
         if self.evidence_basis == "Inferred":
             if self.signal_strength == "Strong" and not self.has_manual_override():

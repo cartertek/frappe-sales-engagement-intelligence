@@ -41,3 +41,5 @@ sales_engagement_intelligence.patches.v0_0_1.repair_playbook_script_false_reject
 sales_engagement_intelligence.patches.v0_0_1.reorder_playbook_research_arenas
 
 sales_engagement_intelligence.patches.v0_0_1.backfill_signal_names
+
+sales_engagement_intelligence.patches.v0_0_1.migrate_observed_facts_to_child_table

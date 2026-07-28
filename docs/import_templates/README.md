@@ -12,7 +12,7 @@ These templates support Milestone 5 SEI-only intake. They create or update **SEI
 
 Prospect creation requires `prospect_name` and at least one context field: `website`, `source_url`, `source_arena`, or `primary_contact_email`.
 
-Signal creation requires `signal_type`, `signal_strength`, `evidence_basis`, and `evidence_notes`. In the combined template these are prefixed as `initial_signal_*`.
+Signal creation requires `signal_name`, `signal_type`, `signal_strength`, and `evidence_basis`. Observed signals require at least one Observed Facts row. The flat CSV templates accept one `observed_fact` value and convert it into one row; add additional facts through the managed table or API when needed to support every claim. In the combined template, signal fields are prefixed as `initial_signal_*`.
 
 Signal-only import must match an existing prospect by `prospect_name`, `prospect_website`, or `prospect_normalized_domain`; it will not create a prospect.
 

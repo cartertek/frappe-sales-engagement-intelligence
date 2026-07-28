@@ -90,7 +90,6 @@ function render_signal_type_criteria(frm) {
 
 
 const COMPACT_SIGNAL_TEXT_FIELDS = [
-    'observed_fact',
     'signal_claim',
     'why_this_signal_type',
     'why_not_weak',

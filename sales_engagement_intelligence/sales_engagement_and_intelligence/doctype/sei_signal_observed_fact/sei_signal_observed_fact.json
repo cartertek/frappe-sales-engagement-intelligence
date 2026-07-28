@@ -1,0 +1,28 @@
+{
+ "actions": [],
+ "creation": "2026-07-27 00:00:00.000000",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "fact"
+ ],
+ "fields": [
+  {
+   "fieldname": "fact",
+   "fieldtype": "Long Text",
+   "label": "Fact",
+   "reqd": 1,
+   "in_list_view": 1,
+   "description": "Verbatim quotation copied from the source. Preserve complete sentences and original wording."
+  }
+ ],
+ "istable": 1,
+ "module": "Sales Engagement and Intelligence",
+ "name": "SEI Signal Observed Fact",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

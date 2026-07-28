@@ -22,7 +22,7 @@
   "signal_type_definition_section",
   "criteria_html",
   "evidence_section",
-  "observed_fact",
+  "observed_facts",
   "signal_claim",
   "why_this_signal_type",
   "why_not_weak",
@@ -160,17 +160,18 @@
    "idx": 14
   },
   {
-   "fieldname": "observed_fact",
-   "fieldtype": "Long Text",
-   "label": "Observed Fact",
-   "description": "Verbatim quotation copied from the source. Must contain at least one complete sentence. Do not paraphrase, interpret, or combine separate passages.",
-   "idx": 15
+   "fieldname": "observed_facts",
+   "fieldtype": "Table",
+   "label": "Observed Facts",
+   "options": "SEI Signal Observed Fact",
+   "reqd": 1,
+   "description": "Add at least one verbatim source fact. Multiple facts are encouraged when needed to support every signal claim."
   },
   {
    "fieldname": "signal_claim",
    "fieldtype": "Long Text",
    "label": "Signal Claim",
-   "description": "Paraphrase or interpretation of what the quoted Observed Fact supports. Keep source wording in Observed Fact.",
+   "description": "Paraphrase or interpretation of what the quoted Observed Facts support. Keep source wording in Observed Facts.",
    "idx": 16
   },
   {

@@ -12,7 +12,6 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services im
 
 TERMINAL_STATUSES = ("Rejected", "Do Not Contact")
 STRUCTURED_EVIDENCE_FIELDS = (
-    "observed_fact",
     "signal_claim",
     "why_this_signal_type",
     "why_not_weak",
@@ -27,7 +26,6 @@ SCRIPT_SIGNAL_FIELDS = (
     "confidence",
     "source_url",
     "source_date",
-    "observed_fact",
     "signal_claim",
     "why_this_signal_type",
     "why_not_weak",
@@ -49,9 +47,13 @@ def is_evidence_valid_for_qualification(signal: dict) -> bool:
         return False
     if signal.get("exclude_from_qualification"):
         return False
+    observed_facts = signal.get("observed_facts") or []
+    has_observed_fact = any(_has_value(item.get("fact")) for item in observed_facts)
     if signal.get("signal_strength") in ("Moderate", "Strong"):
-        return all(_has_value(signal.get(fieldname)) for fieldname in STRUCTURED_EVIDENCE_FIELDS)
-    return _has_value(signal.get("observed_fact")) or _has_value(signal.get("evidence_gap_reason"))
+        return has_observed_fact and all(
+            _has_value(signal.get(fieldname)) for fieldname in STRUCTURED_EVIDENCE_FIELDS
+        )
+    return has_observed_fact or _has_value(signal.get("evidence_gap_reason"))
 
 
 def _signal_filters(prospect_name: str) -> dict:
@@ -73,12 +75,26 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
         fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification"],
         order_by="source_date desc, creation desc",
     )
+    names = [row.name for row in rows]
+    facts_by_signal = {name: [] for name in names}
+    if names:
+        facts = frappe.get_all(
+            "SEI Signal Observed Fact",
+            filters={"parent": ["in", names], "parenttype": "SEI Signal"},
+            fields=["parent", "fact", "idx"],
+            order_by="parent asc, idx asc",
+        )
+        for fact in facts:
+            facts_by_signal.setdefault(fact.parent, []).append({"fact": fact.fact})
+    for row in rows:
+        row["observed_facts"] = facts_by_signal.get(row.name, [])
     return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]
 
 
 def _signal_for_script(signal: dict) -> dict:
     data = {field: signal.get(field) for field in SCRIPT_SIGNAL_FIELDS}
     # `strength` is the concise public name used by qualification scripts; keep the stored field too.
+    data["observed_facts"] = signal.get("observed_facts") or []
     data["strength"] = signal.get("signal_strength")
     return data
 
