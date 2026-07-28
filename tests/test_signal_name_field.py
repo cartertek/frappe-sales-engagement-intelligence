@@ -2,8 +2,14 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SIGNAL_JSON = ROOT / "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.json"
-PROSPECT_JS = ROOT / "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js"
+SIGNAL_JSON = (
+    ROOT
+    / "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.json"
+)
+PROSPECT_JS = (
+    ROOT
+    / "sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js"
+)
 API = ROOT / "sales_engagement_intelligence/sales_engagement_and_intelligence/api.py"
 
 
@@ -28,4 +34,4 @@ def test_nested_signal_table_displays_name_and_type():
 def test_signal_api_exposes_signal_name():
     source = API.read_text()
     assert 'SIGNAL_FIELDS = {\n    "signal_name",' in source
-    assert 'fields=["name", "signal_name", "signal_type"' in source
+    assert '            "signal_name",\n            "signal_type",' in source

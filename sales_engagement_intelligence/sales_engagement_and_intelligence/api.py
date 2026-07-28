@@ -370,7 +370,15 @@ def _prospect_summary(prospect: str) -> dict:
     signals = frappe.get_all(
         "SEI Signal",
         filters={"prospect": prospect},
-        fields=["name", "signal_name", "signal_type", "signal_strength", "evidence_basis", "source_url", "source_date"],
+        fields=[
+            "name",
+            "signal_name",
+            "signal_type",
+            "signal_strength",
+            "evidence_basis",
+            "source_url",
+            "source_date",
+        ],
         order_by="source_date desc, creation desc",
         limit=5,
     )
