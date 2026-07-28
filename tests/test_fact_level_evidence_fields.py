@@ -62,9 +62,15 @@ def test_fact_grid_wraps_and_uses_half_width():
     ).read_text()
     assert '.grid-static-col[data-fieldname="fact"]' in css
     assert "sei-observed-facts-grid" in css
-    assert "flex: 5 1 0 !important;" in css
+    assert "grid-data-last" in css
+    assert "flex-grow: 0 !important;" in css
     assert "flex-wrap: nowrap !important;" in css
     assert "white-space: pre-wrap !important;" in css
     assert "overflow: hidden !important;" in css
+
+    js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
+    assert "getBoundingClientRect().width" in js
+    assert "removeClass('grid-data-last')" in js
+    assert "flex: `0 0 ${allocated}px`" in js
     assert "height: auto !important;" in css
     assert "text-overflow: clip !important;" in css

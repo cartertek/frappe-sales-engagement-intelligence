@@ -37,24 +37,51 @@ function style_observed_facts_grid(frm) {
         return;
     }
 
+    const column_weights = {
+        fact: 5,
+        evidence_basis: 1,
+        evidence_specificity: 2,
+        source_url: 1,
+        source_date: 1,
+    };
+    const total_weight = Object.values(column_weights).reduce((total, weight) => total + weight, 0);
+
     const apply = () => {
         const $grid = field.grid.wrapper;
         $grid.addClass('sei-observed-facts-grid');
-        const column_weights = {
-            fact: 5,
-            evidence_basis: 1,
-            evidence_specificity: 2,
-            source_url: 1,
-            source_date: 1,
-        };
-        Object.entries(column_weights).forEach(([fieldname, weight]) => {
-            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`).css({
-                flex: `${weight} 1 0`,
-                'max-width': 'none',
-                'min-width': '0',
-                width: 'auto',
-            });
+
+        const $reference_row = $grid.find('.grid-heading-row .data-row').first();
+        if (!$reference_row.length) {
+            return;
+        }
+
+        const row_width = $reference_row[0].getBoundingClientRect().width;
+        let fixed_width = 0;
+        $reference_row.children().each((_, element) => {
+            const $element = $(element);
+            if (!$element.is('.grid-static-col[data-fieldname]')) {
+                fixed_width += element.getBoundingClientRect().width;
+            }
         });
+        const data_width = Math.max(0, row_width - fixed_width);
+
+        Object.entries(column_weights).forEach(([fieldname, weight], index, entries) => {
+            const allocated = index === entries.length - 1
+                ? data_width - entries.slice(0, -1).reduce(
+                    (used, [, prior_weight]) => used + Math.floor(data_width * prior_weight / total_weight),
+                    0
+                )
+                : Math.floor(data_width * weight / total_weight);
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`)
+                .removeClass('grid-data-last')
+                .css({
+                    flex: `0 0 ${allocated}px`,
+                    'max-width': `${allocated}px`,
+                    'min-width': `${allocated}px`,
+                    width: `${allocated}px`,
+                });
+        });
+
         $grid.find('.grid-static-col[data-fieldname="fact"] .static-area').css({
             display: 'block',
             height: 'auto',
@@ -63,12 +90,28 @@ function style_observed_facts_grid(frm) {
             'overflow-wrap': 'anywhere',
             'text-overflow': 'clip',
             'white-space': 'pre-wrap',
+            width: '100%',
         });
-        $grid.find('.grid-row .data-row').css({ height: 'auto', 'align-items': 'stretch', 'flex-wrap': 'nowrap' });
+        $grid.find('.grid-row .data-row').css({
+            height: 'auto',
+            'align-items': 'stretch',
+            'flex-wrap': 'nowrap',
+        });
     };
 
     apply();
-    setTimeout(apply, 0);
+    requestAnimationFrame(apply);
+    setTimeout(apply, 100);
+
+    if (!field.grid._sei_fact_grid_bound) {
+        field.grid._sei_fact_grid_bound = true;
+        $(frm.wrapper).on('grid-row-render.sei-observed-facts', (_, grid_row) => {
+            if (grid_row.grid === field.grid) {
+                requestAnimationFrame(apply);
+            }
+        });
+        $(window).on('resize.sei-observed-facts', frappe.utils.debounce(apply, 100));
+    }
 }
 
 function show_evidence_guardrail_warning(frm) {
