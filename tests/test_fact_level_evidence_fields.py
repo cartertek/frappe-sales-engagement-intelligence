@@ -79,3 +79,8 @@ def test_fact_grid_wraps_and_supports_horizontal_overflow():
     assert "width: `${total_width}px`" in js
     assert ".removeClass('ellipsis')" in js
     assert "area.scrollHeight + padding" in js
+
+
+def test_column_reorder_patch_is_registered():
+    patches = Path("sales_engagement_intelligence/patches.txt").read_text()
+    assert "reorder_signal_fact_evidence_columns" in patches
