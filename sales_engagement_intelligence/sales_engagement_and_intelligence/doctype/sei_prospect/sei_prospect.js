@@ -15,13 +15,13 @@ frappe.ui.form.on('SEI Prospect', {
 
         reload_if_cached_document_is_stale(frm);
 
-        configure_prospect_actions(frm);
-        configure_primary_prospect_action(frm);
-
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
         render_crm_links(frm);
         render_signals_embedded_list(frm);
+
+        rebuild_prospect_actions(frm);
+        frappe.after_ajax(() => rebuild_prospect_actions(frm));
     },
 });
 
@@ -60,7 +60,12 @@ function activate_default_prospect_tab(frm) {
 const PROSPECT_ACTIONS_MENU = __('Prospect Actions');
 
 function add_prospect_action(frm, label, handler) {
-    frm.add_custom_button(__(label), handler, PROSPECT_ACTIONS_MENU);
+    try {
+        return frm.add_custom_button(__(label), handler, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error(`[SEI] Unable to register Prospect action: ${label}`, error);
+        return null;
+    }
 }
 
 function add_crm_action(frm, label, handler) {
@@ -89,6 +94,17 @@ function mark_rejected(frm) {
 
 function convert_to_crm_lead(frm) {
     show_conversion_preview(frm, { allow_convert: true });
+}
+
+
+function rebuild_prospect_actions(frm) {
+    try {
+        configure_prospect_actions(frm);
+    } catch (error) {
+        console.error('[SEI] Prospect action menu registration failed', error);
+    } finally {
+        configure_primary_prospect_action(frm);
+    }
 }
 
 function configure_prospect_actions(frm) {
@@ -505,7 +521,8 @@ function prompt_deal_options(frm) {
 }
 
 function add_crm_lead_link_button(frm) {
-    frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
+    try {
+        frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
         frappe.prompt(
             [{ fieldtype: 'Link', fieldname: 'record_name', label: __('CRM Lead'), options: 'CRM Lead', reqd: 1 }],
             (values) => {
@@ -517,25 +534,32 @@ function add_crm_lead_link_button(frm) {
             },
             __('Link Existing CRM Lead')
         );
-    }, PROSPECT_ACTIONS_MENU);
+        }, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error('[SEI] Unable to register CRM — Link Existing Lead', error);
+    }
 }
 
 function add_link_button(frm, doctype, fieldname, action_label = null) {
     if (frm.doc[fieldname]) return;
     const label = __(action_label || `Link Existing ${doctype}`);
-    frm.add_custom_button(label, () => {
-        frappe.prompt(
-            [{ fieldtype: 'Link', fieldname: 'record_name', label: doctype, options: doctype, reqd: 1 }],
-            (values) => {
-                call_and_reload(frm, 'link_existing_crm_record', {
-                    prospect: frm.doc.name,
-                    doctype,
-                    record_name: values.record_name
-                });
-            },
-            label
-        );
-    }, PROSPECT_ACTIONS_MENU);
+    try {
+        frm.add_custom_button(label, () => {
+            frappe.prompt(
+                [{ fieldtype: 'Link', fieldname: 'record_name', label: doctype, options: doctype, reqd: 1 }],
+                (values) => {
+                    call_and_reload(frm, 'link_existing_crm_record', {
+                        prospect: frm.doc.name,
+                        doctype,
+                        record_name: values.record_name
+                    });
+                },
+                label
+            );
+        }, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error(`[SEI] Unable to register Prospect action: ${label}`, error);
+    }
 }
 
 function prompt_reason(label, callback) {
