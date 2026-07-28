@@ -126,7 +126,7 @@
    "label": "Observed Facts",
    "options": "SEI Signal Observed Fact",
    "reqd": 1,
-   "description": "Add at least one verbatim source fact. Multiple facts are encouraged when needed to support every signal claim."
+   "description": "Add at least one fact row. Every row must contain its own Evidence Basis and Evidence Specificity, plus the exact Source URL and Source Date when available. Add multiple rows as needed to support every signal claim."
   },
   {
    "fieldname": "signal_claim",

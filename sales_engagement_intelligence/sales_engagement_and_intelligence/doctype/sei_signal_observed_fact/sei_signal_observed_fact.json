@@ -18,7 +18,7 @@
    "label": "Fact",
    "reqd": 1,
    "in_list_view": 1,
-   "description": "Verbatim quotation copied from the source. Preserve complete sentences and original wording."
+   "description": "One coherent verbatim quotation from this row's source. Preserve complete sentences and original wording; put interpretation on the parent Signal."
   },
   {
    "fieldname": "evidence_basis",
@@ -26,7 +26,8 @@
    "label": "Evidence Basis",
    "options": "Observed\nInferred",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Classify this fact only: Observed when directly stated in the cited source; Inferred when it is a conclusion drawn from indirect evidence."
   },
   {
    "fieldname": "evidence_specificity",
@@ -35,19 +36,23 @@
    "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
    "default": "Unknown",
    "reqd": 1,
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Classify how specifically this row's source supports this fact. Do not reuse another fact's classification."
   },
   {
    "fieldname": "source_url",
    "fieldtype": "Data",
    "label": "Source URL",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Exact source URL for this fact. Open and verify this page; do not use a search result, reconstructed URL, or unrelated company page.",
+   "options": "URL"
   },
   {
    "fieldname": "source_date",
    "fieldtype": "Date",
    "label": "Source Date",
-   "in_list_view": 1
+   "in_list_view": 1,
+   "description": "Publication or observation date for this fact, when available."
   }
  ],
  "istable": 1,

@@ -12,7 +12,7 @@ These templates support Milestone 5 SEI-only intake. They create or update **SEI
 
 Prospect creation requires `prospect_name` and at least one context field: `website`, `source_url`, `source_arena`, or `primary_contact_email`.
 
-Signal creation requires `signal_name`, `signal_type`, `signal_strength`, and `evidence_basis`. Observed signals require at least one Observed Facts row. The flat CSV templates accept one `observed_fact` value and convert it into one row; add additional facts through the managed table or API when needed to support every claim. In the combined template, signal fields are prefixed as `initial_signal_*`.
+Signal creation requires `signal_name`, `signal_type`, and `signal_strength`. Each imported fact row requires `evidence_basis` and `evidence_specificity`; an automatically qualifying signal needs at least one fact whose basis is `Observed`. The flat CSV templates accept one `observed_fact` value and convert it into one row; add additional facts through the managed table or API when needed to support every claim. In the combined template, signal fields are prefixed as `initial_signal_*`.
 
 Signal-only import must match an existing prospect by `prospect_name`, `prospect_website`, or `prospect_normalized_domain`; it will not create a prospect.
 
@@ -37,7 +37,7 @@ Prospect thesis is not imported as a direct field. A prospect's thesis list is d
 
 Prospect duplicates are checked only against `SEI Prospect`, in this order: `normalized_domain`, exact `website`, `primary_contact_email`, exact `prospect_name`, and `source_url`.
 
-Signal duplicates are checked only against `SEI Signal` by `prospect + source_url`, then by `prospect + signal_type + source_date`.
+Signal duplicates are checked by `prospect + fact source_url`, then by `prospect + signal_type + fact source_date`.
 
 ## Dry run
 
