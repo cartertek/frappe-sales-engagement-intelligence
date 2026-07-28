@@ -434,8 +434,8 @@ def test_ready_contact_revalidation_patch_is_registered():
     ).read_text()
 
     assert "revalidate_ready_for_crm_contacts" in patches
-    assert 'filters={"lifecycle_status": "Ready for CRM Conversion"}' in source
-    assert "apply_lifecycle_status(prospect)" in source
+    assert "Runtime lifecycle recalculation must never run from a migration." in source
+    assert "apply_lifecycle_status" not in source
 
 
 def test_signal_specific_role_requires_signal_relevance(monkeypatch):

@@ -143,7 +143,7 @@ def test_category_script_migration_uses_nested_signal_type():
         / "upgrade_qualification_scripts_to_nested_signal_type.py"
     ).read_text()
     assert 'replace("it.category", "it.type.category")' in migration
-    assert "recalculate_prospects_for_playbook" in migration
+    assert "recalculate_prospects_for_playbook" not in migration
     assert (
         "sales_engagement_intelligence.patches.v0_0_1."
         "upgrade_qualification_scripts_to_nested_signal_type"
