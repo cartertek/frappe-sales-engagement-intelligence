@@ -31,6 +31,13 @@ def test_fact_source_url_is_clickable_and_ui_copy_is_fact_specific():
     child_path = APP / "doctype/sei_signal_observed_fact/sei_signal_observed_fact.json"
     child = json.loads(child_path.read_text())
     fields = {field["fieldname"]: field for field in child["fields"]}
+    assert [field["fieldname"] for field in child["fields"]] == [
+        "fact",
+        "source_url",
+        "source_date",
+        "evidence_basis",
+        "evidence_specificity",
+    ]
     assert fields["source_url"]["fieldtype"] == "Data"
     assert fields["source_url"]["options"] == "URL"
     assert "this fact" in fields["source_url"]["description"]
@@ -65,7 +72,7 @@ def test_fact_grid_wraps_and_supports_horizontal_overflow():
     assert "white-space: nowrap !important;" in css
 
     js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
-    assert "visible_width * 0.5" in js
+    assert "visible_width * 0.4" in js
     assert "source_url: wide_column_width" in js
     assert "area.scrollWidth + 24" in js
     assert "total_width" in js

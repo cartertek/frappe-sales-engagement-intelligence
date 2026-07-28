@@ -48,8 +48,8 @@ function style_observed_facts_grid(frm) {
         }
 
         const visible_width = $container[0].clientWidth;
-        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.5));
-        const content_columns = ['evidence_basis', 'evidence_specificity', 'source_date'];
+        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.4));
+        const content_columns = ['source_date', 'evidence_basis', 'evidence_specificity'];
         const measured_widths = {};
 
         content_columns.forEach((fieldname) => {
@@ -63,10 +63,10 @@ function style_observed_facts_grid(frm) {
 
         const widths = {
             fact: wide_column_width,
-            evidence_basis: measured_widths.evidence_basis,
-            evidence_specificity: measured_widths.evidence_specificity,
             source_url: wide_column_width,
             source_date: measured_widths.source_date,
+            evidence_basis: measured_widths.evidence_basis,
+            evidence_specificity: measured_widths.evidence_specificity,
         };
 
         Object.entries(widths).forEach(([fieldname, width]) => {
