@@ -40,10 +40,20 @@ function style_observed_facts_grid(frm) {
     const apply = () => {
         const $grid = field.grid.wrapper;
         $grid.addClass('sei-observed-facts-grid');
-        $grid.find('.grid-static-col[data-fieldname="fact"]').css({
-            flex: '0 0 50%',
-            'max-width': '50%',
-            width: '50%',
+        const column_weights = {
+            fact: 5,
+            evidence_basis: 1,
+            evidence_specificity: 2,
+            source_url: 1,
+            source_date: 1,
+        };
+        Object.entries(column_weights).forEach(([fieldname, weight]) => {
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`).css({
+                flex: `${weight} 1 0`,
+                'max-width': 'none',
+                'min-width': '0',
+                width: 'auto',
+            });
         });
         $grid.find('.grid-static-col[data-fieldname="fact"] .static-area').css({
             display: 'block',
@@ -53,7 +63,7 @@ function style_observed_facts_grid(frm) {
             'text-overflow': 'clip',
             'white-space': 'pre-wrap',
         });
-        $grid.find('.grid-row .data-row').css({ height: 'auto', 'align-items': 'stretch' });
+        $grid.find('.grid-row .data-row').css({ height: 'auto', 'align-items': 'stretch', 'flex-wrap': 'nowrap' });
     };
 
     apply();

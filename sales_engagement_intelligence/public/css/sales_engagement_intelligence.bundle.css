@@ -59,15 +59,37 @@
 .frappe-control[data-fieldname="observed_facts"] .grid-row .data-row,
 .sei-observed-facts-grid .grid-row .data-row {
   align-items: stretch !important;
+  flex-wrap: nowrap !important;
   height: auto !important;
   min-height: var(--input-height);
 }
 
 .frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="fact"],
 .sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] {
-  flex: 0 0 50% !important;
-  max-width: 50% !important;
-  width: 50% !important;
+  flex: 5 1 0 !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  width: auto !important;
+}
+
+.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="evidence_basis"],
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_basis"] {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
+}
+
+.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="evidence_specificity"],
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_specificity"] {
+  flex: 2 1 0 !important;
+  min-width: 0 !important;
+}
+
+.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="source_url"],
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_url"],
+.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="source_date"],
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_date"] {
+  flex: 1 1 0 !important;
+  min-width: 0 !important;
 }
 
 .frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="fact"] .static-area,
