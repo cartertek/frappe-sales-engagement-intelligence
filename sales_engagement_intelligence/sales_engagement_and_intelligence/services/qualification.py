@@ -21,11 +21,7 @@ SCRIPT_SIGNAL_FIELDS = (
     "name",
     "signal_type",
     "signal_strength",
-    "evidence_basis",
-    "evidence_specificity",
     "confidence",
-    "source_url",
-    "source_date",
     "signal_claim",
     "why_this_signal_type",
     "why_not_weak",
@@ -43,12 +39,13 @@ def _has_value(value) -> bool:
 
 def is_evidence_valid_for_qualification(signal: dict) -> bool:
     """Return whether a signal may be presented to its playbook qualification script."""
-    if signal.get("evidence_basis") != "Observed":
-        return False
     if signal.get("exclude_from_qualification"):
         return False
     observed_facts = signal.get("observed_facts") or []
-    has_observed_fact = any(_has_value(item.get("fact")) for item in observed_facts)
+    has_observed_fact = any(
+        _has_value(item.get("fact")) and item.get("evidence_basis") == "Observed"
+        for item in observed_facts
+    )
     if signal.get("signal_strength") in ("Moderate", "Strong"):
         return has_observed_fact and all(
             _has_value(signal.get(fieldname)) for fieldname in STRUCTURED_EVIDENCE_FIELDS
@@ -60,7 +57,6 @@ def _signal_filters(prospect_name: str) -> dict:
     return {
         "prospect": prospect_name,
         "exclude_from_qualification": 0,
-        "evidence_basis": "Observed",
     }
 
 
@@ -73,7 +69,7 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
         "SEI Signal",
         filters=_signal_filters(prospect_name),
         fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification"],
-        order_by="source_date desc, creation desc",
+        order_by="creation desc",
     )
     names = [row.name for row in rows]
     facts_by_signal = {name: [] for name in names}
@@ -81,11 +77,27 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
         facts = frappe.get_all(
             "SEI Signal Observed Fact",
             filters={"parent": ["in", names], "parenttype": "SEI Signal"},
-            fields=["parent", "fact", "idx"],
+            fields=[
+                "parent",
+                "fact",
+                "evidence_basis",
+                "evidence_specificity",
+                "source_url",
+                "source_date",
+                "idx",
+            ],
             order_by="parent asc, idx asc",
         )
         for fact in facts:
-            facts_by_signal.setdefault(fact.parent, []).append({"fact": fact.fact})
+            facts_by_signal.setdefault(fact.parent, []).append(
+                {
+                    "fact": fact.fact,
+                    "evidence_basis": fact.evidence_basis,
+                    "evidence_specificity": fact.evidence_specificity,
+                    "source_url": fact.source_url,
+                    "source_date": fact.source_date,
+                }
+            )
     for row in rows:
         row["observed_facts"] = facts_by_signal.get(row.name, [])
     return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]
@@ -170,27 +182,46 @@ def get_primary_signal(prospect_name: str) -> Optional[str]:
         qualified.sort(
             key=lambda signal: (
                 strength_order.get(signal.signal_strength, 3),
-                str(signal.source_date or ""),
+                max(
+                    (str(fact.get("source_date") or "") for fact in signal.observed_facts),
+                    default="",
+                ),
                 str(signal.creation or ""),
             ),
             reverse=False,
         )
         return qualified[0].name
 
-    precedence = [
-        {"prospect": prospect_name, "evidence_basis": "Observed"},
-        {"prospect": prospect_name},
-    ]
-    for filters in precedence:
-        signal = frappe.get_all(
-            "SEI Signal",
-            filters=filters,
-            fields=["name"],
-            order_by="source_date desc, creation desc",
-            limit=1,
-        )
-        if signal:
-            return signal[0].name
+    observed_parent = frappe.get_all(
+        "SEI Signal Observed Fact",
+        filters={
+            "parenttype": "SEI Signal",
+            "evidence_basis": "Observed",
+            "parent": [
+                "in",
+                frappe.get_all(
+                    "SEI Signal",
+                    filters={"prospect": prospect_name},
+                    pluck="name",
+                ),
+            ],
+        },
+        fields=["parent"],
+        order_by="source_date desc, creation desc",
+        limit=1,
+    )
+    if observed_parent:
+        return observed_parent[0].parent
+
+    signal = frappe.get_all(
+        "SEI Signal",
+        filters={"prospect": prospect_name},
+        fields=["name"],
+        order_by="creation desc",
+        limit=1,
+    )
+    if signal:
+        return signal[0].name
     return None
 
 

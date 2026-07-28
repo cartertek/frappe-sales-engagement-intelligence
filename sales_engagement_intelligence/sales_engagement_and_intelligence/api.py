@@ -74,11 +74,7 @@ SIGNAL_FIELDS = {
     "signal_name",
     "signal_type",
     "signal_strength",
-    "evidence_basis",
-    "evidence_specificity",
     "confidence",
-    "source_url",
-    "source_date",
     "observed_facts",
     "signal_claim",
     "why_this_signal_type",
@@ -101,9 +97,19 @@ def _normalize_observed_facts(value) -> list[dict]:
         return []
     facts = []
     for item in value:
-        fact = item.get("fact") if isinstance(item, dict) else item
-        if str(fact or "").strip():
-            facts.append({"fact": str(fact).strip()})
+        if isinstance(item, dict):
+            fact = item.get("fact")
+            row = {
+                "fact": str(fact or "").strip(),
+                "evidence_basis": item.get("evidence_basis"),
+                "evidence_specificity": item.get("evidence_specificity"),
+                "source_url": item.get("source_url"),
+                "source_date": item.get("source_date"),
+            }
+        else:
+            row = {"fact": str(item or "").strip()}
+        if row["fact"]:
+            facts.append(row)
     return facts
 
 
@@ -114,11 +120,27 @@ def _attach_observed_facts(rows: list[dict]) -> list[dict]:
         facts = frappe.get_all(
             "SEI Signal Observed Fact",
             filters={"parent": ["in", names], "parenttype": "SEI Signal"},
-            fields=["parent", "fact", "idx"],
+            fields=[
+                "parent",
+                "fact",
+                "evidence_basis",
+                "evidence_specificity",
+                "source_url",
+                "source_date",
+                "idx",
+            ],
             order_by="parent asc, idx asc",
         )
         for fact in facts:
-            facts_by_signal.setdefault(fact.parent, []).append({"fact": fact.fact})
+            facts_by_signal.setdefault(fact.parent, []).append(
+                {
+                    "fact": fact.fact,
+                    "evidence_basis": fact.evidence_basis,
+                    "evidence_specificity": fact.evidence_specificity,
+                    "source_url": fact.source_url,
+                    "source_date": fact.source_date,
+                }
+            )
     for row in rows:
         row["observed_facts"] = facts_by_signal.get(row.get("name"), [])
     return rows
@@ -407,11 +429,8 @@ def _prospect_summary(prospect: str) -> dict:
             "signal_name",
             "signal_type",
             "signal_strength",
-            "evidence_basis",
-            "source_url",
-            "source_date",
         ],
-        order_by="source_date desc, creation desc",
+        order_by="creation desc",
         limit=5,
     )
     signals = _attach_observed_facts(signals)
@@ -633,7 +652,7 @@ def get_signals(prospect: str) -> dict:
                 if field not in {"attachment", "observed_facts"}
             ],
         ],
-        order_by="source_date desc, creation desc",
+        order_by="creation desc",
     )
     rows = _attach_observed_facts(rows)
     return {"signals": rows, "count": len(rows)}

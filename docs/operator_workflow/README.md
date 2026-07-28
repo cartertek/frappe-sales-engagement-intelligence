@@ -76,3 +76,6 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [Data hygiene](data-hygiene.md)
 - [Import templates](../import_templates/README.md)
 - [API documentation](../api/README.md)
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.

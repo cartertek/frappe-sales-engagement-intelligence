@@ -196,20 +196,42 @@ def find_existing_sei_signal(prospect_name: str, row: dict) -> Optional[dict]:
         return None
     source_url = row.get("source_url_for_signal") or row.get("source_url")
     if source_url:
-        match = _first_value("SEI Signal", {"prospect": prospect, "source_url": source_url}, ["name"])
+        match = frappe.db.sql(
+            """
+            SELECT s.name
+            FROM `tabSEI Signal` s
+            INNER JOIN `tabSEI Signal Observed Fact` f ON f.parent = s.name
+            WHERE s.prospect = %s AND f.source_url = %s
+            ORDER BY s.creation DESC
+            LIMIT 1
+            """,
+            (prospect, source_url),
+            as_dict=True,
+        )
         if match:
-            return _result(True, "SEI Signal", match.name, "Matched by prospect + source_url", "High")
+            return _result(True, "SEI Signal", match[0].name, "Matched by prospect + fact source_url", "High")
     signal_type = row.get("initial_signal_type") or row.get("signal_type")
     source_date = row.get("initial_source_date") or row.get("source_date")
     if signal_type and source_date:
-        match = _first_value(
-            "SEI Signal",
-            {"prospect": prospect, "signal_type": signal_type, "source_date": source_date},
-            ["name"],
+        match = frappe.db.sql(
+            """
+            SELECT s.name
+            FROM `tabSEI Signal` s
+            INNER JOIN `tabSEI Signal Observed Fact` f ON f.parent = s.name
+            WHERE s.prospect = %s AND s.signal_type = %s AND f.source_date = %s
+            ORDER BY s.creation DESC
+            LIMIT 1
+            """,
+            (prospect, signal_type, source_date),
+            as_dict=True,
         )
         if match:
             return _result(
-                True, "SEI Signal", match.name, "Matched by prospect + signal_type + source_date", "Medium"
+                True,
+                "SEI Signal",
+                match[0].name,
+                "Matched by prospect + signal_type + fact source_date",
+                "Medium",
             )
     evidence_notes = row.get("initial_evidence_notes") or row.get("evidence_notes")
     match = _find_signal_by_hash(prospect, evidence_notes)
@@ -312,14 +334,16 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "prospect": prospect,
             "signal_type": resolve_signal_type(row.get("initial_signal_type")),
             "signal_strength": row.get("initial_signal_strength"),
-            "evidence_basis": row.get("initial_evidence_basis"),
-            "evidence_specificity": row.get("initial_evidence_specificity")
-            or row.get("evidence_specificity"),
             "confidence": row.get("initial_confidence"),
-            "source_url": row.get("initial_signal_source_url") or row.get("source_url"),
-            "source_date": row.get("initial_source_date"),
             "observed_facts": (
-                [{"fact": row.get("initial_observed_fact")}]
+                [{
+                    "fact": row.get("initial_observed_fact"),
+                    "evidence_basis": row.get("initial_evidence_basis"),
+                    "evidence_specificity": row.get("initial_evidence_specificity")
+                    or row.get("evidence_specificity"),
+                    "source_url": row.get("initial_signal_source_url") or row.get("source_url"),
+                    "source_date": row.get("initial_source_date"),
+                }]
                 if row.get("initial_observed_fact")
                 else []
             ),
@@ -337,12 +361,18 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "prospect": prospect,
             "signal_type": resolve_signal_type(row.get("signal_type")),
             "signal_strength": row.get("signal_strength"),
-            "evidence_basis": row.get("evidence_basis"),
-            "evidence_specificity": row.get("evidence_specificity"),
             "confidence": row.get("confidence"),
-            "source_url": row.get("source_url"),
-            "source_date": row.get("source_date"),
-            "observed_facts": ([{"fact": row.get("observed_fact")}] if row.get("observed_fact") else []),
+            "observed_facts": (
+                [{
+                    "fact": row.get("observed_fact"),
+                    "evidence_basis": row.get("evidence_basis"),
+                    "evidence_specificity": row.get("evidence_specificity"),
+                    "source_url": row.get("source_url"),
+                    "source_date": row.get("source_date"),
+                }]
+                if row.get("observed_fact")
+                else []
+            ),
             "signal_claim": row.get("signal_claim"),
             "why_this_signal_type": row.get("why_this_signal_type"),
             "why_not_weak": row.get("why_not_weak"),
@@ -756,44 +786,47 @@ def find_duplicate_sei_signals() -> dict:
     groups = []
     rows = frappe.db.sql(
         """
-        select prospect, source_url, count(*) as count, group_concat(name order by creation) as names
-        from `tabSEI Signal`
-        where ifnull(prospect, '') != '' and ifnull(source_url, '') != ''
-        group by prospect, source_url having count(*) > 1
+        SELECT s.prospect, f.source_url, COUNT(DISTINCT s.name) count,
+            GROUP_CONCAT(DISTINCT s.name ORDER BY s.creation) names
+        FROM `tabSEI Signal` s
+        INNER JOIN `tabSEI Signal Observed Fact` f ON f.parent = s.name
+        WHERE COALESCE(s.prospect, '') != '' AND COALESCE(f.source_url, '') != ''
+        GROUP BY s.prospect, f.source_url
+        HAVING COUNT(DISTINCT s.name) > 1
         """,
         as_dict=True,
     )
     for row in rows:
-        groups.append(
-            {
-                "key": "prospect+source_url",
-                "prospect": row.prospect,
-                "source_url": row.source_url,
-                "count": row.count,
-                "names": row.names.split(","),
-            }
-        )
+        groups.append({
+            "key": "prospect+fact_source_url",
+            "prospect": row.prospect,
+            "source_url": row.source_url,
+            "count": row.count,
+            "names": row.names.split(","),
+        })
     rows = frappe.db.sql(
         """
-        select prospect, signal_type, source_date, count(*) as count,
-            group_concat(name order by creation) as names
-        from `tabSEI Signal`
-        where ifnull(prospect, '') != '' and ifnull(signal_type, '') != '' and source_date is not null
-        group by prospect, signal_type, source_date having count(*) > 1
+        SELECT s.prospect, s.signal_type, f.source_date, COUNT(DISTINCT s.name) count,
+            GROUP_CONCAT(DISTINCT s.name ORDER BY s.creation) names
+        FROM `tabSEI Signal` s
+        INNER JOIN `tabSEI Signal Observed Fact` f ON f.parent = s.name
+        WHERE COALESCE(s.prospect, '') != ''
+          AND COALESCE(s.signal_type, '') != ''
+          AND f.source_date IS NOT NULL
+        GROUP BY s.prospect, s.signal_type, f.source_date
+        HAVING COUNT(DISTINCT s.name) > 1
         """,
         as_dict=True,
     )
     for row in rows:
-        groups.append(
-            {
-                "key": "prospect+signal_type+source_date",
-                "prospect": row.prospect,
-                "signal_type": row.signal_type,
-                "source_date": row.source_date,
-                "count": row.count,
-                "names": row.names.split(","),
-            }
-        )
+        groups.append({
+            "key": "prospect+signal_type+fact_source_date",
+            "prospect": row.prospect,
+            "signal_type": row.signal_type,
+            "source_date": row.source_date,
+            "count": row.count,
+            "names": row.names.split(","),
+        })
     return {"duplicates": groups, "count": len(groups)}
 
 
@@ -853,15 +886,34 @@ def find_prospects_missing_signal_evidence() -> dict:
 
 
 def find_signals_missing_source_url() -> dict:
-    names = frappe.get_all("SEI Signal", filters={"source_url": ["in", ["", None]]}, pluck="name")
+    names = frappe.db.sql(
+        """
+        SELECT s.name
+        FROM `tabSEI Signal` s
+        WHERE NOT EXISTS (
+            SELECT 1 FROM `tabSEI Signal Observed Fact` f
+            WHERE f.parent = s.name AND COALESCE(f.source_url, '') != ''
+        )
+        """,
+        pluck=True,
+    )
     return {"signals": names, "count": len(names)}
 
 
 def find_inferred_qualifying_signal_issues() -> dict:
-    names = frappe.get_all(
-        "SEI Signal",
-        filters={"exclude_from_qualification": 0, "evidence_basis": "Inferred"},
-        fields=["name", "prospect", "signal_type", "signal_strength"],
+    names = frappe.db.sql(
+        """
+        SELECT DISTINCT s.name, s.prospect, s.signal_type, s.signal_strength
+        FROM `tabSEI Signal` s
+        INNER JOIN `tabSEI Signal Observed Fact` f ON f.parent = s.name
+        WHERE COALESCE(s.exclude_from_qualification, 0) = 0
+          AND f.evidence_basis = 'Inferred'
+          AND NOT EXISTS (
+              SELECT 1 FROM `tabSEI Signal Observed Fact` observed
+              WHERE observed.parent = s.name AND observed.evidence_basis = 'Observed'
+          )
+        """,
+        as_dict=True,
     )
     return {"signals": names, "count": len(names)}
 

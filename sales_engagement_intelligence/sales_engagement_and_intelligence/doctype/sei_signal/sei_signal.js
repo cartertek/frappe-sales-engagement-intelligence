@@ -18,9 +18,6 @@ frappe.ui.form.on('SEI Signal', {
         render_signal_type_criteria(frm);
     },
 
-    evidence_basis(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
 
     exclude_from_qualification(frm) {
         show_evidence_guardrail_warning(frm);
@@ -30,24 +27,27 @@ frappe.ui.form.on('SEI Signal', {
         show_evidence_guardrail_warning(frm);
     },
 
-    evidence_specificity(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
 });
 
 function show_evidence_guardrail_warning(frm) {
     const messages = [];
 
-    if (frm.doc.evidence_basis === 'Inferred' && !frm.doc.exclude_from_qualification) {
-        messages.push(__('Inferred signals are retained as context but do not count toward automatic qualification.'));
+    const facts = frm.doc.observed_facts || [];
+    const has_observed = facts.some((fact) => fact.evidence_basis === 'Observed');
+    const has_inferred = facts.some((fact) => fact.evidence_basis === 'Inferred');
+    if (has_inferred && !has_observed && !frm.doc.exclude_from_qualification) {
+        messages.push(__('Signals supported only by inferred facts do not count toward automatic qualification.'));
     }
 
     if (['Moderate', 'Strong'].includes(frm.doc.signal_strength) && !frm.doc.why_not_weak) {
         messages.push(__('Moderate/Strong signals must explain why the source-backed evidence is not Weak.'));
     }
 
-    if (['Search Result', 'Generic List or Directory', 'Aggregator', 'Unknown'].includes(frm.doc.evidence_specificity || '')) {
-        messages.push(__('Evidence specificity is weak. Confirm the managed Signal Type allows this source type.'));
+    const weak_specificity = facts.some((fact) =>
+        ['Search Result', 'Generic List or Directory', 'Aggregator', 'Unknown'].includes(fact.evidence_specificity || '')
+    );
+    if (weak_specificity) {
+        messages.push(__('One or more facts have weak evidence specificity. Confirm the managed Signal Type allows those source types.'));
     }
 
     if (!messages.length) {

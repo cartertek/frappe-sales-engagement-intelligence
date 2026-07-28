@@ -23,11 +23,11 @@ def test_qualified_indicator_uses_qualification_status_color_and_filter():
     assert "'Qualified': 'green'" in source
 
 
-def test_signal_evidence_specificity_is_required():
-    signal = json.loads(
-        (MODULE / "doctype" / "sei_signal" / "sei_signal.json").read_text()
+def test_fact_evidence_specificity_is_required():
+    fact = json.loads(
+        (MODULE / "doctype" / "sei_signal_observed_fact" / "sei_signal_observed_fact.json").read_text()
     )
-    fields = {field["fieldname"]: field for field in signal["fields"]}
+    fields = {field["fieldname"]: field for field in fact["fields"]}
     assert fields["evidence_specificity"]["reqd"] == 1
 
 

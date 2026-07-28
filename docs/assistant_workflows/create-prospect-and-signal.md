@@ -15,3 +15,6 @@ Required pattern:
 9. Do not create CRM records unless the user explicitly instructs a manager action.
 
 Do not use this workflow to send outreach or bypass protected statuses.
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.

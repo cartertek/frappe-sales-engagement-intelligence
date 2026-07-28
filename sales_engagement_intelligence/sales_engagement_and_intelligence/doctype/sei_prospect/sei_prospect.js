@@ -651,23 +651,12 @@ function render_signals_embedded_list(frm) {
 
     wrapper.html(`<p class="text-muted">${__('Loading signals...')}</p>`);
 
-    frappe.db.get_list('SEI Signal', {
-        fields: [
-            'name',
-            'signal_name',
-            'signal_type',
-            'signal_strength',
-            'evidence_basis',
-            'exclude_from_qualification',
-            'confidence',
-            'source_date',
-            'modified'
-        ],
-        filters: { prospect: frm.doc.name },
-        order_by: 'source_date desc, modified desc',
-        limit: 100
-    }).then((signals) => {
-        wrapper.html(render_signals_table(frm, signals || []));
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_signals',
+        args: { prospect: frm.doc.name }
+    }).then((response) => {
+        const signals = response.message?.signals || [];
+        wrapper.html(render_signals_table(frm, signals));
         wrapper.find('[data-sei-action="new-signal"]').on('click', () => {
             frappe.new_doc('SEI Signal', {
                 prospect: frm.doc.name,
@@ -700,6 +689,9 @@ function render_signals_table(frm, signals) {
     const rows = signals.map((signal) => {
         const route = `/app/sei-signal/${encodeURIComponent(signal.name)}`;
         const excluded = signal.exclude_from_qualification ? __('Yes') : __('No');
+        const facts = signal.observed_facts || [];
+        const bases = [...new Set(facts.map((fact) => fact.evidence_basis).filter(Boolean))].join(', ');
+        const source_dates = facts.map((fact) => fact.source_date).filter(Boolean).sort().reverse();
         const confidence = signal.confidence === null || signal.confidence === undefined
             ? ''
             : `${flt(signal.confidence, 2)}%`;
@@ -709,10 +701,10 @@ function render_signals_table(frm, signals) {
                 <td><a href="${route}">${frappe.utils.escape_html(signal.signal_name || signal.signal_type || signal.name)}</a></td>
                 <td>${frappe.utils.escape_html(signal.signal_type || '')}</td>
                 <td>${render_signal_badge(signal.signal_strength)}</td>
-                <td>${frappe.utils.escape_html(signal.evidence_basis || '')}</td>
+                <td>${frappe.utils.escape_html(bases)}</td>
                 <td>${excluded}</td>
                 <td>${confidence}</td>
-                <td>${frappe.utils.escape_html(signal.source_date || '')}</td>
+                <td>${frappe.utils.escape_html(source_dates[0] || '')}</td>
             </tr>
         `;
     }).join('');

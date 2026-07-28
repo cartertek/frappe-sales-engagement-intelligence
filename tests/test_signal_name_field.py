@@ -25,7 +25,7 @@ def test_signal_name_is_required_and_used_as_title():
 
 def test_nested_signal_table_displays_name_and_type():
     source = PROSPECT_JS.read_text()
-    assert "'signal_name'" in source
+    assert 'api.get_signals' in source
     assert "signal.signal_name || signal.signal_type || signal.name" in source
     assert "<th>${__('Name')}</th>" in source
     assert "<th>${__('Signal Type')}</th>" in source

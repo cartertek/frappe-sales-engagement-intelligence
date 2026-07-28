@@ -119,3 +119,6 @@ Inferred evidence may be useful context, but it should not be treated as equival
 ## Signal Type criteria
 
 Signal Type-specific criteria, disqualifiers, automatic Weak conditions, and strength guidance live in the managed SEI Signal Type definition. Do not duplicate those rules into separate operator docs.
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.

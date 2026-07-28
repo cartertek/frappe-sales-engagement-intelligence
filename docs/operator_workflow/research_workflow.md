@@ -55,3 +55,6 @@ A useful research result identifies:
 - uncertainty
 
 If the exact evidence source is missing, or the exact URL does not contain the expected entity, document, and complete quotation, keep the item as discovery context or reject it. Do not create a Moderate or Strong signal from that URL.
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.
