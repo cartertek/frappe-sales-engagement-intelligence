@@ -50,11 +50,11 @@ def test_lifecycle_readiness_actions_are_not_crm_prefixed():
     assert "add_crm_action(frm, 'Mark as Not Ready for CRM'" not in SCRIPT
 
 
-def test_primary_action_is_scheduled_after_toolbar_refresh():
-    assert "schedule_primary_prospect_action(frm)" in SCRIPT
-    assert "window.setTimeout(() => configure_primary_prospect_action(frm), 0)" in SCRIPT
-
-
+def test_actions_are_built_synchronously_in_refresh():
+    assert "configure_prospect_actions(frm);" in SCRIPT
+    assert "configure_primary_prospect_action(frm);" in SCRIPT
+    assert "schedule_prospect_actions(frm)" not in SCRIPT
+    assert "frm.clear_custom_buttons()" not in SCRIPT
 def test_reject_action_precedes_crm_action_block():
     reject_index = SCRIPT.index("add_prospect_action(frm, 'Mark Rejected'")
     crm_index = SCRIPT.index("add_crm_action(frm, 'Find Duplicates'")

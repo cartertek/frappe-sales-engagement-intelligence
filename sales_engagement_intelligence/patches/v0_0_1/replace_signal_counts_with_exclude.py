@@ -23,26 +23,6 @@ def _migrate_table(doctype: str) -> None:
     )
 
 
-def _recalculate_prospects() -> None:
-    if not frappe.db.table_exists("SEI Prospect"):
-        return
-
-    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
-        apply_lifecycle_status,
-        is_terminal_status,
-    )
-    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
-        apply_qualification_result,
-    )
-
-    prospects = frappe.get_all("SEI Prospect", pluck="name")
-    for prospect in prospects:
-        apply_qualification_result(prospect)
-        status = frappe.db.get_value("SEI Prospect", prospect, "lifecycle_status")
-        if not is_terminal_status(status):
-            apply_lifecycle_status(prospect)
-
 
 def execute() -> None:
     _migrate_table("SEI Signal")
-    _recalculate_prospects()

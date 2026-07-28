@@ -84,9 +84,10 @@ class SEISignal(Document):
         )
 
     def apply_evidence_guardrails(self) -> None:
+        fact_rows = self.get("observed_facts") or []
         observed_facts = _observed_fact_values(self)
-        if self.evidence_basis == "Observed" and not observed_facts:
-            frappe.throw("At least one Observed Fact is required when Evidence Basis is Observed.")
+        observed_rows = [row for row in fact_rows if row.evidence_basis == "Observed"]
+        inferred_rows = [row for row in fact_rows if row.evidence_basis == "Inferred"]
 
         if self.signal_strength in QUALIFYING_STRENGTHS:
             missing = [
@@ -112,16 +113,23 @@ class SEISignal(Document):
         ):
             frappe.throw("Weak signals require either Observed Facts or Evidence Gap Reason.")
 
-        if self.evidence_basis == "Inferred":
-            if self.signal_strength == "Strong" and not self.has_manual_override():
-                frappe.throw("Inferred signals cannot be Strong without a Manual Override Reason.")
-            if not self.exclude_from_qualification:
-                self.exclude_from_qualification = 1
-                frappe.msgprint(
-                    "Inferred signals are automatically excluded from qualification unless "
-                    "manually reviewed.",
-                    alert=True,
-                )
+        if (
+            self.signal_strength == "Strong"
+            and inferred_rows
+            and not observed_rows
+            and not self.has_manual_override()
+        ):
+            frappe.throw(
+                "Signals supported only by inferred facts cannot be Strong without "
+                "a Manual Override Reason."
+            )
+        if inferred_rows and not observed_rows and not self.exclude_from_qualification:
+            self.exclude_from_qualification = 1
+            frappe.msgprint(
+                "Signals supported only by inferred facts are automatically excluded "
+                "from qualification unless manually reviewed.",
+                alert=True,
+            )
 
         if self.has_manual_override():
             self.mark_manual_override_audit_fields()

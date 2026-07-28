@@ -21,7 +21,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 
 1. Import or manually create prospects and signals.
 2. Review import rows, duplicate warnings, and missing evidence.
-3. Review queues: Needs Research, Find Contact, Qualified, Ready for CRM Conversion, Rejected, and Do Not Contact.
+3. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
 4. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
 5. Assign a playbook and choose the offer and asset. Confirm the relevant theses are represented by the prospect's linked signal types.
 6. Preview a message draft from a message template.
@@ -76,3 +76,10 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [Data hygiene](data-hygiene.md)
 - [Import templates](../import_templates/README.md)
 - [API documentation](../api/README.md)
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.
+
+## Fact-level evidence metadata
+
+`evidence_basis`, `evidence_specificity`, `source_url`, and `source_date` belong to each Observed Facts row, not to the Signal. Classify and cite each fact independently. When a rule requires one of these values, the signal satisfies the rule when at least one fact row supplies the required value. Do not copy a source classification across unrelated facts merely to satisfy validation.

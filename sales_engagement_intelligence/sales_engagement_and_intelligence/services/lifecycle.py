@@ -87,7 +87,7 @@ def suggest_lifecycle_status_for_doc(prospect: Document) -> str:
             return "Find Contact"
         if prospect.lifecycle_status == "Ready for CRM Conversion":
             return "Ready for CRM Conversion" if has_contact_path(prospect) else "Find Contact"
-        return "Qualified"
+        return "Research Complete"
 
     if prospect.qualification_status == "Needs Review":
         return "Research Complete"
@@ -232,7 +232,7 @@ def get_crm_readiness_requirements(prospect: Document) -> list[dict]:
 
 def suggest_pre_crm_handoff_status(prospect: Document) -> str:
     if prospect.qualification_status in ("Qualified", "Manually Approved"):
-        return "Qualified"
+        return "Research Complete"
     if prospect.qualification_status == "Needs Review":
         return "Research Complete"
     if prospect.qualification_status in ("Unqualified", None, ""):

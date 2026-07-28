@@ -122,7 +122,10 @@ def _primary_signal_summary(prospect: str) -> str:
     signal_label = (
         frappe.db.get_value("SEI Signal Type", row.signal_type, "signal_type_name") or row.signal_type
     )
-    parts = [row.signal_strength, row.evidence_basis, signal_label]
+    evidence_bases = sorted(
+        {fact.evidence_basis for fact in (row.observed_facts or []) if fact.evidence_basis}
+    )
+    parts = [row.signal_strength, ", ".join(evidence_bases), signal_label]
     summary = " ".join([part for part in parts if part])
     if row.evidence_notes:
         summary = f"{summary}: {row.evidence_notes}" if summary else row.evidence_notes

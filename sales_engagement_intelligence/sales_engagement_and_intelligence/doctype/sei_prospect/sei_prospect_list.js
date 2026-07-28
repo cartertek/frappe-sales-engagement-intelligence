@@ -15,10 +15,15 @@ frappe.listview_settings['SEI Prospect'] = {
     ],
     formatters: {
         qualification_status(value) {
-            const is_qualified = value === 'Qualified';
-            const style = is_qualified
-                ? 'background-color: var(--green-100); color: var(--green-700);'
-                : 'background-color: var(--control-bg);';
+            const styles = {
+                'Manually Approved': 'background-color: var(--green-100); color: var(--green-700);',
+                'Qualified': 'background-color: var(--green-100); color: var(--green-700);',
+                'Needs Review': 'background-color: var(--yellow-100); color: var(--yellow-700);',
+                'Unqualified': 'background-color: var(--gray-100); color: var(--gray-700);',
+                'Rejected': 'background-color: var(--red-100); color: var(--red-700);',
+                'Do Not Contact': 'background-color: var(--red-100); color: var(--red-700);',
+            };
+            const style = styles[value] || 'background-color: var(--control-bg);';
             return `<span class="data-pill btn-xs align-center ellipsis" style="${style} box-shadow: none;">${frappe.utils.escape_html(value || '')}</span>`;
         }
     },
