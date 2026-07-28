@@ -62,7 +62,7 @@ def test_fact_grid_wraps_and_uses_half_width():
     ).read_text()
     assert '.grid-static-col[data-fieldname="fact"]' in css
     assert "sei-observed-facts-grid" in css
-    assert "flex: 0 0 50%;" in css
+    assert "flex: 0 0 50% !important;" in css
     assert "white-space: pre-wrap;" in css
     assert "height: auto;" in css
     assert "text-overflow: clip;" in css
