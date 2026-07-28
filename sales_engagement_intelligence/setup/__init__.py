@@ -603,6 +603,8 @@ MILESTONE_8_OUTREACH_SETUP_SHORTCUTS = (
 MILESTONE_8_SUPPORTING_RECORD_SHORTCUTS = (
     ("SEI Signal", "Signals", "List", "Grey"),
     ("SEI Interaction Attribution", "Interaction Attribution", "List", "Orange"),
+    ("SEI Signal Type", "Signal Types", "List", "Grey"),
+    ("SEI Signal Type Category", "Signal Type Categories", "List", "Grey"),
 )
 
 MILESTONE_8_OPERATIONAL_SHORTCUTS = (
