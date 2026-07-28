@@ -95,6 +95,7 @@ def _signal_for_script(signal: dict) -> dict:
     data = {field: signal.get(field) for field in SCRIPT_SIGNAL_FIELDS}
     # `strength` is the concise public name used by qualification scripts; keep the stored field too.
     data["observed_facts"] = signal.get("observed_facts") or []
+    data["category"] = signal.get("category")
     data["strength"] = signal.get("signal_strength")
     return data
 
@@ -109,12 +110,14 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[st
     type_rows = frappe.get_all(
         "SEI Signal Type",
         filters={"name": ["in", signal_types]},
-        fields=["name", "playbook"],
+        fields=["name", "playbook", "category"],
     )
     playbook_by_type = {row.name: row.playbook for row in type_rows if row.playbook}
+    category_by_type = {row.name: row.category for row in type_rows}
 
     grouped: dict[str, list[dict]] = defaultdict(list)
     for signal in eligible:
+        signal["category"] = category_by_type.get(signal.signal_type)
         playbook = playbook_by_type.get(signal.signal_type)
         if playbook:
             grouped[playbook].append(signal)
