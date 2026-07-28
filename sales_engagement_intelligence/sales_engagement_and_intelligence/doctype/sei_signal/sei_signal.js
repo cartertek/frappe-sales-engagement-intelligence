@@ -156,6 +156,16 @@ function style_observed_facts_grid(frm) {
 
     if (!field.grid._sei_fact_grid_bound) {
         field.grid._sei_fact_grid_bound = true;
+
+        // Frappe opens a child-table row when clicks bubble from a static cell.
+        // Keep Source URL anchors as normal links by isolating their pointer/click
+        // events without preventing the browser's default navigation.
+        field.grid.wrapper.on(
+            'mousedown.sei-observed-fact-url click.sei-observed-fact-url',
+            '.grid-static-col[data-fieldname="source_url"] a[href]',
+            event => event.stopPropagation()
+        );
+
         $(frm.wrapper).on('grid-row-render.sei-observed-facts', (_, grid_row) => {
             if (grid_row.grid === field.grid) {
                 requestAnimationFrame(apply);
