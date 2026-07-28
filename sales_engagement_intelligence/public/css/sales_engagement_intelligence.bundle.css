@@ -54,3 +54,32 @@
   color: inherit;
 }
 
+
+/* Show complete fact quotations in the Signal evidence grid. */
+[data-route^="Form/SEI Signal"] [data-fieldname="observed_facts"] .grid-row .data-row,
+[data-route^="Form/SEI%20Signal"] [data-fieldname="observed_facts"] .grid-row .data-row {
+  align-items: stretch;
+  height: auto;
+  min-height: var(--input-height);
+}
+
+[data-route^="Form/SEI Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"],
+[data-route^="Form/SEI%20Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"] {
+  flex: 0 0 50%;
+  max-width: 50%;
+  width: 50%;
+}
+
+[data-route^="Form/SEI Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"] .static-area,
+[data-route^="Form/SEI Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"] .form-control,
+[data-route^="Form/SEI%20Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"] .static-area,
+[data-route^="Form/SEI%20Signal"] [data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"] .form-control {
+  display: block;
+  height: auto;
+  min-height: var(--input-height);
+  overflow: visible;
+  overflow-wrap: anywhere;
+  text-overflow: clip;
+  white-space: pre-wrap;
+  word-break: normal;
+}

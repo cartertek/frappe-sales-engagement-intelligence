@@ -49,3 +49,19 @@ def test_operator_docs_explain_fact_level_evidence_metadata():
         source = path.read_text()
         assert "Fact-level evidence metadata" in source
         assert "belong to each Observed Facts row, not to the Signal" in source
+
+
+def test_fact_grid_wraps_and_uses_half_width():
+    child = json.loads((APP / "doctype/sei_signal_observed_fact/sei_signal_observed_fact.json").read_text())
+    fields = {field["fieldname"]: field for field in child["fields"]}
+    assert fields["fact"]["columns"] == 5
+    assert sum(field.get("columns", 0) for field in child["fields"]) == 10
+
+    css = (
+        ROOT / "sales_engagement_intelligence/public/css/sales_engagement_intelligence.bundle.css"
+    ).read_text()
+    assert '[data-fieldname="observed_facts"] .grid-row [data-fieldname="fact"]' in css
+    assert "flex: 0 0 50%;" in css
+    assert "white-space: pre-wrap;" in css
+    assert "height: auto;" in css
+    assert "text-overflow: clip;" in css
