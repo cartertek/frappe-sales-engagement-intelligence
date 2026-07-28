@@ -55,7 +55,7 @@ class SEISignalType(Document):
                 "SEI Playbook Signal Type",
                 {"signal_type": self.name, "parent": ["!=", self.playbook]},
             )
-            if not frappe.db.exists(
+            row_name = frappe.db.exists(
                 "SEI Playbook Signal Type",
                 {
                     "parent": self.playbook,
@@ -63,7 +63,19 @@ class SEISignalType(Document):
                     "parentfield": "signal_types",
                     "signal_type": self.name,
                 },
-            ):
+            )
+            if row_name:
+                frappe.db.set_value(
+                    "SEI Playbook Signal Type",
+                    row_name,
+                    {
+                        "category": self.category,
+                        "research_arena": self.research_arena,
+                        "active": self.active,
+                    },
+                    update_modified=False,
+                )
+            else:
                 frappe.get_doc(
                     {
                         "doctype": "SEI Playbook Signal Type",
@@ -71,6 +83,9 @@ class SEISignalType(Document):
                         "parenttype": "SEI Playbook",
                         "parentfield": "signal_types",
                         "signal_type": self.name,
+                        "category": self.category,
+                        "research_arena": self.research_arena,
+                        "active": self.active,
                     }
                 ).insert(ignore_permissions=True)
         finally:

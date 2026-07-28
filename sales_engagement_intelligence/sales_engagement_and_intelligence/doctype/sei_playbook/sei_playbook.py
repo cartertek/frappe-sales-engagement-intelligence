@@ -37,7 +37,17 @@ class SEIPlaybook(Document):
                 frappe.throw(f"Signal Type {row.signal_type} appears more than once.")
             seen.add(row.signal_type)
 
-            arena = frappe.db.get_value("SEI Signal Type", row.signal_type, "research_arena")
+            signal_type = frappe.db.get_value(
+                "SEI Signal Type",
+                row.signal_type,
+                ["category", "research_arena", "active"],
+                as_dict=True,
+            )
+            if signal_type:
+                row.category = signal_type.category
+                row.research_arena = signal_type.research_arena
+                row.active = signal_type.active
+            arena = signal_type.research_arena if signal_type else None
             if arena and arena not in allowed_arenas:
                 frappe.throw(
                     f"Signal Type {row.signal_type} uses Research Arena {arena}, which is not assigned "
