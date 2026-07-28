@@ -16,6 +16,20 @@ Ask these questions in order:
 5. Do any disqualifiers apply?
 6. Why is this not Weak?
 
+## Qualification independence from contact strategy and actionability
+
+Signal qualification must be based on the evidence and the managed Signal Type / Playbook criteria. Contact strategy, ease of reaching a buyer, procurement friction, budget assumptions, vendor accessibility, and general commercial actionability must not increase or decrease signal strength.
+
+Do not downgrade a real signal because the best contact is unclear, the organization is large, procurement may be complex, or outside-vendor engagement is uncertain. Those are later outreach and contact-research questions. Likewise, do not upgrade a weak signal because the organization appears well funded or commercially attractive.
+
+The operator must keep these decisions separate:
+
+1. Signal qualification: what does the evidence prove, and how strong is the observed need under the managed rules?
+2. Contact strategy: who is organizationally closest to the problem and senior enough to act?
+3. Commercial actionability: whether Cartertek can realistically pursue the opportunity.
+
+Only the first belongs in signal strength.
+
 ## Signal name
 
 When creating a signal, give it a short descriptive name that identifies the specific observed event, condition, or evidence. The name should distinguish the signal from other signals on the same prospect without repeating only the Signal Type. Prefer a concise phrase such as `Backend role reposted for four months` or `Post-launch checkout failures reported`.
