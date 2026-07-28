@@ -99,7 +99,8 @@
   display: block;
   height: auto !important;
   min-height: var(--input-height);
-  overflow: visible !important;
+  max-width: 100%;
+  overflow: hidden !important;
   overflow-wrap: anywhere;
   text-overflow: clip !important;
   white-space: pre-wrap !important;

@@ -58,7 +58,8 @@ function style_observed_facts_grid(frm) {
         $grid.find('.grid-static-col[data-fieldname="fact"] .static-area').css({
             display: 'block',
             height: 'auto',
-            overflow: 'visible',
+            'max-width': '100%',
+            overflow: 'hidden',
             'overflow-wrap': 'anywhere',
             'text-overflow': 'clip',
             'white-space': 'pre-wrap',
