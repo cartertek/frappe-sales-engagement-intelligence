@@ -44,7 +44,6 @@ function size_prospect_positioning_textareas(frm) {
 const PROSPECT_DEFAULT_TAB_BY_STATUS = {
     'Needs Research': 'qualification_tab',
     'Research Complete': 'qualification_tab',
-    Qualified: 'qualification_tab',
     'Find Contact': 'outreach_tab',
     'Ready for CRM Conversion': 'outreach_tab',
     'Converted to CRM Lead': 'crm_conversion_tab',
@@ -185,7 +184,7 @@ function configure_primary_prospect_action(frm) {
     let label;
     let handler;
 
-    if (lifecycle === 'Qualified') {
+    if (lifecycle === 'Research Complete' && can_prepare_crm(frm)) {
         label = __('Mark as Ready for CRM Conversion');
         handler = () => mark_ready_for_crm_conversion(frm);
     } else if (lifecycle === 'Ready for CRM Conversion' && is_manager_or_admin()) {
@@ -655,7 +654,8 @@ function render_signals_embedded_list(frm) {
         method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_signals',
         args: { prospect: frm.doc.name }
     }).then((response) => {
-        const signals = response.message?.signals || [];
+        const data = unwrap_api_data(response) || {};
+        const signals = data.signals || [];
         wrapper.html(render_signals_table(frm, signals));
         wrapper.find('[data-sei-action="new-signal"]').on('click', () => {
             frappe.new_doc('SEI Signal', {

@@ -581,7 +581,6 @@ def _ensure_workspace_shortcut(workspace, values: dict) -> bool:
 MILESTONE_8_QUEUE_SHORTCUTS = (
     "Needs Research",
     "Research Complete",
-    "Qualified",
     "Find Contact",
     "Ready for CRM Conversion",
     "Rejected",
@@ -688,9 +687,9 @@ def _prospecting_workspace_content() -> list:
             "type": "paragraph",
             "data": {
                 "text": (
-                    "Research Complete is for Needs Review prospects. "
-                    "Unqualified prospects should remain in Needs Research until a decision is possible, "
-                    "or move to Rejected when research is complete and no qualifying evidence exists."
+                    "Research Complete contains prospects whose research is finished, including "
+                    "Needs Review, Qualified, and Manually Approved qualification outcomes. "
+                    "Qualification Status determines whether CRM handoff is available."
                 ),
                 "col": 12,
             },

@@ -118,7 +118,7 @@ def test_qualified_stays_qualified_before_manual_handoff(monkeypatch):
                 ],
             )
         )
-        == "Qualified"
+        == "Research Complete"
     )
 
 
@@ -127,9 +127,9 @@ def test_qualified_without_manual_handoff_stays_qualified(monkeypatch):
 
     assert (
         lifecycle.suggest_lifecycle_status_for_doc(
-            prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+            prospect(qualification_status="Qualified", lifecycle_status="Research Complete")
         )
-        == "Qualified"
+        == "Research Complete"
     )
 
 
@@ -262,7 +262,7 @@ def test_pre_crm_handoff_status_recomputes_from_current_state(monkeypatch):
         lifecycle.suggest_pre_crm_handoff_status(
             prospect(qualification_status="Qualified", lifecycle_status="Find Contact")
         )
-        == "Qualified"
+        == "Research Complete"
     )
     assert (
         lifecycle.suggest_pre_crm_handoff_status(
@@ -315,7 +315,7 @@ def configure_persistence(monkeypatch, lifecycle, doc):
 
 def test_mark_ready_enters_find_contact_without_primary_contact(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
-    doc = prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+    doc = prospect(qualification_status="Qualified", lifecycle_status="Research Complete")
     writes = configure_persistence(monkeypatch, lifecycle, doc)
 
     result = lifecycle.mark_ready_for_crm_conversion(doc.name)
@@ -328,7 +328,7 @@ def test_mark_ready_enters_find_contact_with_name_only_primary_contact(monkeypat
     lifecycle = load_lifecycle_module(monkeypatch)
     doc = prospect(
         qualification_status="Qualified",
-        lifecycle_status="Qualified",
+        lifecycle_status="Research Complete",
         contacts=[Prospect(contact_name="Buyer", emails="", is_primary=1)],
     )
     writes = configure_persistence(monkeypatch, lifecycle, doc)
@@ -343,7 +343,7 @@ def test_mark_ready_enters_find_contact_for_email_on_non_playbook_role(monkeypat
     lifecycle = load_lifecycle_module(monkeypatch)
     doc = prospect(
         qualification_status="Qualified",
-        lifecycle_status="Qualified",
+        lifecycle_status="Research Complete",
         contacts=[
             Prospect(
                 contact_name="Buyer",
@@ -365,7 +365,7 @@ def test_mark_ready_enters_ready_status_with_usable_primary_contact(monkeypatch)
     lifecycle = load_lifecycle_module(monkeypatch)
     doc = prospect(
         qualification_status="Qualified",
-        lifecycle_status="Qualified",
+        lifecycle_status="Research Complete",
         contacts=[
             Prospect(contact_name="Buyer", contact_role="CTO", emails="buyer@example.com", is_primary=1)
         ],
@@ -409,13 +409,13 @@ def test_mark_not_ready_returns_handoff_to_qualified(monkeypatch):
 
     result = lifecycle.mark_not_ready_for_crm_conversion(doc.name)
 
-    assert result == {"lifecycle_status": "Qualified"}
-    assert writes[0][0][2:] == ("lifecycle_status", "Qualified")
+    assert result == {"lifecycle_status": "Research Complete"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Research Complete")
 
 
 def test_mark_not_ready_rejects_non_handoff_status(monkeypatch):
     lifecycle = load_lifecycle_module(monkeypatch)
-    doc = prospect(qualification_status="Qualified", lifecycle_status="Qualified")
+    doc = prospect(qualification_status="Qualified", lifecycle_status="Research Complete")
     writes = configure_persistence(monkeypatch, lifecycle, doc)
 
     result = lifecycle.mark_not_ready_for_crm_conversion(doc.name)

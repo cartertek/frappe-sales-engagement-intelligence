@@ -13,7 +13,7 @@ SEI prepares conversion context, but Frappe CRM owns the sales records. CRM hand
 9. Create a CRM Deal only where there is a commercial basis or manager override.
 10. Sync SEI context to CRM after linking or creation where needed.
 
-A Qualified prospect remains Qualified until the user explicitly approves CRM handoff. Find Contact therefore means the handoff was approved but the required contact path is not yet available.
+A prospect with Qualified or Manually Approved qualification remains Research Complete until the user explicitly approves CRM handoff. Find Contact therefore means the handoff was approved but the required contact path is not yet available.
 
 SEI never creates ERPNext Lead, Opportunity, Quotation, Customer, or other ERPNext commercial records.
 

@@ -53,6 +53,8 @@ def test_crm_handoff_statuses_and_queues_remain_available():
         ).read_text()
     )
     lifecycle = next(field for field in prospect["fields"] if field["fieldname"] == "lifecycle_status")
+    assert "Qualified" not in lifecycle["options"].splitlines()
+    assert "Research Complete" in lifecycle["options"].splitlines()
     options = lifecycle["options"].splitlines()
     assert "Find Contact" in options
     assert "Ready for CRM Conversion" in options

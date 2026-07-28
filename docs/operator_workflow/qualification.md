@@ -14,4 +14,4 @@ Unqualified means the evidence threshold was not met. It does not by itself mean
 
 - Keep the prospect in Needs Research when more investigation is still required before a disposition decision.
 - Move the prospect to Rejected when research is complete and no qualifying outreach evidence exists.
-- Use Research Complete for Needs Review prospects that have enough evidence for a human review decision, not for researched prospects that are already known to be unqualified.
+- Use Research Complete when research is finished. Qualification Status distinguishes Needs Review, Qualified, and Manually Approved outcomes; completed unqualified research should move to Rejected.

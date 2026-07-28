@@ -39,7 +39,7 @@ def test_primary_action_matches_supported_lifecycles_only():
     block = SCRIPT.split("function configure_primary_prospect_action", 1)[1].split(
         "function reload_if_cached_document_is_stale", 1
     )[0]
-    assert "lifecycle === 'Qualified'" in block
+    assert "lifecycle === 'Research Complete' && can_prepare_crm(frm)" in block
     assert "label = __('Mark as Ready for CRM Conversion')" in block
     assert "lifecycle === 'Ready for CRM Conversion'" in block
     assert "label = __('Convert to CRM Lead')" in block

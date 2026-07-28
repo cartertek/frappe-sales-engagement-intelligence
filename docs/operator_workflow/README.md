@@ -21,7 +21,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 
 1. Import or manually create prospects and signals.
 2. Review import rows, duplicate warnings, and missing evidence.
-3. Review queues: Needs Research, Find Contact, Qualified, Ready for CRM Conversion, Rejected, and Do Not Contact.
+3. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
 4. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
 5. Assign a playbook and choose the offer and asset. Confirm the relevant theses are represented by the prospect's linked signal types.
 6. Preview a message draft from a message template.

@@ -18,9 +18,14 @@ def test_qualified_indicator_uses_qualification_status_color_and_filter():
     assert "background-color: var(--green-100)" in source
     assert "indicator-pill ${color}" not in source
     assert "qualification_status(value)" in source
-    assert "const is_qualified = value === 'Qualified';" in source
+    assert "'Manually Approved': 'background-color: var(--green-100); color: var(--green-700);'" in source
     assert "`${status_field},=,${status}`" in source
     assert "'Qualified': 'green'" in source
+    assert "'Qualified': 'background-color: var(--green-100); color: var(--green-700);'" in source
+    assert "'Needs Review': 'background-color: var(--yellow-100); color: var(--yellow-700);'" in source
+    assert "'Unqualified': 'background-color: var(--gray-100); color: var(--gray-700);'" in source
+    assert "'Rejected': 'background-color: var(--red-100); color: var(--red-700);'" in source
+    assert "'Do Not Contact': 'background-color: var(--red-100); color: var(--red-700);'" in source
 
 
 def test_fact_evidence_specificity_is_required():
