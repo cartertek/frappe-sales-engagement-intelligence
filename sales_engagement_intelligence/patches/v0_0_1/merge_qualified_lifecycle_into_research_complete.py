@@ -11,6 +11,6 @@ def execute():
     )
 
     if frappe.db.exists("Workspace", "Prospecting"):
-        from sales_engagement_intelligence.setup import ensure_milestone_8_workspace
+        from sales_engagement_intelligence.setup import ensure_milestone_8_workspace_items
 
-        ensure_milestone_8_workspace()
+        ensure_milestone_8_workspace_items()
