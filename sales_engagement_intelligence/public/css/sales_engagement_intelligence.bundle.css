@@ -55,8 +55,18 @@
 }
 
 
-/* Show complete fact quotations in the Signal evidence grid. */
-.frappe-control[data-fieldname="observed_facts"] .grid-row .data-row,
+/* Keep the Signal fact table wider than its viewport and scroll it horizontally. */
+.sei-observed-facts-grid .form-grid-container {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.sei-observed-facts-grid .form-grid,
+.sei-observed-facts-grid .grid-heading-row,
+.sei-observed-facts-grid .grid-body {
+  overflow: visible !important;
+}
+
 .sei-observed-facts-grid .grid-row .data-row {
   align-items: stretch !important;
   flex-wrap: nowrap !important;
@@ -74,10 +84,10 @@
   flex-grow: 0 !important;
 }
 
-.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="fact"] .static-area,
-.frappe-control[data-fieldname="observed_facts"] .grid-static-col[data-fieldname="fact"] .form-control,
 .sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] .static-area,
-.sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] .form-control {
+.sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] .form-control,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_url"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_url"] .form-control {
   display: block;
   height: auto !important;
   min-height: var(--input-height);
@@ -89,6 +99,15 @@
   white-space: pre-wrap !important;
   width: 100%;
   word-break: normal;
+}
+
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_basis"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_specificity"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_date"] .static-area {
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
 }
 
 .sei-observed-facts-grid .grid-body .grid-row,

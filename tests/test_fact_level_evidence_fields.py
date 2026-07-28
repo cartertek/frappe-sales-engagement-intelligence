@@ -51,32 +51,24 @@ def test_operator_docs_explain_fact_level_evidence_metadata():
         assert "belong to each Observed Facts row, not to the Signal" in source
 
 
-def test_fact_grid_wraps_and_uses_half_width():
+def test_fact_grid_wraps_and_supports_horizontal_overflow():
     child = json.loads((APP / "doctype/sei_signal_observed_fact/sei_signal_observed_fact.json").read_text())
     fields = {field["fieldname"]: field for field in child["fields"]}
     assert fields["fact"]["columns"] == 5
-    assert sum(field.get("columns", 0) for field in child["fields"]) == 10
 
     css = (
         ROOT / "sales_engagement_intelligence/public/css/sales_engagement_intelligence.bundle.css"
     ).read_text()
-    assert '.grid-static-col[data-fieldname="fact"]' in css
-    assert "sei-observed-facts-grid" in css
-    assert "grid-data-last" in css
-    assert "flex-grow: 0 !important;" in css
-    assert "flex-wrap: nowrap !important;" in css
+    assert "overflow-x: auto !important;" in css
+    assert '.grid-static-col[data-fieldname="source_url"]' in css
     assert "white-space: pre-wrap !important;" in css
-    assert "overflow: visible !important;" in css
-    assert "max-height: none !important;" in css
+    assert "white-space: nowrap !important;" in css
 
     js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
-    assert "getBoundingClientRect().width" in js
-    assert "removeClass('grid-data-last')" in js
-    assert "flex: `0 0 ${allocated}px`" in js
-    assert "height: auto !important;" in css
-    assert "text-overflow: clip !important;" in css
-
-    js = (APP / "doctype/sei_signal/sei_signal.js").read_text()
+    assert "visible_width * 0.5" in js
+    assert "source_url: wide_column_width" in js
+    assert "area.scrollWidth + 24" in js
+    assert "total_width" in js
+    assert "width: `${total_width}px`" in js
     assert ".removeClass('ellipsis')" in js
-    assert "fact_area.scrollHeight + vertical_padding" in js
-    assert "height: `${row_height}px`" in js
+    assert "area.scrollHeight + padding" in js

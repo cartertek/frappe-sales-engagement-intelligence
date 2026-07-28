@@ -37,53 +37,67 @@ function style_observed_facts_grid(frm) {
         return;
     }
 
-    const column_weights = {
-        fact: 5,
-        evidence_basis: 1,
-        evidence_specificity: 2,
-        source_url: 1,
-        source_date: 1,
-    };
-    const total_weight = Object.values(column_weights).reduce((total, weight) => total + weight, 0);
-
     const apply = () => {
         const $grid = field.grid.wrapper;
         $grid.addClass('sei-observed-facts-grid');
 
+        const $container = $grid.find('.form-grid-container').first();
         const $reference_row = $grid.find('.grid-heading-row .data-row').first();
-        if (!$reference_row.length) {
+        if (!$container.length || !$reference_row.length) {
             return;
         }
 
-        const row_width = $reference_row[0].getBoundingClientRect().width;
-        let fixed_width = 0;
-        $reference_row.children().each((_, element) => {
-            const $element = $(element);
-            if (!$element.is('.grid-static-col[data-fieldname]')) {
-                fixed_width += element.getBoundingClientRect().width;
-            }
-        });
-        const data_width = Math.max(0, row_width - fixed_width);
+        const visible_width = $container[0].clientWidth;
+        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.5));
+        const content_columns = ['evidence_basis', 'evidence_specificity', 'source_date'];
+        const measured_widths = {};
 
-        Object.entries(column_weights).forEach(([fieldname, weight], index, entries) => {
-            const allocated = index === entries.length - 1
-                ? data_width - entries.slice(0, -1).reduce(
-                    (used, [, prior_weight]) => used + Math.floor(data_width * prior_weight / total_weight),
-                    0
-                )
-                : Math.floor(data_width * weight / total_weight);
+        content_columns.forEach((fieldname) => {
+            let width = 0;
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`).each((_, cell) => {
+                const area = cell.querySelector('.static-area') || cell;
+                width = Math.max(width, area.scrollWidth + 24);
+            });
+            measured_widths[fieldname] = Math.max(width, 110);
+        });
+
+        const widths = {
+            fact: wide_column_width,
+            evidence_basis: measured_widths.evidence_basis,
+            evidence_specificity: measured_widths.evidence_specificity,
+            source_url: wide_column_width,
+            source_date: measured_widths.source_date,
+        };
+
+        Object.entries(widths).forEach(([fieldname, width]) => {
             $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`)
                 .removeClass('grid-data-last')
                 .css({
-                    flex: `0 0 ${allocated}px`,
-                    'max-width': `${allocated}px`,
-                    'min-width': `${allocated}px`,
-                    width: `${allocated}px`,
+                    flex: `0 0 ${width}px`,
+                    'max-width': `${width}px`,
+                    'min-width': `${width}px`,
+                    width: `${width}px`,
                 });
         });
 
-        const $fact_areas = $grid.find('.grid-body .grid-static-col[data-fieldname="fact"] .static-area');
-        $fact_areas.removeClass('ellipsis').css({
+        let fixed_width = 0;
+        $reference_row.children().each((_, element) => {
+            if (!$(element).is('.grid-static-col[data-fieldname]')) {
+                fixed_width += element.getBoundingClientRect().width;
+            }
+        });
+        const total_width = fixed_width + Object.values(widths).reduce((sum, width) => sum + width, 0);
+        $grid.find('.grid-heading-row .data-row, .grid-body .grid-row .data-row').css({
+            width: `${total_width}px`,
+            'min-width': `${total_width}px`,
+            'max-width': `${total_width}px`,
+        });
+
+        const $wrapping_areas = $grid.find(
+            '.grid-body .grid-static-col[data-fieldname="fact"] .static-area, ' +
+            '.grid-body .grid-static-col[data-fieldname="source_url"] .static-area'
+        );
+        $wrapping_areas.removeClass('ellipsis').css({
             display: 'block',
             height: 'auto',
             'max-height': 'none',
@@ -95,19 +109,32 @@ function style_observed_facts_grid(frm) {
             width: '100%',
         });
 
+        content_columns.forEach((fieldname) => {
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"] .static-area`)
+                .removeClass('ellipsis')
+                .css({
+                    overflow: 'visible',
+                    'text-overflow': 'clip',
+                    'white-space': 'nowrap',
+                });
+        });
+
         $grid.find('.grid-body .grid-row .data-row').each((_, row) => {
             const $row = $(row);
-            const fact_area = $row.find('.grid-static-col[data-fieldname="fact"] .static-area')[0];
-            if (!fact_area) {
-                return;
-            }
-
-            const $fact_cell = $(fact_area).closest('.grid-static-col');
-            const vertical_padding = parseFloat($fact_cell.css('padding-top') || 0)
-                + parseFloat($fact_cell.css('padding-bottom') || 0);
+            let content_height = 0;
+            ['fact', 'source_url'].forEach((fieldname) => {
+                const area = $row.find(`.grid-static-col[data-fieldname="${fieldname}"] .static-area`)[0];
+                if (!area) {
+                    return;
+                }
+                const $cell = $(area).closest('.grid-static-col');
+                const padding = parseFloat($cell.css('padding-top') || 0)
+                    + parseFloat($cell.css('padding-bottom') || 0);
+                content_height = Math.max(content_height, area.scrollHeight + padding);
+            });
             const row_height = Math.max(
                 parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--input-height')) || 38,
-                Math.ceil(fact_area.scrollHeight + vertical_padding)
+                Math.ceil(content_height)
             );
 
             $row.css({
