@@ -268,11 +268,10 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
     strength = _signal_value(row, "signal_strength", prefix)
     evidence_basis = _signal_value(row, "evidence_basis", prefix)
     if evidence_basis == "Observed" and not _signal_value(row, "observed_fact", prefix):
-        frappe.throw("Observed signals require observed_fact.")
+        frappe.throw("Observed signals require at least one observed_fact.")
 
     if strength in {"Moderate", "Strong"}:
         proof_fields = [
-            "observed_fact",
             "signal_claim",
             "why_this_signal_type",
             "why_not_weak",
@@ -283,6 +282,8 @@ def _validate_signal(row: dict, prefix: str = "") -> None:
             for field in proof_fields
             if not _signal_value(row, field, prefix)
         ]
+        if not _signal_value(row, "observed_fact", prefix):
+            missing_proof.insert(0, f"{prefix}observed_fact" if prefix else "observed_fact")
         if missing_proof:
             frappe.throw(
                 "Moderate or Strong signals require structured evidence fields: " + ", ".join(missing_proof)
@@ -317,7 +318,11 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "confidence": row.get("initial_confidence"),
             "source_url": row.get("initial_signal_source_url") or row.get("source_url"),
             "source_date": row.get("initial_source_date"),
-            "observed_fact": row.get("initial_observed_fact"),
+            "observed_facts": (
+                [{"fact": row.get("initial_observed_fact")}]
+                if row.get("initial_observed_fact")
+                else []
+            ),
             "signal_claim": row.get("initial_signal_claim"),
             "why_this_signal_type": row.get("initial_why_this_signal_type"),
             "why_not_weak": row.get("initial_why_not_weak"),
@@ -337,7 +342,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "confidence": row.get("confidence"),
             "source_url": row.get("source_url"),
             "source_date": row.get("source_date"),
-            "observed_fact": row.get("observed_fact"),
+            "observed_facts": ([{"fact": row.get("observed_fact")}] if row.get("observed_fact") else []),
             "signal_claim": row.get("signal_claim"),
             "why_this_signal_type": row.get("why_this_signal_type"),
             "why_not_weak": row.get("why_not_weak"),

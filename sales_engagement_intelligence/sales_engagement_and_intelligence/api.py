@@ -71,6 +71,7 @@ WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
     "suggested_message_template",
 }
 SIGNAL_FIELDS = {
+    "signal_name",
     "signal_type",
     "signal_strength",
     "evidence_basis",
@@ -78,7 +79,7 @@ SIGNAL_FIELDS = {
     "confidence",
     "source_url",
     "source_date",
-    "observed_fact",
+    "observed_facts",
     "signal_claim",
     "why_this_signal_type",
     "why_not_weak",
@@ -91,6 +92,38 @@ SIGNAL_FIELDS = {
     "review_date",
     "attachment",
 }
+def _normalize_observed_facts(value) -> list[dict]:
+    if value is None:
+        return []
+    if isinstance(value, str):
+        value = [value]
+    if not isinstance(value, (list, tuple)):
+        return []
+    facts = []
+    for item in value:
+        fact = item.get("fact") if isinstance(item, dict) else item
+        if str(fact or "").strip():
+            facts.append({"fact": str(fact).strip()})
+    return facts
+
+
+def _attach_observed_facts(rows: list[dict]) -> list[dict]:
+    names = [row.get("name") for row in rows if row.get("name")]
+    facts_by_signal = {name: [] for name in names}
+    if names:
+        facts = frappe.get_all(
+            "SEI Signal Observed Fact",
+            filters={"parent": ["in", names], "parenttype": "SEI Signal"},
+            fields=["parent", "fact", "idx"],
+            order_by="parent asc, idx asc",
+        )
+        for fact in facts:
+            facts_by_signal.setdefault(fact.parent, []).append({"fact": fact.fact})
+    for row in rows:
+        row["observed_facts"] = facts_by_signal.get(row.get("name"), [])
+    return rows
+
+
 IMPORT_BATCH_CREATE_FIELDS = {
     "batch_label",
     "source_type",
@@ -369,10 +402,19 @@ def _prospect_summary(prospect: str) -> dict:
     signals = frappe.get_all(
         "SEI Signal",
         filters={"prospect": prospect},
-        fields=["name", "signal_type", "signal_strength", "evidence_basis", "source_url", "source_date"],
+        fields=[
+            "name",
+            "signal_name",
+            "signal_type",
+            "signal_strength",
+            "evidence_basis",
+            "source_url",
+            "source_date",
+        ],
         order_by="source_date desc, creation desc",
         limit=5,
     )
+    signals = _attach_observed_facts(signals)
     primary_signal = None
     try:
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services.qualification import (
@@ -542,6 +584,8 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
 def add_signal(prospect: str, payload: dict | str) -> dict:
     _check_prospect_permission(prospect, "write")
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if "observed_facts" in values:
+        values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values, dropped = _filter_known_fields("SEI Signal", values)
     warnings = [{"code": "UNKNOWN_FIELDS_IGNORED", "fields": dropped}] if dropped else []
     doc = frappe.get_doc({"doctype": "SEI Signal", "prospect": prospect, **values})
@@ -560,6 +604,8 @@ def update_signal(signal: str, payload: dict | str) -> dict:
     prospect = doc.prospect
     _check_prospect_permission(prospect, "write")
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if "observed_facts" in values:
+        values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values.pop("prospect", None)
     values, dropped = _filter_known_fields("SEI Signal", values)
     for key, value in values.items():
@@ -581,10 +627,15 @@ def get_signals(prospect: str) -> dict:
         filters={"prospect": prospect},
         fields=[
             "name",
-            *[field for field in SIGNAL_FIELDS if field != "attachment"],
+            *[
+                field
+                for field in SIGNAL_FIELDS
+                if field not in {"attachment", "observed_facts"}
+            ],
         ],
         order_by="source_date desc, creation desc",
     )
+    rows = _attach_observed_facts(rows)
     return {"signals": rows, "count": len(rows)}
 
 

@@ -7,7 +7,7 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 1. Select a source arena.
 2. Search for candidate evidence.
 3. Open the exact source URL that would be stored on the signal.
-4. Confirm that the opened page contains the expected entity, the expected document or role, and the complete proposed `observed_fact` quotation.
+4. Confirm that the opened page contains the expected entity, the expected document or role, and every complete quotation proposed for `observed_facts`.
 5. Identify what the source directly says or shows.
 6. Decide whether the source supports any managed Signal Type.
 7. If yes, create or update a signal.
@@ -33,7 +33,7 @@ Before creating or strengthening a signal, check:
 - Did I open the exact URL that will be stored?
 - Does that exact page contain the expected company or entity?
 - Does it contain the expected role, post, RFP, issue, or document?
-- Does it contain the complete `observed_fact` quotation?
+- Does it contain every complete quotation proposed for the Observed Facts rows?
 - Is it a real content page rather than a generic ATS shell, board homepage, login page, or error page?
 - Does this source point to one specific piece of evidence?
 - Does the source directly support the signal claim?
@@ -47,7 +47,7 @@ A useful research result identifies:
 
 - prospect
 - exact evidence source
-- observed fact
+- observed facts
 - candidate Signal Type
 - evidence specificity
 - disqualifiers checked

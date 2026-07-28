@@ -20,7 +20,7 @@ For each proposed signal, AI must separate:
 
 ## Exact-source verification gate
 
-Before proposing or creating a Moderate or Strong signal, the assistant must open the exact URL that will be stored in `source_url` during the current research run. The opened page must contain the expected entity or company, the expected document or role, and the complete verbatim `observed_fact` quotation.
+Before proposing or creating a Moderate or Strong signal, the assistant must open the exact URL that will be stored in `source_url` during the current research run. The opened page must contain the expected entity or company, the expected document or role, and all complete verbatim quotations that will be stored in `observed_facts`.
 
 Search snippets, cached text, ATS APIs, job feeds, aggregators, and discovery results may identify candidates, but they do not prove that the proposed evidence URL is valid. The assistant must not construct or infer a public source URL from an ATS board slug, job ID, API response, or search result.
 
@@ -39,7 +39,7 @@ Exact URL opened:
 Final URL after redirects:
 Expected entity found:
 Expected document or role found:
-Complete Observed Fact found verbatim:
+Observed Facts found verbatim (one row per fact):
 Generic shell, login, or error page:
 Observed fact (verbatim quotation; at least one complete sentence):
 Signal claim (paraphrase/interpretation):
@@ -54,7 +54,7 @@ This applies whenever AI proposes new signals or signal updates. It is not limit
 
 ## Conservative scoring rule
 
-If AI cannot copy at least one complete source sentence verbatim into Observed Fact, or if the quotation does not directly support the selected Signal Type, it must propose Weak.
+If AI cannot copy at least one complete source sentence verbatim into Observed Facts, or if the collected facts do not directly support the selected Signal Type and all signal claims, it must propose Weak. Multiple facts are encouraged when one fact does not support the complete analysis.
 
 If AI cannot explain why the signal is not Weak, it must propose Weak.
 

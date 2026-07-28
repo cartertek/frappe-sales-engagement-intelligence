@@ -35,7 +35,6 @@ def test_signal_form_uses_collapsed_type_definition_and_compact_textareas():
     assert "'review_section'" in source
     assert "height: '88px'" in source
     for fieldname in (
-        "observed_fact",
         "signal_claim",
         "why_this_signal_type",
         "why_not_weak",

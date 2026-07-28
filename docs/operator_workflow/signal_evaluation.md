@@ -16,25 +16,31 @@ Ask these questions in order:
 5. Do any disqualifiers apply?
 6. Why is this not Weak?
 
+## Signal name
+
+When creating a signal, give it a short descriptive name that identifies the specific observed event, condition, or evidence. The name should distinguish the signal from other signals on the same prospect without repeating only the Signal Type. Prefer a concise phrase such as `Backend role reposted for four months` or `Post-launch checkout failures reported`.
+
+Do not use the generated SEI record ID, the prospect name alone, or the Signal Type alone as the descriptive name.
+
 ## Assistant-created signal default
 
-Assistant-created signals default to Weak and excluded from qualification unless `observed_fact` contains a direct quotation copied verbatim from the source. The quotation must be at least one complete sentence long and must directly support the selected managed Signal Type.
+Assistant-created signals default to Weak and excluded from qualification unless `observed_facts` contains at least one direct quotation copied verbatim from the source. Each fact must contain at least one complete sentence and directly support the selected managed Signal Type. One fact is the minimum; add multiple facts whenever the signal has multiple claims or one quotation does not support the complete analysis.
 
-Do not paraphrase, synthesize, interpret, or combine separate source passages in `observed_fact`. Preserve the original wording and sentence boundaries. If additional context is required, quote additional complete sentences. Any paraphrase or explanation of what the quotation means belongs in `signal_claim`, `why_this_signal_type`, `why_not_weak`, or `evidence_notes`.
+Each Observed Facts row should contain one coherent verbatim fact. Do not paraphrase, synthesize, interpret, or splice separate source passages into one row. Preserve original wording and sentence boundaries. Add additional rows for additional supporting facts. Multiple facts are encouraged when needed to support every claim. Any paraphrase or explanation of what the quotation means belongs in `signal_claim`, `why_this_signal_type`, `why_not_weak`, or `evidence_notes`.
 
 Do not create a Moderate or Strong assistant-created signal from company context, a job title, technical work area, company scale, hiring activity, Cartertek fit, or a plausible interpretation. The analysis fields may explain the quotation, but they must not supply a signal assertion missing from the quoted source text.
 
 Use this test before creating or strengthening a signal:
 
-> If the selected Signal Type were hidden, would `observed_fact` still plainly describe that exact kind of signal?
+> If the selected Signal Type were hidden, would the Observed Facts still plainly describe that exact kind of signal and support every claim?
 
 If the answer is no, create only a Weak, excluded signal or reject the candidate.
 
 ## Signal Type assertion examples
 
-These examples do not replace the managed Signal Type definitions. They define the minimum assertion that must appear in the verbatim quotation stored in `observed_fact` before an assistant-created signal can count.
+These examples do not replace the managed Signal Type definitions. They define the minimum assertion that must appear across the verbatim quotations stored in `observed_facts` before an assistant-created signal can count.
 
-| Signal Type | `observed_fact` must assert | Invalid `observed_fact` pattern |
+| Signal Type | Observed Facts must assert | Invalid Observed Facts pattern |
 |---|---|---|
 | `early-technical-capacity-gap` | A concrete technical capacity gap: the operational/business process and the actual constraint on that process. | Company scale, automation hiring, integration work, AI/workflow/internal-tools work, or desire to improve onboarding/customer experience. |
 | `consultancy-compatible-contract` | Buyer openness to a firm, vendor, consultancy, agency, implementation partner, subcontractor, or company-to-company delivery path. | Contract role, bounded project, implementation task, contractor request, or work that merely seems suitable for Cartertek. |
@@ -53,7 +59,7 @@ Signal claim:
 [Paraphrase or interpretation of what the quotation supports]
 
 Why this Signal Type:
-[Why the observed fact matches the selected managed Signal Type]
+[Why the observed facts match the selected managed Signal Type and support all claims]
 
 Disqualifiers checked:
 [Relevant disqualifiers from the managed Signal Type definition]
@@ -90,7 +96,7 @@ It does not ask: could Cartertek help with this?
 
 ## Observed vs inferred
 
-Observed means `observed_fact` contains the source's exact wording as a verbatim quotation of at least one complete sentence. Interpretation remains separate in `signal_claim` and the other analysis fields.
+Observed means `observed_facts` contains one or more rows with the source's exact wording as verbatim quotations of at least one complete sentence each. Interpretation remains separate in `signal_claim` and the other analysis fields.
 
 Inferred means the evaluator believes something may be true based on pattern, context, analogy, or experience.
 
