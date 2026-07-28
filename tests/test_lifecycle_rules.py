@@ -248,7 +248,7 @@ def test_crm_readiness_requirements_report_met_and_unmet_checks(monkeypatch):
 
     by_key = {requirement["key"]: requirement["met"] for requirement in requirements}
     assert by_key == {
-        "qualified": False,
+        "research_complete": False,
         "not_do_not_contact": False,
         "not_protected_lifecycle": False,
         "no_crm_leads": False,
@@ -394,7 +394,7 @@ def test_mark_ready_returns_original_readiness_checklist_when_blocked(monkeypatc
     assert result["error"]["code"] == "CRM_READINESS_REQUIREMENTS_NOT_MET"
     requirements = {row["key"]: row["met"] for row in result["error"]["details"]["requirements"]}
     assert requirements == {
-        "qualified": False,
+        "research_complete": False,
         "not_do_not_contact": False,
         "not_protected_lifecycle": False,
         "no_crm_leads": False,
@@ -499,3 +499,15 @@ def test_general_role_does_not_require_signal_relevance(monkeypatch):
         )
         == "Ready for CRM Conversion"
     )
+
+
+def test_mark_ready_accepts_research_complete_needs_review(monkeypatch):
+    lifecycle = load_lifecycle_module(monkeypatch)
+    doc = prospect(qualification_status="Needs Review", lifecycle_status="Research Complete")
+    writes = configure_persistence(monkeypatch, lifecycle, doc)
+
+    result = lifecycle.mark_ready_for_crm_conversion(doc.name)
+
+    assert result == {"lifecycle_status": "Find Contact"}
+    assert writes[0][0][2:] == ("lifecycle_status", "Find Contact")
+

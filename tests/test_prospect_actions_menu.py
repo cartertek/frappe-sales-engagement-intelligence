@@ -62,3 +62,13 @@ def test_action_menu_and_primary_action_are_built_in_refresh():
     assert "configure_primary_prospect_action(frm);" in SCRIPT
     assert "schedule_prospect_actions(frm)" not in SCRIPT
     assert "frm.clear_custom_buttons()" not in SCRIPT
+
+
+def test_research_complete_needs_review_still_gets_action_surface():
+    can_prepare = SCRIPT.split("function can_prepare_crm", 1)[1]
+    can_prepare = can_prepare.split("function contact_role_is_signal_specific", 1)[0]
+    assert "Research Complete" in can_prepare
+    assert "Find Contact" in can_prepare
+    assert "Ready for CRM Conversion" in can_prepare
+    assert "qualification_status" not in can_prepare
+

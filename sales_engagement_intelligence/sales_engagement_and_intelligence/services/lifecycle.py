@@ -208,9 +208,9 @@ def reopen_prospect(prospect_name: str) -> dict:
 def get_crm_readiness_requirements(prospect: Document) -> list[dict]:
     return [
         {
-            "key": "qualified",
-            "label": "Qualification status is Qualified or Manually Approved",
-            "met": prospect.qualification_status in ("Qualified", "Manually Approved"),
+            "key": "research_complete",
+            "label": "Lifecycle status is Research Complete",
+            "met": prospect.lifecycle_status == "Research Complete",
         },
         {
             "key": "not_do_not_contact",

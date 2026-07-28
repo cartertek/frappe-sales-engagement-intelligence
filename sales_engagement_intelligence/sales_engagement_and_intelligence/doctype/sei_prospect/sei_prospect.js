@@ -246,9 +246,9 @@ function reload_if_cached_document_is_stale(frm) {
 }
 
 function can_prepare_crm(frm) {
-    return ['Qualified', 'Manually Approved'].includes(frm.doc.qualification_status)
-        && !frm.doc.do_not_contact
-        && !['Rejected', 'Do Not Contact'].includes(frm.doc.lifecycle_status);
+    return ['Research Complete', 'Find Contact', 'Ready for CRM Conversion'].includes(
+        frm.doc.lifecycle_status
+    ) && !frm.doc.do_not_contact;
 }
 
 function contact_role_is_signal_specific(frm, role) {
