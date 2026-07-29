@@ -37,6 +37,7 @@ def test_overview_tab_contains_only_overview_fields_before_definition():
     assert overview_fields == [
         'signal_type_name',
         'description',
+        'category',
         'playbook',
         'research_arena',
         'active',

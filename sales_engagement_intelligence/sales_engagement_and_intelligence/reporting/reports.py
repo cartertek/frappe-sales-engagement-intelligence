@@ -228,9 +228,12 @@ def _execute_signals_by_type_and_strength(filters):
     )
     columns = [_data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Exclude from Qualification", "exclude_from_qualification"), _int("Signal Count", "signal_count"), _int("Prospect Count", "prospect_count")]
     data = _sql(f"""
-        SELECT COALESCE(st.signal_type_name, s.signal_type) signal_type, s.signal_strength, s.evidence_basis, s.exclude_from_qualification, COUNT(*) signal_count, COUNT(DISTINCT s.prospect) prospect_count
-        FROM {utils.table('SEI Signal')} s LEFT JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type {where.replace(utils.table('SEI Signal'), 's')}
-        GROUP BY COALESCE(st.signal_type_name, s.signal_type), s.signal_strength, s.evidence_basis, s.exclude_from_qualification
+        SELECT COALESCE(st.signal_type_name, s.signal_type) signal_type, s.signal_strength, f.evidence_basis, s.exclude_from_qualification, COUNT(DISTINCT s.name) signal_count, COUNT(DISTINCT s.prospect) prospect_count
+        FROM {utils.table('SEI Signal')} s
+        INNER JOIN {utils.table('SEI Signal Observed Fact')} f ON f.parent = s.name
+        LEFT JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type
+        {where.replace(utils.table('SEI Signal'), 's').replace('s.evidence_basis', 'f.evidence_basis')}
+        GROUP BY COALESCE(st.signal_type_name, s.signal_type), s.signal_strength, f.evidence_basis, s.exclude_from_qualification
         ORDER BY signal_type, signal_strength, evidence_basis
     """, params)
     return columns, data, None, _bar_chart(data, "signal_type", "signal_count", "Signals")
@@ -260,8 +263,9 @@ def _execute_qualification_by_signal_type(filters):
                {utils.pct_expr("COUNT(DISTINCT CASE WHEN p.qualification_status IN ('Qualified','Manually Approved') THEN p.name END)", "COUNT(DISTINCT p.name)")} qualification_rate
         FROM {utils.table('SEI Signal')} s
         LEFT JOIN {utils.table('SEI Prospect')} p ON p.name = s.prospect
+        INNER JOIN {utils.table('SEI Signal Observed Fact')} f ON f.parent = s.name
         LEFT JOIN {utils.table('SEI Signal Type')} st ON st.name = s.signal_type
-        {where.replace(utils.table('SEI Signal'), 's')}
+        {where.replace(utils.table('SEI Signal'), 's').replace('s.evidence_basis', 'f.evidence_basis')}
         GROUP BY COALESCE(st.signal_type_name, s.signal_type)
         ORDER BY qualification_rate DESC, total_prospects DESC
     """, params)
@@ -273,10 +277,17 @@ def _execute_inferred_signal_review(filters):
         return utils.empty_result("SEI Signal is not installed.")
     columns = [_link("Signal", "signal", "SEI Signal"), _link("Prospect", "prospect", "SEI Prospect"), _data("Signal Type", "signal_type"), _data("Signal Strength", "signal_strength"), _data("Evidence Basis", "evidence_basis"), _check("Exclude from Qualification", "exclude_from_qualification"), _data("Source URL", "source_url", 240), _data("Evidence Notes", "evidence_notes", 300), _date("Review Date", "review_date")]
     data = _sql(f"""
-        SELECT name `signal`, prospect, signal_type, signal_strength, evidence_basis, exclude_from_qualification, source_url, evidence_notes, review_date
-        FROM {utils.table('SEI Signal')}
-        WHERE evidence_basis = 'Inferred' AND COALESCE(exclude_from_qualification, 0) = 0
-        ORDER BY modified DESC
+        SELECT s.name `signal`, s.prospect, s.signal_type, s.signal_strength,
+               'Inferred' evidence_basis, s.exclude_from_qualification,
+               GROUP_CONCAT(DISTINCT f.source_url ORDER BY f.idx SEPARATOR '\n') source_url,
+               s.evidence_notes, s.review_date
+        FROM {utils.table('SEI Signal')} s
+        INNER JOIN {utils.table('SEI Signal Observed Fact')} f ON f.parent = s.name
+        WHERE COALESCE(s.exclude_from_qualification, 0) = 0
+          AND f.evidence_basis = 'Inferred'
+          AND NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal Observed Fact')} observed WHERE observed.parent=s.name AND observed.evidence_basis='Observed')
+        GROUP BY s.name, s.prospect, s.signal_type, s.signal_strength, s.exclude_from_qualification, s.evidence_notes, s.review_date
+        ORDER BY MAX(s.modified) DESC
     """)
     return columns, data
 
@@ -290,9 +301,9 @@ def _execute_missing_evidence_report(filters):
         FROM {utils.table('SEI Prospect')} p LEFT JOIN {utils.table('SEI Signal')} s ON s.prospect = p.name
         WHERE s.name IS NULL
         UNION ALL
-        SELECT 'Signal missing source URL', prospect, name `signal`, NULL source_arena, signal_type, 'source_url is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(source_url, '') = ''
+        SELECT 'Signal missing source URL', s.prospect, s.name `signal`, NULL source_arena, s.signal_type, 'No fact has a source_url.' details, s.modified FROM {utils.table('SEI Signal')} s WHERE NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal Observed Fact')} f WHERE f.parent=s.name AND COALESCE(f.source_url,'')!='')
         UNION ALL
-        SELECT 'Signal missing source date', prospect, name `signal`, NULL source_arena, signal_type, 'source_date is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE source_date IS NULL
+        SELECT 'Signal missing source date', s.prospect, s.name `signal`, NULL source_arena, s.signal_type, 'No fact has a source_date.' details, s.modified FROM {utils.table('SEI Signal')} s WHERE NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal Observed Fact')} f WHERE f.parent=s.name AND f.source_date IS NOT NULL)
         UNION ALL
         SELECT 'Signal missing evidence notes', prospect, name `signal`, NULL source_arena, signal_type, 'evidence_notes is blank.' details, modified FROM {utils.table('SEI Signal')} WHERE COALESCE(evidence_notes, '') = ''
         UNION ALL
@@ -513,7 +524,7 @@ def _execute_crm_deal_conversion_detail(filters):
         commercial_basis = "NULL"
     columns = [_link("SEI Prospect", "sei_prospect", "SEI Prospect"), _data("Research Arenas", "source_arena", 220), _data("Playbooks", "playbooks", 220), _link("Primary Signal", "primary_signal", "SEI Signal"), _link("CRM Deal", "crm_deal", "CRM Deal"), _link("CRM Lead", "crm_lead", "CRM Lead"), _link("CRM Organization", "crm_organization", "CRM Organization"), _link("Contact", "contact", "Contact"), _data("Deal Status", "deal_status"), _data("Lifecycle Status", "lifecycle_status"), _data("Commercial Basis", "commercial_basis", 200), _datetime("Modified", "modified")]
     data = _sql(f"""
-        SELECT p.name sei_prospect, {_prospect_arenas_expr("p")} source_arena, {_prospect_playbooks_expr("p")} playbooks, (SELECT s.name FROM {utils.table('SEI Signal')} s WHERE s.prospect = p.name ORDER BY s.source_date DESC, s.creation DESC LIMIT 1) primary_signal,
+        SELECT p.name sei_prospect, {_prospect_arenas_expr("p")} source_arena, {_prospect_playbooks_expr("p")} playbooks, (SELECT s.name FROM {utils.table('SEI Signal')} s WHERE s.prospect = p.name ORDER BY (SELECT MAX(f.source_date) FROM {utils.table('SEI Signal Observed Fact')} f WHERE f.parent=s.name) DESC, s.creation DESC LIMIT 1) primary_signal,
                p.crm_deal, d.lead crm_lead, p.crm_organization, p.crm_contact contact, {deal_status} deal_status, p.lifecycle_status,
                {commercial_basis} commercial_basis,
                p.modified
@@ -665,11 +676,11 @@ def _execute_data_hygiene_dashboard(filters):
     rows = []
     checks = [
         ("Prospects missing signal-derived arena", f"SELECT COUNT(*) c FROM {utils.table('SEI Prospect')} p WHERE NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal')} s INNER JOIN {utils.table('SEI Signal Type')} st ON st.name=s.signal_type WHERE s.prospect=p.name AND COALESCE(st.research_arena,'')!='')", "Review signal type arena classification."),
-        ("Signals missing source URL", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} WHERE COALESCE(source_url,'')=''", "Add original evidence URL where available."),
-        ("Inferred signals not excluded from qualification", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} WHERE evidence_basis='Inferred' AND COALESCE(exclude_from_qualification,0)=0", "Mark inferred evidence excluded or change its evidence basis to Observed when appropriate."),
+        ("Signals missing source URL", f"SELECT COUNT(*) c FROM {utils.table('SEI Signal')} s WHERE NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal Observed Fact')} f WHERE f.parent=s.name AND COALESCE(f.source_url,'')!='')", "Add original evidence URL where available."),
+        ("Inferred signals not excluded from qualification", f"SELECT COUNT(DISTINCT s.name) c FROM {utils.table('SEI Signal')} s INNER JOIN {utils.table('SEI Signal Observed Fact')} f ON f.parent=s.name WHERE f.evidence_basis='Inferred' AND COALESCE(s.exclude_from_qualification,0)=0 AND NOT EXISTS (SELECT 1 FROM {utils.table('SEI Signal Observed Fact')} o WHERE o.parent=s.name AND o.evidence_basis='Observed')", "Mark inferred evidence excluded or change its evidence basis to Observed when appropriate."),
         ("Prospects missing normalized domain where website exists", f"SELECT COUNT(*) c FROM {utils.table('SEI Prospect')} WHERE COALESCE(website,'')!='' AND COALESCE(normalized_domain,'')=''", "Run/repair domain normalization via existing hygiene utilities."),
         ("Duplicate SEI Prospects by normalized domain", f"SELECT COUNT(*) c FROM (SELECT normalized_domain FROM {utils.table('SEI Prospect')} WHERE COALESCE(normalized_domain,'')!='' GROUP BY normalized_domain HAVING COUNT(*) > 1) x", "Review potential duplicate prospects."),
-        ("Duplicate SEI Signals by prospect/type/url", f"SELECT COUNT(*) c FROM (SELECT prospect, signal_type, source_url FROM {utils.table('SEI Signal')} GROUP BY prospect, signal_type, source_url HAVING COUNT(*) > 1) x", "Review potential duplicate signals."),
+        ("Duplicate SEI Signals by prospect/type/url", f"SELECT COUNT(*) c FROM (SELECT s.prospect, s.signal_type, f.source_url FROM {utils.table('SEI Signal')} s INNER JOIN {utils.table('SEI Signal Observed Fact')} f ON f.parent=s.name WHERE COALESCE(f.source_url,'')!='' GROUP BY s.prospect, s.signal_type, f.source_url HAVING COUNT(DISTINCT s.name) > 1) x", "Review potential duplicate signals."),
     ]
     for issue, sql, action in checks:
         rows.append({"issue": issue, "count": _sql(sql)[0].c, "recommended_action": action})

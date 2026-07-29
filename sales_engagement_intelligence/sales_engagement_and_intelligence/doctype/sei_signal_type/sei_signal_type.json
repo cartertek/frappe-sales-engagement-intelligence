@@ -10,6 +10,7 @@
   "overview_tab",
   "signal_type_name",
   "description",
+  "category",
   "playbook",
   "research_arena",
   "active",
@@ -51,6 +52,16 @@
    "fieldname": "description",
    "fieldtype": "Small Text",
    "label": "Description"
+  },
+  {
+   "fieldname": "category",
+   "fieldtype": "Link",
+   "label": "Category",
+   "options": "SEI Signal Type Category",
+   "default": "Uncategorized",
+   "reqd": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1
   },
   {
    "fieldname": "playbook",
@@ -213,7 +224,7 @@
   }
  ],
  "quick_entry": 0,
- "search_fields": "signal_type_name,playbook,research_arena",
+ "search_fields": "signal_type_name,category,playbook,research_arena",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

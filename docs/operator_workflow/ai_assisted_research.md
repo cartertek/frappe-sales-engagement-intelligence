@@ -20,7 +20,7 @@ For each proposed signal, AI must separate:
 
 ## Exact-source verification gate
 
-Before proposing or creating a Moderate or Strong signal, the assistant must open the exact URL that will be stored in `source_url` during the current research run. The opened page must contain the expected entity or company, the expected document or role, and all complete verbatim quotations that will be stored in `observed_facts`.
+Before proposing or creating a Moderate or Strong signal, the assistant must open each exact URL that will be stored on the relevant Observed Facts row during the current research run. The opened page must contain the expected entity or company, the expected document or role, and each complete verbatim quotation and its matching fact-level source metadata.
 
 Search snippets, cached text, ATS APIs, job feeds, aggregators, and discovery results may identify candidates, but they do not prove that the proposed evidence URL is valid. The assistant must not construct or infer a public source URL from an ATS board slug, job ID, API response, or search result.
 

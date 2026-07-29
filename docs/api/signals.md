@@ -58,3 +58,6 @@ attachment
 Qualification first excludes inferred signals, signals marked `exclude_from_qualification`, and signals that do not satisfy their strength-specific evidence guardrails. Remaining observed signals, including Weak signals, are grouped by the Playbook assigned to their Signal Type.
 
 Each Playbook's `signal_qualification_script` receives its group through the JavaScript global `signals`. A truthy script result means every eligible signal in that group passes the qualification test. The Prospect is qualified when at least one signal passes. Manual Prospect approval with documented reasoning remains available as an override.
+
+
+Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.

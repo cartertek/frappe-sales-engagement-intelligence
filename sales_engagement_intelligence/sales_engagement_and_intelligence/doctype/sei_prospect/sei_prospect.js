@@ -15,13 +15,13 @@ frappe.ui.form.on('SEI Prospect', {
 
         reload_if_cached_document_is_stale(frm);
 
-        configure_prospect_actions(frm);
-        schedule_primary_prospect_action(frm);
-
         configure_contact_grid(frm);
         configure_message_draft_grid(frm);
         render_crm_links(frm);
         render_signals_embedded_list(frm);
+
+        rebuild_prospect_actions(frm);
+        frappe.after_ajax(() => rebuild_prospect_actions(frm));
     },
 });
 
@@ -44,7 +44,6 @@ function size_prospect_positioning_textareas(frm) {
 const PROSPECT_DEFAULT_TAB_BY_STATUS = {
     'Needs Research': 'qualification_tab',
     'Research Complete': 'qualification_tab',
-    Qualified: 'qualification_tab',
     'Find Contact': 'outreach_tab',
     'Ready for CRM Conversion': 'outreach_tab',
     'Converted to CRM Lead': 'crm_conversion_tab',
@@ -61,7 +60,12 @@ function activate_default_prospect_tab(frm) {
 const PROSPECT_ACTIONS_MENU = __('Prospect Actions');
 
 function add_prospect_action(frm, label, handler) {
-    frm.add_custom_button(__(label), handler, PROSPECT_ACTIONS_MENU);
+    try {
+        return frm.add_custom_button(__(label), handler, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error(`[SEI] Unable to register Prospect action: ${label}`, error);
+        return null;
+    }
 }
 
 function add_crm_action(frm, label, handler) {
@@ -90,6 +94,17 @@ function mark_rejected(frm) {
 
 function convert_to_crm_lead(frm) {
     show_conversion_preview(frm, { allow_convert: true });
+}
+
+
+function rebuild_prospect_actions(frm) {
+    try {
+        configure_prospect_actions(frm);
+    } catch (error) {
+        console.error('[SEI] Prospect action menu registration failed', error);
+    } finally {
+        configure_primary_prospect_action(frm);
+    }
 }
 
 function configure_prospect_actions(frm) {
@@ -174,18 +189,12 @@ function configure_prospect_actions(frm) {
 
 }
 
-function schedule_primary_prospect_action(frm) {
-    // Frappe rebuilds the standard toolbar after custom refresh handlers run.
-    // Apply the lifecycle action on the next event-loop turn so it remains visible.
-    window.setTimeout(() => configure_primary_prospect_action(frm), 0);
-}
-
 function configure_primary_prospect_action(frm) {
     const lifecycle = frm.doc.lifecycle_status;
     let label;
     let handler;
 
-    if (lifecycle === 'Qualified') {
+    if (lifecycle === 'Research Complete') {
         label = __('Mark as Ready for CRM Conversion');
         handler = () => mark_ready_for_crm_conversion(frm);
     } else if (lifecycle === 'Ready for CRM Conversion' && is_manager_or_admin()) {
@@ -512,7 +521,8 @@ function prompt_deal_options(frm) {
 }
 
 function add_crm_lead_link_button(frm) {
-    frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
+    try {
+        frm.add_custom_button(__('CRM — Link Existing Lead'), () => {
         frappe.prompt(
             [{ fieldtype: 'Link', fieldname: 'record_name', label: __('CRM Lead'), options: 'CRM Lead', reqd: 1 }],
             (values) => {
@@ -524,25 +534,32 @@ function add_crm_lead_link_button(frm) {
             },
             __('Link Existing CRM Lead')
         );
-    }, PROSPECT_ACTIONS_MENU);
+        }, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error('[SEI] Unable to register CRM — Link Existing Lead', error);
+    }
 }
 
 function add_link_button(frm, doctype, fieldname, action_label = null) {
     if (frm.doc[fieldname]) return;
     const label = __(action_label || `Link Existing ${doctype}`);
-    frm.add_custom_button(label, () => {
-        frappe.prompt(
-            [{ fieldtype: 'Link', fieldname: 'record_name', label: doctype, options: doctype, reqd: 1 }],
-            (values) => {
-                call_and_reload(frm, 'link_existing_crm_record', {
-                    prospect: frm.doc.name,
-                    doctype,
-                    record_name: values.record_name
-                });
-            },
-            label
-        );
-    }, PROSPECT_ACTIONS_MENU);
+    try {
+        frm.add_custom_button(label, () => {
+            frappe.prompt(
+                [{ fieldtype: 'Link', fieldname: 'record_name', label: doctype, options: doctype, reqd: 1 }],
+                (values) => {
+                    call_and_reload(frm, 'link_existing_crm_record', {
+                        prospect: frm.doc.name,
+                        doctype,
+                        record_name: values.record_name
+                    });
+                },
+                label
+            );
+        }, PROSPECT_ACTIONS_MENU);
+    } catch (error) {
+        console.error(`[SEI] Unable to register Prospect action: ${label}`, error);
+    }
 }
 
 function prompt_reason(label, callback) {
@@ -651,23 +668,13 @@ function render_signals_embedded_list(frm) {
 
     wrapper.html(`<p class="text-muted">${__('Loading signals...')}</p>`);
 
-    frappe.db.get_list('SEI Signal', {
-        fields: [
-            'name',
-            'signal_name',
-            'signal_type',
-            'signal_strength',
-            'evidence_basis',
-            'exclude_from_qualification',
-            'confidence',
-            'source_date',
-            'modified'
-        ],
-        filters: { prospect: frm.doc.name },
-        order_by: 'source_date desc, modified desc',
-        limit: 100
-    }).then((signals) => {
-        wrapper.html(render_signals_table(frm, signals || []));
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_signals',
+        args: { prospect: frm.doc.name }
+    }).then((response) => {
+        const data = unwrap_api_data(response) || {};
+        const signals = data.signals || [];
+        wrapper.html(render_signals_table(frm, signals));
         wrapper.find('[data-sei-action="new-signal"]').on('click', () => {
             frappe.new_doc('SEI Signal', {
                 prospect: frm.doc.name,
@@ -700,6 +707,9 @@ function render_signals_table(frm, signals) {
     const rows = signals.map((signal) => {
         const route = `/app/sei-signal/${encodeURIComponent(signal.name)}`;
         const excluded = signal.exclude_from_qualification ? __('Yes') : __('No');
+        const facts = signal.observed_facts || [];
+        const bases = [...new Set(facts.map((fact) => fact.evidence_basis).filter(Boolean))].join(', ');
+        const source_dates = facts.map((fact) => fact.source_date).filter(Boolean).sort().reverse();
         const confidence = signal.confidence === null || signal.confidence === undefined
             ? ''
             : `${flt(signal.confidence, 2)}%`;
@@ -709,10 +719,10 @@ function render_signals_table(frm, signals) {
                 <td><a href="${route}">${frappe.utils.escape_html(signal.signal_name || signal.signal_type || signal.name)}</a></td>
                 <td>${frappe.utils.escape_html(signal.signal_type || '')}</td>
                 <td>${render_signal_badge(signal.signal_strength)}</td>
-                <td>${frappe.utils.escape_html(signal.evidence_basis || '')}</td>
+                <td>${frappe.utils.escape_html(bases)}</td>
                 <td>${excluded}</td>
                 <td>${confidence}</td>
-                <td>${frappe.utils.escape_html(signal.source_date || '')}</td>
+                <td>${frappe.utils.escape_html(source_dates[0] || '')}</td>
             </tr>
         `;
     }).join('');

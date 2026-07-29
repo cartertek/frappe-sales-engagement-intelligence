@@ -30,7 +30,7 @@ def test_qualification_groups_eligible_observed_signals_by_signal_type_playbook(
     source = QUALIFICATION.read_text()
     assert '"evidence_basis": "Observed"' in source
     assert '"exclude_from_qualification": 0' in source
-    assert 'fields=["name", "playbook"]' in source
+    assert '_doctype_database_fields("SEI Signal Type")' in source
     assert 'grouped[playbook].append(signal)' in source
     assert 'evaluate_signal_qualification_script(' in source
     assert 'if precedence[group_status] > precedence[aggregate_status]:' in source
@@ -123,3 +123,28 @@ def test_disqualifier_cleanup_patch_uses_ddl_api_for_schema_changes():
     ).read_text()
     assert 'frappe.db.sql_ddl("ALTER TABLE `tabSEI Signal` DROP COLUMN `is_strength_capped`")' in patch
     assert 'frappe.db.sql("ALTER TABLE' not in patch
+
+
+def test_script_payload_exposes_complete_signal_and_nested_type_without_legacy_link():
+    source = QUALIFICATION.read_text()
+    assert '_doctype_database_fields("SEI Signal")' in source
+    assert '_doctype_database_fields("SEI Signal Type")' in source
+    assert 'data.pop("signal_type", None)' in source
+    assert 'data["type"] = dict(signal_type)' in source
+    assert 'data["strength"] = signal.get("signal_strength")' in source
+    assert "SCRIPT_SIGNAL_FIELDS" not in source
+
+
+def test_category_script_migration_uses_nested_signal_type():
+    migration = (
+        APP
+        / "patches"
+        / "v0_0_1"
+        / "upgrade_qualification_scripts_to_nested_signal_type.py"
+    ).read_text()
+    assert 'replace("it.category", "it.type.category")' in migration
+    assert "recalculate_prospects_for_playbook" not in migration
+    assert (
+        "sales_engagement_intelligence.patches.v0_0_1."
+        "upgrade_qualification_scripts_to_nested_signal_type"
+    ) in PATCHES.read_text().splitlines()

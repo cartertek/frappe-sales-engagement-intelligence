@@ -14,11 +14,7 @@
   "prospect_tags",
   "signal_type",
   "signal_strength",
-  "evidence_basis",
-  "evidence_specificity",
   "confidence",
-  "source_url",
-  "source_date",
   "signal_type_definition_section",
   "criteria_html",
   "evidence_section",
@@ -100,45 +96,10 @@
    "idx": 6
   },
   {
-   "fieldname": "evidence_basis",
-   "label": "Evidence Basis",
-   "fieldtype": "Select",
-   "options": "Observed\nInferred",
-   "reqd": 1,
-   "in_list_view": 1,
-   "in_standard_filter": 1,
-   "idx": 7
-  },
-  {
-   "fieldname": "evidence_specificity",
-   "fieldtype": "Select",
-   "label": "Evidence Specificity",
-   "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
-   "description": "Records how specific the evidence source is; Signal Type criteria determine whether it is sufficient.",
-   "default": "Unknown",
-   "idx": 8,
-   "reqd": 1
-  },
-  {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
    "idx": 9
-  },
-  {
-   "fieldname": "source_url",
-   "label": "Source URL",
-   "fieldtype": "Data",
-   "in_standard_filter": 1,
-   "idx": 10,
-   "in_list_view": 1
-  },
-  {
-   "fieldname": "source_date",
-   "label": "Source Date",
-   "fieldtype": "Date",
-   "in_list_view": 1,
-   "idx": 11
   },
   {
    "fieldname": "signal_type_definition_section",
@@ -165,7 +126,7 @@
    "label": "Observed Facts",
    "options": "SEI Signal Observed Fact",
    "reqd": 1,
-   "description": "Add at least one verbatim source fact. Multiple facts are encouraged when needed to support every signal claim."
+   "description": "Add at least one fact row. Every row must contain its own Evidence Basis and Evidence Specificity, plus the exact Source URL and Source Date when available. Add multiple rows as needed to support every signal claim."
   },
   {
    "fieldname": "signal_claim",
@@ -331,7 +292,7 @@
    "parenttype": "DocType"
   }
  ],
- "search_fields": "signal_name, prospect, signal_type, signal_strength, evidence_basis, source_url",
+ "search_fields": "prospect, signal_type, signal_strength, signal_name",
  "sort_field": "modified",
  "sort_order": "DESC",
  "states": [],

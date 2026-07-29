@@ -10,6 +10,7 @@ frappe.ui.form.on('SEI Signal', {
 
     refresh(frm) {
         shorten_signal_textareas(frm);
+        style_observed_facts_grid(frm);
         render_signal_type_criteria(frm);
         show_evidence_guardrail_warning(frm);
     },
@@ -18,9 +19,6 @@ frappe.ui.form.on('SEI Signal', {
         render_signal_type_criteria(frm);
     },
 
-    evidence_basis(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
 
     exclude_from_qualification(frm) {
         show_evidence_guardrail_warning(frm);
@@ -30,24 +28,172 @@ frappe.ui.form.on('SEI Signal', {
         show_evidence_guardrail_warning(frm);
     },
 
-    evidence_specificity(frm) {
-        show_evidence_guardrail_warning(frm);
-    },
 });
+
+
+function style_observed_facts_grid(frm) {
+    const field = frm.get_field('observed_facts');
+    if (!field || !field.grid || !field.grid.wrapper) {
+        return;
+    }
+
+    const apply = () => {
+        const $grid = field.grid.wrapper;
+        $grid.addClass('sei-observed-facts-grid');
+
+        const $container = $grid.find('.form-grid-container').first();
+        const $reference_row = $grid.find('.grid-heading-row .data-row').first();
+        if (!$container.length || !$reference_row.length) {
+            return;
+        }
+
+        const visible_width = $container[0].clientWidth;
+        const wide_column_width = Math.max(320, Math.floor(visible_width * 0.35));
+        const content_columns = ['source_date', 'evidence_basis', 'evidence_specificity'];
+        const measured_widths = {};
+
+        content_columns.forEach((fieldname) => {
+            let width = 0;
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`).each((_, cell) => {
+                const area = cell.querySelector('.static-area') || cell;
+                width = Math.max(width, area.scrollWidth + 24);
+            });
+            measured_widths[fieldname] = Math.max(width, 110);
+        });
+
+        const widths = {
+            fact: wide_column_width,
+            source_url: wide_column_width,
+            source_date: measured_widths.source_date,
+            evidence_basis: measured_widths.evidence_basis,
+            evidence_specificity: measured_widths.evidence_specificity,
+        };
+
+        Object.entries(widths).forEach(([fieldname, width]) => {
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"]`)
+                .removeClass('grid-data-last')
+                .css({
+                    flex: `0 0 ${width}px`,
+                    'max-width': `${width}px`,
+                    'min-width': `${width}px`,
+                    width: `${width}px`,
+                });
+        });
+
+        let fixed_width = 0;
+        $reference_row.children().each((_, element) => {
+            if (!$(element).is('.grid-static-col[data-fieldname]')) {
+                fixed_width += element.getBoundingClientRect().width;
+            }
+        });
+        const total_width = fixed_width + Object.values(widths).reduce((sum, width) => sum + width, 0);
+        $grid.find('.grid-heading-row .data-row, .grid-body .grid-row .data-row').css({
+            width: `${total_width}px`,
+            'min-width': `${total_width}px`,
+            'max-width': `${total_width}px`,
+        });
+
+        const $wrapping_areas = $grid.find(
+            '.grid-body .grid-static-col[data-fieldname="fact"] .static-area, ' +
+            '.grid-body .grid-static-col[data-fieldname="source_url"] .static-area'
+        );
+        $wrapping_areas.removeClass('ellipsis').css({
+            display: 'block',
+            height: 'auto',
+            'max-height': 'none',
+            'max-width': '100%',
+            overflow: 'visible',
+            'overflow-wrap': 'anywhere',
+            'text-overflow': 'clip',
+            'white-space': 'pre-wrap',
+            width: '100%',
+        });
+
+        content_columns.forEach((fieldname) => {
+            $grid.find(`.grid-static-col[data-fieldname="${fieldname}"] .static-area`)
+                .removeClass('ellipsis')
+                .css({
+                    overflow: 'visible',
+                    'text-overflow': 'clip',
+                    'white-space': 'nowrap',
+                });
+        });
+
+        $grid.find('.grid-body .grid-row .data-row').each((_, row) => {
+            const $row = $(row);
+            let content_height = 0;
+            ['fact', 'source_url'].forEach((fieldname) => {
+                const area = $row.find(`.grid-static-col[data-fieldname="${fieldname}"] .static-area`)[0];
+                if (!area) {
+                    return;
+                }
+                const $cell = $(area).closest('.grid-static-col');
+                const padding = parseFloat($cell.css('padding-top') || 0)
+                    + parseFloat($cell.css('padding-bottom') || 0);
+                content_height = Math.max(content_height, area.scrollHeight + padding);
+            });
+            const row_height = Math.max(
+                parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--input-height')) || 38,
+                Math.ceil(content_height)
+            );
+
+            $row.css({
+                height: `${row_height}px`,
+                'min-height': `${row_height}px`,
+                'align-items': 'stretch',
+                'flex-wrap': 'nowrap',
+            });
+            $row.children().css({
+                height: `${row_height}px`,
+                'min-height': `${row_height}px`,
+            });
+        });
+    };
+
+    apply();
+    requestAnimationFrame(apply);
+    setTimeout(apply, 100);
+
+    if (!field.grid._sei_fact_grid_bound) {
+        field.grid._sei_fact_grid_bound = true;
+
+        // Frappe opens a child-table row when clicks bubble from a static cell.
+        // Keep Source URL anchors as normal links by isolating their pointer/click
+        // events without preventing the browser's default navigation.
+        field.grid.wrapper.on(
+            'mousedown.sei-observed-fact-url click.sei-observed-fact-url',
+            '.grid-static-col[data-fieldname="source_url"] a[href]',
+            event => event.stopPropagation()
+        );
+
+        $(frm.wrapper).on('grid-row-render.sei-observed-facts', (_, grid_row) => {
+            if (grid_row.grid === field.grid) {
+                requestAnimationFrame(apply);
+            }
+        });
+        $(window).on('resize.sei-observed-facts', frappe.utils.debounce(apply, 100));
+    }
+}
 
 function show_evidence_guardrail_warning(frm) {
     const messages = [];
 
-    if (frm.doc.evidence_basis === 'Inferred' && !frm.doc.exclude_from_qualification) {
-        messages.push(__('Inferred signals are retained as context but do not count toward automatic qualification.'));
+    const facts = frm.doc.observed_facts || [];
+    const has_observed = facts.some((fact) => fact.evidence_basis === 'Observed');
+    const has_inferred = facts.some((fact) => fact.evidence_basis === 'Inferred');
+    if (has_inferred && !has_observed && !frm.doc.exclude_from_qualification) {
+        messages.push(__('Signals supported only by inferred facts do not count toward automatic qualification.'));
     }
 
     if (['Moderate', 'Strong'].includes(frm.doc.signal_strength) && !frm.doc.why_not_weak) {
         messages.push(__('Moderate/Strong signals must explain why the source-backed evidence is not Weak.'));
     }
 
-    if (['Search Result', 'Generic List or Directory', 'Aggregator', 'Unknown'].includes(frm.doc.evidence_specificity || '')) {
-        messages.push(__('Evidence specificity is weak. Confirm the managed Signal Type allows this source type.'));
+    const weak_specificity = facts.some((fact) =>
+        ['Search Result', 'Generic List or Directory', 'Aggregator', 'Unknown'].includes(fact.evidence_specificity || '')
+    );
+    if (weak_specificity) {
+        messages.push(__('One or more facts have weak evidence specificity. Confirm the managed Signal Type allows those source types.'));
     }
 
     if (!messages.length) {

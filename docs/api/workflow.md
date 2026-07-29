@@ -11,4 +11,4 @@ Methods:
 - `mark_do_not_contact(prospect, reason=None)` manager-only
 - `reopen_prospect(prospect)` manager-only
 
-These endpoints delegate to the M3 qualification and lifecycle services and preserve protected-state behavior. A Qualified prospect remains Qualified until `mark_ready_for_crm_conversion` approves CRM handoff. The action sets Find Contact when contact information is missing, or Ready for CRM Conversion when contact information exists. A Find Contact prospect automatically advances to Ready for CRM Conversion when contact information is later added.
+These endpoints delegate to the M3 qualification and lifecycle services and preserve protected-state behavior. A prospect with a Qualified or Manually Approved qualification remains Research Complete until `mark_ready_for_crm_conversion` approves CRM handoff. The action sets Find Contact when contact information is missing, or Ready for CRM Conversion when contact information exists. A Find Contact prospect automatically advances to Ready for CRM Conversion when contact information is later added.

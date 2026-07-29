@@ -54,3 +54,65 @@
   color: inherit;
 }
 
+
+/* Keep the Signal fact table wider than its viewport and scroll it horizontally. */
+.sei-observed-facts-grid .form-grid-container {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+}
+
+.sei-observed-facts-grid .form-grid,
+.sei-observed-facts-grid .grid-heading-row,
+.sei-observed-facts-grid .grid-body {
+  overflow: visible !important;
+}
+
+.sei-observed-facts-grid .grid-row .data-row {
+  align-items: stretch !important;
+  flex-wrap: nowrap !important;
+  height: auto !important;
+  min-height: var(--input-height);
+  overflow: visible !important;
+}
+
+.sei-observed-facts-grid .grid-static-col[data-fieldname] {
+  flex-grow: 0 !important;
+  flex-shrink: 0 !important;
+}
+
+.sei-observed-facts-grid .grid-static-col.grid-data-last {
+  flex-grow: 0 !important;
+}
+
+.sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="fact"] .form-control,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_url"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_url"] .form-control {
+  display: block;
+  height: auto !important;
+  min-height: var(--input-height);
+  max-width: 100%;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-wrap: anywhere;
+  text-overflow: clip !important;
+  white-space: pre-wrap !important;
+  width: 100%;
+  word-break: normal;
+}
+
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_basis"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="evidence_specificity"] .static-area,
+.sei-observed-facts-grid .grid-static-col[data-fieldname="source_date"] .static-area {
+  max-width: none !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+  white-space: nowrap !important;
+}
+
+.sei-observed-facts-grid .grid-body .grid-row,
+.sei-observed-facts-grid .grid-body .grid-static-col,
+.sei-observed-facts-grid .grid-body .row-check,
+.sei-observed-facts-grid .grid-body .row-index {
+  overflow: visible !important;
+}

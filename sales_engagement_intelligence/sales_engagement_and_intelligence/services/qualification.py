@@ -17,24 +17,10 @@ STRUCTURED_EVIDENCE_FIELDS = (
     "why_not_weak",
     "disqualifiers_checked",
 )
-SCRIPT_SIGNAL_FIELDS = (
-    "name",
-    "signal_type",
-    "signal_strength",
-    "evidence_basis",
-    "evidence_specificity",
-    "confidence",
-    "source_url",
-    "source_date",
-    "signal_claim",
-    "why_this_signal_type",
-    "why_not_weak",
-    "disqualifiers_checked",
-    "evidence_gap_reason",
-    "evidence_notes",
-    "review_date",
-    "creation",
-)
+def _doctype_database_fields(doctype: str) -> list[str]:
+    """Return every stored parent-table field exposed by a DocType."""
+    return list(frappe.get_meta(doctype).get_valid_columns())
+
 
 
 def _has_value(value) -> bool:
@@ -43,12 +29,13 @@ def _has_value(value) -> bool:
 
 def is_evidence_valid_for_qualification(signal: dict) -> bool:
     """Return whether a signal may be presented to its playbook qualification script."""
-    if signal.get("evidence_basis") != "Observed":
-        return False
     if signal.get("exclude_from_qualification"):
         return False
     observed_facts = signal.get("observed_facts") or []
-    has_observed_fact = any(_has_value(item.get("fact")) for item in observed_facts)
+    has_observed_fact = any(
+        _has_value(item.get("fact")) and item.get("evidence_basis") == "Observed"
+        for item in observed_facts
+    )
     if signal.get("signal_strength") in ("Moderate", "Strong"):
         return has_observed_fact and all(
             _has_value(signal.get(fieldname)) for fieldname in STRUCTURED_EVIDENCE_FIELDS
@@ -60,7 +47,6 @@ def _signal_filters(prospect_name: str) -> dict:
     return {
         "prospect": prospect_name,
         "exclude_from_qualification": 0,
-        "evidence_basis": "Observed",
     }
 
 
@@ -72,8 +58,8 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
     rows = frappe.get_all(
         "SEI Signal",
         filters=_signal_filters(prospect_name),
-        fields=[*SCRIPT_SIGNAL_FIELDS, "exclude_from_qualification"],
-        order_by="source_date desc, creation desc",
+        fields=_doctype_database_fields("SEI Signal"),
+        order_by="creation desc",
     )
     names = [row.name for row in rows]
     facts_by_signal = {name: [] for name in names}
@@ -81,21 +67,38 @@ def get_eligible_signals(prospect_name: str) -> list[dict]:
         facts = frappe.get_all(
             "SEI Signal Observed Fact",
             filters={"parent": ["in", names], "parenttype": "SEI Signal"},
-            fields=["parent", "fact", "idx"],
+            fields=[
+                "parent",
+                "fact",
+                "evidence_basis",
+                "evidence_specificity",
+                "source_url",
+                "source_date",
+                "idx",
+            ],
             order_by="parent asc, idx asc",
         )
         for fact in facts:
-            facts_by_signal.setdefault(fact.parent, []).append({"fact": fact.fact})
+            facts_by_signal.setdefault(fact.parent, []).append(
+                {
+                    "fact": fact.fact,
+                    "evidence_basis": fact.evidence_basis,
+                    "evidence_specificity": fact.evidence_specificity,
+                    "source_url": fact.source_url,
+                    "source_date": fact.source_date,
+                }
+            )
     for row in rows:
         row["observed_facts"] = facts_by_signal.get(row.name, [])
     return [signal for signal in rows if is_evidence_valid_for_qualification(signal)]
 
 
-def _signal_for_script(signal: dict) -> dict:
-    data = {field: signal.get(field) for field in SCRIPT_SIGNAL_FIELDS}
-    # `strength` is the concise public name used by qualification scripts; keep the stored field too.
+def _signal_for_script(signal: dict, signal_type: dict) -> dict:
+    """Build the complete, structured signal object exposed to qualification scripts."""
+    data = dict(signal)
+    data.pop("signal_type", None)
+    data["type"] = dict(signal_type)
     data["observed_facts"] = signal.get("observed_facts") or []
-    data["category"] = signal.get("category")
     data["strength"] = signal.get("signal_strength")
     return data
 
@@ -110,14 +113,13 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[st
     type_rows = frappe.get_all(
         "SEI Signal Type",
         filters={"name": ["in", signal_types]},
-        fields=["name", "playbook", "category"],
+        fields=_doctype_database_fields("SEI Signal Type"),
     )
+    type_by_name = {row.name: row for row in type_rows}
     playbook_by_type = {row.name: row.playbook for row in type_rows if row.playbook}
-    category_by_type = {row.name: row.category for row in type_rows}
 
     grouped: dict[str, list[dict]] = defaultdict(list)
     for signal in eligible:
-        signal["category"] = category_by_type.get(signal.signal_type)
         playbook = playbook_by_type.get(signal.signal_type)
         if playbook:
             grouped[playbook].append(signal)
@@ -138,7 +140,10 @@ def evaluate_signal_groups(prospect_name: str) -> tuple[list[dict], str, list[st
         try:
             group_status = signal_qualification_script.evaluate_signal_qualification_script(
                 script,
-                [_signal_for_script(signal) for signal in signals],
+                [
+                    _signal_for_script(signal, type_by_name[signal.signal_type])
+                    for signal in signals
+                ],
             )
         except signal_qualification_script.SignalQualificationScriptError as exc:
             errors.append(f"{playbook}: {exc}")
@@ -173,27 +178,46 @@ def get_primary_signal(prospect_name: str) -> Optional[str]:
         qualified.sort(
             key=lambda signal: (
                 strength_order.get(signal.signal_strength, 3),
-                str(signal.source_date or ""),
+                max(
+                    (str(fact.get("source_date") or "") for fact in signal.observed_facts),
+                    default="",
+                ),
                 str(signal.creation or ""),
             ),
             reverse=False,
         )
         return qualified[0].name
 
-    precedence = [
-        {"prospect": prospect_name, "evidence_basis": "Observed"},
-        {"prospect": prospect_name},
-    ]
-    for filters in precedence:
-        signal = frappe.get_all(
-            "SEI Signal",
-            filters=filters,
-            fields=["name"],
-            order_by="source_date desc, creation desc",
-            limit=1,
-        )
-        if signal:
-            return signal[0].name
+    observed_parent = frappe.get_all(
+        "SEI Signal Observed Fact",
+        filters={
+            "parenttype": "SEI Signal",
+            "evidence_basis": "Observed",
+            "parent": [
+                "in",
+                frappe.get_all(
+                    "SEI Signal",
+                    filters={"prospect": prospect_name},
+                    pluck="name",
+                ),
+            ],
+        },
+        fields=["parent"],
+        order_by="source_date desc, creation desc",
+        limit=1,
+    )
+    if observed_parent:
+        return observed_parent[0].parent
+
+    signal = frappe.get_all(
+        "SEI Signal",
+        filters={"prospect": prospect_name},
+        fields=["name"],
+        order_by="creation desc",
+        limit=1,
+    )
+    if signal:
+        return signal[0].name
     return None
 
 
