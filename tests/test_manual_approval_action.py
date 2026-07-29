@@ -1,5 +1,6 @@
 import json
 from pathlib import Path
+
 ROOT = Path('sales_engagement_intelligence/sales_engagement_and_intelligence')
 JS = (ROOT / 'doctype/sei_prospect/sei_prospect.js').read_text()
 API = (ROOT / 'api.py').read_text()
