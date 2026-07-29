@@ -5,6 +5,22 @@ Signal evaluation starts after a candidate evidence source has been found.
 A signal is not what the source reminds us of.
 A signal is what the source directly supports.
 
+## Interpret facts in context, not by word matching
+
+Interpret a quotation according to its complete sentence, surrounding passage, subject, and real-world meaning. A source using the same word or phrase as a Signal Type definition does not establish that the source describes the same concept.
+
+Do not classify evidence by literal keyword substitution. Determine what the source is actually describing, who or what is acting, and what consequence is established. For example, `processing work` performed by employees may support an operational-work claim, while algorithmic processing performed by software does not. Terms such as `capacity`, `cost`, `support`, `performance`, `processing`, and `work` can refer to materially different concepts depending on context.
+
+Before matching a fact to a Signal Type, ask:
+
+1. What does the relevant word or phrase refer to in this source?
+2. Who or what performs the action or bears the burden?
+3. Is the described condition ongoing, temporary, or already resolved?
+4. What consequence does the complete passage actually establish?
+5. Does that contextual meaning—not merely the wording—satisfy the managed definition?
+
+If the match depends on reusing the same word with a different meaning, treating a technical symptom as its human, financial, or organizational consequence, or ignoring that the source describes a resolved condition, the fact does not support the signal claim.
+
 ## Core evaluation questions
 
 Ask these questions in order:

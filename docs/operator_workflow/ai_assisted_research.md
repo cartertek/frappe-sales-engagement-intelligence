@@ -60,6 +60,14 @@ If AI cannot explain why the signal is not Weak, it must propose Weak.
 
 If a source is useful for discovery but not direct evidence, AI must find the exact evidence source or propose Weak/context only.
 
+## Contextual interpretation rule
+
+AI must interpret quotations using the complete sentence and surrounding source context. Identical or similar wording in a source and a Signal Type definition is not proof that their meanings match.
+
+Before classifying a fact, AI must identify what the relevant term refers to, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
+
+If a proposed signal depends on a lexical match rather than a contextual match, AI must reject that interpretation or keep the evidence Weak and excluded from qualification.
+
 ## No-overreach rule
 
 AI must not upgrade a signal because:
