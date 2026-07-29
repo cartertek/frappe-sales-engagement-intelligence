@@ -15,7 +15,7 @@ class SEIProspect(Document):
         self.set_emails_sent()
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()
-        self.validate_manual_override_reason()
+        self.validate_manual_approval_reason()
         self.apply_milestone_3_workflow_updates()
 
     def validate_message_draft_cc_addresses(self):
@@ -55,11 +55,9 @@ class SEIProspect(Document):
             self.do_not_contact = 1
             self.lifecycle_status = "Do Not Contact"
 
-    def validate_manual_override_reason(self):
-        if self.manual_qualification_override and not self.manual_qualification_reason:
-            frappe.throw(
-                "Manual Qualification Reason is required when Manual Qualification Override is checked."
-            )
+    def validate_manual_approval_reason(self):
+        if self.qualification_status == "Manually Approved" and not self.manual_qualification_reason:
+            frappe.throw("Manual Qualification Reason is required for manually approved prospects.")
 
     def apply_milestone_3_workflow_updates(self):
         if getattr(frappe.flags, "sei_m3_recalculating", False):

@@ -57,7 +57,6 @@ PROSPECT_RESTRICTED_FIELDS = {
     "crm_deal",
     "do_not_contact",
     "rejected_reason",
-    "manual_qualification_override",
     "manual_qualification_reason",
     "crm_conversion_notes",
 }
@@ -715,6 +714,17 @@ def mark_not_ready_for_crm_conversion(prospect: str) -> dict:
     )
 
     return mark_not_ready_for_crm_conversion(prospect)
+
+
+@api_endpoint
+def manually_approve_prospect(prospect: str, reason: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (
+        manually_approve_prospect,
+    )
+
+    return manually_approve_prospect(prospect, reason)
 
 
 @api_endpoint

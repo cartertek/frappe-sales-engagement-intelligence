@@ -37,7 +37,6 @@
   "qualification_tab",
   "qualification_section",
   "qualification_status",
-  "manual_qualification_override",
   "manual_qualification_reason",
   "column_break_2",
   "qualified_signal_count",
@@ -294,15 +293,11 @@
    "idx": 29
   },
   {
-   "fieldname": "manual_qualification_override",
-   "label": "Manual Qualification Override",
-   "fieldtype": "Check",
-   "idx": 30
-  },
-  {
    "fieldname": "manual_qualification_reason",
    "label": "Manual Qualification Reason",
    "fieldtype": "Small Text",
+   "hidden": 1,
+   "read_only": 1,
    "idx": 31
   },
   {

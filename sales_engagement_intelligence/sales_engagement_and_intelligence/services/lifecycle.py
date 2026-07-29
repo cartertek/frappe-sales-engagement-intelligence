@@ -142,6 +142,31 @@ def apply_lifecycle_status(prospect_name: str) -> dict:
     return {"old_lifecycle_status": old_status, "lifecycle_status": new_status}
 
 
+def manually_approve_prospect(prospect_name: str, reason: str) -> dict:
+    reason = (reason or "").strip()
+    if not reason:
+        frappe.throw("Manual Qualification Reason is required.")
+
+    frappe.db.set_value(
+        "SEI Prospect",
+        prospect_name,
+        {
+            "qualification_status": "Manually Approved",
+            "manual_qualification_reason": reason,
+            "qualification_explanation": f"Manually approved: {reason}",
+            "ready_for_crm_conversion": 0,
+        },
+        update_modified=True,
+    )
+    lifecycle = apply_lifecycle_status(prospect_name)
+    frappe.get_doc("SEI Prospect", prospect_name).notify_update()
+    return {
+        "qualification_status": "Manually Approved",
+        "manual_qualification_reason": reason,
+        **lifecycle,
+    }
+
+
 def mark_rejected(prospect_name: str, reason: Optional[str] = None) -> dict:
     values = {
         "lifecycle_status": "Rejected",
