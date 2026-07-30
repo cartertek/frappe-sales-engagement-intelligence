@@ -52,8 +52,8 @@
   {
    "fieldname": "prospect_type",
    "label": "Prospect Type",
-   "fieldtype": "Select",
-   "options": "Agency\nStartup\nSMB\nEnterprise\nEcosystem Partner\nDirectory Lead\nCommunity Lead\nProcurement Lead\nReferral Partner\nOther"
+   "fieldtype": "Link",
+   "options": "SEI Prospect Type"
   },
   {
    "fieldname": "contact_role",

@@ -62,3 +62,4 @@ sales_engagement_intelligence.patches.v0_0_1.add_signal_draft_status
 sales_engagement_intelligence.patches.v0_0_1.restore_signal_fact_column_order
 
 sales_engagement_intelligence.patches.v0_0_1.backfill_named_primary_contacts
+sales_engagement_intelligence.patches.v0_0_1.seed_prospect_types
