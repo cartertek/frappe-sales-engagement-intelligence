@@ -58,3 +58,5 @@ sales_engagement_intelligence.patches.v0_0_1.upgrade_qualification_scripts_to_ne
 sales_engagement_intelligence.patches.v0_0_1.remove_manual_qualification_override
 
 sales_engagement_intelligence.patches.v0_0_1.add_signal_draft_status
+
+sales_engagement_intelligence.patches.v0_0_1.restore_signal_fact_column_order

@@ -6,10 +6,10 @@
   "engine": "InnoDB",
   "field_order": [
     "fact",
-    "evidence_basis",
-    "evidence_specificity",
     "source_url",
-    "source_date"
+    "source_date",
+    "evidence_basis",
+    "evidence_specificity"
   ],
   "fields": [
     {
@@ -18,7 +18,8 @@
       "label": "Fact",
       "in_list_view": 1,
       "description": "One coherent verbatim quotation from this row's source. Preserve complete sentences and original wording; put interpretation on the parent Signal.",
-      "columns": 5
+      "columns": 5,
+      "idx": 1
     },
     {
       "fieldname": "source_url",
@@ -27,7 +28,8 @@
       "in_list_view": 1,
       "description": "Exact source URL for this fact. Open and verify this page; do not use a search result, reconstructed URL, or unrelated company page.",
       "options": "URL",
-      "columns": 1
+      "columns": 1,
+      "idx": 2
     },
     {
       "fieldname": "source_date",
@@ -35,7 +37,8 @@
       "label": "Source Date",
       "in_list_view": 1,
       "description": "Publication or observation date for this fact, when available.",
-      "columns": 1
+      "columns": 1,
+      "idx": 3
     },
     {
       "fieldname": "evidence_basis",
@@ -44,7 +47,8 @@
       "options": "Observed\nInferred",
       "in_list_view": 1,
       "description": "Classify this fact only: Observed when directly stated in the cited source; Inferred when it is a conclusion drawn from indirect evidence.",
-      "columns": 1
+      "columns": 1,
+      "idx": 4
     },
     {
       "fieldname": "evidence_specificity",
@@ -54,7 +58,8 @@
       "default": "Unknown",
       "in_list_view": 1,
       "description": "Classify how specifically this row's source supports this fact. Do not reuse another fact's classification.",
-      "columns": 2
+      "columns": 2,
+      "idx": 5
     }
   ],
   "istable": 1,
