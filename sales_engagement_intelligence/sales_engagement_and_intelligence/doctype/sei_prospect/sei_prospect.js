@@ -27,6 +27,7 @@ frappe.ui.form.on('SEI Prospect', {
 
 
 const PROSPECT_POSITIONING_TEXT_FIELDS = [
+    'offer',
     'signal_summary',
     'contact_target_notes',
 ];

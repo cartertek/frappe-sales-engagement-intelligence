@@ -9,6 +9,7 @@ PROSPECT_JS = Path(
 def test_prospect_positioning_textareas_match_signal_form_height():
     source = PROSPECT_JS.read_text()
 
+    assert "'offer'" in source
     assert "'signal_summary'" in source
     assert "'contact_target_notes'" in source
     assert "height: '88px'" in source
