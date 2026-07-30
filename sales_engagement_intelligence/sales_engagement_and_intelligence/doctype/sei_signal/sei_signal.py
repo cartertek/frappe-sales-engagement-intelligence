@@ -56,7 +56,6 @@ class SEISignal(Document):
             self.signal_type = resolve_signal_type(self.signal_type)
         self.set_prospect_name()
         self.set_prospect_tags()
-        self.sync_disqualifier_check_rows()
         if self.status == PUBLISHED:
             self.validate_publishable()
             self.validate_signal_type_and_arena()
