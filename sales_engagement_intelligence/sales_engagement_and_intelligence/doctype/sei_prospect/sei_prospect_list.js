@@ -11,6 +11,7 @@ frappe.listview_settings['SEI Prospect'] = {
         'playbooks',
         'arenas',
         'emails_sent',
+        'named_primary_contacts',
         '_user_tags'
     ],
     formatters: {
