@@ -1,6 +1,5 @@
 from pathlib import Path
 
-
 ROOT = Path("docs")
 IDENTITY = (ROOT / "operator_workflow/identity-contact-research.md").read_text()
 ASSISTANT = (ROOT / "assistant_workflows/create-prospect-and-signal.md").read_text()
