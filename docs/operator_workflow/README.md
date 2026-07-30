@@ -19,26 +19,26 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 
 ## End-to-end flow
 
-1. Import or manually create prospects and signals.
-2. Review import rows, duplicate warnings, and missing evidence.
-3. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
-4. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
-5. Assign a playbook and choose the offer and asset. Confirm the relevant theses are represented by the prospect's linked signal types.
-6. Preview a message draft from a message template.
-7. Send manually outside SEI only after review.
-8. Explicitly create or link Frappe CRM Lead, Organization, Contact, and Deal records when appropriate.
-9. Log interaction attribution.
-10. Use reports to evaluate sources, theses, assets, offers, channels, and outcomes.
+1. Create Draft Signals as soon as plausible research paths appear, including before a Prospect exists.
+2. Fill and revise each draft while researching its path.
+3. Delete drafts whose paths are disproven.
+4. For a supported path, create or identify the Prospect, link the draft, complete it, and publish the Signal.
+5. Review import rows, duplicate warnings, and missing evidence.
+6. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
+7. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
+8. Choose the applicable playbook, offer, and asset derived from the Prospect's Published Signals.
+9. Preview and manually send a message only after review.
+10. Explicitly create or link Frappe CRM records when appropriate, log attribution, and use reports to evaluate outcomes.
 
 ## Evidence-first research flow
 
-1. Find a candidate source.
-2. Add at least one complete source sentence verbatim to Observed Facts. Use separate rows for separate facts, and add as many facts as needed to support every claim. Do not paraphrase or splice passages together.
-3. Put any paraphrase or interpretation in Signal Claim, then compare the quoted Observed Facts against the managed Signal Type definition.
-4. Check obvious disqualifiers.
-5. Assign strength conservatively.
-6. Record the evidence note and structured evidence fields.
-7. Let qualification and lifecycle logic advance only evidence-backed signals.
+1. Find a plausible research path and create a Draft Signal immediately; a Prospect is not required yet.
+2. Add source candidates, complete quotations, source metadata, analysis, and uncertainty to the draft as research proceeds.
+3. Put paraphrase or interpretation in Signal Claim and compare the facts against the managed Signal Type definition.
+4. Check disqualifiers and revise the draft whenever new evidence changes the path.
+5. Delete the draft if the path is disproven.
+6. If supported, create or identify the Prospect, link the draft, complete all publication requirements, and publish it.
+7. Let qualification and lifecycle logic advance only Published Signals.
 8. Use reviewer feedback to improve future evaluation.
 
 ## Where rules live

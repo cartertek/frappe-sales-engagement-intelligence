@@ -1,18 +1,19 @@
-# Create Prospect and Signal
+# Research, Draft, and Publish a Signal
 
-Use `create_prospect` to create an SEI Prospect, then `add_signal` to attach evidence.
+Use a Draft Signal as the durable working record for each plausible research path. The draft may exist before an SEI Prospect. Create or identify the Prospect only after the path remains supported, then attach and publish the completed Signal.
 
 Required pattern:
 
-1. Before any database write, open the exact URL that will be stored and confirm that it contains the expected entity, the expected document or role, and every complete verbatim quotation and its matching source metadata that will be stored in `observed_facts`. Search snippets, cached text, ATS APIs, job feeds, and reconstructed URLs do not satisfy this requirement.
-2. Create the prospect with name, website, source arena, source URL, offer if known, and notes. Do not set a direct prospect thesis; thesis membership is derived from the prospect's signals through each signal type's linked thesis.
-3. Create a short descriptive signal name that identifies the specific observed event, condition, or evidence; do not use only the prospect name or Signal Type.
-4. Build `observed_facts` before choosing a qualifying strength. Supply a list of fact rows, each containing one verbatim quotation plus that fact's `evidence_basis`, `evidence_specificity`, `source_url`, and `source_date`. One fact is required; add multiple facts whenever needed to support all claims. Do not paraphrase or splice separate passages into one fact.
-5. Put any paraphrase or interpretation in `signal_claim`. If the listed `observed_facts` does not directly support the selected Signal Type, add the signal as Weak, set it excluded from qualification, and explain the evidence gap. Do not create it as Moderate or Strong.
-6. Add a signal with the descriptive name, signal type, strength, fact rows, structured evidence fields, and counts-toward-qualification only when the evidence standard is met. Do not send `evidence_basis`, `evidence_specificity`, `source_url`, or `source_date` as Signal-level fields.
-7. Read the returned structured envelope and warnings.
-8. Read the stored signal and confirm that every `observed_facts` row exactly matches the verified quotation and its own source URL, source date, evidence basis, and specificity. Do not substitute, reconstruct, normalize, or replace the source URL during record creation.
-9. Do not create CRM records unless the user explicitly instructs a manager action.
+1. As soon as a plausible path appears, create a Draft Signal. Do this even when the Prospect has not been created and even when most Signal fields are still unknown.
+2. Keep one draft per distinct research path. Fill it incrementally with candidate facts, exact URLs, source dates, evidence classifications, analysis, possible Signal Type, disqualifiers, and uncertainty.
+3. Before treating any fact as verified, open its exact source URL and confirm the expected entity, document or role, and complete verbatim quotation. Search snippets, cached text, ATS APIs, job feeds, and reconstructed URLs are discovery context only.
+4. Revise the draft whenever later evidence changes the interpretation. Remove unsupported facts rather than preserving them to justify the path.
+5. If the path is disproven, delete the Draft Signal. Do not create a Prospect for a failed path.
+6. If the path remains supported, create or identify the Prospect and link the Draft Signal to it.
+7. Finish the Signal: give it a descriptive name, complete the Observed Facts rows and their fact-level metadata, select the managed Signal Type and strength, complete the structured analysis, and check all disqualifiers and guardrails.
+8. Publish the Signal. Publication must succeed through the normal required-field and evidence validation; do not bypass it or set status directly.
+9. Read the stored Published Signal and confirm every fact and source field matches the verified evidence. Only then may the Signal feed qualification, lifecycle, playbook derivation, or message context.
+10. Do not create CRM records unless the user explicitly instructs a manager action.
 
 Do not use this workflow to send outreach or bypass protected statuses.
 

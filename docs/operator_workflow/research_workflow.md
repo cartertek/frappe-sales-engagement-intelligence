@@ -5,13 +5,30 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 ## Workflow
 
 1. Select a source arena.
-2. Search for candidate evidence.
-3. Open the exact source URL that would be stored on the signal.
-4. Confirm that the opened page contains the expected entity, the expected document or role, and every complete quotation proposed for `observed_facts`.
-5. Identify what the source directly says or shows.
-6. Decide whether the source supports any managed Signal Type.
-7. If yes, create or update a signal.
-8. If no, reject the candidate or keep it as non-counting context.
+2. When a plausible research path appears, create a Draft Signal immediately. The Prospect does not need to exist yet and the draft may begin with only the information currently known.
+3. Use that Draft Signal as the working record for the path. Add candidate sources, Observed Facts, analysis, possible Signal Type, disqualifier checks, and uncertainty as the research develops.
+4. Open every exact source URL that may ultimately be stored on an Observed Facts row.
+5. Confirm that each opened page contains the expected entity, document or role, and every complete quotation recorded from it.
+6. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
+7. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
+8. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
+9. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
+
+
+## Draft Signals are the research workspace
+
+Create a separate Draft Signal for each plausible research path rather than keeping candidate evidence only in chat, scratch notes, or an unstructured prospect record. A draft can exist before its Prospect and all fields are optional while the path is being investigated.
+
+Update the same draft throughout the research path:
+
+- add each candidate fact and its source metadata as soon as it is found;
+- record tentative Signal Type and strength only when useful, and revise them freely;
+- capture disqualifiers, contradictions, missing evidence, and uncertainty as they emerge;
+- keep separate paths in separate Draft Signals so a disproven theory can be deleted without losing valid work.
+
+A Draft Signal is not evidence that a Prospect qualifies. It must not be treated as a completed research result, used for outreach positioning, or allowed to advance lifecycle state.
+
+When the path is disproven, delete the draft. When the path is supported, create or locate the Prospect, attach the draft, complete the publication requirements, and publish it. Publication is the point at which the research path becomes validated SEI evidence.
 
 ## Discovery source vs evidence source
 

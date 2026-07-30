@@ -7,6 +7,21 @@ AI-assisted research follows the same evidence-first rule as manual research:
 A signal is not what the source reminds us of.
 A signal is what the source directly supports.
 
+
+## Agent draft discipline
+
+The agent must create a Draft Signal when it begins pursuing a plausible signal path, not only after the path has been proven. The draft may be created before a Prospect exists and may contain only partial information.
+
+The agent must then use that draft as its durable research workspace:
+
+- append candidate Observed Facts and exact source metadata as they are verified;
+- revise or remove facts when later context changes their meaning;
+- fill analysis, candidate Signal Type, strength rationale, disqualifiers, and evidence gaps incrementally;
+- preserve separate competing paths as separate drafts;
+- delete a draft when its path is disproven.
+
+When a path survives research, the agent must create or identify the Prospect, link the draft to that Prospect, complete every publication requirement, and publish the Signal. The agent must not treat a Draft Signal as qualification evidence or use it to justify outreach.
+
 ## AI research protocol
 
 For each proposed signal, AI must separate:
@@ -30,7 +45,7 @@ If exact-source verification fails, do not create or strengthen the signal from 
 
 ## Required AI output before creating signals
 
-Before AI proposes a new signal or signal update, it should provide:
+Before AI publishes a Signal or proposes that a draft is ready to publish, it should provide:
 
 ```text
 Prospect:
