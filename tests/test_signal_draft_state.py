@@ -57,3 +57,6 @@ def test_only_published_signals_feed_downstream_workflows():
 
 def test_existing_signals_are_migrated_to_published():
     assert "UPDATE `tabSEI Signal` SET status = 'Published'" in PATCH
+
+def test_signal_validation_does_not_call_removed_disqualifier_sync():
+    assert "sync_disqualifier_check_rows" not in SIGNAL_CONTROLLER
