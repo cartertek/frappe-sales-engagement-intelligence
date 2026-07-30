@@ -92,6 +92,12 @@ function mark_rejected(frm) {
     });
 }
 
+function manually_approve(frm) {
+    prompt_reason(__('Manual Qualification Reason'), (reason) => {
+        call_and_reload(frm, 'manually_approve_prospect', { prospect: frm.doc.name, reason });
+    }, true);
+}
+
 function convert_to_crm_lead(frm) {
     show_conversion_preview(frm, { allow_convert: true });
 }
@@ -128,6 +134,11 @@ function configure_prospect_actions(frm) {
     }
 
     add_prospect_action(frm, 'Preview Message Draft', () => prompt_message_template(frm));
+
+    if (!is_terminal(frm) && frm.doc.qualification_status !== 'Manually Approved'
+        && is_manager_or_admin()) {
+        add_prospect_action(frm, 'Manually Approve', () => manually_approve(frm));
+    }
 
     if (!['Converted to CRM Lead', 'Converted to CRM Deal', 'Do Not Contact'].includes(frm.doc.lifecycle_status)) {
         add_prospect_action(frm, 'Mark Rejected', () => mark_rejected(frm));
@@ -562,9 +573,9 @@ function add_link_button(frm, doctype, fieldname, action_label = null) {
     }
 }
 
-function prompt_reason(label, callback) {
+function prompt_reason(label, callback, required = false) {
     frappe.prompt(
-        [{ fieldtype: 'Small Text', fieldname: 'reason', label, reqd: 0 }],
+        [{ fieldtype: 'Small Text', fieldname: 'reason', label, reqd: required ? 1 : 0 }],
         (values) => callback(values.reason),
         label
     );

@@ -53,7 +53,6 @@ BOOLEAN_FIELDS = {
     "initial_counts_toward_qualification",
 }
 PROTECTED_IMPORT_FIELDS = {
-    "manual_qualification_override",
     "manual_qualification_reason",
     "do_not_contact",
     "rejected_reason",

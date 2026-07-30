@@ -240,11 +240,9 @@ def calculate_prospect_qualification_for_doc(prospect: Document) -> dict:
     elif prospect.lifecycle_status == "Rejected" or prospect.qualification_status == "Rejected":
         status = "Rejected"
         explanation = "Prospect is rejected and will not be automatically re-qualified."
-    elif prospect.manual_qualification_override:
+    elif prospect.qualification_status == "Manually Approved":
         if not prospect.manual_qualification_reason:
-            frappe.throw(
-                "Manual Qualification Reason is required when Manual Qualification Override is checked."
-            )
+            frappe.throw("Manual Qualification Reason is required for manually approved prospects.")
         status = "Manually Approved"
         explanation = f"Manually approved: {prospect.manual_qualification_reason}"
     elif script_errors and script_status == "Unqualified":
