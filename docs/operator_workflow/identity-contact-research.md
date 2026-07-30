@@ -16,7 +16,21 @@ Identity Research establishes a reliable company profile before contact-targetin
 
 Complete Identity Research before Primary-contact Selection whenever possible because company size and structure materially affect which contact roles are appropriate.
 
-### 1. Flesh out the Identity section
+### 1. Use the organization's canonical name
+
+`prospect_name` must be the canonical public name of the organization or entity represented by the Prospect record. A Prospect represents the organization, not the product, platform, system, migration, initiative, signal, location, or research path that caused it to be discovered.
+
+Do not append qualifiers such as product names, business units, launches, migrations, or parenthetical research labels to `prospect_name`. For example:
+
+- use `Microsoft`, not `Microsoft Foundry`;
+- use `SAP`, not `SAP SuccessFactors - Latest People Profile`;
+- use `National University`, not `National University - Student Information System`.
+
+Store product and initiative names in Signals, prospect metadata, source notes, positioning fields, or other appropriate context fields. Use the organization's official website and organization-level normalized domain when available.
+
+Before creating a Prospect, search for an existing organization-level record by normalized domain, website, and canonical name. Do not create separate Prospects for different products or initiatives owned by the same organization unless they are genuinely separate legal or operating entities that should be contacted and tracked independently.
+
+### 2. Flesh out the Identity section
 
 Research and populate the available first-class identity fields wherever reliable information can be found.
 
@@ -56,7 +70,7 @@ Capture other stable facts when they improve prospect identification or contact 
 
 Do not turn identity metadata into a general research dump. Signal evidence, contact-research reasoning, and speculative notes belong elsewhere.
 
-### 2. Put non-schema identity facts into prospect metadata
+### 3. Put non-schema identity facts into prospect metadata
 
 When useful identity information has no appropriate first-class `SEI Prospect` field, store it in the prospect metadata table.
 
