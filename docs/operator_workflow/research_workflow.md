@@ -28,6 +28,24 @@ Update the same draft throughout the research path:
 
 A Draft Signal is not evidence that a Prospect qualifies. It must not be treated as a completed research result, used for outreach positioning, or allowed to advance lifecycle state.
 
+## Develop the draft in evidence-first stages
+
+Do not fill a draft as though every field has the same evidentiary status. Research should move through these stages:
+
+1. **Candidate path:** record why the path appears plausible, the discovery source, and what still needs verification. Do not present candidate notes as Observed Facts.
+2. **Verified evidence:** open the exact source and copy complete verbatim sentences into Observed Facts, with fact-level source metadata. Candidate summaries, search snippets, and researcher notes must remain outside Observed Facts.
+3. **Context and latest state:** read enough surrounding material to determine what the quotation means, whether the condition is current or resolved, and whether later evidence contradicts or narrows it.
+4. **Classification:** only after verified facts exist, select a candidate Signal Type and strength. Build the claim from the evidence; do not search for wording that supports a classification chosen in advance.
+5. **Publication audit:** compare each stored fact against its exact source, check every material claim clause, and publish only when the completed record passes all managed rules.
+
+The draft may contain tentative analysis and competing interpretations, but `observed_facts` is reserved for source text that has already passed exact-source verification. If a useful proposition has not yet been captured as a complete verbatim sentence, record it as a research note or evidence gap rather than manufacturing a polished fact row.
+
+## One draft per research assertion
+
+A research path is one specific assertion that could become one Signal. Create separate drafts when evidence may support different Signal Types, different triggering events, or materially different claims. Do not combine unrelated facts merely because they concern the same Prospect or launch.
+
+Several individually insufficient facts do not become a valid signal through accumulation. Together they must establish the defining assertion of the selected Signal Type. If every fact omits the required consequence, the collection still omits it.
+
 When the path is disproven, delete the draft. When the path is supported, create or locate the Prospect, attach the draft, complete the publication requirements, and publish it. Publication is the point at which the research path becomes validated SEI evidence.
 
 ## Discovery source vs evidence source

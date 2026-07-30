@@ -22,6 +22,28 @@ The agent must then use that draft as its durable research workspace:
 
 When a path survives research, the agent must create or identify the Prospect, link the draft to that Prospect, complete every publication requirement, and publish the Signal. The agent must not treat a Draft Signal as qualification evidence or use it to justify outreach.
 
+The agent must keep three kinds of draft content distinct:
+
+- **candidate notes:** summaries, snippets, hypotheses, and leads that still require verification;
+- **verified Observed Facts:** complete verbatim sentences copied from exact opened sources, with row-level metadata;
+- **analysis:** interpretation, candidate classification, disqualifiers, contradictions, latest-state assessment, and uncertainty.
+
+Candidate notes must never be promoted into Observed Facts merely by rewriting them into clean prose. The agent's default summarization behavior is inappropriate for quotation fields.
+
+## Agent research order
+
+The agent must not start from a desired Signal Type, strength, prospect count, or qualification outcome. It must proceed in this order:
+
+1. capture candidate paths as drafts;
+2. verify exact source text and metadata;
+3. search for contradictory and newer evidence;
+4. determine what the verified passages mean in context;
+5. derive the claim, type, and strength from that evidence;
+6. attempt to disprove the proposed signal;
+7. publish only after a source-by-source audit.
+
+Batch targets such as finding a requested number of Strong prospects are search objectives, not permission to relax evidence rules. A batch can legitimately produce few or no publishable signals.
+
 ## AI research protocol
 
 For each proposed signal, AI must separate:
@@ -66,6 +88,20 @@ Uncertainty:
 ```
 
 This applies whenever AI proposes new signals or signal updates. It is not limited to import preflight.
+
+Before publication, the agent must additionally produce or internally complete this audit:
+
+```text
+Problem evidence:
+Latest-state evidence:
+Residual condition still present:
+Material claim clauses and supporting fact rows:
+Contradictory evidence considered:
+Each stored quotation found verbatim at its exact URL:
+Each fact's evidence basis and specificity checked independently:
+```
+
+If the latest evidence only reports a fix, restoration, completed remediation, or stable state, the agent must not publish a Moderate or Strong current-aftermath signal without separate evidence of recurrence, failed remediation, continuing affected users, residual backlog, or another active consequence.
 
 ## Conservative scoring rule
 

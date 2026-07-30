@@ -4,16 +4,18 @@ Use a Draft Signal as the durable working record for each plausible research pat
 
 Required pattern:
 
-1. As soon as a plausible path appears, create a Draft Signal. Do this even when the Prospect has not been created and even when most Signal fields are still unknown.
-2. Keep one draft per distinct research path. Fill it incrementally with candidate facts, exact URLs, source dates, evidence classifications, analysis, possible Signal Type, disqualifiers, and uncertainty.
-3. Before treating any fact as verified, open its exact source URL and confirm the expected entity, document or role, and complete verbatim quotation. Search snippets, cached text, ATS APIs, job feeds, and reconstructed URLs are discovery context only.
-4. Revise the draft whenever later evidence changes the interpretation. Remove unsupported facts rather than preserving them to justify the path.
-5. If the path is disproven, delete the Draft Signal. Do not create a Prospect for a failed path.
-6. If the path remains supported, create or identify the Prospect and link the Draft Signal to it.
-7. Finish the Signal: give it a descriptive name, complete the Observed Facts rows and their fact-level metadata, select the managed Signal Type and strength, complete the structured analysis, and check all disqualifiers and guardrails.
-8. Publish the Signal. Publication must succeed through the normal required-field and evidence validation; do not bypass it or set status directly.
-9. Read the stored Published Signal and confirm every fact and source field matches the verified evidence. Only then may the Signal feed qualification, lifecycle, playbook derivation, or message context.
-10. Do not create CRM records unless the user explicitly instructs a manager action.
+1. Create one Draft Signal as soon as a distinct research assertion becomes plausible. A Prospect and most Signal fields may remain blank.
+2. Record discovery context and unverified propositions as draft notes or evidence gaps. Do not put search snippets, remembered propositions, or researcher-written summaries into Observed Facts.
+3. Open each exact evidence URL and copy complete source sentences verbatim into Observed Facts. Populate `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity` independently on every row.
+4. Read the surrounding passage and find the newest relevant evidence. Record whether the condition is ongoing, temporary, resolved, contradicted, or narrowed.
+5. Only after verified facts exist, derive the Signal Claim, managed Signal Type, and strength. A tentative type may guide further searching, but it must not determine how evidence is worded or which contradictory facts are discarded.
+6. Check every material claim clause against specific fact rows. Remove unsupported claims about recurrence, scope, causation, teams, severity, duration, current status, human work, cost, or business impact.
+7. Attempt to disprove the signal. If a material premise fails, reevaluate the whole path from zero rather than substituting adjacent rationales. Delete the draft when the path is disproven.
+8. For a supported path, create or identify the Prospect, link the draft, add a descriptive name, complete structured analysis, and check all managed disqualifiers and guardrails.
+9. Publish through the normal Publish action. Do not bypass validation or set status directly.
+10. After save, read every stored fact, reopen every exact URL, and confirm character-for-character that the complete sentence appears there and belongs to the expected source. Also verify all row metadata, latest state, claim-clause support, type, and strength.
+11. Only after that audit may the Published Signal feed qualification, lifecycle, playbook derivation, contact research, or message drafting.
+12. Do not create CRM records unless the user explicitly instructs a manager action.
 
 Do not use this workflow to send outreach or bypass protected statuses.
 

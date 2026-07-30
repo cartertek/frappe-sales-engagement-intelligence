@@ -19,6 +19,47 @@ Use this decision rule:
 
 Do not publish merely because a path remains possible. Publication means the Signal satisfies the same required-field, fact-level evidence, Signal Type, strength, and guardrail rules that previously applied at creation time. Only Published Signals may count toward qualification or downstream outreach context.
 
+## Evidence must precede classification
+
+The draft workflow exists to prevent the evaluator from deciding on a Signal Type or desired qualification outcome and then composing evidence to fit it. Use this dependency order:
+
+```text
+verified verbatim facts
+→ contextual meaning and latest state
+→ supported claim
+→ Signal Type
+→ strength
+```
+
+Do not reverse it. A draft may record a tentative type as a research hypothesis, but that hypothesis must not control which facts are preserved, how facts are worded, or whether contradictory evidence is omitted. If the evidence changes, change or remove the classification.
+
+## Candidate notes are not Observed Facts
+
+A research note can summarize, paraphrase, speculate, or identify something to verify. An Observed Fact cannot. Each Observed Facts row must contain source language copied from an opened exact URL.
+
+Do not convert a proposition from memory, a search result, or a researcher summary into a polished sentence and store it as though the source said it. Factual accuracy is not quotation accuracy. The required test is not whether the source generally supports the idea; it is whether the stored text appears in the cited source as a complete sentence.
+
+A warning sign is that all fact rows share the evaluator's writing style, use Signal Type terminology unusually cleanly, or begin with generic summary constructions such as `The company stated` or `The report found` when those words do not appear in the source.
+
+## Claim-clause support and contradiction review
+
+Before publication, break the Signal Claim into its material clauses. Each claim about scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts. Remove unsupported qualifiers rather than treating them as reasonable inference.
+
+Also ask whether any fact or later source contradicts the claim. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
+
+## Mandatory publication audit
+
+Publishing is not complete until the stored record is audited after save:
+
+1. Read every stored Observed Facts row in full.
+2. Reopen each row's exact `source_url`.
+3. Confirm the stored text appears verbatim as a complete sentence and belongs to the expected entity and document.
+4. Confirm `source_date`, `evidence_basis`, and `evidence_specificity` independently for each row.
+5. Confirm the latest-state evidence does not resolve or contradict the claim.
+6. Confirm every material claim clause is supported and the selected strength follows from the managed definition.
+
+Checking only that fields are populated, URLs return successfully, or the source discusses the same general topic is not an evidence audit.
+
 ## Interpret facts in context, not by word matching
 
 Interpret a quotation according to its complete sentence, surrounding passage, subject, and real-world meaning. A source using the same word or phrase as a Signal Type definition does not establish that the source describes the same concept.
