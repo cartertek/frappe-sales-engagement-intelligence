@@ -129,6 +129,9 @@ function style_observed_facts_grid(frm) {
             'white-space': 'pre-wrap',
             width: '100%',
         });
+        $grid.find('.grid-body .grid-static-col[data-fieldname="fact"] .static-area').css({
+            'font-weight': '600',
+        });
 
         content_columns.forEach((fieldname) => {
             $grid.find(`.grid-static-col[data-fieldname="${fieldname}"] .static-area`)
