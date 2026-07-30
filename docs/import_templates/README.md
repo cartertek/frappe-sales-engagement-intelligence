@@ -12,6 +12,8 @@ These templates support Milestone 5 SEI-only intake. They create or update **SEI
 
 Prospect creation requires `prospect_name` and at least one context field: `website`, `source_url`, `source_arena`, or `primary_contact_email`.
 
+`prospect_name` must be the canonical public name of the organization or entity represented by the Prospect. Do not append product, platform, system, migration, initiative, location, signal, or research qualifiers. Store those details in Signal fields, metadata, source notes, or other context fields. Use the organization-level official website and normalized domain so duplicate detection operates on the entity rather than one product surface.
+
 Signal creation requires `signal_name`, `signal_type`, and `signal_strength`. Each imported fact row requires `evidence_basis` and `evidence_specificity`; an automatically qualifying signal needs at least one fact whose basis is `Observed`. The flat CSV templates accept one `observed_fact` value and convert it into one row; add additional facts through the managed table or API when needed to support every claim. In the combined template, signal fields are prefixed as `initial_signal_*`.
 
 Signal-only import must match an existing prospect by `prospect_name`, `prospect_website`, or `prospect_normalized_domain`; it will not create a prospect.
