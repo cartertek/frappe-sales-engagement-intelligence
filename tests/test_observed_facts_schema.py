@@ -25,7 +25,7 @@ def test_signal_uses_required_observed_facts_child_table():
     assert "observed_fact" not in fields
     assert observed_facts["fieldtype"] == "Table"
     assert observed_facts["options"] == "SEI Signal Observed Fact"
-    assert observed_facts["reqd"] == 1
+    assert not observed_facts.get("reqd")
 
 
 def test_observed_fact_child_row_is_required_long_text():
@@ -34,7 +34,7 @@ def test_observed_fact_child_row_is_required_long_text():
 
     assert child["istable"] == 1
     assert fields["fact"]["fieldtype"] == "Long Text"
-    assert fields["fact"]["reqd"] == 1
+    assert not fields["fact"].get("reqd")
 
 
 def test_validation_and_qualification_use_full_fact_list():

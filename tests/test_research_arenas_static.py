@@ -34,7 +34,7 @@ def test_signal_type_belongs_to_exactly_one_playbook_and_arena():
 
 def test_signal_does_not_duplicate_thesis_or_arena():
     signal = load("sei_signal")
-    assert field(signal, "signal_type")["reqd"] == 1
+    assert not field(signal, "signal_type").get("reqd")
     assert field(signal, "research_arena") is None
     assert field(signal, "thesis") is None
 
@@ -66,7 +66,8 @@ def test_prospect_arenas_are_derived_and_snapshotted_for_queries():
 
 def test_inactive_signal_type_is_blocked_only_for_new_signals():
     source = (DT / "sei_signal" / "sei_signal.py").read_text()
-    assert "self.is_new() and not signal_type.active" in source
+    assert 'self.has_value_changed("status")' in source
+    assert "self.validate_signal_type_and_arena()" in source
     assert "Signal Type must belong to exactly one Playbook and one Research Arena" in source
 
 

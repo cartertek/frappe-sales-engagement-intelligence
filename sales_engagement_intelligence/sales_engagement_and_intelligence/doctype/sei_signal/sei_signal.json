@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "signal_name",
+  "status",
   "prospect",
   "prospect_name",
   "prospect_tags",
@@ -41,20 +42,29 @@
    "fieldname": "signal_name",
    "label": "Name",
    "fieldtype": "Data",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 1
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Draft\nPublished",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
   },
   {
    "fieldname": "prospect",
    "label": "Prospect",
    "fieldtype": "Link",
    "options": "SEI Prospect",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 2
+   "idx": 3
   },
   {
    "fieldname": "prospect_name",
@@ -64,7 +74,7 @@
    "read_only": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 3
+   "idx": 4
   },
   {
    "fieldname": "prospect_tags",
@@ -73,115 +83,113 @@
    "read_only": 1,
    "in_standard_filter": 1,
    "description": "Synchronized from the linked prospect's Frappe tags so signals can be filtered by prospect tag in List View.",
-   "idx": 4
+   "idx": 5
   },
   {
    "fieldname": "signal_type",
    "label": "Signal Type",
    "fieldtype": "Link",
    "options": "SEI Signal Type",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 5
+   "idx": 6
   },
   {
    "fieldname": "signal_strength",
    "label": "Signal Strength",
    "fieldtype": "Select",
    "options": "Weak\nModerate\nStrong",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "idx": 6
+   "idx": 7
   },
   {
    "fieldname": "confidence",
    "label": "Confidence",
    "fieldtype": "Percent",
-   "idx": 9
+   "idx": 8
   },
   {
    "fieldname": "signal_type_definition_section",
    "fieldtype": "Section Break",
    "label": "Signal Type Definition",
    "collapsible": 1,
-   "idx": 12
+   "idx": 9
   },
   {
    "fieldname": "criteria_html",
    "fieldtype": "HTML",
    "label": "Signal Type Criteria",
-   "idx": 13
+   "idx": 10
   },
   {
    "fieldname": "evidence_section",
    "fieldtype": "Section Break",
    "label": "Structured Evidence",
-   "idx": 14
+   "idx": 11
   },
   {
    "fieldname": "observed_facts",
    "fieldtype": "Table",
    "label": "Observed Facts",
    "options": "SEI Signal Observed Fact",
-   "reqd": 1,
-   "description": "Add at least one fact row. Every row must contain its own Evidence Basis and Evidence Specificity, plus the exact Source URL and Source Date when available. Add multiple rows as needed to support every signal claim."
+   "description": "Add at least one fact row. Every row must contain its own Evidence Basis and Evidence Specificity, plus the exact Source URL and Source Date when available. Add multiple rows as needed to support every signal claim.",
+   "idx": 12
   },
   {
    "fieldname": "signal_claim",
    "fieldtype": "Long Text",
    "label": "Signal Claim",
    "description": "Paraphrase or interpretation of what the quoted Observed Facts support. Keep source wording in Observed Facts.",
-   "idx": 16
+   "idx": 13
   },
   {
    "fieldname": "why_this_signal_type",
    "fieldtype": "Long Text",
    "label": "Why This Signal Type",
    "description": "Why the evidence belongs to this Signal Type rather than another type or no signal.",
-   "idx": 17
+   "idx": 14
   },
   {
    "fieldname": "why_not_weak",
    "fieldtype": "Long Text",
    "label": "Why Not Weak",
    "description": "Required for Moderate or Strong signals.",
-   "idx": 18
+   "idx": 15
   },
   {
    "fieldname": "disqualifiers_checked",
    "fieldtype": "Long Text",
    "label": "Disqualifiers Checked",
    "description": "Narrative summary of false-positive checks performed.",
-   "idx": 19
+   "idx": 16
   },
   {
    "fieldname": "evidence_gap_reason",
    "fieldtype": "Long Text",
    "label": "Evidence Gap Reason",
    "description": "Why this signal cannot be stronger than Weak.",
-   "idx": 20
+   "idx": 17
   },
   {
    "fieldname": "legacy_notes_section",
    "fieldtype": "Section Break",
    "label": "Legacy Notes",
    "collapsible": 1,
-   "idx": 21
+   "idx": 18
   },
   {
    "fieldname": "evidence_notes",
    "label": "Evidence Notes",
    "fieldtype": "Long Text",
-   "idx": 22,
+   "idx": 19,
    "description": "Legacy/general notes. Structured evidence fields are the source of truth for Moderate/Strong validation."
   },
   {
    "fieldname": "qualification_section",
    "fieldtype": "Section Break",
    "label": "Qualification Controls",
-   "idx": 24,
+   "idx": 20,
    "collapsible": 1
   },
   {
@@ -189,14 +197,14 @@
    "label": "Exclude from Qualification",
    "fieldtype": "Check",
    "in_list_view": 1,
-   "idx": 25
+   "idx": 21
   },
   {
    "fieldname": "manual_override_reason",
    "fieldtype": "Long Text",
    "label": "Manual Override Reason",
    "description": "Required to override an inferred/strength-cap guardrail.",
-   "idx": 27
+   "idx": 22
   },
   {
    "fieldname": "manual_override_by",
@@ -204,26 +212,26 @@
    "label": "Manual Override By",
    "options": "User",
    "read_only": 1,
-   "idx": 28
+   "idx": 23
   },
   {
    "fieldname": "manual_override_date",
    "fieldtype": "Datetime",
    "label": "Manual Override Date",
    "read_only": 1,
-   "idx": 29
+   "idx": 24
   },
   {
    "fieldname": "attachment",
    "label": "Attachment",
    "fieldtype": "Attach",
-   "idx": 30
+   "idx": 25
   },
   {
    "fieldname": "review_section",
    "fieldtype": "Section Break",
    "label": "Review",
-   "idx": 31,
+   "idx": 26,
    "collapsible": 1
   },
   {
@@ -231,14 +239,14 @@
    "label": "Reviewed By",
    "fieldtype": "Link",
    "options": "User",
-   "idx": 32
+   "idx": 27
   },
   {
    "fieldname": "review_date",
    "label": "Review Date",
    "fieldtype": "Date",
    "in_list_view": 1,
-   "idx": 33
+   "idx": 28
   }
  ],
  "links": [],

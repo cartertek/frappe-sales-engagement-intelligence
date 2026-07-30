@@ -1,9 +1,64 @@
 # Signal Evaluation
 
-Signal evaluation starts after a candidate evidence source has been found.
+Signal evaluation begins while a research path is still tentative. Create a Draft Signal as soon as the path is plausible, even when no Prospect record exists yet, and develop the evaluation inside that draft as evidence is collected.
 
 A signal is not what the source reminds us of.
 A signal is what the source directly supports.
+
+
+## Draft-to-published decision
+
+Draft status means the Signal is an active research hypothesis, not a validated finding. All fields may remain incomplete while research is underway. The agent should update the draft continuously instead of waiting until the end of research to create a record.
+
+Use this decision rule:
+
+1. **Plausible path:** create a Draft Signal, with or without a Prospect.
+2. **Research in progress:** add and correct facts, source metadata, analysis, candidate classification, disqualifiers, and gaps on the draft.
+3. **Path disproven:** delete the Draft Signal.
+4. **Path supported:** create or identify the Prospect, link the draft, complete all required fields and evidence rules, then publish it.
+
+Do not publish merely because a path remains possible. Publication means the Signal satisfies the same required-field, fact-level evidence, Signal Type, strength, and guardrail rules that previously applied at creation time. Only Published Signals may count toward qualification or downstream outreach context.
+
+## Evidence must precede classification
+
+The draft workflow exists to prevent the evaluator from deciding on a Signal Type or desired qualification outcome and then composing evidence to fit it. Use this dependency order:
+
+```text
+verified verbatim facts
+→ contextual meaning and latest state
+→ supported claim
+→ Signal Type
+→ strength
+```
+
+Do not reverse it. A draft may record a tentative type as a research hypothesis, but that hypothesis must not control which facts are preserved, how facts are worded, or whether contradictory evidence is omitted. If the evidence changes, change or remove the classification.
+
+## Candidate notes are not Observed Facts
+
+A research note can summarize, paraphrase, speculate, or identify something to verify. An Observed Fact cannot. Each Observed Facts row must contain source language copied from an opened exact URL.
+
+Do not convert a proposition from memory, a search result, or a researcher summary into a polished sentence and store it as though the source said it. Factual accuracy is not quotation accuracy. The required test is not whether the source generally supports the idea; it is whether the stored text appears in the cited source as a complete sentence.
+
+A warning sign is that all fact rows share the evaluator's writing style, use Signal Type terminology unusually cleanly, or begin with generic summary constructions such as `The company stated` or `The report found` when those words do not appear in the source.
+
+## Claim-clause support and contradiction review
+
+Before publication, break the Signal Claim into its material clauses. Each claim about scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts. Remove unsupported qualifiers rather than treating them as reasonable inference.
+
+Also ask whether any fact or later source contradicts the claim. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
+
+## Mandatory publication audit
+
+Publishing is not complete until the stored record is audited after save:
+
+1. Read every stored Observed Facts row in full.
+2. Reopen each row's exact `source_url`.
+3. Confirm the stored text appears verbatim as a complete sentence and belongs to the expected entity and document.
+4. Confirm `source_date`, `evidence_basis`, and `evidence_specificity` independently for each row.
+5. Confirm the latest-state evidence does not resolve or contradict the claim.
+6. Confirm every material claim clause is supported and the selected strength follows from the managed definition.
+
+Checking only that fields are populated, URLs return successfully, or the source discusses the same general topic is not an evidence audit.
 
 ## Interpret facts in context, not by word matching
 
@@ -48,7 +103,7 @@ Only the first belongs in signal strength.
 
 ## Signal name
 
-When creating a signal, give it a short descriptive name that identifies the specific observed event, condition, or evidence. The name should distinguish the signal from other signals on the same prospect without repeating only the Signal Type. Prefer a concise phrase such as `Backend role reposted for four months` or `Post-launch checkout failures reported`.
+Before publishing a signal, give it a short descriptive name that identifies the specific observed event, condition, or evidence. The name should distinguish the signal from other signals on the same prospect without repeating only the Signal Type. Prefer a concise phrase such as `Backend role reposted for four months` or `Post-launch checkout failures reported`.
 
 Do not use the generated SEI record ID, the prospect name alone, or the Signal Type alone as the descriptive name.
 

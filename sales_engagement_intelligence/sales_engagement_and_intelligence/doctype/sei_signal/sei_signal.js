@@ -9,6 +9,7 @@ frappe.ui.form.on('SEI Signal', {
     },
 
     refresh(frm) {
+        add_publish_action(frm);
         shorten_signal_textareas(frm);
         style_observed_facts_grid(frm);
         render_signal_type_criteria(frm);
@@ -29,6 +30,26 @@ frappe.ui.form.on('SEI Signal', {
     },
 
 });
+
+
+function add_publish_action(frm) {
+    if (frm.is_new() || frm.doc.status !== 'Draft') {
+        return;
+    }
+    frm.add_custom_button(__('Publish'), () => {
+        frappe.confirm(
+            __('Publish this Signal? All required fields and evidence rules will be validated.'),
+            () => frappe.call({
+                method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.publish_signal',
+                args: { signal: frm.doc.name },
+                freeze: true,
+                callback() {
+                    frm.reload_doc();
+                }
+            })
+        );
+    }, __('Signal Actions'));
+}
 
 
 function style_observed_facts_grid(frm) {
@@ -107,6 +128,9 @@ function style_observed_facts_grid(frm) {
             'text-overflow': 'clip',
             'white-space': 'pre-wrap',
             width: '100%',
+        });
+        $grid.find('.grid-body .grid-static-col[data-fieldname="fact"] .static-area').css({
+            'font-weight': '600',
         });
 
         content_columns.forEach((fieldname) => {

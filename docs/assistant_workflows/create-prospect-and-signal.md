@@ -1,18 +1,21 @@
-# Create Prospect and Signal
+# Research, Draft, and Publish a Signal
 
-Use `create_prospect` to create an SEI Prospect, then `add_signal` to attach evidence.
+Use a Draft Signal as the durable working record for each plausible research path. The draft may exist before an SEI Prospect. Create or identify the Prospect only after the path remains supported, then attach and publish the completed Signal.
 
 Required pattern:
 
-1. Before any database write, open the exact URL that will be stored and confirm that it contains the expected entity, the expected document or role, and every complete verbatim quotation and its matching source metadata that will be stored in `observed_facts`. Search snippets, cached text, ATS APIs, job feeds, and reconstructed URLs do not satisfy this requirement.
-2. Create the prospect with name, website, source arena, source URL, offer if known, and notes. Do not set a direct prospect thesis; thesis membership is derived from the prospect's signals through each signal type's linked thesis.
-3. Create a short descriptive signal name that identifies the specific observed event, condition, or evidence; do not use only the prospect name or Signal Type.
-4. Build `observed_facts` before choosing a qualifying strength. Supply a list of fact rows, each containing one verbatim quotation plus that fact's `evidence_basis`, `evidence_specificity`, `source_url`, and `source_date`. One fact is required; add multiple facts whenever needed to support all claims. Do not paraphrase or splice separate passages into one fact.
-5. Put any paraphrase or interpretation in `signal_claim`. If the listed `observed_facts` does not directly support the selected Signal Type, add the signal as Weak, set it excluded from qualification, and explain the evidence gap. Do not create it as Moderate or Strong.
-6. Add a signal with the descriptive name, signal type, strength, fact rows, structured evidence fields, and counts-toward-qualification only when the evidence standard is met. Do not send `evidence_basis`, `evidence_specificity`, `source_url`, or `source_date` as Signal-level fields.
-7. Read the returned structured envelope and warnings.
-8. Read the stored signal and confirm that every `observed_facts` row exactly matches the verified quotation and its own source URL, source date, evidence basis, and specificity. Do not substitute, reconstruct, normalize, or replace the source URL during record creation.
-9. Do not create CRM records unless the user explicitly instructs a manager action.
+1. Create one Draft Signal as soon as a distinct research assertion becomes plausible. A Prospect and most Signal fields may remain blank.
+2. Record discovery context and unverified propositions as draft notes or evidence gaps. Do not put search snippets, remembered propositions, or researcher-written summaries into Observed Facts.
+3. Open each exact evidence URL and copy complete source sentences verbatim into Observed Facts. Populate `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity` independently on every row.
+4. Read the surrounding passage and find the newest relevant evidence. Record whether the condition is ongoing, temporary, resolved, contradicted, or narrowed.
+5. Only after verified facts exist, derive the Signal Claim, managed Signal Type, and strength. A tentative type may guide further searching, but it must not determine how evidence is worded or which contradictory facts are discarded.
+6. Check every material claim clause against specific fact rows. Remove unsupported claims about recurrence, scope, causation, teams, severity, duration, current status, human work, cost, or business impact.
+7. Attempt to disprove the signal. If a material premise fails, reevaluate the whole path from zero rather than substituting adjacent rationales. Delete the draft when the path is disproven.
+8. For a supported path, create or identify the Prospect, link the draft, add a descriptive name, complete structured analysis, and check all managed disqualifiers and guardrails.
+9. Publish through the normal Publish action. Do not bypass validation or set status directly.
+10. After save, read every stored fact, reopen every exact URL, and confirm character-for-character that the complete sentence appears there and belongs to the expected source. Also verify all row metadata, latest state, claim-clause support, type, and strength.
+11. Only after that audit may the Published Signal feed qualification, lifecycle, playbook derivation, contact research, or message drafting.
+12. Do not create CRM records unless the user explicitly instructs a manager action.
 
 Do not use this workflow to send outreach or bypass protected statuses.
 

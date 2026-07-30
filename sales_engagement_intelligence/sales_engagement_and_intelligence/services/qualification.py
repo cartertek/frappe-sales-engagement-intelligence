@@ -46,6 +46,7 @@ def is_evidence_valid_for_qualification(signal: dict) -> bool:
 def _signal_filters(prospect_name: str) -> dict:
     return {
         "prospect": prospect_name,
+        "status": "Published",
         "exclude_from_qualification": 0,
     }
 

@@ -45,7 +45,7 @@ def _get_prospect_signal_type_values(prospect: str | None, fieldname: str) -> li
         SELECT DISTINCT st.`{fieldname}` value
         FROM `tabSEI Signal` s
         INNER JOIN `tabSEI Signal Type` st ON st.name = s.signal_type
-        WHERE s.prospect = %s AND COALESCE(st.`{fieldname}`, '') != ''
+        WHERE s.prospect = %s AND s.status = 'Published' AND COALESCE(st.`{fieldname}`, '') != ''
         ORDER BY st.`{fieldname}`
         """,
         prospect,
