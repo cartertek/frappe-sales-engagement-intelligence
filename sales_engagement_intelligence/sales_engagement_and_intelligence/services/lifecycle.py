@@ -52,7 +52,12 @@ def has_crm_link(prospect: Document) -> bool:
 
 def has_signals(prospect: Document) -> bool:
     prospect_name = prospect.get("name")
-    return bool(prospect_name and frappe.db.exists("SEI Signal", {"prospect": prospect_name}))
+    return bool(
+        prospect_name
+        and frappe.db.exists(
+            "SEI Signal", {"prospect": prospect_name, "status": "Published"}
+        )
+    )
 
 
 def has_research_evidence(prospect: Document) -> bool:

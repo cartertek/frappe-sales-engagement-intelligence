@@ -33,7 +33,7 @@ def test_fact_evidence_specificity_is_required():
         (MODULE / "doctype" / "sei_signal_observed_fact" / "sei_signal_observed_fact.json").read_text()
     )
     fields = {field["fieldname"]: field for field in fact["fields"]}
-    assert fields["evidence_specificity"]["reqd"] == 1
+    assert not fields["evidence_specificity"].get("reqd")
 
 
 def test_prospect_has_synced_signal_type_snapshot():

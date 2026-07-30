@@ -616,6 +616,19 @@ def add_signal(prospect: str, payload: dict | str) -> dict:
 
 
 @api_endpoint
+def publish_signal(signal: str) -> dict:
+    _require_sei_user()
+    doc = _check_doc_permission("SEI Signal", signal, "write")
+    if doc.prospect:
+        _check_prospect_permission(doc.prospect, "write")
+    if doc.status == "Published":
+        return {"signal": doc.name, "status": doc.status}
+    doc.status = "Published"
+    doc.save()
+    return {"signal": doc.name, "status": doc.status, "prospect": doc.prospect}
+
+
+@api_endpoint
 def update_signal(signal: str, payload: dict | str) -> dict:
     _require_sei_user()
     doc = _check_doc_permission("SEI Signal", signal, "write")
@@ -645,6 +658,7 @@ def get_signals(prospect: str) -> dict:
         filters={"prospect": prospect},
         fields=[
             "name",
+            "status",
             *[
                 field
                 for field in SIGNAL_FIELDS

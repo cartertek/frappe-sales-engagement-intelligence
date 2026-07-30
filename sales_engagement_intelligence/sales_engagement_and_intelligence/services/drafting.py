@@ -111,7 +111,7 @@ def build_context(prospect_doc, template_doc) -> dict[str, str]:
 def _primary_signal_summary(prospect: str) -> str:
     rows = frappe.get_all(
         "SEI Signal",
-        filters={"prospect": prospect},
+        filters={"prospect": prospect, "status": "Published"},
         fields=["signal_type", "signal_strength", "evidence_basis", "evidence_notes"],
         order_by="source_date desc, creation desc",
         limit=1,

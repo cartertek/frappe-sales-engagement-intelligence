@@ -17,7 +17,8 @@ def test_signal_name_is_required_and_used_as_title():
     schema = json.loads(SIGNAL_JSON.read_text())
     field = next(field for field in schema["fields"] if field.get("fieldname") == "signal_name")
     assert field["label"] == "Name"
-    assert field["reqd"] == 1
+    assert not field.get("reqd")
+    assert "Name" in (SIGNAL_JSON.parent / "sei_signal.py").read_text()
     assert field["in_list_view"] == 1
     assert schema["title_field"] == "signal_name"
     assert "signal_name" in schema["search_fields"]

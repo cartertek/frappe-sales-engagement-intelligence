@@ -9,6 +9,14 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.ta
 )
 
 QUALIFYING_STRENGTHS = {"Moderate", "Strong"}
+PUBLISHED = "Published"
+
+PUBLISH_REQUIRED_FIELDS = (
+    ("signal_name", "Name"),
+    ("prospect", "Prospect"),
+    ("signal_type", "Signal Type"),
+    ("signal_strength", "Signal Strength"),
+)
 
 
 def _has_value(value) -> bool:
@@ -43,25 +51,64 @@ class SEISignal(Document):
         self.append("observed_facts", {"fact": str(value).strip()})
 
     def validate(self):
+        self.status = self.status or "Draft"
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)
-        self.validate_signal_type_and_arena()
         self.set_prospect_name()
         self.set_prospect_tags()
-        self.apply_evidence_guardrails()
+        self.sync_disqualifier_check_rows()
+        if self.status == PUBLISHED:
+            self.validate_publishable()
+            self.validate_signal_type_and_arena()
+            self.apply_evidence_guardrails()
+
+    def validate_publishable(self) -> None:
+        missing = [
+            label
+            for fieldname, label in PUBLISH_REQUIRED_FIELDS
+            if not _has_value(self.get(fieldname))
+        ]
+        if not self.get("observed_facts"):
+            missing.append("Observed Facts")
+        if missing:
+            frappe.throw(
+                "Cannot publish Signal. Required fields are missing: " + ", ".join(missing)
+            )
+
+        incomplete_facts = []
+        for index, row in enumerate(self.get("observed_facts") or [], start=1):
+            row_missing = [
+                label
+                for fieldname, label in (
+                    ("fact", "Fact"),
+                    ("evidence_basis", "Evidence Basis"),
+                    ("evidence_specificity", "Evidence Specificity"),
+                )
+                if not _has_value(row.get(fieldname))
+            ]
+            if row_missing:
+                incomplete_facts.append(f"row {index}: {', '.join(row_missing)}")
+        if incomplete_facts:
+            frappe.throw(
+                "Cannot publish Signal. Observed Facts are incomplete: "
+                + "; ".join(incomplete_facts)
+            )
 
     def validate_signal_type_and_arena(self) -> None:
         if not self.signal_type:
             return
 
         signal_type = frappe.db.get_value(
-            "SEI Signal Type", self.signal_type, ["playbook", "research_arena", "active"], as_dict=True
+            "SEI Signal Type",
+            self.signal_type,
+            ["playbook", "research_arena", "active"],
+            as_dict=True,
         )
         if not signal_type:
             frappe.throw(f"SEI Signal Type not found: {self.signal_type}")
 
-        if self.is_new() and not signal_type.active:
-            frappe.throw("New signals cannot be created with an inactive Signal Type.")
+        if (self.is_new() or self.has_value_changed("status")) and not signal_type.active:
+            frappe.throw("Signals cannot be published with an inactive Signal Type.")
 
         if not signal_type.playbook or not signal_type.research_arena:
             frappe.throw("Signal Type must belong to exactly one Playbook and one Research Arena.")
@@ -69,8 +116,10 @@ class SEISignal(Document):
         arena_active = frappe.db.get_value(
             "SEI Research Arena", signal_type.research_arena, "active"
         )
-        if self.is_new() and not arena_active:
-            frappe.throw("New signals cannot use a Signal Type whose Research Arena is inactive.")
+        if (self.is_new() or self.has_value_changed("status")) and not arena_active:
+            frappe.throw(
+                "Signals cannot be published with a Signal Type whose Research Arena is inactive."
+            )
 
     def set_prospect_name(self):
         if not self.prospect:
@@ -189,7 +238,11 @@ class SEISignal(Document):
             prospect_signal_type_sync.sync_prospect_signal_types(prospect)
 
     def recalculate_prospect(self):
-        if not self.prospect or getattr(frappe.flags, 'sei_m3_recalculating', False):
+        if (
+            self.status != PUBLISHED
+            or not self.prospect
+            or getattr(frappe.flags, "sei_m3_recalculating", False)
+        ):
             return
 
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services.lifecycle import (

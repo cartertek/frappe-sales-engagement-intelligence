@@ -9,6 +9,7 @@
  "engine": "InnoDB",
  "field_order": [
   "signal_name",
+  "status",
   "prospect",
   "prospect_name",
   "prospect_tags",
@@ -41,17 +42,26 @@
    "fieldname": "signal_name",
    "label": "Name",
    "fieldtype": "Data",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 1
+  },
+  {
+   "fieldname": "status",
+   "label": "Status",
+   "fieldtype": "Select",
+   "options": "Draft\nPublished",
+   "default": "Draft",
+   "read_only": 1,
+   "in_list_view": 1,
+   "in_standard_filter": 1,
+   "idx": 2
   },
   {
    "fieldname": "prospect",
    "label": "Prospect",
    "fieldtype": "Link",
    "options": "SEI Prospect",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 2
@@ -80,7 +90,6 @@
    "label": "Signal Type",
    "fieldtype": "Link",
    "options": "SEI Signal Type",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 5
@@ -90,7 +99,6 @@
    "label": "Signal Strength",
    "fieldtype": "Select",
    "options": "Weak\nModerate\nStrong",
-   "reqd": 1,
    "in_list_view": 1,
    "in_standard_filter": 1,
    "idx": 6
@@ -125,7 +133,6 @@
    "fieldtype": "Table",
    "label": "Observed Facts",
    "options": "SEI Signal Observed Fact",
-   "reqd": 1,
    "description": "Add at least one fact row. Every row must contain its own Evidence Basis and Evidence Specificity, plus the exact Source URL and Source Date when available. Add multiple rows as needed to support every signal claim."
   },
   {

@@ -16,7 +16,6 @@
       "fieldname": "fact",
       "fieldtype": "Long Text",
       "label": "Fact",
-      "reqd": 1,
       "in_list_view": 1,
       "description": "One coherent verbatim quotation from this row's source. Preserve complete sentences and original wording; put interpretation on the parent Signal.",
       "columns": 5
@@ -43,7 +42,6 @@
       "fieldtype": "Select",
       "label": "Evidence Basis",
       "options": "Observed\nInferred",
-      "reqd": 1,
       "in_list_view": 1,
       "description": "Classify this fact only: Observed when directly stated in the cited source; Inferred when it is a conclusion drawn from indirect evidence.",
       "columns": 1
@@ -54,7 +52,6 @@
       "label": "Evidence Specificity",
       "options": "Specific Evidence\nSpecific Evidence, But Indirect\nGeneric List or Directory\nSearch Result\nThread or Collection\nAggregator\nUnknown",
       "default": "Unknown",
-      "reqd": 1,
       "in_list_view": 1,
       "description": "Classify how specifically this row's source supports this fact. Do not reuse another fact's classification.",
       "columns": 2
