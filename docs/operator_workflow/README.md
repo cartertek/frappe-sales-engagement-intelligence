@@ -27,8 +27,9 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 6. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
 7. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
 8. Choose the applicable playbook, offer, and asset derived from the Prospect's Published Signals.
-9. Preview and manually send a message only after review.
-10. Explicitly create or link Frappe CRM records when appropriate, log attribution, and use reports to evaluate outcomes.
+9. Preview the message, review it, and save the approved result as an unsent row in the Prospect's Message Drafts table. Saving the draft must not change lifecycle status or mark the draft sent.
+10. Manually send the message through the intended channel. Only after an actual send should the saved draft be marked sent and the real interaction be logged.
+11. Explicitly create or link Frappe CRM records when appropriate and use reports to evaluate outcomes.
 
 ## Evidence-first research flow
 
@@ -57,7 +58,7 @@ ERPNext records are not created by SEI. SEI does not create ERPNext Lead, Opport
 
 ## Required safety checks
 
-Before outreach or CRM conversion, confirm the prospect is not Rejected and not Do Not Contact. Draft preview does not change lifecycle status, create a Communication, or send email. Imports do not create CRM records. Reports are read-only.
+Before outreach or CRM conversion, confirm the prospect is not Rejected and not Do Not Contact. Draft preview and draft saving do not change lifecycle status, create a Communication, mark a prospect contacted, or send email. Save reviewed drafts in the Prospect's Message Drafts table with `sent` unchecked and `sent_on` empty. Imports do not create CRM records. Reports are read-only.
 
 ## Related pages
 
