@@ -13,6 +13,7 @@ class SEIProspect(Document):
         remove_empty_contact_role_placeholders(self)
         self.validate_message_draft_cc_addresses()
         self.set_emails_sent()
+        self.set_named_primary_contacts()
         self.set_normalized_domain()
         self.apply_do_not_contact_rules()
         self.validate_manual_approval_reason()
@@ -32,6 +33,13 @@ class SEIProspect(Document):
         )
 
         self.emails_sent = prospect_message_draft_sync.count_sent_message_drafts(self)
+
+    def set_named_primary_contacts(self):
+        self.named_primary_contacts = sum(
+            1
+            for row in self.get("contacts") or []
+            if row.get("is_primary") and (row.get("contact_name") or "").strip()
+        )
 
     def set_normalized_domain(self):
         if not self.website:

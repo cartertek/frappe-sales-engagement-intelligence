@@ -56,6 +56,7 @@
   "suggested_message_template",
   "message_drafts",
   "emails_sent",
+  "named_primary_contacts",
   "crm_conversion_tab",
   "conversion_preparation_section",
   "crm_conversion_notes",
@@ -105,8 +106,8 @@
   {
    "fieldname": "prospect_type",
    "label": "Prospect Type",
-   "fieldtype": "Select",
-   "options": "Agency\nStartup\nSMB\nEnterprise\nEcosystem Partner\nDirectory Lead\nCommunity Lead\nProcurement Lead\nReferral Partner\nOther",
+   "fieldtype": "Link",
+   "options": "SEI Prospect Type",
    "in_list_view": 1,
    "idx": 6
   },
@@ -156,7 +157,7 @@
   {
    "fieldname": "offer",
    "label": "Offer",
-   "fieldtype": "Data",
+   "fieldtype": "Long Text",
    "idx": 41
   },
   {
@@ -394,34 +395,42 @@
    "idx": 49
   },
   {
+   "fieldname": "named_primary_contacts",
+   "label": "Named Primary Contacts",
+   "fieldtype": "Int",
+   "read_only": 1,
+   "default": "0",
+   "idx": 50
+  },
+  {
    "fieldname": "crm_conversion_tab",
    "fieldtype": "Tab Break",
    "label": "CRM Conversion",
-   "idx": 50
+   "idx": 51
   },
   {
    "fieldname": "conversion_preparation_section",
    "label": "Conversion Preparation",
    "fieldtype": "Section Break",
-   "idx": 51
+   "idx": 52
   },
   {
    "fieldname": "crm_conversion_notes",
    "label": "CRM Conversion Notes",
    "fieldtype": "Small Text",
-   "idx": 52
+   "idx": 53
   },
   {
    "fieldname": "frappe_crm_links_section",
    "label": "Frappe CRM Links",
    "fieldtype": "Section Break",
-   "idx": 53
+   "idx": 54
   },
   {
    "fieldname": "crm_links_html",
    "label": "CRM Records",
    "fieldtype": "HTML",
-   "idx": 54
+   "idx": 55
   },
   {
    "fieldname": "crm_deal",
@@ -431,13 +440,13 @@
    "options": "CRM Deal",
    "read_only": 1,
    "in_list_view": 1,
-   "idx": 56
+   "idx": 57
   },
   {
    "fieldname": "column_break_4",
    "label": "",
    "fieldtype": "Column Break",
-   "idx": 57
+   "idx": 58
   },
   {
    "fieldname": "crm_organization",
@@ -446,7 +455,7 @@
    "fieldtype": "Link",
    "options": "CRM Organization",
    "read_only": 1,
-   "idx": 58
+   "idx": 59
   },
   {
    "fieldname": "crm_contact",
@@ -455,7 +464,7 @@
    "fieldtype": "Link",
    "options": "Contact",
    "read_only": 1,
-   "idx": 59
+   "idx": 60
   }
  ],
  "links": [],
