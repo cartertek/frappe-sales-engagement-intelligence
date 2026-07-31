@@ -2,9 +2,11 @@
 
 Use `preview_message_draft(prospect, template)` to render a manual-review draft.
 
-The endpoint returns subject, body, missing variables, resolved variables, and safety flags. It does not send email, create a Communication, create a task, create CRM records, or change lifecycle status.
+The endpoint returns subject, body, missing variables, resolved variables, and safety flags. It does not send email, create a Communication, create a task, create CRM records, mark a prospect contacted, or change lifecycle status.
 
-Scripts may display or save the preview for human review. They must not auto-send or bulk-send the result.
+When the requested work is to prepare prospect-specific outreach, assistants and scripts should save each reviewed result as an unsent row in `SEI Prospect.message_drafts` rather than leaving the completed draft only in chat, terminal output, or another external surface. Populate the intended platform, sender, recipient, subject, and HTML body. Leave `sent = 0` and `sent_on` empty. Saving the draft must not change `lifecycle_status`, qualification fields, next-action fields, CRM links, or any other prospect state unless the user separately and explicitly requests that action.
+
+Scripts may also display the preview for human review, but they must not auto-send or bulk-send the result. A saved draft is not evidence that outreach occurred. Only after an operator actually sends the message may the draft be marked sent and the real interaction be logged.
 
 ## Message wording and evidence attribution
 
