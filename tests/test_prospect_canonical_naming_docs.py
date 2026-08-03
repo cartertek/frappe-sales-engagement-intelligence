@@ -2,13 +2,13 @@ from pathlib import Path
 
 ROOT = Path("docs")
 IDENTITY = (ROOT / "operator_workflow/identity-contact-research.md").read_text()
-ASSISTANT = (ROOT / "assistant_workflows/create-prospect-and-signal.md").read_text()
+SCRIPT = (ROOT / "operator_workflow/api-script-workflows.md").read_text()
 IMPORTS = (ROOT / "import_templates/README.md").read_text()
 API = (ROOT / "api/prospects.md").read_text()
 
 
 def test_prospect_name_is_explicitly_organization_level_at_all_creation_entrypoints():
-    for text in (IDENTITY, ASSISTANT, IMPORTS, API):
+    for text in (IDENTITY, SCRIPT, IMPORTS, API):
         assert "canonical" in text.lower()
         assert "organization" in text.lower()
         assert "prospect_name" in text
