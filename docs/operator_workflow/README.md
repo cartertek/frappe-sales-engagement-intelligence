@@ -26,10 +26,11 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 5. Review import rows, duplicate warnings, and missing evidence.
 6. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
 7. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
-8. Choose the applicable playbook, offer, and asset derived from the Prospect's Published Signals.
-9. Preview the message, review it, and save the approved result as an unsent row in the Prospect's Message Drafts table. Saving the draft must not change lifecycle status or mark the draft sent.
-10. Manually send the message through the intended channel. Only after an actual send should the saved draft be marked sent and the real interaction be logged.
-11. Explicitly create or link Frappe CRM records when appropriate and use reports to evaluate outcomes.
+8. Develop prospect positioning from the Prospect's Published Signals, managed Signal Types, Playbook, and source evidence.
+9. Choose the applicable offer, asset, contact, and message template.
+10. Draft the message, review it, and save the approved result as an unsent row in the Prospect's Message Drafts table. Saving the draft must not change lifecycle status or mark the draft sent.
+11. Manually send the message through the intended channel. Only after an actual send should the saved draft be marked sent and the real interaction be logged.
+12. Explicitly create or link Frappe CRM records when appropriate and use reports to evaluate outcomes.
 
 ## Evidence-first research flow
 
@@ -71,6 +72,7 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [Prospect identity and contact research](identity-contact-research.md)
 - [Qualification](qualification.md)
 - [CRM conversion](crm-conversion.md)
+- [Prospect positioning](prospect-positioning.md)
 - [Message drafting](message-drafting.md)
 - [Interaction attribution](interaction-attribution.md)
 - [Reporting feedback loop](reporting-feedback-loop.md)
