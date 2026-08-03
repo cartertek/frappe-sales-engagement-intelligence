@@ -50,7 +50,7 @@ def test_operator_docs_explain_fact_level_evidence_metadata():
         Path("docs/operator_workflow/README.md"),
         Path("docs/operator_workflow/research_workflow.md"),
         Path("docs/operator_workflow/signal_evaluation.md"),
-        Path("docs/assistant_workflows/create-prospect-and-signal.md"),
+        Path("docs/operator_workflow/api-script-workflows.md"),
     ]
     for path in docs:
         source = path.read_text()

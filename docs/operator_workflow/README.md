@@ -76,6 +76,7 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [Reporting feedback loop](reporting-feedback-loop.md)
 - [Data hygiene](data-hygiene.md)
 - [Import templates](../import_templates/README.md)
+- [API and script workflows](api-script-workflows.md)
 - [API documentation](../api/README.md)
 
 
