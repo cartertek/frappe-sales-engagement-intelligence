@@ -1,5 +1,7 @@
 # Prospect Positioning
 
+Prospect positioning is **Stage 1** of the ordered [Initial Outreach](initial-outreach.md) process. Complete it and satisfy its completion gate before beginning message drafting.
+
 Prospect positioning converts completed research into a usable outreach direction. Complete positioning before drafting a message. Positioning explains why the prospect is worth contacting, why Cartertek may be relevant now, what work or operational problem outreach should address, how Cartertek should be presented, and which claims or language should be avoided.
 
 Positioning is not a draft email. It is interpreted context that lets the drafting process produce a message that is specific, accurate, and commercially useful.

@@ -1,5 +1,7 @@
 # Message Drafting
 
+Message drafting is **Stage 2** of the ordered [Initial Outreach](initial-outreach.md) process. Begin only after prospect positioning is complete and has passed its completion gate.
+
 Message drafting turns approved prospect positioning and current SEI guidance into a complete, reviewable initial outreach message. The result must be specific to the prospect, grounded in observable evidence, naturally written, accurate about the source, consistent with the assigned Playbook and Signal Types, correctly rendered through the selected template, and saved as an unsent draft for manual review.
 
 Drafting is a record-preparation action, not an outreach, lifecycle, or CRM action. It is not a keyword-substitution exercise. Write and review each message as complete prose.
