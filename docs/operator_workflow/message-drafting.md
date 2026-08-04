@@ -242,13 +242,25 @@ Do not extend the message beyond what the evidence supports. Avoid unsupported c
 
 Keep the message bounded to the observed situation.
 
-### 22. Avoid templated keyword substitution
+### 22. Apply internal guardrails silently
+
+Do not verbalize drafting constraints, rejected alternatives, or internal safety checks in the message unless the prospect actually raised them. Phrases such as `without a wholesale rebuild`, `without replacing your team`, `rather than a complete overhaul`, or `not suggesting the product is broken` introduce ideas that were not part of the prospect context and expose the drafting process.
+
+Apply constraints through the scope of the proposal itself. When the work must remain bounded, describe the specific work Cartertek is proposing and omit larger, riskier, or disallowed alternatives instead of naming them.
+
+### 23. Avoid one-sentence paragraphs
+
+Treat one-sentence paragraphs as a warning sign during review. When a paragraph contains only one sentence, first consider splitting a dense sentence into two or more natural sentences, or combining it with a related paragraph so the thought develops conversationally.
+
+Keep a one-sentence paragraph only when the sentence is intentionally brief and gains emphasis from standing alone. Do not use isolated one-sentence paragraphs as the default structure for evidence and offer sections.
+
+### 24. Avoid templated keyword substitution
 
 Do not reuse a sentence from another prospect and substitute company-specific nouns. Draft the intended meaning first, then choose a sentence structure that fits it.
 
 A borrowed structure may create unclear pronouns, mismatched subjects, illogical causal relationships, awkward hiring references, or language that sounds mass-produced. Rewrite from scratch when the existing frame does not fit the prospect.
 
-### 23. Review the complete sentence, paragraph, and message
+### 25. Review the complete sentence, paragraph, and message
 
 After every draft or revision:
 
@@ -262,7 +274,7 @@ Do not validate a revision merely by checking the words that changed.
 
 ## Phase 4: Finalization
 
-### 24. Save the draft in the correct SEI location
+### 26. Save the draft in the correct SEI location
 
 Save the reviewed message under:
 
@@ -276,13 +288,13 @@ Populate the intended platform, sender, recipient, subject, body, suggested temp
 
 Previewing or saving a draft does not send email, create a Communication, create a task, create CRM records, mark a prospect contacted, or change lifecycle status. Send manually outside SEI only after operator review. After an actual send, update the saved row and log the real interaction through the appropriate workflow.
 
-### 25. Set the sender field uniformly
+### 27. Set the sender field uniformly
 
 Set `from_user` to the designated sender for every draft in the batch. Verify first that the email belongs to a valid Frappe user, apply it consistently, and read the values back to confirm no draft was missed.
 
 Do not confuse `from_user` with `modified_by`; verify both independently.
 
-### 26. Final quality-control checklist
+### 28. Final quality-control checklist
 
 #### Context
 
