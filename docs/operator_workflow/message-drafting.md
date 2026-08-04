@@ -162,7 +162,7 @@ Verify that the template prefix appears exactly once, the prospect-specific subj
 
 Reflect what the company is trying to accomplish, not merely the job title, Signal Type, or broad source category. Determine the actual work from responsibilities, pain points, stated constraints, operational consequences, process descriptions, and technical context.
 
-The Cartertek paragraph must clearly refer to that work. If the offer sentence could be inserted unchanged into many unrelated messages, it is too generic.
+The Cartertek paragraph must clearly refer to that work. Convert the evidence into the prospect's actual buyer use case: explain what now needs to happen, who needs it, and how Cartertek would participate. Do not substitute adjacent capabilities such as integrations, automation, reporting, or migration support for the specific work the prospect would be hiring Cartertek to perform. If the offer sentence could be inserted unchanged into many unrelated messages, it is too generic.
 
 ### 11. Interpret source terminology instead of copying labels
 
@@ -228,7 +228,7 @@ Extract useful facts and restate them in ordinary language. The email should sou
 
 ### 19. Keep references explicit
 
-Terms such as `this work`, `work like this`, `constraints like these`, or `processes like these` must have a clear antecedent in the preceding prose. The recipient should not need to infer the referent from a job title or an external source.
+Terms such as `this work`, `that implementation`, `the issue`, `the transition`, `work like this`, `constraints like these`, or `processes like these` must have a clear and nearby antecedent in the preceding prose. The recipient should not need to infer the referent from a job title, an external source, or a broad prior paragraph. When the work has not already been named precisely, name it instead of using shorthand.
 
 ### 20. Lead with outcomes, not delivery mechanics
 
