@@ -107,9 +107,8 @@
   {
    "fieldname": "signal_types",
    "label": "Signal Types",
-   "fieldtype": "Table",
-   "options": "SEI Playbook Signal Type",
-   "description": "Signal Types assigned to this Playbook. Adding a Signal Type here moves it from its previous Playbook.",
+   "fieldtype": "HTML",
+   "description": "Derived from the Playbook field on SEI Signal Type. Edit Signal Types to change assignments.",
    "idx": 12
   },
   {

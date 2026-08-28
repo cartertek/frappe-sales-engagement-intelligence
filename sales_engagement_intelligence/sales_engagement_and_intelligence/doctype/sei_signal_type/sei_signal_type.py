@@ -9,7 +9,6 @@ class SEISignalType(Document):
         self.validate_playbook_arena_pair()
 
     def on_update(self) -> None:
-        self.sync_playbook_child_row()
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
             prospect_signal_type_sync,
         )
@@ -44,49 +43,3 @@ class SEISignalType(Document):
         )
         if not allowed:
             frappe.throw(f"Research Arena {self.research_arena} is not assigned to Playbook {self.playbook}.")
-
-    def sync_playbook_child_row(self) -> None:
-        if getattr(frappe.flags, "sei_syncing_playbook_signal_types", False) or not self.playbook:
-            return
-
-        try:
-            frappe.flags.sei_syncing_playbook_signal_types = True
-            frappe.db.delete(
-                "SEI Playbook Signal Type",
-                {"signal_type": self.name, "parent": ["!=", self.playbook]},
-            )
-            row_name = frappe.db.exists(
-                "SEI Playbook Signal Type",
-                {
-                    "parent": self.playbook,
-                    "parenttype": "SEI Playbook",
-                    "parentfield": "signal_types",
-                    "signal_type": self.name,
-                },
-            )
-            if row_name:
-                frappe.db.set_value(
-                    "SEI Playbook Signal Type",
-                    row_name,
-                    {
-                        "category": self.category,
-                        "research_arena": self.research_arena,
-                        "active": self.active,
-                    },
-                    update_modified=False,
-                )
-            else:
-                frappe.get_doc(
-                    {
-                        "doctype": "SEI Playbook Signal Type",
-                        "parent": self.playbook,
-                        "parenttype": "SEI Playbook",
-                        "parentfield": "signal_types",
-                        "signal_type": self.name,
-                        "category": self.category,
-                        "research_arena": self.research_arena,
-                        "active": self.active,
-                    }
-                ).insert(ignore_permissions=True)
-        finally:
-            frappe.flags.sei_syncing_playbook_signal_types = False
