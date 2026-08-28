@@ -2,12 +2,15 @@
 
 Methods:
 
+- `add_draft_signal(payload)`
 - `add_signal(prospect, payload)`
 - `update_signal(signal, payload)`
 - `get_signals(prospect)`
 - `find_duplicate_signal(prospect, payload)`
 
-Adding or updating a signal recalculates Prospect qualification and lifecycle.
+Use `add_draft_signal(payload)` during evidence-first research when no Prospect exists yet. It creates an `SEI Signal` with `status = "Draft"` and no Prospect. Draft creation does not create a Prospect or run Prospect qualification/lifecycle recalculation.
+
+Adding a prospect-linked signal or updating one recalculates Prospect qualification and lifecycle.
 
 ## Evidence-first validation
 

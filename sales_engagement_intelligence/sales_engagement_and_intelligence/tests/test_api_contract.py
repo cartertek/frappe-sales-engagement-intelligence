@@ -10,6 +10,7 @@ REQUIRED_ENDPOINTS = [
     "get_prospect",
     "get_prospect_summary",
     "find_prospects",
+    "add_draft_signal",
     "add_signal",
     "update_signal",
     "get_signals",

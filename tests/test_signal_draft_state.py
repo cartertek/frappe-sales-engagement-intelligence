@@ -39,6 +39,13 @@ def test_publish_runs_current_required_and_evidence_validation():
         assert label in SIGNAL_CONTROLLER
 
 
+def test_draft_signal_api_supports_prospectless_research_intake():
+    assert "def add_draft_signal(payload: dict | str)" in API
+    assert '_require_sei_user()' in API
+    assert '{"doctype": "SEI Signal", "status": "Draft", **values}' in API
+    assert '{"signal": doc.name, "status": doc.status, "prospect": doc.prospect}' in API
+
+
 def test_publish_action_and_api_are_explicit():
     assert "add_publish_action(frm)" in SIGNAL_JS
     assert "frm.doc.status !== 'Draft'" in SIGNAL_JS
