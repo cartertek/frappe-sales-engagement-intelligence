@@ -18,6 +18,8 @@ Successful API calls return `{ ok, data, warnings, messages }`. Failures return 
 
 Use the draft-to-published workflow in [Research workflow](research_workflow.md), [Signal evaluation](signal_evaluation.md), and [AI-assisted research](ai_assisted_research.md). Create a Draft Signal when a distinct research assertion becomes plausible, use it as the durable research record, and publish only after exact-source verification and the post-save evidence audit succeed.
 
+For script/API-driven research, call `add_draft_signal(payload)` to create that prospect-less working record. Do not create a Prospect merely to satisfy `add_signal(prospect, payload)`; reserve `add_signal` for cases where the Prospect already exists.
+
 For a supported path, search for an existing organization-level Prospect before creating one. `prospect_name` must use the organization's canonical public name; product, platform, migration, initiative, location, and signal context belong on the Signal or in prospect metadata and notes.
 
 Only Published Signals may feed qualification, lifecycle progression, playbook derivation, contact research, or message drafting. Do not create CRM records unless the user explicitly requests the manager-controlled action.

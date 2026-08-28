@@ -598,14 +598,31 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
 # Signal endpoints
 
 
-@api_endpoint
-def add_signal(prospect: str, payload: dict | str) -> dict:
-    _check_prospect_permission(prospect, "write")
+def _prepare_signal_values(payload: dict | str) -> tuple[dict, list[dict]]:
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
     if "observed_facts" in values:
         values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values, dropped = _filter_known_fields("SEI Signal", values)
     warnings = [{"code": "UNKNOWN_FIELDS_IGNORED", "fields": dropped}] if dropped else []
+    return values, warnings
+
+
+@api_endpoint
+def add_draft_signal(payload: dict | str) -> dict:
+    _require_sei_user()
+    values, warnings = _prepare_signal_values(payload)
+    doc = frappe.get_doc({"doctype": "SEI Signal", "status": "Draft", **values})
+    doc.insert()
+    return success(
+        {"signal": doc.name, "status": doc.status, "prospect": doc.prospect},
+        warnings=warnings,
+    )
+
+
+@api_endpoint
+def add_signal(prospect: str, payload: dict | str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    values, warnings = _prepare_signal_values(payload)
     doc = frappe.get_doc({"doctype": "SEI Signal", "prospect": prospect, **values})
     doc.insert()
     recalculation = _recalculate_and_apply_lifecycle(prospect)
