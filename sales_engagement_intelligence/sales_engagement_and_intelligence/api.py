@@ -600,6 +600,11 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
 
 def _prepare_signal_values(payload: dict | str) -> tuple[dict, list[dict]]:
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if values.get("source_arena"):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+            resolve_signal_source_arena,
+        )
+        values["source_arena"] = resolve_signal_source_arena(values["source_arena"])
     if "observed_facts" in values:
         values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values, dropped = _filter_known_fields("SEI Signal", values)
@@ -652,6 +657,11 @@ def update_signal(signal: str, payload: dict | str) -> dict:
     prospect = doc.prospect
     _check_prospect_permission(prospect, "write")
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if values.get("source_arena"):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+            resolve_signal_source_arena,
+        )
+        values["source_arena"] = resolve_signal_source_arena(values["source_arena"])
     if "observed_facts" in values:
         values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values.pop("prospect", None)

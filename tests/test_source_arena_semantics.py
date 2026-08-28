@@ -13,8 +13,9 @@ def test_signal_source_arena_is_distinct_provenance_field():
     fields = {f["fieldname"]: f for f in _doctype("sei_signal")["fields"]}
     field = fields["source_arena"]
     assert field["label"] == "Source Arena"
-    assert field["fieldtype"] == "Data"
-    assert "distinct from the Research Arena" in field["description"]
+    assert field["fieldtype"] == "Link"
+    assert field["options"] == "SEI Signal Source Arena"
+    assert "distinct from the Signal Type's Research Arena" in field["description"]
 
 
 def test_interaction_attribution_no_longer_stores_source_arena():

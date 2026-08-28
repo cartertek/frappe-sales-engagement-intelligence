@@ -16,6 +16,22 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.ta
     resolve_signal_type,
 )
 
+
+def resolve_signal_source_arena(value: str | None) -> str | None:
+    value = str(value or "").strip()
+    if not value:
+        return None
+    existing = frappe.db.exists("SEI Signal Source Arena", value)
+    if existing:
+        return existing
+    doc = frappe.get_doc({
+        "doctype": "SEI Signal Source Arena",
+        "arena_name": value,
+        "active": 1,
+    })
+    doc.insert(ignore_permissions=True)
+    return doc.name
+
 PROSPECT_FIELDS = {
     "prospect_name",
     "website",
@@ -333,7 +349,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("initial_signal_type")),
             "signal_strength": row.get("initial_signal_strength"),
             "confidence": row.get("initial_confidence"),
-            "source_arena": row.get("source_arena"),
+            "source_arena": resolve_signal_source_arena(row.get("source_arena")),
             "observed_facts": (
                 [{
                     "fact": row.get("initial_observed_fact"),
@@ -361,7 +377,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("signal_type")),
             "signal_strength": row.get("signal_strength"),
             "confidence": row.get("confidence"),
-            "source_arena": row.get("source_arena"),
+            "source_arena": resolve_signal_source_arena(row.get("source_arena")),
             "observed_facts": (
                 [{
                     "fact": row.get("observed_fact"),

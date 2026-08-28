@@ -113,10 +113,11 @@
   {
    "fieldname": "source_arena",
    "label": "Source Arena",
-   "fieldtype": "Data",
+   "fieldtype": "Link",
    "in_list_view": 1,
    "in_standard_filter": 1,
-   "description": "Where this specific Signal was sourced or discovered. This is provenance metadata and is distinct from the Research Arena assigned through the Signal Type."
+   "description": "Where this specific Signal was sourced or discovered. This is provenance metadata and is distinct from the Signal Type's Research Arena.",
+   "options": "SEI Signal Source Arena"
   },
   {
    "fieldname": "signal_type_definition_section",

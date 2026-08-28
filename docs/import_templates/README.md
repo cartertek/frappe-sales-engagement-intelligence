@@ -66,4 +66,4 @@ Milestone 5 import does not query or mutate CRM Lead, CRM Deal, CRM Organization
 
 ## Signal provenance
 
-`source_arena` is Signal provenance, not Research Arena taxonomy. For signal-containing imports it is written to `SEI Signal.source_arena`. If the CSV row leaves it blank, `SEI Import Batch.source_arena` supplies the default. Research Arena is derived separately from the Signal Type.
+`source_arena` is Signal provenance, not Research Arena taxonomy. `SEI Signal.source_arena` links to the managed `SEI Signal Source Arena` list; imports automatically create a missing managed value when a new Source Arena name is encountered. For signal-containing imports it is written to `SEI Signal.source_arena`. If the CSV row leaves it blank, `SEI Import Batch.source_arena` supplies the default. Research Arena is derived separately from the Signal Type.
