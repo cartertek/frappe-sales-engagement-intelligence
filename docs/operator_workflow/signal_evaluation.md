@@ -45,7 +45,7 @@ A warning sign is that all fact rows share the evaluator's writing style, use Si
 
 Before publication, break the Signal Claim into its material clauses. Each claim about scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts. Remove unsupported qualifiers rather than treating them as reasonable inference.
 
-Also ask whether any fact or later source contradicts the claim. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
+If the cited source contains information that contradicts any part of the Signal Claim, the signal cannot pass review until the contradiction is resolved. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
 
 ## Mandatory publication audit
 
