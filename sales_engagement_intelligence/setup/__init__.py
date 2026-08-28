@@ -328,7 +328,7 @@ MILESTONE_6_REPORTS = (
     "Qualification by Signal Type",
     "Inferred Signal Review",
     "Missing Evidence Report",
-    "Prospects by Source Arena",
+    "Prospects by Research Arena",
     "Outcomes by Thesis",
     "Asset Usage and Outcomes",
     "Offer Performance",

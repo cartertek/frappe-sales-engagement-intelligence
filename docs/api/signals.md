@@ -37,6 +37,7 @@ Supported signal payload fields include. `observed_facts` is a child-row list:
 ```text
 signal_type
 signal_strength
+source_arena
 evidence_basis
 evidence_specificity
 confidence
@@ -64,3 +65,5 @@ Each Playbook's `signal_qualification_script` receives its group through the Jav
 
 
 Each Observed Facts row stores its own `source_url`, `source_date`, `evidence_basis`, and `evidence_specificity`. At least one fact must supply any value required for the signal; multiple facts may use different sources and evidence classifications.
+
+`source_arena` records where the specific Signal was sourced or discovered. It is provenance metadata and is distinct from the Research Arena assigned through the Signal Type.

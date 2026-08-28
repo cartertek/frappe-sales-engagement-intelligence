@@ -1,6 +1,6 @@
 # Reporting Feedback Loop
 
-The Engagement Reports workspace contains read-only reports for lifecycle queues, signal quality, source arenas, thesis outcomes, asset usage, offers, CRM conversion, import quality, data hygiene, interaction attribution, response category, and channels.
+The Engagement Reports workspace contains read-only reports for lifecycle queues, signal quality, Research Arenas, thesis outcomes, asset usage, offers, CRM conversion, import quality, data hygiene, interaction attribution, response category, and channels.
 
 Use reports to answer:
 

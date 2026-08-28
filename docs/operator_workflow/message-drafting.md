@@ -70,7 +70,7 @@ Supported standard variables include:
 
 - `{{ prospect_name }}`
 - `{{ website }}`
-- `{{ source_arena }}`
+- `{{ research_arena }}`
 - `{{ signal_summary }}`
 - `{{ qualification_explanation }}`
 - `{{ thesis }}`

@@ -14,7 +14,6 @@ PLAYBOOKS = [
         "thesis": "Agency Technical Reinforcement",
         "default_offer": "White-label engineering support / technical rescue call",
         "typical_prospect_types": "Agency, Ecosystem Partner, Referral Partner",
-        "legacy_source_arenas": "Agency directories, partner ecosystems, referral networks, service-provider communities",
         "legacy_contact_roles": "Founder, Operations Lead, Delivery Lead, Account Lead",
         "qualifying_signal_guidance": "Agency overflow, AI/custom software positioning, odd technical hiring, backend/integration claims without visible depth.",
         "disqualifying_guidance": "Disqualify agencies that clearly have deep internal engineering capacity, only sell media/creative services, or appear to need low-cost staffing rather than senior implementation support.",
@@ -27,7 +26,6 @@ PLAYBOOKS = [
         "thesis": "Hiring-Gap Substitution",
         "default_offer": "Scoped diagnostic / focused implementation sprint",
         "typical_prospect_types": "Startup, SMB, Enterprise",
-        "legacy_source_arenas": "Job boards, company career pages, community hiring posts, role reposts",
         "legacy_contact_roles": "CTO, VP Engineering, Engineering Manager, Founder, Operator, Product Lead",
         "qualifying_signal_guidance": "Long-open role, repeated reposts, urgent contractor role, impossible hybrid role, modernization/AI/integration hiring.",
         "disqualifying_guidance": "Disqualify normal healthy hiring, broad evergreen roles, staffing-agency posts, and prospects where the role does not map to Cartertek delivery work.",
@@ -40,7 +38,6 @@ PLAYBOOKS = [
         "thesis": "Post-Launch Stabilization",
         "default_offer": "Production-readiness review / bug and integration cleanup",
         "typical_prospect_types": "Startup, SMB, Enterprise",
-        "legacy_source_arenas": "Launch posts, Product Hunt, release notes, support forums, social announcements",
         "legacy_contact_roles": "Founder, CTO, Product Lead, Technical Lead",
         "qualifying_signal_guidance": "Recent launch, visible bugs, support complaints, performance issues, integration requests.",
         "disqualifying_guidance": "Disqualify launches with no visible technical friction, purely marketing launches, or issues unrelated to software delivery.",
@@ -53,7 +50,6 @@ PLAYBOOKS = [
         "thesis": "Project Rescue",
         "default_offer": "Technical diagnostic / stabilization sprint",
         "typical_prospect_types": "Startup, SMB, Enterprise, Community Lead, Directory Lead",
-        "legacy_source_arenas": "GitHub, public forums, issue trackers, communities, product feedback surfaces",
         "legacy_contact_roles": "CTO, Technical Lead, Founder, Operations Lead, Product Owner",
         "qualifying_signal_guidance": "GitHub issues, public complaints, integration failures, abandoned tooling, migration problems, AI prototype failure.",
         "disqualifying_guidance": "Disqualify unsupported open-source hobby projects, stale issues with no commercial owner, and problems outside Cartertek's delivery scope.",
@@ -66,7 +62,6 @@ PLAYBOOKS = [
         "thesis": "Agency Technical Reinforcement",
         "default_offer": "Referral partnership / technical backup / implementation partner relationship",
         "typical_prospect_types": "Agency, Ecosystem Partner, Referral Partner",
-        "legacy_source_arenas": "Partner directories, consultant networks, local business networks, adjacent service ecosystems",
         "legacy_contact_roles": "Agency Owner, Designer, MSP Owner, Fractional CTO, Consultant, Advisor",
         "qualifying_signal_guidance": "Adjacent service provider, lacks custom software capability, clients asking for AI/automation/workflows/integrations.",
         "disqualifying_guidance": "Disqualify direct competitors with overlapping delivery capability, referral partners serving unrelated buyers, and purely transactional lead sellers.",
@@ -79,7 +74,6 @@ PLAYBOOKS = [
         "thesis": "Technical Diagnostic / Second Set of Eyes",
         "default_offer": "Depends on current signal",
         "typical_prospect_types": "Agency, Startup, SMB, Enterprise, Ecosystem Partner, Directory Lead, Community Lead, Procurement Lead, Referral Partner, Other",
-        "legacy_source_arenas": "Prior SEI records, CRM history, renewed public signals, follow-up windows",
         "legacy_contact_roles": "Primary Contact, Owner, Founder, CTO, Operations Lead",
         "qualifying_signal_guidance": "New launch, role remains open, second signal appears, prior not-now window expires, new initiative, prospect changes role/company.",
         "disqualifying_guidance": "Do not reactivate Do Not Contact prospects. Avoid reactivation without a fresh signal, new owner, or elapsed not-now window.",
@@ -160,7 +154,7 @@ def _ensure_role(role: str) -> None:
 def seed_playbooks(*, update_existing: bool = True) -> None:
     for row in PLAYBOOKS:
         roles = [value.strip() for value in row.get("legacy_contact_roles", "").split(",") if value.strip()]
-        values = {key: value for key, value in row.items() if key not in ("legacy_contact_roles", "legacy_source_arenas")}
+        values = {key: value for key, value in row.items() if key != "legacy_contact_roles"}
         values.setdefault(
             "signal_qualification_script",
             signal_qualification_script.DEFAULT_SIGNAL_QUALIFICATION_SCRIPT,

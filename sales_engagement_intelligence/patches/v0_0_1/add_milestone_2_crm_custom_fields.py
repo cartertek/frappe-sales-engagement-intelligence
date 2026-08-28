@@ -34,8 +34,8 @@ def execute():
                 'insert_after': 'sei_tab',
             },
             {
-                'fieldname': 'sei_source_arena',
-                'label': 'Source Arena',
+                'fieldname': 'sei_research_arena',
+                'label': 'Research Arena',
                 'fieldtype': 'Data',
                 'insert_after': 'sei_prospect',
             },
@@ -43,7 +43,7 @@ def execute():
                 'fieldname': 'sei_thesis',
                 'label': 'Theses',
                 'fieldtype': 'Small Text',
-                'insert_after': 'sei_source_arena',
+                'insert_after': 'sei_research_arena',
             },
             {
                 'fieldname': 'sei_qualification_summary',
@@ -69,8 +69,8 @@ def execute():
                 'insert_after': 'sei_tab',
             },
             {
-                'fieldname': 'sei_source_arena',
-                'label': 'Source Arena',
+                'fieldname': 'sei_research_arena',
+                'label': 'Research Arena',
                 'fieldtype': 'Data',
                 'insert_after': 'sei_prospect',
             },
@@ -78,7 +78,7 @@ def execute():
                 'fieldname': 'sei_thesis',
                 'label': 'Theses',
                 'fieldtype': 'Small Text',
-                'insert_after': 'sei_source_arena',
+                'insert_after': 'sei_research_arena',
             },
             {
                 'fieldname': 'sei_primary_signal',

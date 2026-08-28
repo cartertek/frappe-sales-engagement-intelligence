@@ -22,10 +22,10 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Lead-sei_source_arena",
+  "name": "CRM Lead-sei_research_arena",
   "dt": "CRM Lead",
-  "fieldname": "sei_source_arena",
-  "label": "Source Arena",
+  "fieldname": "sei_research_arena",
+  "label": "Research Arena",
   "fieldtype": "Data",
   "insert_after": "sei_prospect",
   "is_system_generated": 1
@@ -37,7 +37,7 @@
   "fieldname": "sei_playbook",
   "label": "Theses",
   "fieldtype": "Small Text",
-  "insert_after": "sei_source_arena",
+  "insert_after": "sei_research_arena",
   "is_system_generated": 1
  },
  {
@@ -73,10 +73,10 @@
  },
  {
   "doctype": "Custom Field",
-  "name": "CRM Deal-sei_source_arena",
+  "name": "CRM Deal-sei_research_arena",
   "dt": "CRM Deal",
-  "fieldname": "sei_source_arena",
-  "label": "Source Arena",
+  "fieldname": "sei_research_arena",
+  "label": "Research Arena",
   "fieldtype": "Data",
   "insert_after": "sei_prospect",
   "is_system_generated": 1
@@ -88,7 +88,7 @@
   "fieldname": "sei_playbook",
   "label": "Theses",
   "fieldtype": "Small Text",
-  "insert_after": "sei_source_arena",
+  "insert_after": "sei_research_arena",
   "is_system_generated": 1
  },
  {

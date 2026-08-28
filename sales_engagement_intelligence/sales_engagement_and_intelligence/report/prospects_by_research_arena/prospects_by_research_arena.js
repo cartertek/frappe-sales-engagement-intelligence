@@ -1,4 +1,4 @@
-frappe.query_reports["Prospects by Source Arena"] = {
+frappe.query_reports["Prospects by Research Arena"] = {
   filters: [
     {
       fieldname: "qualification_status",

@@ -20,7 +20,6 @@ PROSPECT_FIELDS = {
     "prospect_name",
     "website",
     "prospect_type",
-    "source_arena",
     "source_url",
     "source_notes",
     "first_seen_date",
@@ -334,6 +333,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("initial_signal_type")),
             "signal_strength": row.get("initial_signal_strength"),
             "confidence": row.get("initial_confidence"),
+            "source_arena": row.get("source_arena"),
             "observed_facts": (
                 [{
                     "fact": row.get("initial_observed_fact"),
@@ -361,6 +361,7 @@ def _signal_values(prospect: str, row: dict, initial: bool = False) -> dict:
             "signal_type": resolve_signal_type(row.get("signal_type")),
             "signal_strength": row.get("signal_strength"),
             "confidence": row.get("confidence"),
+            "source_arena": row.get("source_arena"),
             "observed_facts": (
                 [{
                     "fact": row.get("observed_fact"),
@@ -633,6 +634,11 @@ def run_import_batch(batch: str, dry_run: bool = True) -> dict:
     if batch_doc.status == "Cancelled":
         frappe.throw("Cancelled import batches cannot be run.")
     rows = _read_csv(batch_doc)
+    if batch_doc.source_arena:
+        rows = [
+            {**row, "source_arena": row.get("source_arena") or batch_doc.source_arena}
+            for row in rows
+        ]
     import_kind = batch_doc.import_kind or COMBINED
     import_mode = CREATE_OR_UPDATE if dry_run else _normalize_import_mode(batch_doc.import_mode)
 
@@ -850,8 +856,8 @@ def apply_lifecycle_to_selected_prospects(prospects: list[str]) -> dict:
     return {"updated": updated, "count": len(updated)}
 
 
-def find_prospects_missing_source_arena() -> dict:
-    """Backward-compatible audit: prospects without any signal-derived arena."""
+def find_prospects_missing_research_arena() -> dict:
+    """Return prospects without any signal-derived Research Arena."""
     names = frappe.db.sql(
         """
         SELECT p.name

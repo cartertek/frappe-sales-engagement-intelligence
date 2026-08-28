@@ -32,14 +32,14 @@ Milestone 2 adds informational engagement intelligence context fields to Frappe 
 ### CRM Lead
 
 - `sei_prospect`
-- `sei_source_arena`
+- `sei_research_arena`
 - `sei_thesis`
 - `sei_qualification_summary`
 
 ### CRM Deal
 
 - `sei_prospect`
-- `sei_source_arena`
+- `sei_research_arena`
 - `sei_thesis`
 - `sei_primary_signal`
 

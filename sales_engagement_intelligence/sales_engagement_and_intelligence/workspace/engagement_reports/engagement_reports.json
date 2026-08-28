@@ -89,9 +89,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Prospects by Source Arena",
+   "label": "Prospects by Research Arena",
    "link_count": 0,
-   "link_to": "Prospects by Source Arena",
+   "link_to": "Prospects by Research Arena",
    "onboard": 0,
    "type": "Report"
   },
@@ -311,8 +311,8 @@
   {
    "color": "Purple",
    "doc_view": "Report",
-   "label": "Prospects by Source Arena",
-   "link_to": "Prospects by Source Arena",
+   "label": "Prospects by Research Arena",
+   "link_to": "Prospects by Research Arena",
    "stats_filter": "[]",
    "type": "Report"
   },

@@ -11,7 +11,7 @@ Positioning is not a draft email. It is interpreted context that lets the drafti
 Before developing positioning, load and review:
 
 - the Prospect record
-- source arena and source context
+- Research Arena and source context
 - all linked Published Signals
 - Signal Type, strength, evidence basis, and managed Signal Type guidance
 - source URLs and Observed Facts

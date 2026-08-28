@@ -1,9 +1,10 @@
 frappe.query_reports["CRM Lead Conversion Detail"] = {
   filters: [
     {
-      fieldname: "source_arena",
-      label: __("Source Arena"),
-      fieldtype: "Data"
+      fieldname: "research_arena",
+      label: __("Research Arena"),
+      fieldtype: "Link",
+      options: "SEI Research Arena"
     },
     {
       fieldname: "sei_playbook",
