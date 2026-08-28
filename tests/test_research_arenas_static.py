@@ -48,7 +48,6 @@ def test_playbook_preserves_many_to_many_arena_relationship():
 
 def test_prospect_arenas_are_derived_and_snapshotted_for_queries():
     prospect = load("sei_prospect")
-    assert field(prospect, "source_arena") is None
     arenas = field(prospect, "arenas")
     assert arenas["read_only"] == 1
     assert arenas["in_standard_filter"] == 1

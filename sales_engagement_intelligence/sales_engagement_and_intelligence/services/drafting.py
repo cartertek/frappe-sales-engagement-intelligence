@@ -13,7 +13,7 @@ from sales_engagement_intelligence.sales_engagement_and_intelligence.services.ta
 VARIABLES = (
     "prospect_name",
     "website",
-    "source_arena",
+    "research_arena",
     "signal_summary",
     "qualification_explanation",
     "thesis",
@@ -97,7 +97,7 @@ def build_context(prospect_doc, template_doc) -> dict[str, str]:
     return {
         "prospect_name": prospect_doc.prospect_name or "",
         "website": prospect_doc.website or "",
-        "source_arena": get_prospect_arenas_display(prospect_doc.name),
+        "research_arena": get_prospect_arenas_display(prospect_doc.name),
         "signal_summary": signal_summary,
         "qualification_explanation": prospect_doc.qualification_explanation or "",
         "thesis": thesis_label or "",

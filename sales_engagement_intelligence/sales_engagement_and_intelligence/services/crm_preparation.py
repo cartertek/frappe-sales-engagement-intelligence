@@ -319,8 +319,6 @@ def _record_conversion_attribution(
         doc.thesis = theses[0] if theses else None
     if _has_field("SEI Interaction Attribution", "offer"):
         doc.offer = prospect.offer
-    if _has_field("SEI Interaction Attribution", "source_arena"):
-        doc.source_arena = get_prospect_arenas_display(prospect.name)
     if crm_lead and _has_field("SEI Interaction Attribution", "crm_lead"):
         doc.crm_lead = crm_lead
     if crm_deal and _has_field("SEI Interaction Attribution", "crm_deal"):
@@ -574,7 +572,7 @@ def build_crm_lead_payload(prospect_name: str) -> dict:
     _set_if_exists(lead, "CRM Lead", "organization", prospect.crm_organization)
 
     _set_if_exists(lead, "CRM Lead", "sei_prospect", prospect.name)
-    _set_if_exists(lead, "CRM Lead", "sei_source_arena", get_prospect_arenas_display(prospect.name))
+    _set_if_exists(lead, "CRM Lead", "sei_research_arena", get_prospect_arenas_display(prospect.name))
     _set_if_exists(lead, "CRM Lead", "sei_playbook", get_prospect_playbooks_display(prospect.name))
     _set_if_exists(
         lead,
@@ -620,7 +618,7 @@ def build_crm_deal_payload(prospect_name: str, crm_lead: str | None = None) -> d
     _set_if_exists(payload, "CRM Deal", "organization", prospect.crm_organization)
     _set_if_exists(payload, "CRM Deal", "status", "Qualification")
     _set_if_exists(payload, "CRM Deal", "sei_prospect", prospect.name)
-    _set_if_exists(payload, "CRM Deal", "sei_source_arena", get_prospect_arenas_display(prospect.name))
+    _set_if_exists(payload, "CRM Deal", "sei_research_arena", get_prospect_arenas_display(prospect.name))
     _set_if_exists(payload, "CRM Deal", "sei_playbook", get_prospect_playbooks_display(prospect.name))
     _set_if_exists(payload, "CRM Deal", "sei_primary_signal", get_primary_signal(prospect.name))
     return payload
@@ -639,7 +637,7 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
     lead_values = {}
     for field, value in {
         "sei_prospect": prospect.name,
-        "sei_source_arena": get_prospect_arenas_display(prospect.name),
+        "sei_research_arena": get_prospect_arenas_display(prospect.name),
         "sei_playbook": get_prospect_playbooks_display(prospect.name),
         "sei_qualification_summary": prospect.qualification_explanation or prospect.signal_summary,
         "organization": prospect.crm_organization,
@@ -659,7 +657,7 @@ def sync_sei_context_to_crm(prospect_name: str) -> dict:
             deal_lead = crm_leads[0]
         for field, value in {
             "sei_prospect": prospect.name,
-            "sei_source_arena": get_prospect_arenas_display(prospect.name),
+            "sei_research_arena": get_prospect_arenas_display(prospect.name),
             "sei_playbook": get_prospect_playbooks_display(prospect.name),
             "sei_primary_signal": get_primary_signal(prospect.name),
             "lead": deal_lead,

@@ -63,3 +63,7 @@ Each row is recorded under `SEI Import Batch Row` with status, action, created o
 ## What import does not do
 
 Milestone 5 import does not query or mutate CRM Lead, CRM Deal, CRM Organization, CRM Contacts, ERPNext Lead, ERPNext Opportunity, ERPNext Quotation, or ERPNext Customer. It also does not send outreach, run scheduled imports, scrape websites, expose external APIs, or run playbook automation.
+
+## Signal provenance
+
+`source_arena` is Signal provenance, not Research Arena taxonomy. `SEI Signal.source_arena` links to the managed `SEI Signal Source Arena` list; imports automatically create a missing managed value when a new Source Arena name is encountered. For signal-containing imports it is written to `SEI Signal.source_arena`. If the CSV row leaves it blank, `SEI Import Batch.source_arena` supplies the default. Research Arena is derived separately from the Signal Type.

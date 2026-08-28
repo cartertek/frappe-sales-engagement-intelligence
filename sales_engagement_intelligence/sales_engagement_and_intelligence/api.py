@@ -74,6 +74,7 @@ SIGNAL_FIELDS = {
     "signal_type",
     "signal_strength",
     "confidence",
+    "source_arena",
     "observed_facts",
     "signal_claim",
     "why_this_signal_type",
@@ -161,7 +162,6 @@ ATTRIBUTION_FIELDS = {
     "thesis",
     "marketing_asset",
     "offer",
-    "source_arena",
     "crm_deal",
     "fcrm_note",
     "crm_task",
@@ -499,7 +499,7 @@ def _queue(
         order_by="next_action_date asc, modified desc",
         limit=_limit(limit),
     )
-    arena_filter = supplied.get("arena") or supplied.get("source_arena") or supplied.get("research_arena")
+    arena_filter = supplied.get("research_arena") or supplied.get("arena")
     thesis_filter = supplied.get("playbook") or supplied.get("sei_playbook")
     result_rows = [_prospect_row(row) for row in rows]
     if arena_filter:
@@ -585,7 +585,7 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
         order_by="modified desc",
         limit=_limit(limit),
     )
-    arena_filter = supplied.get("arena") or supplied.get("source_arena") or supplied.get("research_arena")
+    arena_filter = supplied.get("research_arena") or supplied.get("arena")
     thesis_filter = supplied.get("playbook") or supplied.get("sei_playbook")
     result_rows = [_prospect_row(row) for row in rows]
     if arena_filter:
@@ -600,6 +600,11 @@ def find_prospects(filters: dict | str | None = None, limit: int = 50) -> dict:
 
 def _prepare_signal_values(payload: dict | str) -> tuple[dict, list[dict]]:
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if values.get("source_arena"):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+            resolve_signal_source_arena,
+        )
+        values["source_arena"] = resolve_signal_source_arena(values["source_arena"])
     if "observed_facts" in values:
         values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values, dropped = _filter_known_fields("SEI Signal", values)
@@ -652,6 +657,11 @@ def update_signal(signal: str, payload: dict | str) -> dict:
     prospect = doc.prospect
     _check_prospect_permission(prospect, "write")
     values = {field: value for field, value in _parse_payload(payload).items() if field in SIGNAL_FIELDS}
+    if values.get("source_arena"):
+        from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
+            resolve_signal_source_arena,
+        )
+        values["source_arena"] = resolve_signal_source_arena(values["source_arena"])
     if "observed_facts" in values:
         values["observed_facts"] = _normalize_observed_facts(values["observed_facts"])
     values.pop("prospect", None)
@@ -1123,13 +1133,13 @@ def apply_lifecycle_to_selected_prospects(prospects: str | list[str]) -> dict:
 
 
 @api_endpoint
-def find_sei_prospects_missing_source_arena() -> dict:
+def find_sei_prospects_missing_research_arena() -> dict:
     _require_sei_user()
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.imports import (
-        find_prospects_missing_source_arena,
+        find_prospects_missing_research_arena,
     )
 
-    return find_prospects_missing_source_arena()
+    return find_prospects_missing_research_arena()
 
 
 @api_endpoint

@@ -15,7 +15,6 @@
   "playbook",
   "marketing_asset",
   "offer",
-  "source_arena",
   "crm_links_tab",
   "frappe_crm_links_section",
   "crm_lead",
@@ -83,12 +82,6 @@
    "label": "Offer",
    "fieldtype": "Data",
    "idx": 6
-  },
-  {
-   "fieldname": "source_arena",
-   "label": "Source Arena",
-   "fieldtype": "Data",
-   "idx": 7
   },
   {
    "fieldname": "crm_links_tab",

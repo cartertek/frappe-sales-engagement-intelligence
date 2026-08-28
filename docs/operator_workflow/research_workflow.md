@@ -4,7 +4,7 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 
 ## Workflow
 
-1. Select a source arena.
+1. Select a Research Arena.
 2. When a plausible research path appears, create a Draft Signal immediately. The Prospect does not need to exist yet and the draft may begin with only the information currently known.
 3. Use that Draft Signal as the working record for the path. Add candidate sources, Observed Facts, analysis, possible Signal Type, disqualifier checks, and uncertainty as the research develops.
 4. Open every exact source URL that may ultimately be stored on an Observed Facts row.
