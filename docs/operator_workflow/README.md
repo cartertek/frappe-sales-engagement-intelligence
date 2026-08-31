@@ -4,6 +4,10 @@ This guide is the operating manual for the completed Sales Engagement Intelligen
 
 The system does not send outreach automatically. Operators draft and send messages manually through the appropriate channel after reviewing the prospect, signal evidence, playbook, and safety status.
 
+## Follow the operator procedures as written
+
+These operator docs are executable operating procedures, not reference material to summarize or approximate. When performing SEI work, follow the applicable procedures as written and in the order they specify. Do not replace them with a summary, remembered approximation, simplified workflow, or a shorter set of principles. If a procedure requires a checklist, audit, gate, or ordered sequence, actually perform that procedure before proceeding.
+
 ## Evidence-first principle
 
 A signal is not what the source reminds us of.
