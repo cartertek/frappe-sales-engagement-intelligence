@@ -2,7 +2,7 @@
 
 SEI prepares conversion context, but Frappe CRM owns the sales records. CRM handoff is explicit and user-controlled.
 
-1. Confirm the prospect is Qualified or Manually Approved.
+1. Confirm Frappe has placed the prospect in a state eligible for CRM conversion.
 2. Confirm it is not Rejected and not Do Not Contact.
 3. Confirm no CRM Lead has already been created.
 4. Use **CRM Preparation → Mark Ready for CRM Conversion** to approve the CRM handoff. If a requirement is not met, the form displays a checklist showing which checks passed or failed.
@@ -13,7 +13,7 @@ SEI prepares conversion context, but Frappe CRM owns the sales records. CRM hand
 9. Create a CRM Deal only where there is a commercial basis or manager override.
 10. Sync SEI context to CRM after linking or creation where needed.
 
-A prospect with Qualified or Manually Approved qualification remains Research Complete until the user explicitly approves CRM handoff. Find Contact therefore means the handoff was approved but the required contact path is not yet available.
+A prospect that Frappe has qualified remains Research Complete until the user explicitly approves CRM handoff. Find Contact therefore means the handoff was approved but the required contact path is not yet available.
 
 SEI never creates ERPNext Lead, Opportunity, Quotation, Customer, or other ERPNext commercial records.
 

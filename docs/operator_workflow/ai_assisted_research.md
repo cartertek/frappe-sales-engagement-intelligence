@@ -20,7 +20,7 @@ The agent must then use that draft as its durable research workspace:
 - preserve separate competing paths as separate drafts;
 - delete a draft when its path is disproven.
 
-When a path survives research, the agent must create or identify the Prospect, link the draft to that Prospect, complete every publication requirement, and publish the Signal. The agent must not treat a Draft Signal as qualification evidence or use it to justify outreach.
+When a path survives research, the agent must create or identify the Prospect, link the draft to that Prospect, complete every publication requirement, and publish the Signal. The agent must not treat a Draft Signal as completed evidence or use it to justify outreach.
 
 The agent must keep three kinds of draft content distinct:
 
@@ -32,7 +32,7 @@ Candidate notes must never be promoted into Observed Facts merely by rewriting t
 
 ## Agent research order
 
-The agent must not start from a desired Signal Type, strength, prospect count, or qualification outcome. It must proceed in this order:
+The agent must not start from a desired Signal Type, strength, prospect count, or Prospect outcome. It must proceed in this order:
 
 1. capture candidate paths as drafts;
 2. verify exact source text and metadata;
@@ -117,7 +117,7 @@ AI must interpret quotations using the complete sentence and surrounding source 
 
 Before classifying a fact, AI must identify what the relevant term refers to, who is speaking and in what relationship to the Prospect, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
 
-If a proposed signal depends on a lexical match rather than a contextual match, AI must reject that interpretation or keep the evidence Weak and excluded from qualification.
+If a proposed signal depends on a lexical match rather than a contextual match, AI must reject that interpretation or keep the evidence Weak.
 
 ## No-overreach rule
 

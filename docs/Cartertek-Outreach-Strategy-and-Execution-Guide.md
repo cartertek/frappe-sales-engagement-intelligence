@@ -187,7 +187,7 @@ contact role
 initial offer
 credibility asset
 follow-up logic
-qualification interpretation
+signal interpretation
 ```
 
 A signal without a thesis is just research. A thesis turns evidence into a reason to contact someone.
@@ -231,14 +231,7 @@ Offer construction is therefore part of outreach strategy, not just sales follow
 
 Signal tracking is central to Cartertek outreach.
 
-A prospect should advance when it has:
-
-```
-1 strong observed signal
-or
-2 moderate observed signals
-or manual approval with documented reasoning
-```
+Frappe automatically qualifies or rejects prospects based on the strength of their signal evidence. Operators should evaluate signals accurately and let Frappe apply the qualification result.
 
 Signals should be evaluated by:
 
@@ -250,12 +243,11 @@ confidence
 source
 timing
 notes
-whether the signal counts toward qualification
 ```
 
-Only observable evidence should drive qualification.
+Signal strength should be grounded in observable evidence.
 
-Inferred evidence can be useful context, but it should not carry the same weight as an observed signal.
+Inferred evidence can be useful context, but it should not carry the same weight as observed evidence.
 
 ### Signal Strength
 
@@ -263,13 +255,13 @@ Use signal strength to describe how directly the evidence suggests timely need.
 
 ```
 Weak:
-A light indicator. Useful for context, but not enough to qualify a prospect.
+A light indicator. Useful for context.
 
 Moderate:
-A meaningful indicator. Two moderate observed signals can qualify a prospect.
+A meaningful indicator.
 
 Strong:
-A direct, specific, timely indicator. One strong observed signal can qualify a prospect.
+A direct, specific, timely indicator.
 ```
 
 ### Evidence Basis
@@ -557,7 +549,7 @@ Formal CRM records should be created or linked only when the prospect is real en
 A prospect may be handed off into CRM when:
 
 ```
-it is qualified or manually approved
+Frappe has qualified it based on signal strength
 there is enough identity/contact context
 Cartertek intends to pursue the account
 the prospect is not Rejected or Do Not Contact
@@ -896,14 +888,7 @@ contact path if known
 
 Verify whether the evidence is observed or inferred.
 
-Promote prospects when they meet the qualification rule:
-
-```
-1 strong observed signal
-or
-2 moderate observed signals
-or manual approval with documented reasoning
-```
+Evaluate signal strength accurately. Frappe automatically qualifies or rejects the prospect based on the resulting signal strengths.
 
 ### 4. Work queues
 
