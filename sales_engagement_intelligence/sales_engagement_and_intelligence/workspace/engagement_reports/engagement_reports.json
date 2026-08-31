@@ -98,9 +98,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Outcomes by Thesis",
+   "label": "Outcomes by Playbook",
    "link_count": 0,
-   "link_to": "Outcomes by Thesis",
+   "link_to": "Outcomes by Playbook",
    "onboard": 0,
    "type": "Report"
   },
@@ -215,9 +215,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Response Category by Thesis",
+   "label": "Response Category by Playbook",
    "link_count": 0,
-   "link_to": "Response Category by Thesis",
+   "link_to": "Response Category by Playbook",
    "onboard": 0,
    "type": "Report"
   },
@@ -319,8 +319,8 @@
   {
    "color": "Purple",
    "doc_view": "Report",
-   "label": "Outcomes by Thesis",
-   "link_to": "Outcomes by Thesis",
+   "label": "Outcomes by Playbook",
+   "link_to": "Outcomes by Playbook",
    "stats_filter": "[]",
    "type": "Report"
   },
@@ -423,8 +423,8 @@
   {
    "color": "Purple",
    "doc_view": "Report",
-   "label": "Response Category by Thesis",
-   "link_to": "Response Category by Thesis",
+   "label": "Response Category by Playbook",
+   "link_to": "Response Category by Playbook",
    "stats_filter": "[]",
    "type": "Report"
   },
