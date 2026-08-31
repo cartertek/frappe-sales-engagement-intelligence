@@ -53,11 +53,11 @@ def test_unified_conversion_and_crm_routes():
     assert "/crm/${collections[doctype]}" in js
 
 
-def test_signal_type_playbook_link_is_the_single_source_of_truth():
+def test_signal_type_playbook_link_and_native_table_are_synchronized():
     playbook = dt("sei_playbook")
     fields = {field["fieldname"]: field for field in playbook["fields"]}
-    assert fields["signal_types"]["fieldtype"] == "HTML"
-    assert "options" not in fields["signal_types"]
+    assert fields["signal_types"]["fieldtype"] == "Table"
+    assert fields["signal_types"]["options"] == "SEI Playbook Signal Type"
 
     signal_type = dt("sei_signal_type")
     signal_fields = {field["fieldname"]: field for field in signal_type["fields"]}
@@ -67,5 +67,5 @@ def test_signal_type_playbook_link_is_the_single_source_of_truth():
 
     playbook_controller = (ROOT / "doctype/sei_playbook/sei_playbook.py").read_text()
     signal_type_controller = (ROOT / "doctype/sei_signal_type/sei_signal_type.py").read_text()
-    assert "sync_signal_type_links" not in playbook_controller
-    assert "sync_playbook_child_row" not in signal_type_controller
+    assert "sync_signal_type_links" in playbook_controller
+    assert "sync_playbook_child_row" in signal_type_controller
