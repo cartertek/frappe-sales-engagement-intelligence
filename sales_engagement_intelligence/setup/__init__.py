@@ -329,7 +329,7 @@ MILESTONE_6_REPORTS = (
     "Inferred Signal Review",
     "Missing Evidence Report",
     "Prospects by Research Arena",
-    "Outcomes by Thesis",
+    "Outcomes by Playbook",
     "Asset Usage and Outcomes",
     "Offer Performance",
     "CRM Conversion Summary",
@@ -342,7 +342,7 @@ MILESTONE_6_REPORTS = (
     "Import Source Quality",
     "Data Hygiene Dashboard",
     "Interaction Attribution Summary",
-    "Response Category by Thesis",
+    "Response Category by Playbook",
     "Channel Outcome Report",
 )
 
