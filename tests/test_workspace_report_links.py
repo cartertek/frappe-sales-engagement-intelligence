@@ -35,3 +35,19 @@ def test_engagement_workspace_report_links_resolve_to_shipped_reports():
 
     missing = sorted(linked_reports - report_names)
     assert not missing, f"Workspace links to missing reports: {missing}"
+
+
+def test_workspace_repair_renames_legacy_report_rows_before_save():
+    setup_source = (ROOT / "sales_engagement_intelligence" / "setup" / "__init__.py").read_text()
+    expected = {
+        '"Prospects by Source Arena": "Prospects by Research Arena"',
+        '"Outcomes by Thesis": "Outcomes by Playbook"',
+        '"Response Category by Thesis": "Response Category by Playbook"',
+    }
+    for mapping in expected:
+        assert mapping in setup_source
+    ensure_start = setup_source.index("def ensure_milestone_6_workspace_reports")
+    ensure_source = setup_source[ensure_start:]
+    rename_call = ensure_source.index("_rename_legacy_workspace_report_rows(workspace)")
+    save_call = ensure_source.index("workspace.save(ignore_permissions=True)")
+    assert rename_call < save_call
