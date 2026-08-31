@@ -9,10 +9,11 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 3. Use that Draft Signal as the working record for the path. Add candidate sources, Observed Facts, analysis, possible Signal Type, disqualifier checks, and uncertainty as the research develops.
 4. Open every exact source URL that may ultimately be stored on an Observed Facts row.
 5. Confirm that each opened page contains the expected entity, document or role, and every complete quotation recorded from it.
-6. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
-7. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
-8. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
-9. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
+6. Identify the author or speaker of the evidence, verify their relationship to the Prospect, and determine whether the source is first-party, second-party, or third-party. Do not infer organizational authorship from where the content is hosted.
+7. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
+8. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
+9. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
+10. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
 
 
 ## Draft Signals are the research workspace
@@ -61,12 +62,30 @@ A thread or directory may help discover a candidate, but the signal should link 
 
 An aggregator may be useful context, but the evaluator should prefer the original source when available.
 
+## Authorship and provenance verification
+
+The evidence source must be understood as a piece of communication by a specific author or speaker, not merely as content found under a Prospect's name or infrastructure. Verify who created the relevant statement and what relationship that person, account, organization, or automated system has to the Prospect.
+
+Do not assume that content is first-party because it appears:
+
+- in a company-owned GitHub repository or issue tracker;
+- on a company community forum or support board;
+- under a company subreddit, social tag, marketplace listing, or discussion thread;
+- on a company-owned domain that permits user-generated content;
+- in a repository where an external contributor has detailed technical knowledge.
+
+If the author is an employee, maintainer, contractor, customer, external contributor, anonymous user, reporter, vendor, automated agent, or other third party, preserve that distinction. If affiliation is unknown, say so and narrow the claim accordingly. The venue tells you where the statement appears; it does not by itself tell you who is speaking for the organization.
+
 ## Source review checklist
 
 Before creating or strengthening a signal, check:
 
 - Did I open the exact URL that will be stored?
 - Does that exact page contain the expected company or entity?
+- Who authored or spoke the relevant statement?
+- What is the author's or speaker's relationship to the Prospect, and can that relationship be verified?
+- Is the evidence first-party, second-party, or third-party?
+- Am I attributing a statement to the company only because of the domain, repository, issue tracker, forum, or other hosting venue?
 - Does it contain the expected role, post, RFP, issue, or document?
 - Does it contain every complete quotation proposed for the Observed Facts rows?
 - Is it a real content page rather than a generic ATS shell, board homepage, login page, or error page?
@@ -82,6 +101,8 @@ A useful research result identifies:
 
 - prospect
 - exact evidence source
+- author or speaker identity and verified relationship to the Prospect
+- provenance classification / attribution limits
 - observed facts
 - candidate Signal Type
 - evidence specificity

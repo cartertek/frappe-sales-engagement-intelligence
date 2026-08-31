@@ -41,9 +41,27 @@ Do not convert a proposition from memory, a search result, or a researcher summa
 
 A warning sign is that all fact rows share the evaluator's writing style, use Signal Type terminology unusually cleanly, or begin with generic summary constructions such as `The company stated` or `The report found` when those words do not appear in the source.
 
+## Authorship, speaker identity, and provenance are required evidence context
+
+Good research requires establishing not only what a source says, but **who is saying it, in what capacity, and why the source can be attributed to the Prospect**. Source location is not speaker identity. A statement appearing on a company-owned domain, GitHub repository, issue tracker, community forum, social feed, subreddit, marketplace, or other venue must not be treated as a company statement merely because the company owns or hosts that venue.
+
+Before attributing a statement or interpretation to a Prospect, identify the actual author or speaker and verify the relationship that makes the attribution valid. Distinguish among company employees, maintainers, contractors, customers, external contributors, anonymous users, automated agents, reporters, vendors, and other third parties. If affiliation or authority cannot be established, attribute the evidence to the actual source or author and record the uncertainty; do not silently promote it to first-party evidence.
+
+Authorship and provenance affect what the evidence proves. For example, `A GitHub issue in the PostHog repository reports...` is not equivalent to `PostHog reports...` unless the issue author's relationship to PostHog establishes that attribution. Technical specificity, repository placement, or access to project internals do not by themselves establish speaker identity.
+
+For every source used as evidence, determine:
+
+1. Who authored, posted, or spoke the relevant statement?
+2. What is that person's or system's relationship to the Prospect?
+3. Is the statement first-party, second-party, or third-party evidence?
+4. Is the author speaking for the organization, describing personal experience, reporting an observation, or making an external allegation?
+5. Does the Signal Claim preserve that distinction exactly?
+
+If the required provenance cannot be verified, keep the attribution narrow. Do not write `the company says`, `the company documents`, `the company acknowledges`, `we`, `our`, or equivalent organizational attribution unless the evidence establishes that the speaker is authorized or legitimately first-party.
+
 ## Claim-clause support and contradiction review
 
-Before publication, break the Signal Claim into its material clauses. Each claim about scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts. Remove unsupported qualifiers rather than treating them as reasonable inference.
+Before publication, break the Signal Claim into its material clauses. Each claim about authorship or speaker identity, organizational attribution, scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts or verified provenance evidence. Remove unsupported qualifiers rather than treating them as reasonable inference.
 
 If the cited source contains information that contradicts any part of the Signal Claim, the signal cannot pass review until the contradiction is resolved. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
 
@@ -54,9 +72,11 @@ Publishing is not complete until the stored record is audited after save:
 1. Read every stored Observed Facts row in full.
 2. Reopen each row's exact `source_url`.
 3. Confirm the stored text appears verbatim as a complete sentence and belongs to the expected entity and document.
-4. Confirm `source_date`, `evidence_basis`, and `evidence_specificity` independently for each row.
-5. Confirm the latest-state evidence does not resolve or contradict the claim.
-6. Confirm every material claim clause is supported and the selected strength follows from the managed definition.
+4. Confirm the actual author or speaker, their relationship to the Prospect, and whether the evidence is legitimately first-party, second-party, or third-party.
+5. Confirm every organizational attribution in the Signal Claim is supported by that provenance; repository ownership, domain ownership, or venue placement alone is not enough.
+6. Confirm `source_date`, `evidence_basis`, and `evidence_specificity` independently for each row.
+7. Confirm the latest-state evidence does not resolve or contradict the claim.
+8. Confirm every material claim clause is supported and the selected strength follows from the managed definition.
 
 Checking only that fields are populated, URLs return successfully, or the source discusses the same general topic is not an evidence audit.
 
