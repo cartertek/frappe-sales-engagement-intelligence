@@ -382,7 +382,7 @@ def ensure_milestone_6_workspace_reports() -> None:
         return
 
     workspace = frappe.get_doc("Workspace", "Engagement Reports")
-    changed = _rename_legacy_workspace_report_rows(workspace)
+    changed = False
 
     content = _load_workspace_content(workspace.content)
     changed = (
@@ -450,6 +450,8 @@ def ensure_milestone_6_workspace_reports() -> None:
             update_modified=False,
         )
         changed = False
+
+    changed = _rename_legacy_workspace_report_rows(workspace) or changed
 
     for report_name in MILESTONE_6_REPORTS:
         changed = (

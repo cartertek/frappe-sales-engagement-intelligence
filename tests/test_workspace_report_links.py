@@ -48,6 +48,7 @@ def test_workspace_repair_renames_legacy_report_rows_before_save():
         assert mapping in setup_source
     ensure_start = setup_source.index("def ensure_milestone_6_workspace_reports")
     ensure_source = setup_source[ensure_start:]
+    content_reset = ensure_source.index("changed = False", ensure_source.index("frappe.db.set_value"))
     rename_call = ensure_source.index("_rename_legacy_workspace_report_rows(workspace)")
     save_call = ensure_source.index("workspace.save(ignore_permissions=True)")
-    assert rename_call < save_call
+    assert content_reset < rename_call < save_call
