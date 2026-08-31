@@ -43,7 +43,7 @@ A warning sign is that all fact rows share the evaluator's writing style, use Si
 
 ## Claim-clause support and contradiction review
 
-Before publication, break the Signal Claim into its material clauses. Each claim about scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts. Remove unsupported qualifiers rather than treating them as reasonable inference.
+Before publication, break the Signal Claim into its material clauses. Each claim about authorship or speaker identity, organizational attribution, scope, recurrence, affected parties, causation, severity, duration, current status, human work, financial cost, or business consequence must be directly supported by one or more Observed Facts or verified source provenance. Remove unsupported qualifiers rather than treating them as reasonable inference.
 
 If the cited source contains information that contradicts any part of the Signal Claim, the signal cannot pass review until the contradiction is resolved. A source saying an issue was fixed, restored, stabilized, limited, or completed is an anti-signal against a present-tense or unresolved claim unless separate later evidence establishes residual aftermath. Do not preserve a classification by replacing a disproven rationale with a succession of adjacent interpretations. When a material premise fails, reevaluate the whole signal from the verified facts.
 
@@ -53,10 +53,10 @@ Publishing is not complete until the stored record is audited after save:
 
 1. Read every stored Observed Facts row in full.
 2. Reopen each row's exact `source_url`.
-3. Confirm the stored text appears verbatim as a complete sentence and belongs to the expected entity and document.
+3. Confirm the stored text appears verbatim as a complete sentence and belongs to the expected entity and document, including who actually authored or spoke the relevant statement and what relationship that speaker has to the Prospect. Do not treat repository, domain, forum, or issue-tracker placement as proof that the Prospect is the speaker.
 4. Confirm `source_date`, `evidence_basis`, and `evidence_specificity` independently for each row.
 5. Confirm the latest-state evidence does not resolve or contradict the claim.
-6. Confirm every material claim clause is supported and the selected strength follows from the managed definition.
+6. Confirm every material claim clause—including any wording such as `the company says`, `reports`, `documents`, or `acknowledges`—is supported and the selected strength follows from the managed definition.
 
 Checking only that fields are populated, URLs return successfully, or the source discusses the same general topic is not an evidence audit.
 
@@ -64,15 +64,16 @@ Checking only that fields are populated, URLs return successfully, or the source
 
 Interpret a quotation according to its complete sentence, surrounding passage, subject, and real-world meaning. A source using the same word or phrase as a Signal Type definition does not establish that the source describes the same concept.
 
-Do not classify evidence by literal keyword substitution. Determine what the source is actually describing, who or what is acting, and what consequence is established. For example, `processing work` performed by employees may support an operational-work claim, while algorithmic processing performed by software does not. Terms such as `capacity`, `cost`, `support`, `performance`, `processing`, and `work` can refer to materially different concepts depending on context.
+Do not classify evidence by literal keyword substitution. Determine what the source is actually describing, who is speaking, who or what is acting, what relationship the speaker has to the Prospect, and what consequence is established. For example, `processing work` performed by employees may support an operational-work claim, while algorithmic processing performed by software does not. Terms such as `capacity`, `cost`, `support`, `performance`, `processing`, and `work` can refer to materially different concepts depending on context.
 
 Before matching a fact to a Signal Type, ask:
 
 1. What does the relevant word or phrase refer to in this source?
-2. Who or what performs the action or bears the burden?
-3. Is the described condition ongoing, temporary, or already resolved?
-4. What consequence does the complete passage actually establish?
-5. Does that contextual meaning—not merely the wording—satisfy the managed definition?
+2. Who is speaking, and what relationship does that speaker have to the Prospect?
+3. Who or what performs the action or bears the burden?
+4. Is the described condition ongoing, temporary, or already resolved?
+5. What consequence does the complete passage actually establish?
+6. Does that contextual meaning—not merely the wording—satisfy the managed definition?
 
 If the match depends on reusing the same word with a different meaning, treating a technical symptom as its human, financial, or organizational consequence, or ignoring that the source describes a resolved condition, the fact does not support the signal claim.
 

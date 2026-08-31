@@ -57,7 +57,7 @@ For each proposed signal, AI must separate:
 
 ## Exact-source verification gate
 
-Before proposing or creating a Moderate or Strong signal, the assistant must open each exact URL that will be stored on the relevant Observed Facts row during the current research run. The opened page must contain the expected entity or company, the expected document or role, and each complete verbatim quotation and its matching fact-level source metadata.
+Before proposing or creating a Moderate or Strong signal, the assistant must open each exact URL that will be stored on the relevant Observed Facts row during the current research run. The opened page must contain the expected entity or company, the expected document or role, and each complete verbatim quotation and its matching fact-level source metadata. The assistant must also identify who actually authored or spoke the relevant statement and verify any relationship needed to attribute that statement to the Prospect; repository, domain, forum, or issue-tracker placement alone is not sufficient.
 
 Search snippets, cached text, ATS APIs, job feeds, aggregators, and discovery results may identify candidates, but they do not prove that the proposed evidence URL is valid. The assistant must not construct or infer a public source URL from an ATS board slug, job ID, API response, or search result.
 
@@ -115,7 +115,7 @@ If a source is useful for discovery but not direct evidence, AI must find the ex
 
 AI must interpret quotations using the complete sentence and surrounding source context. Identical or similar wording in a source and a Signal Type definition is not proof that their meanings match.
 
-Before classifying a fact, AI must identify what the relevant term refers to, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
+Before classifying a fact, AI must identify what the relevant term refers to, who is speaking and in what relationship to the Prospect, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
 
 If a proposed signal depends on a lexical match rather than a contextual match, AI must reject that interpretation or keep the evidence Weak and excluded from qualification.
 

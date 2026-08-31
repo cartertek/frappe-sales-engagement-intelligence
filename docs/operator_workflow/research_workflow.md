@@ -8,7 +8,7 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 2. When a plausible research path appears, create a Draft Signal immediately. The Prospect does not need to exist yet and the draft may begin with only the information currently known.
 3. Use that Draft Signal as the working record for the path. Add candidate sources, Observed Facts, analysis, possible Signal Type, disqualifier checks, and uncertainty as the research develops.
 4. Open every exact source URL that may ultimately be stored on an Observed Facts row.
-5. Confirm that each opened page contains the expected entity, document or role, and every complete quotation recorded from it.
+5. Confirm that each opened page contains the expected entity, document or role, and every complete quotation recorded from it. Identify who actually authored or spoke the relevant statement and what relationship, if any, that speaker has to the Prospect.
 6. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
 7. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
 8. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
@@ -67,13 +67,15 @@ Before creating or strengthening a signal, check:
 
 - Did I open the exact URL that will be stored?
 - Does that exact page contain the expected company or entity?
+- Who actually authored or spoke the relevant statement, and what is their relationship to the Prospect?
+- Am I treating content as first-party only because it appears in the Prospect's repository, domain, forum, issue tracker, or other hosted venue?
 - Does it contain the expected role, post, RFP, issue, or document?
 - Does it contain every complete quotation proposed for the Observed Facts rows?
 - Is it a real content page rather than a generic ATS shell, board homepage, login page, or error page?
 - Does this source point to one specific piece of evidence?
 - Does the source directly support the signal claim?
 - Is the source current enough for the claim being made?
-- Is the source primary, or merely an aggregator?
+- Is the source primary, or merely an aggregator? If it is user-generated or third-party content on a Prospect-controlled venue, am I preserving that provenance rather than attributing it to the Prospect?
 - If this is a collection, list, or search page, have I found the specific item?
 
 ## Research output
