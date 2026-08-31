@@ -319,6 +319,28 @@ def ensure_milestone_5_workspace_items() -> None:
         workspace.save(ignore_permissions=True)
 
 
+LEGACY_MILESTONE_6_REPORT_RENAMES = {
+    "Prospects by Source Arena": "Prospects by Research Arena",
+    "Outcomes by Thesis": "Outcomes by Playbook",
+    "Response Category by Thesis": "Response Category by Playbook",
+}
+
+
+def _rename_legacy_workspace_report_rows(workspace) -> bool:
+    changed = False
+    for collection_name in ("links", "shortcuts"):
+        for row in getattr(workspace, collection_name, []):
+            old_name = row.get("link_to")
+            new_name = LEGACY_MILESTONE_6_REPORT_RENAMES.get(old_name)
+            if not new_name:
+                continue
+            row.set("link_to", new_name)
+            if row.get("label") == old_name:
+                row.set("label", new_name)
+            changed = True
+    return changed
+
+
 MILESTONE_6_REPORTS = (
     "Prospect Lifecycle Summary",
     "Active Prospect Queue",
@@ -329,7 +351,7 @@ MILESTONE_6_REPORTS = (
     "Inferred Signal Review",
     "Missing Evidence Report",
     "Prospects by Research Arena",
-    "Outcomes by Thesis",
+    "Outcomes by Playbook",
     "Asset Usage and Outcomes",
     "Offer Performance",
     "CRM Conversion Summary",
@@ -342,7 +364,7 @@ MILESTONE_6_REPORTS = (
     "Import Source Quality",
     "Data Hygiene Dashboard",
     "Interaction Attribution Summary",
-    "Response Category by Thesis",
+    "Response Category by Playbook",
     "Channel Outcome Report",
 )
 
@@ -428,6 +450,8 @@ def ensure_milestone_6_workspace_reports() -> None:
             update_modified=False,
         )
         changed = False
+
+    changed = _rename_legacy_workspace_report_rows(workspace) or changed
 
     for report_name in MILESTONE_6_REPORTS:
         changed = (
