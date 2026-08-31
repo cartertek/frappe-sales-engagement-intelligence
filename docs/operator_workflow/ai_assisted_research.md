@@ -37,11 +37,10 @@ The agent must not start from a desired Signal Type, strength, prospect count, o
 1. capture candidate paths as drafts;
 2. verify exact source text and metadata;
 3. search for contradictory and newer evidence;
-4. identify the actual author or speaker, verify their relationship to the Prospect, and determine the valid attribution boundary;
-5. determine what the verified passages mean in context;
-6. derive the claim, type, and strength from that evidence;
-7. attempt to disprove the proposed signal;
-8. publish only after a source-by-source audit.
+4. determine what the verified passages mean in context;
+5. derive the claim, type, and strength from that evidence;
+6. attempt to disprove the proposed signal;
+7. publish only after a source-by-source audit.
 
 Batch targets such as finding a requested number of Strong prospects are search objectives, not permission to relax evidence rules. A batch can legitimately produce few or no publishable signals.
 
@@ -58,7 +57,7 @@ For each proposed signal, AI must separate:
 
 ## Exact-source verification gate
 
-Before proposing or creating a Moderate or Strong signal, the assistant must open each exact URL that will be stored on the relevant Observed Facts row during the current research run. The opened page must contain the expected entity or company, the expected document or role, and each complete verbatim quotation and its matching fact-level source metadata. The assistant must also identify the actual author or speaker and verify the relationship, if any, that permits the statement to be attributed to the Prospect. Hosting location alone is not proof of authorship or organizational authority.
+Before proposing or creating a Moderate or Strong signal, the assistant must open each exact URL that will be stored on the relevant Observed Facts row during the current research run. The opened page must contain the expected entity or company, the expected document or role, and each complete verbatim quotation and its matching fact-level source metadata. The assistant must also identify who actually authored or spoke the relevant statement and verify any relationship needed to attribute that statement to the Prospect; repository, domain, forum, or issue-tracker placement alone is not sufficient.
 
 Search snippets, cached text, ATS APIs, job feeds, aggregators, and discovery results may identify candidates, but they do not prove that the proposed evidence URL is valid. The assistant must not construct or infer a public source URL from an ATS board slug, job ID, API response, or search result.
 
@@ -76,10 +75,6 @@ Exact evidence source:
 Exact URL opened:
 Final URL after redirects:
 Expected entity found:
-Author or speaker:
-Verified relationship to Prospect:
-First-party / second-party / third-party:
-Allowed attribution:
 Expected document or role found:
 Observed Facts found verbatim (one row per fact):
 Generic shell, login, or error page:
@@ -101,8 +96,6 @@ Problem evidence:
 Latest-state evidence:
 Residual condition still present:
 Material claim clauses and supporting fact rows:
-Authorship / speaker identity verified:
-Every organizational attribution supported by provenance:
 Contradictory evidence considered:
 Each stored quotation found verbatim at its exact URL:
 Each fact's evidence basis and specificity checked independently:
@@ -118,19 +111,11 @@ If AI cannot explain why the signal is not Weak, it must propose Weak.
 
 If a source is useful for discovery but not direct evidence, AI must find the exact evidence source or propose Weak/context only.
 
-## Authorship and provenance rule
-
-AI must explicitly determine who authored or spoke each material source statement and what relationship that author or speaker has to the Prospect before assigning organizational attribution. Content appearing in a company's repository, issue tracker, forum, social feed, domain, or other hosted venue is not automatically a statement by the company.
-
-AI must not infer that an author is an employee, maintainer, authorized representative, or first-party source from repository ownership, technical specificity, access to project internals, username familiarity, or hosting location. If affiliation cannot be verified, AI must attribute the statement to the actual issue, post, author, or source and preserve the uncertainty.
-
-Any Signal Claim clause such as `the company says`, `the company reports`, `the company documents`, `the company acknowledges`, or equivalent wording requires verified provenance supporting that speaker identity. If that provenance is absent, the clause is unsupported and must be removed or narrowed before publication.
-
 ## Contextual interpretation rule
 
 AI must interpret quotations using the complete sentence and surrounding source context. Identical or similar wording in a source and a Signal Type definition is not proof that their meanings match.
 
-Before classifying a fact, AI must identify what the relevant term refers to, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
+Before classifying a fact, AI must identify what the relevant term refers to, who is speaking and in what relationship to the Prospect, who or what performs the action or bears the burden, whether the condition is ongoing or resolved, and what consequence the passage actually establishes. Technical processing is not human processing work. A temporary throughput loss is not an ongoing operating burden. A plan to improve reliability is not proof that the improvement work is excessive operational toil.
 
 If a proposed signal depends on a lexical match rather than a contextual match, AI must reject that interpretation or keep the evidence Weak and excluded from qualification.
 
