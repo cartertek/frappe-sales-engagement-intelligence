@@ -1,7 +1,7 @@
 # Qualification
 
-Operators are responsible for researching evidence and assigning accurate Signal Types and strengths. Frappe automatically qualifies or rejects the Prospect based on the resulting signal strengths.
+Qualification is driven by SEI Signal evidence and strength. Operators are responsible for researching the evidence, selecting the correct managed Signal Type, and assigning the correct strength. Frappe automatically applies the Prospect's qualification or rejection state from the resulting signal strengths.
 
-Do not reproduce qualification thresholds or playbook qualification logic manually in the operator workflow. Do not change signal strength to obtain a desired Prospect qualification outcome. Evaluate each Signal from its evidence and managed Signal Type definition, then let Frappe apply the resulting qualification and lifecycle state automatically.
+Do not manually reproduce or apply qualification thresholds in the operator workflow. Do not change signal strength to obtain a desired qualification outcome; evaluate the Signal from its evidence and managed Signal Type definition, then let Frappe apply the resulting qualification state.
 
-Rejected and Do Not Contact remain protected lifecycle states.
+Qualification status remains part of the Prospect workflow and should be reviewed when deciding the next operational action. Rejected and Do Not Contact remain protected lifecycle states.

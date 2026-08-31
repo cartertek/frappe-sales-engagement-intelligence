@@ -29,7 +29,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 4. For a supported path, create or identify the Prospect, link the draft, complete it, and publish the Signal.
 5. Review import rows, duplicate warnings, and missing evidence.
 6. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
-7. Confirm the Frappe-applied qualification/lifecycle state, observed/inferred evidence, and contact path.
+7. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
 8. Complete the ordered [Initial Outreach](initial-outreach.md) process: develop Prospect Positioning, pass its completion gate, then draft and verify the message.
 9. Choose any remaining offer, asset, contact, or template details required by the approved positioning.
 10. Save the approved result as an unsent row in the Prospect's Message Drafts table. Saving the draft must not change lifecycle status or mark the draft sent.
@@ -44,7 +44,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 4. Check disqualifiers and revise the draft whenever new evidence changes the path.
 5. Delete the draft if the path is disproven.
 6. If supported, create or identify the Prospect, link the draft, complete all publication requirements, and publish it.
-7. Let Frappe automatically apply qualification and rejection from the strengths of Published Signals.
+7. Let qualification and lifecycle logic advance only Published Signals.
 8. Use reviewer feedback to improve future evaluation.
 
 ## Where rules live

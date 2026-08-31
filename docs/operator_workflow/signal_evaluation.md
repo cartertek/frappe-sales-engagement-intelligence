@@ -17,11 +17,11 @@ Use this decision rule:
 3. **Path disproven:** delete the Draft Signal.
 4. **Path supported:** create or identify the Prospect, link the draft, complete all required fields and evidence rules, then publish it.
 
-Do not publish merely because a path remains possible. Publication means the Signal satisfies the same required-field, fact-level evidence, Signal Type, strength, and guardrail rules that previously applied at creation time. Only Published Signals may affect Frappe's automatic Prospect qualification/rejection state or downstream outreach context.
+Do not publish merely because a path remains possible. Publication means the Signal satisfies the same required-field, fact-level evidence, Signal Type, strength, and guardrail rules that previously applied at creation time. Only Published Signals may count toward qualification or downstream outreach context.
 
 ## Evidence must precede classification
 
-The draft workflow exists to prevent the evaluator from deciding on a Signal Type or desired Prospect outcome and then composing evidence to fit it. Use this dependency order:
+The draft workflow exists to prevent the evaluator from deciding on a Signal Type or desired qualification outcome and then composing evidence to fit it. Use this dependency order:
 
 ```text
 verified verbatim facts
@@ -88,11 +88,19 @@ Ask these questions in order:
 5. Do any disqualifiers apply?
 6. Why is this not Weak?
 
-## Signal strength is independent from contact strategy and actionability
+## Qualification independence from contact strategy and actionability
 
-Signal strength must be based on the evidence and the managed Signal Type criteria. Contact strategy, ease of reaching a buyer, procurement friction, budget assumptions, vendor accessibility, and general commercial actionability must not increase or decrease signal strength.
+Signal qualification must be based on the evidence and the managed Signal Type / Playbook criteria. Contact strategy, ease of reaching a buyer, procurement friction, budget assumptions, vendor accessibility, and general commercial actionability must not increase or decrease signal strength.
 
-Do not downgrade a real signal because the best contact is unclear, the organization is large, procurement may be complex, or outside-vendor engagement is uncertain. Likewise, do not upgrade a weak signal because the organization appears well funded or commercially attractive. Evaluate the Signal accurately; Frappe automatically applies Prospect qualification or rejection from the resulting signal strengths.
+Do not downgrade a real signal because the best contact is unclear, the organization is large, procurement may be complex, or outside-vendor engagement is uncertain. Those are later outreach and contact-research questions. Likewise, do not upgrade a weak signal because the organization appears well funded or commercially attractive.
+
+The operator must keep these decisions separate:
+
+1. Signal qualification: what does the evidence prove, and how strong is the observed need under the managed rules?
+2. Contact strategy: who is organizationally closest to the problem and senior enough to act?
+3. Commercial actionability: whether Cartertek can realistically pursue the opportunity.
+
+Only the first belongs in signal strength.
 
 ## Signal name
 
@@ -102,7 +110,7 @@ Do not use the generated SEI record ID, the prospect name alone, or the Signal T
 
 ## Assistant-created signal default
 
-Assistant-created signals default to Weak unless `observed_facts` contains at least one direct quotation copied verbatim from the source. Each fact must contain at least one complete sentence and directly support the selected managed Signal Type. One fact is the minimum; add multiple facts whenever the signal has multiple claims or one quotation does not support the complete analysis.
+Assistant-created signals default to Weak and excluded from qualification unless `observed_facts` contains at least one direct quotation copied verbatim from the source. Each fact must contain at least one complete sentence and directly support the selected managed Signal Type. One fact is the minimum; add multiple facts whenever the signal has multiple claims or one quotation does not support the complete analysis.
 
 Each Observed Facts row should contain one coherent verbatim fact. Do not paraphrase, synthesize, interpret, or splice separate source passages into one row. Preserve original wording and sentence boundaries. Add additional rows for additional supporting facts. Multiple facts are encouraged when needed to support every claim. Any paraphrase or explanation of what the quotation means belongs in `signal_claim`, `why_this_signal_type`, `why_not_weak`, or `evidence_notes`.
 
@@ -112,7 +120,7 @@ Use this test before creating or strengthening a signal:
 
 > If the selected Signal Type were hidden, would the Observed Facts still plainly describe that exact kind of signal and support every claim?
 
-If the answer is no, create only a Weak signal or reject the candidate.
+If the answer is no, create only a Weak, excluded signal or reject the candidate.
 
 ## Signal Type assertion examples
 

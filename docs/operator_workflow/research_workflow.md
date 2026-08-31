@@ -12,7 +12,7 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 6. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
 7. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
 8. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
-9. Only Published Signals affect Frappe's automatic Prospect qualification/rejection state, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
+9. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
 
 
 ## Draft Signals are the research workspace
@@ -26,7 +26,7 @@ Update the same draft throughout the research path:
 - capture disqualifiers, contradictions, missing evidence, and uncertainty as they emerge;
 - keep separate paths in separate Draft Signals so a disproven theory can be deleted without losing valid work.
 
-A Draft Signal is not a completed research result. It must not be used for outreach positioning or allowed to affect the Prospect's Frappe-applied workflow state.
+A Draft Signal is not evidence that a Prospect qualifies. It must not be treated as a completed research result, used for outreach positioning, or allowed to advance lifecycle state.
 
 ## Develop the draft in evidence-first stages
 

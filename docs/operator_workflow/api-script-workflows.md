@@ -22,7 +22,7 @@ For script/API-driven research, call `add_draft_signal(payload)` to create that 
 
 For a supported path, search for an existing organization-level Prospect before creating one. `prospect_name` must use the organization's canonical public name; product, platform, migration, initiative, location, and signal context belong on the Signal or in prospect metadata and notes.
 
-Only Published Signals may affect Frappe's automatic Prospect qualification/rejection state, lifecycle progression, playbook derivation, contact research, or message drafting. Do not create CRM records unless the user explicitly requests the manager-controlled action.
+Only Published Signals may feed qualification, lifecycle progression, playbook derivation, contact research, or message drafting. Do not create CRM records unless the user explicitly requests the manager-controlled action.
 
 ## Imports
 
