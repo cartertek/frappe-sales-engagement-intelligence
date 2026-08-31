@@ -11,8 +11,10 @@ Research moves from source discovery to candidate signal evaluation. The goal is
 5. Confirm that each opened page contains the expected entity, document or role, and every complete quotation recorded from it. Identify who actually authored or spoke the relevant statement and what relationship, if any, that speaker has to the Prospect.
 6. Continually revise the draft as evidence strengthens, changes the interpretation, or rules out the path.
 7. If the path is disproven, delete the Draft Signal. Do not create a Prospect merely to preserve a failed research path.
-8. If the path remains supported, create or identify the Prospect, link the Draft Signal to it, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
-9. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context.
+8. If the signal path remains supported, perform the **Prospect eligibility review** below before creating or linking a Prospect. A supported signal is not by itself permission to create a Prospect.
+9. Create or identify a Prospect only when the candidate organization passes the Prospect eligibility review. If it does not pass, do not create a Prospect, do not promote the Draft Signal, and do not continue treating the candidate as an outreach prospect. Preserve useful discovery context outside the Prospect workflow as appropriate.
+10. For an eligible prospect, search for an existing organization-level Prospect first. Create one only when no appropriate record exists, link the Draft Signal, finish every field required by the managed Signal Type and evidence rules, and publish the Signal.
+11. Only Published Signals participate in qualification, lifecycle progression, derived Playbooks or Research Arenas, and message-drafting context. After publication, complete the post-publication Prospect review below and let Frappe apply qualification and lifecycle state.
 
 
 ## Draft Signals are the research workspace
@@ -27,6 +29,41 @@ Update the same draft throughout the research path:
 - keep separate paths in separate Draft Signals so a disproven theory can be deleted without losing valid work.
 
 A Draft Signal is not evidence that a Prospect qualifies. It must not be treated as a completed research result, used for outreach positioning, or allowed to advance lifecycle state.
+
+## Prospect eligibility review
+
+A signal path can be valid even when the organization or entity behind it is not an acceptable Cartertek outreach prospect. **Prospect eligibility is a mandatory gate before a Draft Signal may create or link to a new Prospect.** Do not equate a Strong or otherwise supported Signal with an eligible Prospect.
+
+Before creating a Prospect from a Draft Signal, verify all of the following:
+
+- **Identifiable organization:** the Prospect can represent a specific organization or genuinely separate operating entity, using its canonical public identity. Do not create a Prospect for a product, platform, repository, open-source project, technical system, initiative, migration, location, or research path merely because the Signal concerns it.
+- **Correct prospect identity:** determine which organization actually experiences the condition and would be the subject of outreach. Repository, project, ecosystem, or community context does not by itself establish that the hosted project or venue is the prospect.
+- **Commercial actionability:** Cartertek can realistically pursue the organization as an outreach opportunity. Keep this decision separate from Signal strength: commercial actionability must not raise or lower the Signal's strength, but a candidate that is not realistically pursuable must not become or remain an outreach Prospect.
+- **Plausible outreach organization:** there is an organizational structure or responsible party to whom Cartertek could plausibly direct outreach about the observed condition. The exact named contact does not need to be known yet; contact research comes later.
+- **No protected duplicate or prohibited path:** search by canonical name, website, and normalized domain before creation. Reuse an existing organization-level Prospect where appropriate, and never create a duplicate to bypass Rejected or Do Not Contact state.
+- **Evidence belongs to this Prospect:** the verified Signal evidence and organizational attribution support the candidate organization being the party experiencing the condition. Do not transfer a project-, contributor-, customer-, ecosystem-, or third-party problem onto an organization without evidence establishing that relationship.
+
+If any required eligibility point fails, **do not create the Prospect and do not promote the Draft Signal**. The research path may still describe a real condition, but it is not an acceptable prospect for this outreach workflow. Delete the Draft Signal when the path is no longer useful as an actionable research path; do not create a Prospect merely to preserve it.
+
+Only prospects that pass this eligibility review may be created from a Draft Signal or considered further for qualification, contact research, positioning, or outreach.
+
+## Post-publication Prospect review
+
+After an eligible Prospect has been created or identified and its Signal has been published, review the resulting Prospect before considering the research batch complete. Prospect review confirms that the record belongs in the correct operational queue; it is not a substitute for the pre-creation eligibility gate above.
+
+Review the SEI Prospect form for identity, Research Arena, source URL, offer, signal summary, notes, contact path, qualification status, lifecycle status, and CRM links. Review related Published Signals and their managed Signal Types to confirm the derived thesis list, evidence, and timing are current and specific.
+
+Use the queue state as follows:
+
+- **Needs Research:** insufficient evidence or context; continue research before dispositioning.
+- **Research Complete:** evidence is complete enough for human review, normally because qualification is Needs Review.
+- **Rejected:** research is complete and the prospect should not continue because no qualifying outreach evidence exists.
+- **Find Contact:** prospect looks relevant but no usable contact path exists. Use [Prospect identity and contact research](identity-contact-research.md) to complete identity context, select primary contact roles, and research validated contacts.
+- **Qualified:** enough evidence exists, but CRM conversion has not been prepared.
+- **Ready for CRM Conversion:** explicit operator action marked the prospect ready.
+- **Do Not Contact:** protected suppression state.
+
+Do Not Contact and Rejected states are protected. Do not bypass them through API updates, duplicate Prospect creation, import fixes, or CRM conversion actions.
 
 ## Develop the draft in evidence-first stages
 
@@ -46,7 +83,7 @@ A research path is one specific assertion that could become one Signal. Create s
 
 Several individually insufficient facts do not become a valid signal through accumulation. Together they must establish the defining assertion of the selected Signal Type. If every fact omits the required consequence, the collection still omits it.
 
-When the path is disproven, delete the draft. When the path is supported, create or locate the Prospect, attach the draft, complete the publication requirements, and publish it. Publication is the point at which the research path becomes validated SEI evidence.
+When the path is disproven, delete the draft. When the Signal path is supported, perform the Prospect eligibility review before creating or locating a Prospect. Only an eligible candidate may proceed to Prospect creation/linking, publication, and further consideration. Publication is the point at which the research path becomes validated SEI evidence.
 
 ## Discovery source vs evidence source
 

@@ -20,7 +20,7 @@ Begin the initial outreach process only when:
 - the intended contact path is known or a usable contact has been selected
 - the Prospect is in an outreach-ready working state, normally Find Contact after contact research is complete or Ready for CRM Conversion when the operator is also preparing CRM handoff
 
-If evidence, positioning inputs, or contact context are incomplete, return to the relevant research, signal-evaluation, prospect-review, or contact-research workflow before proceeding.
+If evidence, positioning inputs, or contact context are incomplete, return to the relevant research (including Prospect eligibility/review), signal-evaluation, or contact-research workflow before proceeding.
 
 ## Stage 1: Prospect positioning
 

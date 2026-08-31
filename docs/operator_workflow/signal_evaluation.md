@@ -15,7 +15,7 @@ Use this decision rule:
 1. **Plausible path:** create a Draft Signal, with or without a Prospect.
 2. **Research in progress:** add and correct facts, source metadata, analysis, candidate classification, disqualifiers, and gaps on the draft.
 3. **Path disproven:** delete the Draft Signal.
-4. **Path supported:** create or identify the Prospect, link the draft, complete all required fields and evidence rules, then publish it.
+4. **Signal path supported:** perform the Prospect eligibility review in `research_workflow.md`. Only an eligible candidate may be created or identified as a Prospect; then link the draft, complete all required fields and evidence rules, and publish it.
 
 Do not publish merely because a path remains possible. Publication means the Signal satisfies the same required-field, fact-level evidence, Signal Type, strength, and guardrail rules that previously applied at creation time. Only Published Signals may count toward qualification or downstream outreach context.
 
