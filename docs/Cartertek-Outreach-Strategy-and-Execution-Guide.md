@@ -231,14 +231,7 @@ Offer construction is therefore part of outreach strategy, not just sales follow
 
 Signal tracking is central to Cartertek outreach.
 
-A prospect should advance when it has:
-
-```
-1 strong observed signal
-or
-2 moderate observed signals
-or manual approval with documented reasoning
-```
+Prospect qualification and rejection are applied automatically by Frappe based on the strengths of the prospect's signals. Operators should evaluate signal evidence and strength accurately and let Frappe apply the resulting qualification state.
 
 Signals should be evaluated by:
 
@@ -266,10 +259,10 @@ Weak:
 A light indicator. Useful for context, but not enough to qualify a prospect.
 
 Moderate:
-A meaningful indicator. Two moderate observed signals can qualify a prospect.
+A meaningful indicator.
 
 Strong:
-A direct, specific, timely indicator. One strong observed signal can qualify a prospect.
+A direct, specific, timely indicator.
 ```
 
 ### Evidence Basis
@@ -896,14 +889,7 @@ contact path if known
 
 Verify whether the evidence is observed or inferred.
 
-Promote prospects when they meet the qualification rule:
-
-```
-1 strong observed signal
-or
-2 moderate observed signals
-or manual approval with documented reasoning
-```
+Evaluate signal strength accurately. Frappe automatically applies the prospect's qualification or rejection state from the resulting signal strengths.
 
 ### 4. Work queues
 
