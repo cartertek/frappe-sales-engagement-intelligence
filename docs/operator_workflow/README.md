@@ -26,7 +26,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 1. Create Draft Signals as soon as plausible research paths appear, including before a Prospect exists.
 2. Fill and revise each draft while researching its path.
 3. Delete drafts whose paths are disproven.
-4. For a supported path, create or identify the Prospect, link the draft, complete it, and publish the Signal.
+4. For a supported signal path, perform the Prospect eligibility review in `research_workflow.md`. Only an eligible candidate may be created or identified as a Prospect; then link the draft, complete it, and publish the Signal.
 5. Review import rows, duplicate warnings, and missing evidence.
 6. Review queues: Needs Research, Research Complete, Find Contact, Ready for CRM Conversion, Rejected, and Do Not Contact.
 7. Confirm qualification, lifecycle, observed/inferred evidence, and contact path.
@@ -43,7 +43,7 @@ Cartertek fit is not signal evidence. A company can look like a good prospect, o
 3. Put paraphrase or interpretation in Signal Claim and compare the facts against the managed Signal Type definition.
 4. Check disqualifiers and revise the draft whenever new evidence changes the path.
 5. Delete the draft if the path is disproven.
-6. If supported, create or identify the Prospect, link the draft, complete all publication requirements, and publish it.
+6. If the signal path is supported, perform the Prospect eligibility review. Only if the candidate passes may you create or identify the Prospect, link the draft, complete all publication requirements, and publish it.
 7. Let qualification and lifecycle logic advance only Published Signals.
 8. Use reviewer feedback to improve future evaluation.
 
@@ -72,7 +72,6 @@ Before outreach or CRM conversion, confirm the prospect is not Rejected and not 
 - [Review feedback](review_feedback.md)
 - [AI-assisted research](ai_assisted_research.md)
 - [Research to import](research-to-import.md)
-- [Prospect review](prospect-review.md)
 - [Prospect identity and contact research](identity-contact-research.md)
 - [Qualification](qualification.md)
 - [CRM conversion](crm-conversion.md)

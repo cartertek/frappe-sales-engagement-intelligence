@@ -20,7 +20,7 @@ The agent must then use that draft as its durable research workspace:
 - preserve separate competing paths as separate drafts;
 - delete a draft when its path is disproven.
 
-When a path survives research, the agent must create or identify the Prospect, link the draft to that Prospect, complete every publication requirement, and publish the Signal. The agent must not treat a Draft Signal as qualification evidence or use it to justify outreach.
+When a signal path survives research, the agent must perform the Prospect eligibility review in `research_workflow.md` before creating or linking a Prospect. Only a candidate that passes that review may be created or identified as a Prospect, linked to the draft, completed, and published. A supported Signal is not permission to create an ineligible Prospect. The agent must not treat a Draft Signal as qualification evidence or use it to justify outreach.
 
 The agent must keep three kinds of draft content distinct:
 
