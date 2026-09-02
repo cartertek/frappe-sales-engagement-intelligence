@@ -4,6 +4,12 @@
 
 This guide is an executable operating procedure, not reference material to summarize or approximate. When performing Cartertek outreach work, follow the applicable procedures as written and in the order they specify. Do not replace them with a summary, remembered approximation, simplified workflow, or a shorter set of principles. If a procedure requires a checklist, audit, gate, or ordered sequence, actually perform that procedure before proceeding.
 
+### Operator documentation source of truth
+
+Whenever this guide requires following, reading, checking, or referring to the SEI operator documentation, use **only the most recent operator docs from the GitHub repository**. Fetch or otherwise verify the current repository revision before reading them. The operator-doc files bundled into a deployed Frappe app, container, image, working copy, cached checkout, local mirror, prior conversation, or remembered workflow are not authoritative unless they have first been verified to match the latest repository version.
+
+Do not claim to have read the current or latest operator docs merely because a copy exists at the expected `docs/operator_workflow/` path. Confirm that the copy being used is the latest GitHub-repository version first. If the latest repository docs cannot be obtained or verified, treat the operator instructions as unavailable rather than substituting an older copy.
+
 ## Purpose
 
 Cartertek’s outreach system exists to make client acquisition repeatable, evidence-based, and learnable.
