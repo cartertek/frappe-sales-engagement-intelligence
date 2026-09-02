@@ -43,6 +43,8 @@ Confirm:
 
 If the evidence cannot support a specific message, do not fill the gap with generic assumptions.
 
+Structured SEI fields such as `signal_summary`, `offer`, thesis or positioning fields, qualification explanations, and prior Prospect drafts are context inputs only. Prospect-specific body copy must be independently composed from the underlying evidence and approved positioning rather than pasted, lightly paraphrased, or mechanically transformed from those fields or another Prospect draft. If substantial wording or structure can be traced directly to one of those inputs, rewrite it from scratch.
+
 Do not draft by converting structured SEI fields into prose. `signal_summary`, `offer`, thesis or positioning fields, qualification explanations, and prior Prospect drafts are context inputs only. Do not paste them, lightly paraphrase them, or mechanically transform them into message copy. Read the underlying evidence and completed positioning, determine the intended meaning, and compose the message independently. If substantial wording or structure can be traced directly to one of those fields or to another Prospect's draft, rewrite it from scratch.
 
 ### 3. Use the Playbook correctly
@@ -82,6 +84,8 @@ Supported standard variables include:
 - `{{ asset_url }}`
 - `{{ primary_contact_name }}`
 - `{{ primary_contact_role }}`
+
+Renderer support does not make every variable appropriate for prospect-facing body copy. Internal structured fields such as `signal_summary`, `qualification_explanation`, `thesis`, and `offer` are context inputs unless the active standard template explicitly requires one for a narrowly defined purpose. Their availability does not authorize direct insertion or light paraphrase into prospect-facing prose.
 
 ### 6. Avoid duplicate calls to action
 
@@ -216,55 +220,67 @@ Do not force the source, issue, supporting evidence, interpretation, and offer i
 2. describe the relevant details
 3. explain Cartertek's relevance in a separate paragraph
 
-### 17. Introduce lists conversationally
+### 17. Use evidence selectively; do not retell the prospect research
 
-When several details follow, explain why they are being listed. Use language such as:
+Use evidence to establish why Cartertek is reaching out, not to retell the prospect's own situation. The recipient already knows the underlying problem. Mention only the minimum evidence necessary to make the reason for outreach recognizable and credible. Detailed evidence belongs in SEI, not in the initial message. If the message spends more words explaining what the source said than explaining why Cartertek may be relevant, rewrite it.
 
-> A few things stood out:
+### 18. Default to prose; use lists only when necessary
 
-Do not suddenly present a polished list of extracted details without an introduction.
+Initial outreach should normally be written as natural prose. Do not convert source evidence, qualifications, technical details, benefits, proposed work, or observations into a list merely because several items exist. Use a list only when the information is genuinely clearer as distinct parallel items and cannot be expressed naturally and concisely in prose. The existence of three or more details is not, by itself, a reason to use a list. When a list is genuinely necessary, introduce it conversationally and keep it brief.
 
-### 18. Summarize source evidence; do not quote or imitate it
+### 19. Summarize source evidence; do not quote or imitate it
 
 Do not quote job-posting language or reproduce it in quotation-like prose unless an exact quotation is genuinely necessary. Avoid close analysis of how the source was written, promotional phrases copied from the employer, distinctive metaphors, and setups such as “one line stood out.”
 
 Extract useful facts and restate them in ordinary language. The email should sound like the sender understood the source, not like the sender is reviewing it.
 
-### 19. Keep references explicit
+### 20. Keep references explicit
 
 Terms such as `this work`, `that implementation`, `the issue`, `the transition`, `work like this`, `constraints like these`, or `processes like these` must have a clear and nearby antecedent in the preceding prose. The recipient should not need to infer the referent from a job title, an external source, or a broad prior paragraph. When the work has not already been named precisely, name it instead of using shorthand.
 
-### 20. Lead with outcomes, not delivery mechanics
+### 21. Lead with outcomes, not delivery mechanics
 
 Assume Cartertek's professional competence. Do not explain capability through lists of implementation sprints, workstreams, automation tasks, technical cleanup activities, development methods, or delivery stages.
 
 Focus on outcomes such as keeping critical work moving, making a process easier to repeat, reducing dependence on manual coordination, improving internal workflows, or creating a reliable production process. Leave the implementation approach implicit unless it is necessary to understand the offer.
 
-### 21. Avoid exaggerated claims
+### 22. Avoid exaggerated claims
 
 Do not extend the message beyond what the evidence supports. Avoid unsupported claims about the entire engineering organization, all permanent hiring, company-wide technical weakness, severe urgency, or work Cartertek has not established it can or should perform.
 
 Keep the message bounded to the observed situation.
 
-### 22. Apply internal guardrails silently
+### 23. Apply internal guardrails silently
 
 Do not verbalize drafting constraints, rejected alternatives, or internal safety checks in the message unless the prospect actually raised them. Phrases such as `without a wholesale rebuild`, `without replacing your team`, `rather than a complete overhaul`, or `not suggesting the product is broken` introduce ideas that were not part of the prospect context and expose the drafting process.
 
 Apply constraints through the scope of the proposal itself. When the work must remain bounded, describe the specific work Cartertek is proposing and omit larger, riskier, or disallowed alternatives instead of naming them.
 
-### 23. Avoid one-sentence paragraphs
+### 24. Avoid one-sentence paragraphs
 
 Treat one-sentence paragraphs as a warning sign during review. When a paragraph contains only one sentence, first consider splitting a dense sentence into two or more natural sentences, or combining it with a related paragraph so the thought develops conversationally.
 
 Keep a one-sentence paragraph only when the sentence is intentionally brief and gains emphasis from standing alone. Do not use isolated one-sentence paragraphs as the default structure for evidence and offer sections.
 
-### 24. Avoid templated keyword substitution
+### 25. Avoid templated keyword substitution
 
 Do not reuse a sentence from another prospect and substitute company-specific nouns. Draft the intended meaning first, then choose a sentence structure that fits it.
 
 A borrowed structure may create unclear pronouns, mismatched subjects, illogical causal relationships, awkward hiring references, or language that sounds mass-produced. Rewrite from scratch when the existing frame does not fit the prospect.
 
-### 25. Review the complete sentence, paragraph, and message
+### 26. Keep the message concise, non-repetitive, and non-diagnostic
+
+Each sentence must advance the message. Do not restate the signal in the Cartertek paragraph using different terminology. When several related facts establish one broader condition, synthesize them instead of listing every fact individually.
+
+Do not diagnose an exact root cause or prescribe an exact remediation from public evidence unless the source itself establishes it. Public evidence may support a problem area, constraint, or desired outcome; it usually does not establish that a specific architecture, component, configuration, integration, data model, or engineering change is required.
+
+Reach Cartertek's relevance quickly. The source reference exists only to establish why the outreach is timely. Do not make the recipient read a paragraph of evidence analysis before learning why Cartertek is contacting them.
+
+Initial outreach should read like the opening of a conversation, not a statement of work, technical assessment, delivery proposal, or procurement response. Detailed methodology, workstreams, validation plans, milestones, ownership boundaries, and implementation sequencing belong after discovery.
+
+Stop once the message has established the relevant situation, why Cartertek may be useful, and the appropriate next step supplied by the message or template. Do not continue merely to explain inferred root causes, implementation approach, validation method, rollout path, scaling consequences, or every downstream business benefit.
+
+### 27. Review the complete sentence, paragraph, and message
 
 After every draft or revision:
 
@@ -278,7 +294,7 @@ Do not validate a revision merely by checking the words that changed.
 
 ## Phase 4: Finalization
 
-### 26. Save the draft in the correct SEI location
+### 28. Save the draft in the correct SEI location
 
 Save the reviewed message under:
 
@@ -292,13 +308,13 @@ Populate the intended platform, sender, recipient, subject, body, suggested temp
 
 Previewing or saving a draft does not send email, create a Communication, create a task, create CRM records, mark a prospect contacted, or change lifecycle status. Send manually outside SEI only after operator review. After an actual send, update the saved row and log the real interaction through the appropriate workflow.
 
-### 27. Set the sender field uniformly
+### 29. Set the sender field uniformly
 
 Set `from_user` to the designated sender for every draft in the batch. Verify first that the email belongs to a valid Frappe user, apply it consistently, and read the values back to confirm no draft was missed.
 
 Do not confuse `from_user` with `modified_by`; verify both independently.
 
-### 28. Final quality-control checklist
+### 30. Final quality-control checklist
 
 Apply this checklist independently to **every individual message**, including every message in a batch. A successful review of one draft does not validate the structure, wording, or offer framing of any later draft. Never treat a previously approved message as a reusable frame that bypasses review.
 
@@ -307,6 +323,14 @@ Before a draft can pass final review, apply these hard-fail gates:
 - **Implementation-mechanics gate:** if the message contains unnecessary implementation mechanics, delivery stages, technical task lists, validation procedures, or similar delivery-plan detail, it fails. Rewrite it to focus on the work or outcome.
 - **Invented-scope gate:** if the message invents a project boundary, engagement structure, ownership area, workstream, or scope that the evidence and positioning do not establish, it fails. Rewrite it with a bounded, evidence-supported offer direction.
 - **Templated-structure gate:** if the message's sentence pattern or overall structure could be reused for another Prospect by swapping company, signal, or offer details, it fails. Rewrite it from the intended meaning rather than reusing the frame.
+- **Research-summary gate:** if the message retells the source or spends more words explaining the evidence than establishing Cartertek's relevance, it fails. Retain only the evidence needed to justify outreach.
+- **Premature-diagnosis gate:** if the message states or strongly implies an exact root cause or required technical solution that the source does not establish, it fails. Reframe around the supported problem or outcome.
+- **Repetition/compression gate:** if two sentences communicate substantially the same fact, consequence, or proposed value, or if several source details can be accurately synthesized into one, it fails. Combine, remove, or synthesize the redundant material.
+- **Buried-value gate:** if substantial source explanation can be removed before the Cartertek proposition without losing necessary context, it fails. Shorten the setup so Cartertek's relevance appears promptly.
+- **Internal-field leakage gate:** if message wording or structure comes directly or through light paraphrase from `signal_summary`, `offer`, thesis, qualification explanation, positioning fields, or another Prospect draft, it fails. Compose the message independently from the underlying meaning.
+- **Proposal-tone gate:** if the body reads like a proposal, statement of work, technical assessment, delivery plan, or procurement response rather than an initial conversation, it fails. Simplify it to the reason for contact and broad relevant help.
+- **Over-completion gate:** if the message continues after the reason for contact, Cartertek's relevant contribution, and next step are already clear, and the remaining material is not necessary for comprehension, it fails. Remove the extra reasoning chain.
+- **List-necessity gate:** if a list can be expressed naturally and clearly as prose without material loss of clarity, it fails. Rewrite the list as prose.
 
 A failed gate is blocking. Rewrite the message, then rerun the complete final quality-control checklist from the beginning. Do not save the draft until all applicable gates and checklist items pass.
 
@@ -327,7 +351,7 @@ A failed gate is blocking. Rewrite the message, then rerun the complete final qu
 - observed facts separated from inference
 - actual work identified
 - signal timing distinguished from offer substance
-- Cartertek relevance follows from the evidence
+- Cartertek's relevance follows from the evidence
 - continued hiring or the existing company plan represented correctly
 - no implication that Cartertek replaces a permanent role
 
@@ -336,7 +360,7 @@ A failed gate is blocking. Rewrite the message, then rerun the complete final qu
 - natural outsider perspective
 - conversational source introduction
 - dense evidence split into readable sentences
-- lists introduced naturally
+- no list unless prose would materially reduce clarity
 - no direct quotation or pseudo-quotation
 - no unnecessary source jargon
 - technical terms used only where natural and necessary
