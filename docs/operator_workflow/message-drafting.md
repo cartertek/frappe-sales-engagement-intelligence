@@ -6,6 +6,8 @@ Message drafting turns approved prospect positioning and current SEI guidance in
 
 Drafting is a record-preparation action, not an outreach, lifecycle, or CRM action. It is not a keyword-substitution exercise. Write and review each message as complete prose.
 
+Compliance requires actively applying every applicable review gate in this document to the completed message. A draft is not compliant merely because it generally reflects the guidance. If any required gate fails, revise the message and rerun the required review before saving it.
+
 ## Phase 1: Information collection
 
 ### 1. Load the complete drafting context
@@ -40,6 +42,8 @@ Confirm:
 - why the selected contact is appropriate
 
 If the evidence cannot support a specific message, do not fill the gap with generic assumptions.
+
+Do not draft by converting structured SEI fields into prose. `signal_summary`, `offer`, thesis or positioning fields, qualification explanations, and prior Prospect drafts are context inputs only. Do not paste them, lightly paraphrase them, or mechanically transform them into message copy. Read the underlying evidence and completed positioning, determine the intended meaning, and compose the message independently. If substantial wording or structure can be traced directly to one of those fields or to another Prospect's draft, rewrite it from scratch.
 
 ### 3. Use the Playbook correctly
 
@@ -295,6 +299,16 @@ Set `from_user` to the designated sender for every draft in the batch. Verify fi
 Do not confuse `from_user` with `modified_by`; verify both independently.
 
 ### 28. Final quality-control checklist
+
+Apply this checklist independently to **every individual message**, including every message in a batch. A successful review of one draft does not validate the structure, wording, or offer framing of any later draft. Never treat a previously approved message as a reusable frame that bypasses review.
+
+Before a draft can pass final review, apply these hard-fail gates:
+
+- **Implementation-mechanics gate:** if the message contains unnecessary implementation mechanics, delivery stages, technical task lists, validation procedures, or similar delivery-plan detail, it fails. Rewrite it to focus on the work or outcome.
+- **Invented-scope gate:** if the message invents a project boundary, engagement structure, ownership area, workstream, or scope that the evidence and positioning do not establish, it fails. Rewrite it with a bounded, evidence-supported offer direction.
+- **Templated-structure gate:** if the message's sentence pattern or overall structure could be reused for another Prospect by swapping company, signal, or offer details, it fails. Rewrite it from the intended meaning rather than reusing the frame.
+
+A failed gate is blocking. Rewrite the message, then rerun the complete final quality-control checklist from the beginning. Do not save the draft until all applicable gates and checklist items pass.
 
 #### Context
 
