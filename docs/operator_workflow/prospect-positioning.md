@@ -6,6 +6,14 @@ Prospect positioning converts completed research into a usable outreach directio
 
 Positioning is not a draft email. It is interpreted context that lets the drafting process produce a message that is specific, accurate, and commercially useful.
 
+## Required deliverable
+
+The deliverable of Prospect Positioning is a **high-quality, prospect-specific `offer` stored on the Prospect**. That offer is the positioning result that the next [Message Drafting](message-drafting.md) procedure will consume when composing the initial outreach message.
+
+The offer must identify the bounded work or outcome Cartertek can credibly help with based on the evidence, Playbook, and Signal Type guidance. A generic Playbook default, filler value, broad service category, or merely plausible consulting idea is not a completed positioning deliverable. Internal reasoning, notes, or an ability to draft a message are not substitutes for writing the completed offer to the Prospect.
+
+Offer construction has a blocking prerequisite: the Prospect's `signal_summary` must first be accurate and complete. The signal summary is the evidence synthesis on which the positioning procedure builds. **Do not develop, revise, approve, or store the offer until the signal-summary hard gate in Step 2 passes.**
+
 ## Required inputs
 
 Before developing positioning, load and review:
@@ -38,11 +46,27 @@ Observed fact != inferred pattern
 
 Do not turn an inference into a claim of fact.
 
-### 2. Determine what the signal establishes
+### 2. Establish and hard-gate an accurate, complete signal summary
 
-Explain why the evidence makes outreach timely. The signal may establish persistent hiring friction, a technical capacity gap, visible production problems, a manual or fragmented process, post-launch pressure, a capability mismatch, project-delivery risk, or demand for integration, automation, stabilization, or technical reinforcement.
+Use the underlying evidence from Step 1 to verify the Prospect's `signal_summary`. The summary must accurately and completely synthesize the signal evidence that matters to outreach, including the observed condition, the material consequence or operational meaning established by the evidence, and the current context needed to understand why the signal is relevant now. It must preserve the boundary between observed fact and inference and must not overstate what the evidence proves.
+
+A stale summary, filler such as `Technical Distress evidence collected during research batch`, a generic Signal Type label, a summary that omits material evidence or current context, or a summary that conflicts with the Published Signals or Observed Facts fails this step. When the existing `signal_summary` fails, rewrite it and store the corrected summary on the Prospect before continuing.
+
+Then determine what the signal establishes. Explain why the evidence makes outreach timely. The signal may establish persistent hiring friction, a technical capacity gap, visible production problems, a manual or fragmented process, post-launch pressure, a capability mismatch, project-delivery risk, or demand for integration, automation, stabilization, or technical reinforcement.
 
 State what the signal does and does not prove. For example, an open role may establish that the company wants additional capacity. It does not prove that the company is poorly managed, technically weak, or unable to complete the work.
+
+#### Signal-summary hard gate
+
+Do not proceed to Step 3 or begin constructing the offer unless all of the following are true:
+
+- the actual underlying evidence has been read
+- the stored `signal_summary` accurately reflects the relevant Published Signal evidence
+- the stored `signal_summary` is complete enough to preserve the material condition, consequence, and current context needed for positioning
+- observed facts and inference remain distinct
+- no filler, stale, contradictory, or materially incomplete summary remains
+
+If any check fails, correct `signal_summary`, reread it against the underlying evidence, and rerun this gate from the beginning. **Offer construction is blocked until this gate passes.**
 
 ### 3. Identify the actual work or problem
 
@@ -113,9 +137,9 @@ Stronger:
 
 Do not turn positioning into a delivery plan. Identify the work and result, not an implementation sprint, architecture, or task list.
 
-### 8. Define a bounded offer direction
+### 8. Write the high-quality offer
 
-Identify the kind of help Cartertek could offer without inventing a project. Appropriate directions may include:
+Using only positioning that follows from the signal summary that passed the Step 2 hard gate, identify the kind of help Cartertek could offer without inventing a project. Appropriate directions may include:
 
 - moving a defined piece of product work forward
 - stabilizing a production process
@@ -126,7 +150,9 @@ Identify the kind of help Cartertek could offer without inventing a project. App
 - supporting a delayed modernization initiative
 - providing technical reinforcement while hiring continues
 
-The offer direction must be plausible, evidence-supported, commercially meaningful, narrow enough to avoid speculation, and broad enough not to fabricate scope.
+The offer must be plausible, evidence-supported, commercially meaningful, narrow enough to avoid speculation, and broad enough not to fabricate scope. It must be prospect-specific enough to guide the next Message Drafting procedure toward the actual work or outcome Cartertek can help with.
+
+Write the completed offer to the Prospect's `offer` field. Do not leave a generic Playbook default, filler value, stale offer, or temporary working language in place. The stored `offer` is the required Stage 1 deliverable.
 
 ### 9. Identify language and claims to avoid
 
@@ -143,9 +169,9 @@ Record prospect-specific risks, including:
 
 Preserve technical terms only when they are necessary and natural, such as the name of a specific technology the prospect actually uses.
 
-### 10. Produce usable positioning guidance
+### 10. Validate the completed positioning deliverable
 
-The completed positioning must answer:
+Use the following questions to verify that the stored `offer` is supported by complete positioning rather than by a generic service idea or an unexamined default. The completed positioning must answer:
 
 - What source should the message mention?
 - What did the source reveal?
@@ -162,6 +188,8 @@ The completed positioning must answer:
 
 Before completing positioning, confirm:
 
+- the Step 2 signal-summary hard gate passed before any offer was developed or approved
+- the stored `signal_summary` remains accurate and complete against the underlying evidence
 - the source evidence was actually read
 - observed facts and inference remain distinct
 - the positioning identifies the real work, not only a broad source label
@@ -169,6 +197,18 @@ Before completing positioning, confirm:
 - Playbook guidance and Signal Type guidance are both applied
 - Cartertek's relevance clearly follows from the evidence
 - the offer is bounded and not invented
+- the stored `offer` is high-quality, prospect-specific, and derived from the validated signal summary plus the underlying evidence, Playbook, and Signal Type guidance
+- the stored `offer` is suitable as the positioning input for the next Message Drafting procedure
+- no filler, generic Playbook default, stale offer, or temporary working value remains in `offer`
 - source jargon is not repeated mechanically
 - the positioning does not imply facts the source does not establish
 - the guidance is specific enough to support a prospect-specific draft without rediscovering the evidence's meaning
+
+## Completion gate
+
+Prospect Positioning is complete only when both of its persisted outputs are valid:
+
+1. `signal_summary` has passed the Step 2 accuracy-and-completeness hard gate.
+2. `offer` contains the high-quality, prospect-specific positioning deliverable produced from that validated summary and the remainder of this procedure.
+
+If either field is missing, stale, filler, generic, materially incomplete, unsupported by the evidence, or otherwise fails the checks above, Stage 1 is incomplete. Do not begin Message Drafting. Correct the affected field, rerun the applicable positioning checks, and pass this completion gate before proceeding.
