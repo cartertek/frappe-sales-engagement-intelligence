@@ -248,7 +248,6 @@ Determine internally why Cartertek is relevant, but do not write the message as 
 
 Prefer direct constructions such as `Cartertek could help reduce...`, `Cartertek could build...`, `Cartertek could take on...`, `Cartertek could improve...`, or another concrete action verb that fits the prospect.
 
-Avoid constructions such as `This is where Cartertek is a good fit`, `A useful role for Cartertek would be`, `The opportunity for Cartertek is`, `Cartertek would be relevant here because`, or similar answer-shaped language.
 
 ### 22. Use active voice
 
