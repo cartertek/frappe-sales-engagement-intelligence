@@ -210,7 +210,7 @@ Prefer:
 
 Over:
 
-> Your Home Assistant OS issue describes the current multi-platform maintenance model as binding resources and slowing OS development.
+> Your {{company}} issue describes the {{problems you are having}}.
 
 The introduction should **not add a separate setup sentence or additional source summary**. Its purpose is only to orient the recipient to how the observed problem came to Cartertek's attention. Continue to mention only the minimum evidence necessary to establish the reason for outreach.
 
