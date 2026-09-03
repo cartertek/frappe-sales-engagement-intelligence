@@ -222,11 +222,11 @@ Do not force the source, issue, supporting evidence, interpretation, and offer i
 
 1. identify the source and central problem
 2. describe the relevant details
-3. explain Cartertek's relevance in a separate paragraph
+3. state directly what Cartertek could do about the observed problem
 
 ### 17. Use evidence selectively; do not retell the prospect research
 
-Use evidence to establish why Cartertek is reaching out, not to retell the prospect's own situation. The recipient already knows the underlying problem. Mention only the minimum evidence necessary to make the reason for outreach recognizable and credible. Detailed evidence belongs in SEI, not in the initial message. If the message spends more words explaining what the source said than explaining why Cartertek may be relevant, rewrite it.
+Use evidence to establish why Cartertek is reaching out, not to retell the prospect's own situation. The recipient already knows the underlying problem. Mention only the minimum evidence necessary to make the reason for outreach recognizable and credible. Detailed evidence belongs in SEI, not in the initial message. If the message spends more words explaining what the source said than stating what Cartertek could directly do about the problem, rewrite it.
 
 ### 18. Default to prose; use lists only when necessary
 
@@ -242,49 +242,61 @@ Extract useful facts and restate them in ordinary language. The email should sou
 
 Terms such as `this work`, `that implementation`, `the issue`, `the transition`, `work like this`, `constraints like these`, or `processes like these` must have a clear and nearby antecedent in the preceding prose. The recipient should not need to infer the referent from a job title, an external source, or a broad prior paragraph. When the work has not already been named precisely, name it instead of using shorthand.
 
-### 21. Lead with outcomes, not delivery mechanics
+### 21. State Cartertek's role directly
+
+Determine internally why Cartertek is relevant, but do not write the message as though answering the question `Why is Cartertek relevant?` The prospect-facing sentence should state Cartertek's participation directly in the situation. The reader should understand Cartertek's relevance from what Cartertek is offering to do, not from meta-language about fit, usefulness, opportunity, contribution, or relevance.
+
+Prefer direct constructions such as `Cartertek could help reduce...`, `Cartertek could build...`, `Cartertek could take on...`, `Cartertek could improve...`, or another concrete action verb that fits the prospect.
+
+
+### 22. Use active voice
+
+Write prospect-facing prose in active voice. Name the actor and action directly instead of hiding responsibility behind passive constructions. This applies to evidence descriptions, Cartertek's offer, and outcome statements. Rewrite passive phrasing when an active construction can express the same supported claim accurately.
+
+### 23. Lead with outcomes, not delivery mechanics
 
 Assume Cartertek's professional competence. Do not explain capability through lists of implementation sprints, workstreams, automation tasks, technical cleanup activities, development methods, or delivery stages.
 
 Focus on outcomes such as keeping critical work moving, making a process easier to repeat, reducing dependence on manual coordination, improving internal workflows, or creating a reliable production process. Leave the implementation approach implicit unless it is necessary to understand the offer.
 
-### 22. Avoid exaggerated claims
+### 24. Avoid exaggerated claims
 
 Do not extend the message beyond what the evidence supports. Avoid unsupported claims about the entire engineering organization, all permanent hiring, company-wide technical weakness, severe urgency, or work Cartertek has not established it can or should perform.
 
-Keep the message bounded to the observed situation.
+Keep the message bounded to the observed situation. Avoiding overcommitment means narrowing the scope, certainty, and outcome to what the evidence supports; it does **not** mean making the prose passive, tentative, abstract, or noncommittal. State the bounded offer directly with active language. Control overcommitment by narrowing **what Cartertek is claiming or offering to do**, not by weakening **how clearly the message says it**.
 
-### 23. Apply internal guardrails silently
+
+### 25. Apply internal guardrails silently
 
 Do not verbalize drafting constraints, rejected alternatives, or internal safety checks in the message unless the prospect actually raised them. Phrases such as `without a wholesale rebuild`, `without replacing your team`, `rather than a complete overhaul`, or `not suggesting the product is broken` introduce ideas that were not part of the prospect context and expose the drafting process.
 
 Apply constraints through the scope of the proposal itself. When the work must remain bounded, describe the specific work Cartertek is proposing and omit larger, riskier, or disallowed alternatives instead of naming them.
 
-### 24. Avoid one-sentence paragraphs
+### 26. Avoid one-sentence paragraphs
 
 Treat one-sentence paragraphs as a warning sign during review. When a paragraph contains only one sentence, first consider splitting a dense sentence into two or more natural sentences, or combining it with a related paragraph so the thought develops conversationally.
 
 Keep a one-sentence paragraph only when the sentence is intentionally brief and gains emphasis from standing alone. Do not use isolated one-sentence paragraphs as the default structure for evidence and offer sections.
 
-### 25. Avoid templated keyword substitution
+### 27. Avoid templated keyword substitution
 
 Do not reuse a sentence from another prospect and substitute company-specific nouns. Draft the intended meaning first, then choose a sentence structure that fits it.
 
 A borrowed structure may create unclear pronouns, mismatched subjects, illogical causal relationships, awkward hiring references, or language that sounds mass-produced. Rewrite from scratch when the existing frame does not fit the prospect.
 
-### 26. Keep the message concise, non-repetitive, and non-diagnostic
+### 28. Keep the message concise, non-repetitive, and non-diagnostic
 
 Each sentence must advance the message. Do not restate the signal in the Cartertek paragraph using different terminology. When several related facts establish one broader condition, synthesize them instead of listing every fact individually.
 
 Do not diagnose an exact root cause or prescribe an exact remediation from public evidence unless the source itself establishes it. Public evidence may support a problem area, constraint, or desired outcome; it usually does not establish that a specific architecture, component, configuration, integration, data model, or engineering change is required.
 
-Reach Cartertek's relevance quickly. The source reference exists only to establish why the outreach is timely. Do not make the recipient read a paragraph of evidence analysis before learning why Cartertek is contacting them.
+Reach Cartertek's direct offer quickly. The source reference exists only to establish why the outreach is timely. Do not make the recipient read a paragraph of evidence analysis before learning why Cartertek is contacting them.
 
 Initial outreach should read like the opening of a conversation, not a statement of work, technical assessment, delivery proposal, or procurement response. Detailed methodology, workstreams, validation plans, milestones, ownership boundaries, and implementation sequencing belong after discovery.
 
-Stop once the message has established the relevant situation, why Cartertek may be useful, and the appropriate next step supplied by the message or template. Do not continue merely to explain inferred root causes, implementation approach, validation method, rollout path, scaling consequences, or every downstream business benefit.
+Stop once the message has established the relevant situation, what Cartertek could directly do, and the appropriate next step supplied by the message or template. Do not continue merely to explain inferred root causes, implementation approach, validation method, rollout path, scaling consequences, or every downstream business benefit.
 
-### 27. Review the complete sentence, paragraph, and message
+### 29. Review the complete sentence, paragraph, and message
 
 After every draft or revision:
 
@@ -298,7 +310,7 @@ Do not validate a revision merely by checking the words that changed.
 
 ## Phase 4: Finalization
 
-### 28. Save the draft in the correct SEI location
+### 30. Save the draft in the correct SEI location
 
 Save the reviewed message under:
 
@@ -312,13 +324,13 @@ Populate the intended platform, sender, recipient, subject, body, suggested temp
 
 Previewing or saving a draft does not send email, create a Communication, create a task, create CRM records, mark a prospect contacted, or change lifecycle status. Send manually outside SEI only after operator review. After an actual send, update the saved row and log the real interaction through the appropriate workflow.
 
-### 29. Set the sender field uniformly
+### 31. Set the sender field uniformly
 
 Set `from_user` to the designated sender for every draft in the batch. Verify first that the email belongs to a valid Frappe user, apply it consistently, and read the values back to confirm no draft was missed.
 
 Do not confuse `from_user` with `modified_by`; verify both independently.
 
-### 30. Final quality-control checklist
+### 32. Final quality-control checklist
 
 Apply this checklist independently to **every individual message**, including every message in a batch. A successful review of one draft does not validate the structure, wording, or offer framing of any later draft. Never treat a previously approved message as a reusable frame that bypasses review.
 
@@ -334,6 +346,9 @@ Before a draft can pass final review, apply these hard-fail gates:
 - **Buried-value gate:** if substantial source explanation can be removed before the Cartertek proposition without losing necessary context, it fails. Shorten the setup so Cartertek's relevance appears promptly.
 - **Internal-field leakage gate:** if message wording or structure comes directly or through light paraphrase from `signal_summary`, `offer`, thesis, qualification explanation, positioning fields, or another Prospect draft, it fails. Compose the message independently from the underlying meaning.
 - **Proposal-tone gate:** if the body reads like a proposal, statement of work, technical assessment, delivery plan, or procurement response rather than an initial conversation, it fails. Simplify it to the reason for contact and broad relevant help.
+- **Indirect-relevance gate:** if the message explains Cartertek's fit, relevance, usefulness, opportunity, or contribution instead of directly stating what Cartertek could do, it fails. Rewrite the sentence with a concrete Cartertek action.
+- **Passive-voice gate:** if a prospect-facing sentence uses passive voice where an active construction can express the same supported claim accurately, it fails. Rewrite it in active voice.
+- **Hedging-without-scope-change gate:** if tentative or abstract wording weakens a bounded claim without actually narrowing scope, certainty, or outcome, it fails. Keep the bounded claim and state it directly.
 - **Over-completion gate:** if the message continues after the reason for contact, Cartertek's relevant contribution, and next step are already clear, and the remaining material is not necessary for comprehension, it fails. Remove the extra reasoning chain.
 - **List-necessity gate:** if a list can be expressed naturally and clearly as prose without material loss of clarity, it fails. Rewrite the list as prose.
 
@@ -356,7 +371,7 @@ A failed gate is blocking. Rewrite the message, then rerun the complete final qu
 - observed facts separated from inference
 - actual work identified
 - signal timing distinguished from offer substance
-- Cartertek's relevance follows from the evidence
+- the message states directly what Cartertek could do, and that action follows from the evidence
 - continued hiring or the existing company plan represented correctly
 - no implication that Cartertek replaces a permanent role
 
@@ -372,6 +387,9 @@ A failed gate is blocking. Rewrite the message, then rerun the complete final qu
 - no generic category label where operational language is available
 - no vague reference to `this work`
 - outcome emphasized over implementation method
+- Cartertek's role stated with direct action language rather than fit/relevance meta-language
+- active voice used throughout prospect-facing prose
+- bounded claims stated directly without unnecessary hedging
 - no exaggerated claims
 - no templated noun substitution
 - clear subjects, pronouns, and clause relationships
