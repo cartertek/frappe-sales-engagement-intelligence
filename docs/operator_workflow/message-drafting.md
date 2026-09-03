@@ -206,7 +206,7 @@ Usually this requires only a few words integrated into the same sentence, such a
 
 Prefer:
 
-> I saw a Home Assistant OS issue describing the current multi-platform maintenance model as binding resources and slowing OS development.
+> I saw a {{company}} issue describing the {{problems you are having}}.
 
 Over:
 
