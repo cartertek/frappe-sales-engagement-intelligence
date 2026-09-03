@@ -198,19 +198,23 @@ Do not describe a job posting as a “note” or replace a known source with vag
 
 The sender is outside the organization and addressing someone inside it. Prefer `your deployment process`, `your internal workflows`, `your team`, or `your production environment` over detached wording. Use the company name to establish context, then transition naturally to `you` and `your`.
 
-### 15. Use conversational source introductions
+### 15. Introduce the source before discussing what it revealed
 
-The opening should sound like a normal explanation of why Cartertek is reaching out.
+The recipient should immediately understand why a source, issue, post, announcement, or other artifact has entered the conversation. On its first mention, introduce it from the sender's outsider perspective rather than beginning as though the recipient already knows which artifact Cartertek is referring to.
 
-Natural:
+Usually this requires only a few words integrated into the same sentence, such as `I saw`, `I found`, `I read`, `I was reading`, or `I came across`. Choose whatever wording is natural for the particular source and message; these are examples, not a required formula or template.
 
-> I came across an AirOps job posting that mentioned you were having some problems with your deployment process.
+Prefer:
 
-Stilted:
+> I saw a Home Assistant OS issue describing the current multi-platform maintenance model as binding resources and slowing OS development.
 
-> I saw in an open AirOps job posting that operational constraints were affecting deployment reliability.
+Over:
 
-Avoid compressed research-summary language.
+> Your Home Assistant OS issue describes the current multi-platform maintenance model as binding resources and slowing OS development.
+
+The introduction should **not add a separate setup sentence or additional source summary**. Its purpose is only to orient the recipient to how the observed problem came to Cartertek's attention. Continue to mention only the minimum evidence necessary to establish the reason for outreach.
+
+Do not mechanically reuse the same introductory phrase across prospects. The source introduction should fit naturally into the independently composed message. Avoid compressed research-summary language.
 
 ### 16. Split dense evidence into multiple sentences
 
@@ -324,6 +328,7 @@ Before a draft can pass final review, apply these hard-fail gates:
 - **Invented-scope gate:** if the message invents a project boundary, engagement structure, ownership area, workstream, or scope that the evidence and positioning do not establish, it fails. Rewrite it with a bounded, evidence-supported offer direction.
 - **Templated-structure gate:** if the message's sentence pattern or overall structure could be reused for another Prospect by swapping company, signal, or offer details, it fails. Rewrite it from the intended meaning rather than reusing the frame.
 - **Research-summary gate:** if the message retells the source or spends more words explaining the evidence than establishing Cartertek's relevance, it fails. Retain only the evidence needed to justify outreach.
+- **Unintroduced-source gate:** if the message begins discussing an external source or observed artifact as though it were already shared context—such as `your issue`, `the post`, `the RFC`, or `the report`—without first naturally establishing that Cartertek saw, found, read, encountered, or otherwise became aware of it, it fails. Introduce the source within the existing evidence sentence without adding unnecessary setup or a separate research-summary sentence.
 - **Premature-diagnosis gate:** if the message states or strongly implies an exact root cause or required technical solution that the source does not establish, it fails. Reframe around the supported problem or outcome.
 - **Repetition/compression gate:** if two sentences communicate substantially the same fact, consequence, or proposed value, or if several source details can be accurately synthesized into one, it fails. Combine, remove, or synthesize the redundant material.
 - **Buried-value gate:** if substantial source explanation can be removed before the Cartertek proposition without losing necessary context, it fails. Shorten the setup so Cartertek's relevance appears promptly.
@@ -358,7 +363,7 @@ A failed gate is blocking. Rewrite the message, then rerun the complete final qu
 #### Writing
 
 - natural outsider perspective
-- conversational source introduction
+- first source reference naturally establishes how it came to Cartertek's attention
 - dense evidence split into readable sentences
 - no list unless prose would materially reduce clarity
 - no direct quotation or pseudo-quotation
