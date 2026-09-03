@@ -266,7 +266,6 @@ Do not extend the message beyond what the evidence supports. Avoid unsupported c
 
 Keep the message bounded to the observed situation. Avoiding overcommitment means narrowing the scope, certainty, and outcome to what the evidence supports; it does **not** mean making the prose passive, tentative, abstract, or noncommittal. State the bounded offer directly with active language. Control overcommitment by narrowing **what Cartertek is claiming or offering to do**, not by weakening **how clearly the message says it**.
 
-Do not add unnecessary hedging such as `Cartertek may be able to`, `There may be an opportunity for Cartertek to`, `A possible area where Cartertek could contribute`, or `This looks like something Cartertek might be able to help with` when a direct bounded construction such as `Cartertek could help`, `Cartertek could build`, `Cartertek could take on`, or `Cartertek could improve` expresses the same supported claim.
 
 ### 25. Apply internal guardrails silently
 
