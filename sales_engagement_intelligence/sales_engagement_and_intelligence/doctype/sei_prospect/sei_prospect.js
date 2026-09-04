@@ -1253,6 +1253,7 @@ frappe.ui.form.on('SEI Prospect Message Draft', {
                 args: { draft: row.name },
                 freeze: true,
                 callback() {
+                    frappe.ui.form.close_grid_form();
                     frm.reload_doc();
                 },
                 error() {
@@ -1271,6 +1272,7 @@ frappe.ui.form.on('SEI Prospect Message Draft', {
             args: { draft: row.name },
             freeze: true,
             callback() {
+                frappe.ui.form.close_grid_form();
                 frm.reload_doc();
             },
             error() {
