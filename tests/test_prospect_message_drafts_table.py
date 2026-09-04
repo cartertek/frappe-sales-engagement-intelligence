@@ -89,3 +89,10 @@ def test_message_draft_sent_checkbox_does_not_open_row_editor():
     assert "[data-fieldname=\"sent\"] input" in script
     assert '[data-fieldname="sent"]' in script
     assert "event.stopPropagation()" in script
+
+
+def test_marking_message_draft_sent_closes_grid_form_before_parent_reload():
+    script = PROSPECT_JS.read_text()
+    assert script.count("frappe.ui.form.close_grid_form();") >= 2
+    assert "frappe.ui.form.close_grid_form();\n                    frm.reload_doc();" in script
+    assert "frappe.ui.form.close_grid_form();\n                frm.reload_doc();" in script
