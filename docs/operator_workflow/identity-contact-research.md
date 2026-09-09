@@ -106,18 +106,21 @@ This is a role-selection process, not a person-search process.
 
 Do not automatically mark every playbook role primary, and do not reuse the same primary-role combination merely because multiple prospects share a playbook.
 
-Review each prospect individually using:
+For each prospect, evaluate **every contact role defined by the prospect's playbook independently**. Do not stop after finding one or two strong roles, and do not treat Primary-contact Selection as a ranking exercise that asks only for the best or smallest set of targets. Each managed role must receive its own prospect-specific suitability decision.
+
+Evaluate every role using:
 
 - identity and employee count
 - organizational structure
 - prospect type
 - observed signal
 - likely affected team or function
-- the playbook's available contact roles
+- the role's organizational proximity to the problem
+- whether the role is senior enough to influence or act on a response
 
-Select only the subset of roles that make sense as actual outreach targets for that prospect.
+After evaluating the full playbook role universe, **select every role that satisfies the Primary-contact Selection criteria**. Do not omit an otherwise suitable role merely because another role is more senior, more obvious, easier to research, or already selected. The selected subset is the complete set of suitable outreach roles for that prospect, not a minimal shortlist.
 
-A role can remain a valid playbook role without being a primary role for every prospect using that playbook.
+A role can remain a valid playbook role without being a primary role for every prospect using that playbook, but every playbook role must still be considered for every prospect.
 
 ### 2. Select for organizational proximity, not maximum seniority
 
@@ -149,15 +152,16 @@ Do not put an invented name, guessed email, or person-specific `signal_relevance
 
 Normalize the Address Book after making the role-selection decision.
 
+- Every role that passed the independent suitability evaluation must be represented as a primary target.
 - Contacts whose roles are selected primary targets may be marked primary.
 - Contacts whose roles are not selected primary targets must not remain primary merely because they were previously researched, have an email, or are senior.
-- Multiple roles may be primary when the prospect warrants multiple outreach paths.
+- Multiple roles may be primary when the prospect warrants multiple outreach paths. There is no preferred or maximum number of primary roles; the count should emerge from the independent role-by-role evaluation.
 
-The final primary flags should exactly represent the role-selection decision for that prospect.
+The final primary flags should exactly represent the full role-selection decision for that prospect: all suitable playbook roles are primary, and all unsuitable playbook roles are non-primary.
 
 ### Completion standard
 
-Primary-contact Selection is complete when the prospect has been evaluated individually, company size and organizational proximity were considered, primary roles are drawn from the prospect's playbook, and the Address Book's primary state represents only those selected targets.
+Primary-contact Selection is complete when the prospect has been evaluated individually, every playbook role has received an independent suitability decision, company size and organizational proximity were considered, every suitable role has been selected, and the Address Book's primary state represents exactly those selected targets.
 
 ## C. Contact Research
 
