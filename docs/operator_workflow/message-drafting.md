@@ -204,6 +204,8 @@ The recipient should immediately understand why a source, issue, post, announcem
 
 Usually this requires only a few words integrated into the same sentence, such as `I saw`, `I found`, `I read`, `I was reading`, or `I came across`. Choose whatever wording is natural for the particular source and message; these are examples, not a required formula or template.
 
+Include only enough source context for the recipient to immediately recognize what artifact is being referenced and how it relates to them. A source hosted by or belonging to the prospect may be introduced naturally as `your issue`, `your post`, or `{{company}}'s announcement` when that is unambiguous. When the prospect authored or appeared in an artifact on an external platform, repository, forum, or other third-party venue, include the relevant venue or project name when needed for orientation, such as `your Stack Overflow post` or `the Frappe Learning GitHub issue you opened`. Do not add citation-like detail once the source is clear.
+
 Prefer:
 
 > I saw a {{company}} issue describing the {{problems you are having}}.
