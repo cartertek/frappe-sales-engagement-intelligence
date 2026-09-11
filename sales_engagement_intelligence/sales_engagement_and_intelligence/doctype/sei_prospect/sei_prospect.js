@@ -797,10 +797,64 @@ function configure_message_draft_grid(frm) {
             const options = [...new Set([...available, ...saved])];
             field.grid.update_docfield_property('to_contact', 'options', options.join('\n'));
             refresh_open_message_draft_editor(field);
+            refresh_message_draft_recipient_warnings(frm, field);
         }
     });
     normalize_managed_grid_editor(field, 'message-draft', frm);
     isolate_message_draft_sent_checkbox(field);
+    refresh_message_draft_recipient_warnings(frm, field);
+}
+
+
+function message_draft_recipient_contact(frm, selectedValue) {
+    const selected = String(selectedValue || '').trim();
+    if (!selected) return null;
+
+    const parsed = selected.match(/^\s*(.*?)\s*<\s*([^<>\s]+@[^<>\s]+)\s*>\s*$/);
+    const selectedName = String(parsed?.[1] || selected).trim().toLowerCase();
+    const selectedEmail = String(parsed?.[2] || '').trim().toLowerCase();
+
+    const matches = (frm.doc.contacts || []).filter(row => {
+        const names = [row.contact_name, row.contact_role, row.crm_contact]
+            .map(value => String(value || '').trim().toLowerCase())
+            .filter(Boolean);
+        const emails = String(row.emails || '')
+            .split(/[\n,;]+/)
+            .map(value => value.trim().toLowerCase())
+            .filter(Boolean);
+        return (selectedEmail && emails.includes(selectedEmail)) || names.includes(selectedName);
+    });
+    return matches.length === 1 ? matches[0] : null;
+}
+
+
+function refresh_message_draft_recipient_warnings(frm, field) {
+    if (!field?.$wrapper) return;
+
+    field.$wrapper.find('.sei-non-primary-recipient-warning').remove();
+    (frm.doc.message_drafts || []).forEach(row => {
+        const contact = message_draft_recipient_contact(frm, row.to_contact);
+        if (!contact || Boolean(contact.is_primary)) return;
+
+        const warning = $(
+            '<div class="sei-non-primary-recipient-warning text-warning small"></div>'
+        )
+            .html(
+                `${frappe.utils.icon('warning', 'sm')} `
+                + __('This recipient is not a primary contact and will not have a CRM Lead after conversion.')
+            )
+            .css({ display: 'flex', gap: '4px', alignItems: 'center', marginTop: '4px' });
+
+        const $gridRow = field.$wrapper.find(`.grid-row[data-name="${row.name}"]`).first();
+        const $gridRecipient = $gridRow.find('[data-fieldname="to_contact"]').first();
+        if ($gridRecipient.length) warning.clone().appendTo($gridRecipient);
+
+        const openRow = field.grid?.open_grid_row;
+        if (openRow?.doc?.name === row.name) {
+            const $editorRecipient = openRow.grid_form?.fields_dict?.to_contact?.$wrapper;
+            if ($editorRecipient?.length) warning.clone().appendTo($editorRecipient);
+        }
+    });
 }
 
 
@@ -929,6 +983,7 @@ function normalize_managed_grid_editor(field, key, frm = null) {
 
             if (key === 'message-draft' && frm) {
                 add_message_draft_recipient_copy_button(frm, field, $form);
+                refresh_message_draft_recipient_warnings(frm, field);
             }
 
             const $footerActions = $form.children('.grid-footer-toolbar').find('.row-actions');
@@ -1244,6 +1299,9 @@ frappe.ui.form.on('SEI Prospect Contact', {
 
 
 frappe.ui.form.on('SEI Prospect Message Draft', {
+    to_contact(frm) {
+        refresh_message_draft_recipient_warnings(frm, frm.fields_dict.message_drafts);
+    },
     sent(frm, cdt, cdn) {
         const row = locals[cdt][cdn];
         if (!row.sent) {
