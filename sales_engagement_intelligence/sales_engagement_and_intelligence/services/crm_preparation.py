@@ -977,9 +977,90 @@ def _lead_payload_for_contact(prospect, row):
     return payload
 
 
-def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
+def _crm_lead_for_contact_row(row) -> str | None:
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import emails
+
+    for email in emails(row):
+        for field in ("email", "email_id"):
+            if _has_field("CRM Lead", field):
+                existing = frappe.db.get_value("CRM Lead", {field: email}, "name")
+                if existing:
+                    return existing
+    return None
+
+
+def primary_contacts_missing_crm_leads(prospect_name: str) -> list[dict]:
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
         emails,
+        primary_contacts,
+    )
+
+    prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    if prospect.lifecycle_status not in {"Converted to CRM Lead", "Converted to CRM Deal"}:
+        return []
+
+    missing = []
+    for row in primary_contacts(prospect):
+        if not emails(row) or _crm_lead_for_contact_row(row):
+            continue
+        missing.append(
+            {
+                "contact_row": row.name,
+                "contact_name": row.contact_name or prospect.prospect_name,
+                "contact_role": row.contact_role,
+                "emails": emails(row),
+                "crm_contact": row.crm_contact,
+            }
+        )
+    return missing
+
+
+def create_crm_lead_for_primary_contact(prospect_name: str, contact_row: str) -> dict:
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import emails
+
+    prospect = frappe.get_doc("SEI Prospect", prospect_name)
+    _assert_base_conversion_eligible(prospect)
+    if prospect.lifecycle_status not in {"Converted to CRM Lead", "Converted to CRM Deal"}:
+        frappe.throw("This action is only available after the prospect has been converted to CRM.")
+
+    row = next((item for item in (prospect.get("contacts") or []) if item.name == contact_row), None)
+    if not row:
+        frappe.throw("The selected prospect contact no longer exists.")
+    if not row.is_primary:
+        frappe.throw("Only a primary prospect contact can be promoted to a CRM Lead.")
+    if not emails(row):
+        frappe.throw("The selected primary contact needs an email address before creating a CRM Lead.")
+
+    existing = _crm_lead_for_contact_row(row)
+    if existing:
+        frappe.throw(f"CRM Lead {existing} already exists for this primary contact.")
+
+    contact = _upsert_contact_row(prospect, row)
+    lead = frappe.get_doc(_lead_payload_for_contact(prospect, row))
+    lead.insert()
+    _copy_prospect_metadata(prospect_name, "CRM Lead", lead.name)
+
+    if prospect.crm_organization:
+        _safe_set_link_on_related_doc("CRM Lead", lead.name, "CRM Organization", prospect.crm_organization)
+
+    sync = sync_sei_context_to_crm(prospect_name)
+    audit = _record_conversion_attribution(
+        prospect_name,
+        "Created CRM Lead for Primary Contact",
+        crm_lead=lead.name,
+        notes=f"Primary contact: {row.contact_name or row.name}",
+    )
+    return {
+        "crm_lead": lead.name,
+        "crm_contact": contact.name,
+        "contact_row": row.name,
+        "sync": sync,
+        "audit": audit,
+    }
+
+
+def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (
         populated_contacts,
         primary_contacts,
     )
@@ -1006,15 +1087,7 @@ def convert_prospect_to_crm_leads(prospect_name: str) -> dict:
     contacts = [_upsert_contact_row(prospect, row) for row in populated_contacts(prospect)]
     leads = []
     for row in primary_contacts(prospect):
-        existing = None
-        for email in emails(row):
-            for field in ("email", "email_id"):
-                if _has_field("CRM Lead", field):
-                    existing = frappe.db.get_value("CRM Lead", {field: email}, "name")
-                    if existing:
-                        break
-            if existing:
-                break
+        existing = _crm_lead_for_contact_row(row)
         if existing:
             lead = frappe.get_doc("CRM Lead", existing)
         else:
