@@ -1352,6 +1352,27 @@ def convert_to_crm_lead(prospect: str) -> dict:
 
 
 @api_endpoint
+def get_primary_contacts_missing_crm_leads(prospect: str) -> list[dict]:
+    _check_prospect_permission(prospect, "read")
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.crm_preparation import (
+        primary_contacts_missing_crm_leads,
+    )
+
+    return primary_contacts_missing_crm_leads(prospect)
+
+
+@api_endpoint
+def create_primary_contact_crm_lead(prospect: str, contact_row: str) -> dict:
+    _check_prospect_permission(prospect, "write")
+    _require_manager()
+    from sales_engagement_intelligence.sales_engagement_and_intelligence.services.crm_preparation import (
+        create_crm_lead_for_primary_contact,
+    )
+
+    return create_crm_lead_for_primary_contact(prospect, contact_row)
+
+
+@api_endpoint
 def get_missing_prospect_contact_roles(prospect: str) -> list[str]:
     _check_prospect_permission(prospect, "read")
     from sales_engagement_intelligence.sales_engagement_and_intelligence.services.contacts import (

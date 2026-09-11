@@ -104,6 +104,58 @@ function convert_to_crm_lead(frm) {
 }
 
 
+function create_lead_for_primary_contact(frm) {
+    frappe.call({
+        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.get_primary_contacts_missing_crm_leads',
+        args: { prospect: frm.doc.name },
+        freeze: true,
+        callback(r) {
+            const contacts = unwrap_api_message(r) || [];
+            if (!contacts.length) {
+                frappe.msgprint(__('Every primary contact with an email already has a CRM Lead.'));
+                return;
+            }
+
+            const options = contacts.map((row) => ({
+                label: `${row.contact_name}${row.contact_role ? ` — ${row.contact_role}` : ''} (${row.emails[0]})`,
+                value: row.contact_row
+            }));
+            const dialog = new frappe.ui.Dialog({
+                title: __('Create CRM Lead for Primary Contact'),
+                fields: [{
+                    fieldname: 'contact_row',
+                    fieldtype: 'Select',
+                    label: __('Primary Contact'),
+                    options,
+                    reqd: 1,
+                    default: options[0].value
+                }],
+                primary_action_label: __('Create CRM Lead'),
+                primary_action(values) {
+                    dialog.hide();
+                    frappe.call({
+                        method: 'sales_engagement_intelligence.sales_engagement_and_intelligence.api.create_primary_contact_crm_lead',
+                        args: { prospect: frm.doc.name, contact_row: values.contact_row },
+                        freeze: true,
+                        callback(create_response) {
+                            const result = unwrap_api_message(create_response) || {};
+                            if (result.crm_lead) {
+                                frappe.show_alert({
+                                    message: __('CRM Lead {0} created.', [result.crm_lead]),
+                                    indicator: 'green'
+                                });
+                            }
+                            frm.reload_doc();
+                        }
+                    });
+                }
+            });
+            dialog.show();
+        }
+    });
+}
+
+
 function rebuild_prospect_actions(frm) {
     try {
         configure_prospect_actions(frm);
@@ -189,6 +241,11 @@ function configure_prospect_actions(frm) {
 
     if (is_manager_or_admin()) {
         add_crm_action(frm, 'Convert to CRM Lead', () => convert_to_crm_lead(frm));
+        if (['Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status)) {
+            add_crm_action(frm, 'Create Lead for Primary Contact', () => {
+                create_lead_for_primary_contact(frm);
+            });
+        }
     }
 
     if ((['Converted to CRM Lead', 'Converted to CRM Deal'].includes(frm.doc.lifecycle_status)
