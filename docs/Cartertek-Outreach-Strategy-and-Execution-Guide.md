@@ -12,7 +12,6 @@ Whenever this guide requires following, reading, checking, or referring to the S
 
 Do not claim to have read the current or latest operator docs merely because a copy exists at the expected `docs/operator_workflow/` path. Confirm that the copy being used is the latest GitHub-repository version first. If the latest repository docs cannot be obtained or verified, treat the operator instructions as unavailable rather than substituting an older copy.
 
-
 ## Purpose
 
 Cartertek outreach is a small-volume, high-context client-acquisition process.
