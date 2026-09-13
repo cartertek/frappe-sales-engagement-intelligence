@@ -12,7 +12,6 @@ Whenever this guide requires following, reading, checking, or referring to the S
 
 Do not claim to have read the current or latest operator docs merely because a copy exists at the expected `docs/operator_workflow/` path. Confirm that the copy being used is the latest GitHub-repository version first. If the latest repository docs cannot be obtained or verified, treat the operator instructions as unavailable rather than substituting an older copy.
 
-This guide explains the strategy and end-to-end operating model. Detailed execution procedures live in `docs/operator_workflow/`. If this guide and a current operator procedure appear to conflict on an execution detail, stop and resolve the conflict before continuing.
 
 ## Purpose
 
