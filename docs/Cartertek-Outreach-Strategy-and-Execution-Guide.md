@@ -4,7 +4,7 @@
 
 This guide is an executable operating procedure, not reference material to summarize or approximate. When performing Cartertek outreach work, follow the applicable procedures as written and in the order they specify. Do not replace them with a summary, remembered approximation, simplified workflow, or a shorter set of principles. If a procedure requires a checklist, audit, gate, or ordered sequence, actually perform that procedure before proceeding.
 
-This guide describes Cartertek's current outreach-marketing process, not a catalog of every acquisition idea that has been discussed. Do not revive retired campaign concepts, substitute older workflows from prior conversations, or infer procedures from the Frappe data model.
+This guide describes Cartertek's current outreach-marketing process.
 
 ### Operator documentation source of truth
 
