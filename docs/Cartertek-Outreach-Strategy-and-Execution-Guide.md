@@ -2,1016 +2,461 @@
 
 ## Follow the guide as written
 
-This guide is an executable operating procedure, not reference material to summarize or approximate. When performing Cartertek outreach work, follow the applicable procedures as written and in the order they specify. Do not replace them with a summary, remembered approximation, simplified workflow, or a shorter set of principles. If a procedure requires a checklist, audit, gate, or ordered sequence, actually perform that procedure before proceeding.
+This guide describes Cartertek's current outreach-marketing process. It is an operating guide, not a catalog of every acquisition idea that has been discussed.
+
+Use the current process as written. Do not revive retired campaign concepts, substitute older workflows from prior conversations, or infer procedures from the Frappe data model.
 
 ### Operator documentation source of truth
 
-Whenever this guide requires following, reading, checking, or referring to the SEI operator documentation, use **only the most recent operator docs from the GitHub repository**. Fetch or otherwise verify the current repository revision before reading them. The operator-doc files bundled into a deployed Frappe app, container, image, working copy, cached checkout, local mirror, prior conversation, or remembered workflow are not authoritative unless they have first been verified to match the latest repository version.
+This guide explains the strategy and the end-to-end operating model. The detailed execution procedures live in `docs/operator_workflow/`.
 
-Do not claim to have read the current or latest operator docs merely because a copy exists at the expected `docs/operator_workflow/` path. Confirm that the copy being used is the latest GitHub-repository version first. If the latest repository docs cannot be obtained or verified, treat the operator instructions as unavailable rather than substituting an older copy.
+Whenever this guide requires following, reading, checking, or referring to SEI operator documentation, use **only the most recent operator docs from the GitHub repository**. Verify the current repository revision before using a deployed, cached, local, or remembered copy.
+
+If this guide and a current operator procedure appear to conflict on an execution detail, stop and resolve the conflict before continuing. Do not silently substitute an older workflow.
 
 ## Purpose
 
-Cartertek’s outreach system exists to make client acquisition repeatable, evidence-based, and learnable.
+Cartertek outreach is a small-volume, high-context client-acquisition process.
 
-The goal is not to send more generic messages. The goal is to identify visible moments where a company, agency, founder, or technical team may have a real reason to care about Cartertek’s help.
+The goal is not to build large lead lists or send generic consulting pitches. The goal is to find organizations with **specific public evidence that makes a Cartertek engagement timely and relevant**, identify the people closest to that evidence, and contact them with a concise message grounded in what was actually observed.
 
-The system should support the full outreach loop:
+The current process is:
 
 ```
-Select an arena
-→ identify prospects
-→ evaluate signals
-→ choose an outreach thesis
-→ identify the right contact
-→ draft a context-specific message
-→ manage follow-through
-→ record the response
-→ convert real opportunities into CRM
-→ learn from results
+Choose a validated playbook
+→ research candidate prospects
+→ develop evidence-first draft signals
+→ publish only defensible signals
+→ let SEI determine qualification from signal strength
+→ research the prospect's identity and primary contact roles
+→ find and verify named contacts and contact paths
+→ draft the initial message inside the assigned template
+→ review and send manually
+→ follow up or reactivate when appropriate
+→ record responses and commercial outcomes
+→ hand real opportunities into CRM
 ```
 
-Cartertek outreach should be high-context, pain-timed, and grounded in observable evidence.
+The core question is:
 
-The guiding question is:
-
-```
-Which prospects are worth contacting, why, with what angle, through whom, what was sent, what happened, and what should happen next?
-```
-
-## Strategic Foundation
-
-Most outreach fails because it begins with a list of companies and a generic reason to pitch them.
-
-Cartertek’s outreach should begin with evidence.
-
-A good outreach prospect is not merely a company that fits a broad demographic. A good prospect has a visible reason Cartertek might be relevant now.
-
-The system should preserve this distinction:
-
-```
-Observed signal ≠ inferred pattern
-```
-
-A company that “seems like the type that might need help” is not enough. There should be a defensible entry point: something visible, documented, timely, or specific enough to justify outreach.
-
-The core strategy is:
-
-```
-Find observable signals of software risk, stalled development, operational friction, or technical overload.
-
-Map that signal to a clear thesis.
-
-Use the thesis to choose the contact role, message angle, offer, and asset.
-
-Track what happens so future outreach improves.
-```
-
-## Core Outreach Categories
-
-Cartertek’s outreach falls into four major categories.
-
-### 1. Cold Outbound
-
-Cold outbound remains the central outreach category.
-
-It includes:
-
-```
-direct email
-LinkedIn outreach
-phone outreach
-executive outreach
-account-based targeting
-contact form outreach
-targeted follow-up after visible events
-```
-
-Cold outbound should not be generic. It should use observed signals to create a specific reason for contact.
-
-The message should answer:
-
-```
-Why this company?
-Why now?
-Why this contact?
-Why this Cartertek offer?
-```
-
-### 2. Signal-Driven Prospecting
-
-Many prospecting strategies are best understood as signal sources feeding outbound.
-
-Examples include:
-
-```
-public-artifact targeting
-hiring-signal targeting
-technical-community intelligence
-launch-aftereffect monitoring
-agency overflow detection
-content-supported outreach
-directory/discovery-platform research
-```
-
-These are not separate acquisition systems. They help answer:
-
-```
-Who should Cartertek contact?
-Why might they care now?
-What should the message be about?
-```
-
-### 3. Ecosystem and Partner Outreach
-
-Some outreach should target intermediaries rather than final buyers.
-
-Examples include:
-
-```
-agencies
-designers
-MSPs
-implementation consultants
-recruiters
-fractional CTOs
-startup advisors
-no-code/low-code consultants
-platform ecosystem participants
-```
-
-This is structurally different from direct cold outbound. The immediate goal may be referral, subcontracting, white-label support, overflow coverage, or a partner relationship.
-
-The key question is:
-
-```
-Who repeatedly encounters clients with software, workflow, AI, integration, or technical delivery problems that Cartertek can solve?
-```
-
-### 4. Reactivation
-
-Previously identified prospects should not disappear after one campaign.
-
-Reactivation means revisiting accounts when new timing signals appear:
-
-```
-a role is still unfilled
-a product has launched
-a second technical issue appears
-a company expands into AI or automation
-an agency adds a capability it may not be able to deliver
-a prior “not now” prospect becomes timely again
-a prospect changes role or company
-```
-
-Reactivation only works if prior prospects, signals, outcomes, and timing notes are preserved.
-
-## Outreach Theses
-
-Every prospect should be tied to a clear outreach thesis.
-
-An outreach thesis is Cartertek’s reason for believing the prospect may care.
-
-Initial Cartertek theses:
-
-```
-Agency Technical Reinforcement
-Project Rescue
-Post-Launch Stabilization
-Hiring-Gap Substitution
-Workflow Integration
-AI Workflow Implementation
-Production-Readiness Cleanup
-Technical Diagnostic / Second Set of Eyes
-```
-
-The thesis determines:
-
-```
-message angle
-contact role
-initial offer
-credibility asset
-follow-up logic
-qualification interpretation
-```
-
-A signal without a thesis is just research. A thesis turns evidence into a reason to contact someone.
-
-## Offer Construction
-
-The system should track not only what message was sent, but what offer the message points toward.
-
-Possible Cartertek offers include:
-
-```
-free triage call
-paid diagnostic
-rescue assessment
-technical audit
-fixed-scope cleanup
-fractional engineering support
-white-label agency support
-production-readiness review
-integration/workflow review
-AI workflow feasibility review
-```
-
-The same prospect and signal can perform differently depending on the offer.
-
-For example:
-
-```
-A failed hiring signal might support a hiring-gap substitution offer.
-
-A launch-aftereffect signal might support a production-readiness review.
-
-An agency overflow signal might support white-label engineering support.
-
-A technical distress signal might support a rescue assessment or technical diagnostic.
-```
-
-Offer construction is therefore part of outreach strategy, not just sales follow-up.
-
-## Signal Rules
-
-Signal tracking is central to Cartertek outreach.
-
-Prospect qualification and rejection are applied automatically by Frappe based on the strengths of the prospect's signals. Operators should evaluate signal evidence and strength accurately and let Frappe apply the resulting qualification state.
-
-Signals should be evaluated by:
-
-```
-type
-strength
-evidence basis
-confidence
-source
-timing
-notes
-whether the signal counts toward qualification
-```
-
-Only observable evidence should drive qualification.
-
-Inferred evidence can be useful context, but it should not carry the same weight as an observed signal.
-
-### Signal Strength
-
-Use signal strength to describe how directly the evidence suggests timely need.
-
-```
-Weak:
-A light indicator. Useful for context, but not enough to qualify a prospect.
-
-Moderate:
-A meaningful indicator.
-
-Strong:
-A direct, specific, timely indicator.
-```
-
-### Evidence Basis
-
-Use evidence basis to distinguish what was actually observed.
-
-```
-Observed:
-Direct evidence exists. Examples: job post, public issue, launch announcement, visible integration failure, explicit request.
-
-Inferred:
-A pattern or interpretation. Useful context, but not enough by itself.
-```
-
-The system should preserve the rule:
-
-```
-Observed signal ≠ inferred pattern
 ```
-
-## Signal Types
-
-Initial signal types:
-
-```
-Failed Recruitment
-Technical Distress
-Launch Aftermath
-Agency Overflow
-Ecosystem Adjacency
-Vendor/Directory Presence
-Community Request
-Procurement Visibility
-Credibility/Referral Signal
-Reactivation Signal
-```
-
-Examples of useful observable signals:
-
-```
-repeated job reposts
-urgent contractor role
-impossible hybrid technical role
-recent product launch
-post-launch complaints
-broken integrations
-public GitHub issues
-visible performance problems
-sudden AI/service expansion
-mismatch between agency positioning and technical depth
-repeated client/project pressure
-support/community complaints
-explicit request for outside help
-```
-
-## Prospect Lifecycle
-
-The outreach workflow should move prospects through clear working states.
-
-A practical lifecycle is:
-
-```
-New
-Needs Research
-Research Complete
-Qualified
-Find Contact
-Ready for CRM Conversion
-Converted to CRM Lead
-Converted to CRM Deal
-Rejected
-Do Not Contact
-```
-
-The purpose of lifecycle status is to make the next action obvious.
-
-The system should avoid mixing research state, qualification state, and sales state into one vague status. A prospect may be researched but not qualified, qualified but missing a contact path, or converted to CRM after becoming commercially meaningful.
-
-### Protected Outcomes
-
-Two outcomes require special care:
-
-```
-Rejected
-Do Not Contact
-```
-
-Rejected means the prospect should not continue through the workflow unless intentionally reopened.
-
-Do Not Contact means outreach should stop and the record should be protected from accidental future outreach.
-
-These statuses should not be bypassed by imports, scripts, playbooks, draft previews, or conversion helpers.
-
-## Data Intake
-
-Outreach data can come from many sources:
-
+Why is this organization worth contacting now, who is the right person to contact, and what specific Cartertek help is relevant to the evidence?
 ```
-manual entry
-CSV import
-scraped/exported lists
-job-board research
-directory research
-launch-source research
-GitHub/Reddit/Hacker News distress research
-agency/partner lists
-future browser capture workflows
-future API/script import
-```
-
-The important rule is that intake should feed the pre-CRM outreach layer first.
-
-Raw or half-researched prospects should not immediately become CRM leads. They should first be captured as prospects with signal evidence, source context, and qualification status.
-
-A prospect import should support fields such as:
-
-```
-company/prospect name
-website
-prospect type
-source arena
-source URL
-initial signal type
-initial signal notes
-signal strength
-observed/inferred basis
-contact name
-contact role
-contact URL
-contact email
-outreach thesis
-offer
-notes
-```
-
-## Contact Discovery
-
-The system should track not just the company, but the intended contact path.
-
-For each prospect, determine:
-
-```
-economic buyer
-pain owner
-technical evaluator
-internal champion
-likely blocker
-best first-contact person
-```
-
-Typical contact roles include:
 
-```
-agency founder
-agency operations lead
-delivery lead
-account lead
-founder/operator
-CTO
-VP Engineering
-product lead
-operations lead
-innovation/AI lead
-technical lead
-implementation partner manager
-```
-
-The contact role should follow from the thesis.
-
-For example:
-
-```
-Agency Technical Reinforcement usually points toward founder, operations, delivery, or account leadership.
-
-Hiring-Gap Substitution usually points toward CTO, VP Engineering, engineering manager, product lead, or founder/operator.
+## Current outreach model
 
-Workflow Integration may point toward operations, product, or internal systems owners.
+### Evidence-first cold outreach
 
-AI Workflow Implementation may point toward innovation, operations, product, or executive sponsors.
-```
+The validated outreach motion is **signal-driven cold outbound**.
 
-## Message Drafting
+A campaign begins with a prospecting thesis about a kind of public evidence that may reveal timely software work. Research then tests that thesis against real prospects.
 
-Message drafting should use stored prospect data:
+The public source is not enough by itself. A prospect advances only when the evidence survives the current signal definition, latest-state review, disqualifiers, and qualification rules.
 
-```
-prospect type
-source arena
-observed signal evidence
-outreach thesis
-offer
-contact role
-credibility asset
-prior touchpoints or prior outcomes
-```
+A good prospect therefore has all three:
 
-Messages should be:
+1. **Observable evidence** — a public source establishes the material facts.
+2. **A current reason to care** — the evidence is still relevant now, not merely historical.
+3. **A Cartertek-relevant work thesis** — the evidence points to software-engineering work Cartertek could plausibly perform.
 
-```
-specific
-short
-grounded in observable evidence
-clear about why Cartertek is reaching out
-focused on a concrete next step
-```
+Do not substitute broad company fit, industry fit, or speculation for a qualifying signal.
 
-A good message should not sound like a general pitch. It should make the recipient feel that Cartertek noticed something real and is offering a relevant way to help.
+### Campaign playbooks are research strategies, not separate outreach channels
 
-The system should retain:
+The current playbooks differ mainly in **what evidence we research and how that evidence is interpreted**. Once a prospect qualifies, they feed into the same downstream process:
 
 ```
-final sent message
-draft variants if useful
-asset used
-thesis used
-offer used
-response outcome
-next action
+qualification
+→ contact selection and research
+→ message drafting
+→ manual outreach
+→ follow-through
 ```
 
-## Outreach Execution
+The validated campaign playbooks are:
 
-For the current system, outreach should remain manual.
+- Failed Recruitment
+- Launch Aftermath
+- Technical Distress
+- Ecosystem Adjacency
 
-Recommended approach:
+These playbooks are described later in this guide.
 
-```
-send manually through Gmail, LinkedIn, phone, contact forms, or community DMs
-log each touchpoint or attribution
-use next-action fields for follow-up reminders
-track message angle, offer, asset, and outcome
-avoid AI auto-send
-avoid bulk blasting
-```
+### Keep strategy distinct from execution variations
 
-The system should optimize for high-context outreach, not mass outbound automation.
+Email, LinkedIn, contact forms, phone, alternate contacts, later follow-ups, and reactivation are execution choices or lifecycle actions. They are not separate prospecting strategies.
 
-The operator should always review the prospect, signal, thesis, offer, and message before contacting anyone.
+Likewise, a source type does not become a new outreach strategy merely because it contains stronger buyer intent or appears in a different community. The important distinction is the **basis on which Cartertek selects and qualifies the prospect**.
 
-## Response Handling
+## Evidence and qualification principles
 
-Outreach does not end when a prospect replies.
+Detailed signal-development and publication rules belong in the operator documentation. This guide preserves only the strategic rules that apply across campaigns.
 
-Responses should be classified and turned into an explicit next action.
+### Evidence precedes classification
 
-Useful response categories include:
+Research the facts before deciding that a prospect fits a signal type or strength.
 
-```
-No Response
-Positive
-Interested
-Wrong Person
-Not Now
-Already Solved
-No Budget
-Bad Fit
-Unsubscribe / Do Not Contact
-Meeting Booked
-Converted to Deal
-Other
-```
+Do not start from a desired qualification result and search backward for supporting language.
 
-Possible next actions include:
+### Observed evidence is not inferred opportunity
 
-```
-reply
-schedule call
-ask qualifying question
-send asset
-create CRM deal
-create follow-up reminder
-mark later/reactivation
-reject
-mark do not contact
-```
+A prospect may look promising without being qualified.
 
-The system should preserve response outcomes because they teach which arenas, signals, theses, offers, assets, and contact roles are actually working.
+The source must support the material claim being made. Cartertek fit, company size, technical sophistication, or a plausible need for consulting are useful context, but they are not substitutes for evidence.
 
-## CRM Conversion
+### Verify the latest state
 
-The pre-CRM outreach layer should hold raw, researched, and qualified prospects.
+A historical problem does not automatically establish a current opportunity.
 
-Formal CRM records should be created or linked only when the prospect is real enough to track in the sales pipeline.
+Before retaining a Moderate or Strong signal, check whether later evidence shows the issue was fixed, the project completed, the role closed, the workaround accepted, or the relevant condition otherwise ended.
 
-A prospect may be handed off into CRM when:
+When later evidence contradicts the original thesis, reevaluate the entire signal instead of preserving the classification with a nearby interpretation.
 
-```
-it is qualified or manually approved
-there is enough identity/contact context
-Cartertek intends to pursue the account
-the prospect is not Rejected or Do Not Contact
-```
+### Qualification is a result, not a research target
 
-A commercial deal should require stronger evidence, such as:
+Operators evaluate the evidence and signal strength accurately. SEI applies the resulting prospect qualification state.
 
-```
-positive interest
-meeting booked
-commercial discussion
-paid diagnostic/proposal interest
-manager-approved override
-```
+Do not strengthen a signal because a prospect would otherwise fail to qualify.
 
-CRM conversion should be explicit. It should not happen automatically merely because a prospect was imported or qualified.
+Do not weaken a signal because contact discovery looks difficult.
 
-## Credibility Asset Library
+## Prospect research workflow
 
-Assets make outreach less cold.
+### 1. Start with a validated playbook
 
-Useful support assets include:
+Before researching candidates, load the current playbook and its managed signal definitions.
 
-```
-Cartertek homepage
-project rescue page
-integration/workflow page
-AI workflow page
-quote process page
-diagnostic offer page
-mini case study
-technical teardown
-technical audit sample
-directory profile
-```
+Understand:
 
-Each outreach touchpoint or attribution should optionally link to the asset used.
+- what evidence qualifies;
+- what evidence disqualifies;
+- the current-state and recency requirements;
+- what would make the signal Weak, Moderate, or Strong;
+- which source arenas are appropriate for that playbook.
 
-Tracking assets makes it possible to learn which proof points support replies and conversion.
+### 2. Research candidate evidence before creating a prospect thesis
 
-## Outreach Playbooks
+Search the playbook's source arenas for candidate evidence.
 
-Playbooks make successful outreach repeatable.
+Prefer sources that expose the underlying facts directly: first-party posts, issue threads, job listings, official product or engineering material, public implementation discussions, and other primary sources where possible.
 
-Each playbook should define:
+Do not accept a candidate because it resembles a good prospect. Develop the evidence first.
 
-```
-source arenas
-qualifying signals
-likely contact roles
-outreach thesis
-initial offer
-message guidance
-disqualification rules
-follow-up timing
-recommended assets
-```
+### 3. Develop draft signals using the operator workflow
 
-Initial Cartertek playbooks:
+Draft Signals are the research workspace. Follow the current research, evidence, source-review, and signal-evaluation procedures in `docs/operator_workflow/`.
 
-```
-Agency Overflow
-Failed Hiring
-Launch Aftermath
-Technical Distress
-Partner / Referral
-Reactivation
-```
+A candidate does not become a published qualifying signal until the evidence and classification pass the required review.
 
-### Agency Overflow Playbook
+### 4. Review the resulting prospect state
 
-Targets agencies that may need technical reinforcement.
+After signal publication, review the prospect as a whole.
 
-Signals:
+Confirm that:
 
-```
-selling technical services beyond visible capability
-sudden AI/custom software positioning
-hiring odd technical roles
-design/marketing-heavy agency with backend/integration claims
-public delivery pressure
-repeated technical subcontracting hints
-```
+- the qualifying signal still represents the current evidence;
+- contradictory or newer evidence has been considered;
+- the prospect identity is correct;
+- the qualification state is the natural result of the published signals.
 
-Likely contacts:
+Only then move into identity and contact research.
 
-```
-founder
-operations lead
-delivery lead
-account lead
-```
+## Validated campaign playbooks
 
-Offers:
+### Failed Recruitment / Failed Hiring
 
-```
-white-label engineering support
-technical rescue call
-backend/integration reinforcement
-AI workflow implementation support
-```
+The campaign was executed as **Failed Recruitment**; the live SEI playbook is named **Failed Hiring**.
 
-### Failed Hiring Playbook
+#### What the campaign looks for
 
-Targets companies with visible engineering hiring gaps.
+Failed Recruitment / Failed Hiring identifies teams where public evidence suggests an unresolved engineering-capacity or implementation gap. Hiring friction is one important pattern, but the playbook also includes bounded consultancy-compatible technical work and current capacity gaps that can be addressed without waiting for a permanent hire.
 
-Signals:
+The useful evidence is a **current technical-capacity or delivery gap**, not merely the existence or age of a job listing.
 
-```
-role open for months
-repeated reposts
-urgent contractor role
-impossible hybrid role
-hiring around modernization, AI, infrastructure, or integration
-```
+The current signal patterns include:
 
-Likely contacts:
+- a genuinely unresolved long-open technical role;
+- an overloaded hybrid role that combines substantive software engineering with a separate business or operational function;
+- a current technical-capacity gap constraining operations, delivery, or revenue;
+- a current contract, fractional, temporary, subcontracted, or project opportunity for a bounded technical outcome.
 
-```
-CTO
-VP Engineering
-engineering manager
-product lead
-founder/operator
-```
+#### Important lessons from execution
 
-Offers:
+A job page that remains online is not evidence that a role is still open. The source must affirmatively support current application status where current vacancy matters.
 
-```
-hiring-gap substitution
-scoped diagnostic
-focused implementation sprint
-production-readiness support
-```
+Likewise, an old role is not automatically a failed-recruitment signal. Persistence alone does not prove difficulty hiring.
 
-### Launch Aftermath Playbook
+For overloaded or hybrid roles, the role must actually perform substantive software-engineering work. A technical background, automation, configuration, architecture advice, demos, or technical fluency are not enough by themselves.
 
-Targets companies shortly after a public launch.
+#### Outreach thesis
 
-Signals:
+The outreach thesis is that Cartertek may be able to take on a defined body of engineering work that the organization is having difficulty staffing or concentrating into the current role structure.
 
-```
-recent launch
-performance issues
-bug reports
-support complaints
-integration requests
-visible technical debt
-scale-up pressure
-```
+Do not frame Cartertek as a generic replacement for an employee. Tie the message to the actual work implied by the qualifying evidence.
 
-Likely contacts:
+### Launch Aftermath
 
-```
-founder
-CTO
-product lead
-engineering lead
-```
+#### What the campaign looks for
 
-Offers:
+Launch Aftermath identifies recently launched products, systems, or capabilities where public evidence shows a material technical consequence after launch and meaningful work remains.
 
-```
-post-launch stabilization
-production-readiness review
-bug/integration cleanup
-technical second set of eyes
-```
+A recent launch can be a timing trigger, but it is not enough by itself to justify outreach. The actionable thesis comes from **current post-launch aftermath or implementation demand**.
 
-### Technical Distress Playbook
+Examples may include continuing reliability problems, production-readiness gaps, integration failures, material defects, or other consequences that create a plausible body of engineering work.
 
-Targets visible technical pain.
+#### Important lessons from execution
 
-Signals:
+Current-state verification is mandatory. A launch-related issue that was subsequently fixed, stabilized, or completed is not a current Strong signal without separate evidence of continuing aftermath.
 
-```
-GitHub issues
-public complaints
-integration failures
-abandoned tooling
-migration problems
-unstable infrastructure
-AI prototype failure
-```
+Do not preserve a prospect merely because the original launch was recent or technically ambitious.
 
-Likely contacts:
+#### Outreach thesis
 
-```
-technical lead
-CTO
-founder
-operations owner
-product owner
-```
+The outreach thesis is targeted stabilization or completion work around the specific post-launch consequence that remains current.
 
-Offers:
+### Technical Distress
 
-```
-project rescue
-technical diagnostic
-stabilization sprint
-integration cleanup
-```
+#### What the campaign looks for
 
-### Partner / Referral Playbook
+Technical Distress is not simply "a company has a technical problem."
 
-Targets intermediaries who encounter relevant clients.
+The campaign targets **loss of technical agency**: evidence that an organization cannot safely or efficiently understand, change, maintain, or operate an important software system without disproportionate burden, uncertainty, repeated failure, or dependency.
 
-Signals:
+Typical source arenas include public issue trackers, technical communities, engineering posts, migration discussions, and company-owned support or project surfaces.
 
-```
-serves non-technical clients
-works adjacent to implementation
-lacks custom software capability
-handles strategy/design/marketing/IT but not deep engineering
-has clients asking for AI, automation, workflows, or integrations
-```
+#### Important lessons from execution
 
-Likely contacts:
+A difficult bug or isolated defect is not automatically Technical Distress. The evidence must support the broader loss-of-agency thesis required by the managed signal definition.
 
-```
-agency owner
-designer
-MSP owner
-fractional CTO
-consultant
-advisor
-```
+If a specific remediation is already in progress, the historical distress condition does not automatically remain current. A Moderate or Strong in-progress-remediation signal requires separate current evidence that:
 
-Offers:
+1. material impairment still exists; and
+2. substantial remediation work still remains.
 
-```
-referral partnership
-white-label support
-technical backup
-implementation partner relationship
-```
+Evidence that only minor cleanup, rollout, monitoring, validation, or closeout remains does not support the commercial thesis. Follow the current operator rules for the special recency gate that applies to remaining-work evidence during active remediation.
 
-### Reactivation Playbook
+#### Outreach thesis
 
-Targets prior prospects when timing changes.
+The outreach thesis is project rescue, technical diagnosis, stabilization, or implementation help that restores the organization's ability to safely move the system forward.
 
-Signals:
+### Ecosystem Adjacency
 
-```
-new launch
-role remains open
-second relevant public signal appears
-prior “not now” window expires
-company announces new initiative
-prospect changes role/company
-```
+#### What the campaign looks for
 
-Offers depend on the original thesis and the new signal.
+Ecosystem Adjacency identifies organizations using a technology Cartertek can directly modify, extend, integrate, or customize when those organizations publicly describe implementation gaps or implementation blockage.
 
-## Reporting and Feedback Loops
+The important adjacency is **technical capability**: Cartertek can work directly on the relevant ecosystem rather than merely advise around it.
 
-The outreach system should make learning unavoidable.
+Frappe and ERPNext were the first ecosystem used to validate this process.
 
-Reports should show performance by:
+#### Current signal patterns
 
-```
-source arena
-signal type
-signal strength
-observed vs inferred basis
-outreach thesis
-offer
-prospect type
-contact role
-channel
-asset used
-response category
-meeting booked
-CRM conversion
-deal conversion
-outcome
-```
+Two useful patterns emerged from execution:
 
-The goal is to answer:
+- **Product implementation gap** — the organization has a real workflow requirement that the current product does not satisfy, with evidence that the gap matters enough to create plausible implementation work.
+- **Ecosystem implementation blockage** — the organization is materially blocked while trying to implement, extend, migrate, or operate within the ecosystem, and meaningful technical work remains.
 
-```
-Which arenas produce qualified prospects?
-Which signals predict replies?
-Which theses get interest?
-Which offers create meetings?
-Which assets support conversion?
-Which prospect types waste time?
-Which contact roles work?
-Where does the workflow get stuck?
-```
+A feature request or complaint is not automatically a strong prospect. The evidence must establish real workflow impact and the current implementation need required by the managed signal definition.
 
-The reporting layer should be used to refine outreach behavior over time.
+#### Important lessons from execution
 
-If a source produces many prospects but few qualified records, the source should be questioned.
+Public implementation discussions often begin with a username or issue author rather than a clean company identity. Identity resolution may therefore be a substantial part of prospect research.
 
-If a signal type produces qualification but no replies, the thesis or offer may be wrong.
+Do not assume the issue author is the best outreach contact. After the organization is identified, perform the normal role-selection and contact-research process.
 
-If a playbook produces replies but no deals, the offer or handoff may need adjustment.
+When a selected role requires signal-specific relevance, job title alone is insufficient. The research must affirmatively establish why that person is connected to the qualifying implementation problem.
 
-## Operating Rhythm
+#### Outreach thesis
 
-A practical weekly rhythm:
+The outreach thesis is that Cartertek can directly implement, extend, or unblock the relevant system because the work falls inside an ecosystem Cartertek can modify.
 
-### 1. Select arenas
+## Prospect identity and contact research
 
-Choose a small number of source arenas for focused research.
+Contact research begins **after** the prospect and qualifying evidence are understood.
 
-Examples:
+Follow `docs/operator_workflow/identity-contact-research.md` rather than inventing contact logic from titles alone.
 
-```
-agency directories
-long-open engineering roles
-recent launches
-technical communities
-partner/referral targets
-prior prospects for reactivation
-```
+The practical sequence is:
 
-### 2. Capture prospects
+1. establish the organization's canonical identity;
+2. select the primary roles required by the playbook for this specific prospect;
+3. research each selected role separately;
+4. verify that a named person actually occupies the claimed role;
+5. establish signal-specific relevance where the role requires it;
+6. search for a directly attributable contact path;
+7. preserve unresolved primary roles rather than forcing a weak match.
 
-Add prospects manually or through import.
+### Role proximity matters more than seniority
 
-Each prospect should include:
+The best contact is usually the person closest to the qualifying work, not automatically the most senior executive.
 
-```
-source arena
-source URL
-initial notes
-initial signal evidence
-thesis if obvious
-contact path if known
-```
+Research should distinguish among the economic buyer, pain owner, technical owner, product or operations owner, and other roles defined by the playbook.
 
-### 3. Review signals
+### Do not guess contact information
 
-Verify whether the evidence is observed or inferred.
+Never reconstruct or infer a personal email address from a company pattern and store it as verified.
 
-Evaluate signal strength accurately. Frappe automatically applies the prospect's qualification or rejection state from the resulting signal strengths.
+Prefer directly published, person-attributable email addresses. A public personal email may be usable when identity is firmly established, but record it accurately as personal rather than presenting it as a company mailbox.
 
-### 4. Work queues
+Generic company inboxes should remain generic contacts and should not be attached to a named person.
 
-Review operational queues:
+### Deep contact research is allowed when justified
 
-```
-Needs Research
-Find Contact
-Ready for CRM Conversion
-Rejected
-Do Not Contact
-```
+For high-quality prospects, contact discovery may require multiple passes and creative identity research across official pages, public profiles, conference material, code history, archived professional material, industry documents, or other public records.
 
-Move prospects forward only when the next action is clear.
+The standard is evidence, not convenience. Stop short of guessing.
 
-### 5. Assign playbook and prepare message
+## Prospect positioning before drafting
 
-Choose the relevant playbook.
+Before drafting the initial message, make the outreach position explicit.
 
 Confirm:
 
-```
-thesis
-offer
-asset
-contact role
-message template
-```
+- what qualifying signal is being used;
+- what work the evidence suggests;
+- why Cartertek is relevant to that work;
+- which contact is being addressed and why;
+- what scope of help can be stated accurately without overcommitting.
 
-Preview the draft and edit manually.
+This is the bridge between research and writing. Do not make the writer rediscover the prospect thesis from raw evidence.
 
-### 6. Send manually
+## Initial message drafting
 
-Send through the appropriate channel.
+Follow the current `docs/operator_workflow/message-drafting.md` and `docs/operator_workflow/initial-outreach.md` procedures.
 
-Do not rely on automatic sending.
+The most important process rules established during execution are summarized below.
 
-### 7. Log outcome
+### The assigned template is immutable during drafting
 
-Record what happened:
+The playbook's message template is the outer structure. Message drafting means filling the content the template allows.
 
-```
-no response
-positive
-interested
-wrong person
-not now
-bad fit
-meeting booked
-converted to deal
-do not contact
-```
+Do not rewrite template-supplied greeting, wrapper, CTA, spacing, signature, or other fixed text while drafting a prospect message.
 
-### 8. Convert when appropriate
+If the template itself needs improvement, change it as a separate template-maintenance task.
 
-Create or link CRM records only when the prospect is ready for formal sales tracking.
+### Introduce the source accurately
 
-### 9. Review reports
+The opening should identify the actual source item conversationally and from the recipient's perspective.
 
-Use reports to evaluate:
+Do not pretend Cartertek has inside knowledge. Do not describe a public issue, post, launch, job listing, or implementation discussion as something more direct than it is.
 
-```
-source quality
-signal quality
-thesis performance
-offer performance
-asset performance
-conversion movement
-workflow bottlenecks
-```
+### Use the evidence selectively
 
-## Non-Goals and Safety Boundaries
+The message is not a research summary.
 
-The outreach system is deliberately not a mass outbound machine.
+Use only enough evidence to establish why Cartertek is reaching out and what work appears relevant. Do not retell the signal record, dump implementation details, or diagnose the prospect from the outside.
 
-Do not use it for:
+### State relevance directly
 
-```
-mass scraping
-automatic cold email blasting
-AI auto-send
-automatic LinkedIn messaging
-automatic contact-form submission
-unreviewed autonomous prospecting
-automatic CRM conversion
-generic lead scoring detached from evidence
-```
+The message should make clear what Cartertek could actually do in relation to the observed work.
 
-The system should support disciplined, context-specific outreach.
+Do not write a sentence that sounds like an answer to an unasked question such as "where Cartertek could help is..." or "this looks like a good fit."
 
-Automation may assist with intake, organization, drafting, reporting, and workflow visibility, but the operator remains responsible for judgment and sending.
+State the relevant work naturally as part of the message.
 
-## Frappe SEI Implementation
+### Use active voice and calibrated claims
 
-The strategy above is implemented in the Cartertek Frappe app **Sales Engagement and Intelligence**.
+Prefer active voice throughout.
 
-The implementation provides:
+Do not use vague language merely to avoid overcommitting. Be direct about the work while keeping the claimed scope accurate to what the public evidence supports.
 
-```
-SEI Prospect
-SEI Signal
-SEI Thesis
-SEI Asset
-SEI Interaction Attribution
-SEI Import Batch
-SEI Playbook
-SEI Message Template
-qualification and lifecycle workflow
-Frappe CRM conversion/linking
-reporting workspace
-API/script interface
-manual draft preview
-```
+### Avoid formulaic substitution
 
-The implementation uses SEI as the pre-CRM outreach intelligence layer, Frappe CRM for CRM handoff, and ERPNext downstream for later commercial records.
+The template may be shared across prospects, but the authored body should not read like the same sentence with nouns replaced.
 
-For the practical operator guide, start here:
+Use the actual source, work, recipient role, and Cartertek relevance to determine the wording.
 
-[https://github.com/cartertek/frappe-sales-engagement-intelligence/blob/master/docs/operator_workflow/README.md](https://github.com/cartertek/frappe-sales-engagement-intelligence/blob/master/docs/operator_workflow/README.md)
+## Sending and interaction recording
+
+Initial outreach remains manual and reviewed.
+
+Before sending:
+
+1. read the rendered message as the recipient will receive it;
+2. confirm the recipient is the intended primary contact;
+3. confirm the sender field and delivery address;
+4. confirm the message still matches the current evidence;
+5. send through the appropriate channel;
+6. record the touchpoint and sent content in SEI.
+
+Do not use bulk blasting or unreviewed AI auto-send.
+
+## Follow-up and reactivation
+
+Follow-up is part of the lifecycle of an existing prospect. It is not a separate prospecting strategy.
+
+For an unanswered prospect, the next action may be another message, another relevant contact, another appropriate channel, or stopping active follow-up. The exact cadence should be defined by the applicable playbook or current operating procedure rather than improvised independently for every prospect.
+
+Reactivation means revisiting a known prospect when **new evidence makes the account timely again**. Examples include a new qualifying signal, a materially changed implementation state, a new launch, renewed hiring friction, or another current development relevant to the original thesis.
+
+Do not treat the mere passage of time as a new signal.
+
+## Response handling and CRM handoff
+
+When a prospect replies, record the outcome and make the next action explicit.
+
+Typical actions include:
+
+- reply or answer a question;
+- route to the correct person;
+- schedule a call;
+- mark for later follow-up;
+- stop outreach;
+- update CRM handoff or sales records when appropriate.
+
+SEI is the pre-CRM research and outreach layer. CRM handoff is explicit and user-controlled. A Qualified or Manually Approved prospect may be approved for CRM handoff once the identity and contact requirements are satisfied; a prospect does not need to have replied before a CRM Lead can be created.
+
+Deal creation is different. Do not create a Deal merely because a prospect was researched, qualified, or converted to a CRM Lead. A Deal requires a commercial basis such as positive interest, a meeting, a scoped discussion, proposal or diagnostic interest, or an explicit manager override.
+
+Follow `docs/operator_workflow/crm-conversion.md` for the current handoff procedure.
+
+## Learning from outcomes
+
+Cartertek should preserve outreach outcomes so the process can improve, but the outreach program does **not** depend on high-volume experimentation.
+
+Record enough information to answer practical questions over time:
+
+- Which campaign sources produce defensible prospects?
+- Which qualifying patterns repeatedly produce weak or misleading leads?
+- Which kinds of contacts are reachable and relevant?
+- Which messages or approaches produce useful responses?
+- Where does the workflow repeatedly stall?
+
+Use obvious patterns and accumulated evidence to revise playbooks, signal definitions, contact rules, and drafting guidance when justified.
+
+Do not create artificial A/B tests, complex attribution schemes, or optimization work that is disproportionate to the small outreach volume.
+
+## Operating rhythm
+
+The working rhythm is simple:
+
+1. choose one validated playbook and research batch;
+2. develop and review evidence-first signals;
+3. allow qualification to follow from published evidence;
+4. complete identity and primary-contact research for qualified prospects;
+5. position the prospect for outreach;
+6. draft and review the initial message using the assigned template;
+7. send manually;
+8. work follow-up, responses, and reactivation as they become due;
+9. hand real commercial opportunities into CRM;
+10. feed concrete lessons back into the playbook or operator docs.
+
+Keep batches small enough that research quality and source verification remain high.
+
+## Scope boundaries
+
+This guide covers Cartertek's current validated signal-driven cold-outreach process.
+
+It does not treat every possible lead source, buyer-intent surface, referral path, partnership concept, directory, community, or channel as a separate outreach strategy.
+
+New prospecting strategies should be added here only after they have been deliberately developed and validated. Do not mix exploratory strategy ideas into the current operating process prematurely.
+
+## Frappe SEI implementation
+
+Sales Engagement and Intelligence (SEI) supports this process as the pre-CRM operating layer. It stores prospects, evidence-backed signals, playbook context, selected contacts, message drafts, interactions, and lifecycle state, then supports explicit handoff into Frappe CRM when a prospect becomes commercially real.
+
+Do not infer the outreach process from the database schema. The strategy guide defines the operating model; the current operator docs define execution details; the live playbooks and managed signal definitions define campaign-specific rules.
+
+Start with:
+
+`docs/operator_workflow/README.md`
