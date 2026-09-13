@@ -2,17 +2,17 @@
 
 ## Follow the guide as written
 
-This guide describes Cartertek's current outreach-marketing process. It is an operating guide, not a catalog of every acquisition idea that has been discussed.
+This guide is an executable operating procedure, not reference material to summarize or approximate. When performing Cartertek outreach work, follow the applicable procedures as written and in the order they specify. Do not replace them with a summary, remembered approximation, simplified workflow, or a shorter set of principles. If a procedure requires a checklist, audit, gate, or ordered sequence, actually perform that procedure before proceeding.
 
-Use the current process as written. Do not revive retired campaign concepts, substitute older workflows from prior conversations, or infer procedures from the Frappe data model.
+This guide describes Cartertek's current outreach-marketing process, not a catalog of every acquisition idea that has been discussed. Do not revive retired campaign concepts, substitute older workflows from prior conversations, or infer procedures from the Frappe data model.
 
 ### Operator documentation source of truth
 
-This guide explains the strategy and the end-to-end operating model. The detailed execution procedures live in `docs/operator_workflow/`.
+Whenever this guide requires following, reading, checking, or referring to the SEI operator documentation, use **only the most recent operator docs from the GitHub repository**. Fetch or otherwise verify the current repository revision before reading them. The operator-doc files bundled into a deployed Frappe app, container, image, working copy, cached checkout, local mirror, prior conversation, or remembered workflow are not authoritative unless they have first been verified to match the latest repository version.
 
-Whenever this guide requires following, reading, checking, or referring to SEI operator documentation, use **only the most recent operator docs from the GitHub repository**. Verify the current repository revision before using a deployed, cached, local, or remembered copy.
+Do not claim to have read the current or latest operator docs merely because a copy exists at the expected `docs/operator_workflow/` path. Confirm that the copy being used is the latest GitHub-repository version first. If the latest repository docs cannot be obtained or verified, treat the operator instructions as unavailable rather than substituting an older copy.
 
-If this guide and a current operator procedure appear to conflict on an execution detail, stop and resolve the conflict before continuing. Do not silently substitute an older workflow.
+This guide explains the strategy and end-to-end operating model. Detailed execution procedures live in `docs/operator_workflow/`. If this guide and a current operator procedure appear to conflict on an execution detail, stop and resolve the conflict before continuing.
 
 ## Purpose
 
@@ -41,6 +41,34 @@ The core question is:
 
 ```
 Why is this organization worth contacting now, who is the right person to contact, and what specific Cartertek help is relevant to the evidence?
+```
+
+## Strategic Foundation
+
+Most outreach fails because it begins with a list of companies and a generic reason to pitch them.
+
+Cartertek's outreach should begin with evidence.
+
+A good outreach prospect is not merely a company that fits a broad demographic. A good prospect has a visible reason Cartertek might be relevant now.
+
+The system should preserve this distinction:
+
+```
+Observed signal ≠ inferred pattern
+```
+
+A company that "seems like the type that might need help" is not enough. There should be a defensible entry point: something visible, documented, timely, or specific enough to justify outreach.
+
+The core strategy is:
+
+```
+Find observable signals of software risk, stalled development, operational friction, or technical overload.
+
+Map that signal to a clear thesis.
+
+Use the thesis to choose the contact role, message angle, and bounded offer direction.
+
+Track what happens so future outreach can improve when the evidence justifies a change.
 ```
 
 ## Current outreach model
@@ -450,6 +478,27 @@ This guide covers Cartertek's current validated signal-driven cold-outreach proc
 It does not treat every possible lead source, buyer-intent surface, referral path, partnership concept, directory, community, or channel as a separate outreach strategy.
 
 New prospecting strategies should be added here only after they have been deliberately developed and validated. Do not mix exploratory strategy ideas into the current operating process prematurely.
+
+## Non-Goals and Safety Boundaries
+
+The outreach system is deliberately not a mass outbound machine.
+
+Do not use it for:
+
+```
+mass scraping
+automatic cold email blasting
+AI auto-send
+automatic LinkedIn messaging
+automatic contact-form submission
+unreviewed autonomous prospecting
+automatic CRM conversion
+generic lead scoring detached from evidence
+```
+
+The system should support disciplined, context-specific outreach.
+
+Automation may assist with intake, organization, drafting, reporting, and workflow visibility, but the operator remains responsible for judgment and sending.
 
 ## Frappe SEI implementation
 
