@@ -787,6 +787,7 @@ function render_signals_table(frm, signals) {
             <tr>
                 <td><a href="${route}">${frappe.utils.escape_html(signal.signal_name || signal.signal_type || signal.name)}</a></td>
                 <td>${frappe.utils.escape_html(signal.signal_type || '')}</td>
+                <td>${frappe.utils.escape_html(signal.playbook || '')}</td>
                 <td>${render_signal_badge(signal.signal_strength)}</td>
                 <td>${frappe.utils.escape_html(bases)}</td>
                 <td>${excluded}</td>
@@ -808,6 +809,7 @@ function render_signals_table(frm, signals) {
                         <tr>
                             <th>${__('Name')}</th>
                             <th>${__('Signal Type')}</th>
+                            <th>${__('Playbook')}</th>
                             <th>${__('Strength')}</th>
                             <th>${__('Evidence')}</th>
                             <th>${__('Excluded')}</th>

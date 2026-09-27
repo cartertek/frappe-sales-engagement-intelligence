@@ -5,6 +5,7 @@ from frappe.model.document import Document
 from frappe.utils import now_datetime
 
 from sales_engagement_intelligence.sales_engagement_and_intelligence.services.taxonomy import (
+    get_signal_type_playbook,
     resolve_signal_type,
 )
 
@@ -54,6 +55,7 @@ class SEISignal(Document):
         self.status = self.status or "Draft"
         if self.signal_type:
             self.signal_type = resolve_signal_type(self.signal_type)
+        self.playbook = get_signal_type_playbook(self.signal_type)
         self.set_prospect_name()
         self.set_prospect_tags()
         if self.status == PUBLISHED:

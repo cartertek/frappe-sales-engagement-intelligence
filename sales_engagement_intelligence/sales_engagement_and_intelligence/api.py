@@ -71,6 +71,7 @@ WORKFLOW_RELEVANT_PROSPECT_FIELDS = {
 }
 SIGNAL_FIELDS = {
     "signal_name",
+    "playbook",
     "signal_type",
     "signal_strength",
     "confidence",
