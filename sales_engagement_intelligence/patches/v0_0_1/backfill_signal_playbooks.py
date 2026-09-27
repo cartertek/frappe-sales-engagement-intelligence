@@ -11,8 +11,8 @@ def execute():
 
     frappe.db.sql(
         """
-        UPDATE `tabSEI Signal` signal
-        LEFT JOIN `tabSEI Signal Type` signal_type ON signal_type.name = signal.signal_type
-        SET signal.playbook = signal_type.playbook
+        UPDATE `tabSEI Signal` AS s
+        LEFT JOIN `tabSEI Signal Type` AS st ON st.name = s.signal_type
+        SET s.playbook = st.playbook
         """
     )
