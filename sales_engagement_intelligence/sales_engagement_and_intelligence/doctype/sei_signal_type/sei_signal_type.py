@@ -10,6 +10,14 @@ class SEISignalType(Document):
 
     def on_update(self) -> None:
         self.sync_playbook_child_row()
+        frappe.db.sql(
+            """
+            UPDATE `tabSEI Signal`
+            SET playbook = %s
+            WHERE signal_type = %s
+            """,
+            (self.playbook, self.name),
+        )
         from sales_engagement_intelligence.sales_engagement_and_intelligence.services import (
             prospect_signal_type_sync,
         )

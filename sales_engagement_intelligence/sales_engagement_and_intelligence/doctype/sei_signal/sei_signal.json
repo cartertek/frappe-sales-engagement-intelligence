@@ -13,6 +13,7 @@
   "prospect",
   "prospect_name",
   "prospect_tags",
+  "playbook",
   "signal_type",
   "source_arena",
   "signal_strength",
@@ -85,6 +86,15 @@
    "in_standard_filter": 1,
    "description": "Synchronized from the linked prospect's Frappe tags so signals can be filtered by prospect tag in List View.",
    "idx": 5
+  },
+  {
+   "fieldname": "playbook",
+   "label": "Playbook",
+   "fieldtype": "Link",
+   "options": "SEI Playbook",
+   "read_only": 1,
+   "fetch_from": "signal_type.playbook",
+   "in_standard_filter": 1
   },
   {
    "fieldname": "signal_type",
