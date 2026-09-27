@@ -2,11 +2,24 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SIGNAL_JSON = ROOT / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.json'
-PROSPECT_JS = ROOT / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js'
+SIGNAL_JSON = (
+    ROOT
+    / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.json'
+)
+PROSPECT_JS = (
+    ROOT
+    / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_prospect/sei_prospect.js'
+)
 API = ROOT / 'sales_engagement_intelligence/sales_engagement_and_intelligence/api.py'
-SIGNAL_PY = ROOT / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.py'
-SIGNAL_TYPE_PY = ROOT / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal_type/sei_signal_type.py'
+SIGNAL_PY = (
+    ROOT
+    / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype/sei_signal/sei_signal.py'
+)
+SIGNAL_TYPE_PY = (
+    ROOT
+    / 'sales_engagement_intelligence/sales_engagement_and_intelligence/doctype'
+    / 'sei_signal_type/sei_signal_type.py'
+)
 
 
 def test_signal_form_shows_read_only_playbook_immediately_before_signal_type():
