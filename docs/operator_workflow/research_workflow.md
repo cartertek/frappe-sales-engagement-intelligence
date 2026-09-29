@@ -40,7 +40,7 @@ Before creating a Prospect from a Draft Signal, verify all of the following:
 - **Correct prospect identity:** determine which organization actually experiences the condition and would be the subject of outreach. Repository, project, ecosystem, or community context does not by itself establish that the hosted project or venue is the prospect.
 - **Commercial actionability:** Cartertek can realistically pursue the organization as an outreach opportunity. Keep this decision separate from Signal strength: commercial actionability must not raise or lower the Signal's strength, but a candidate that is not realistically pursuable must not become or remain an outreach Prospect.
 - **Plausible outreach organization:** there is an organizational structure or responsible party to whom Cartertek could plausibly direct outreach about the observed condition. The exact named contact does not need to be known yet; contact research comes later.
-- **No protected duplicate or prohibited path:** search by canonical name, website, and normalized domain before creation. Reuse an existing organization-level Prospect where appropriate, and never create a duplicate to bypass Rejected or Do Not Contact state.
+- **No protected duplicate or prohibited path:** search by canonical name, website, and normalized domain before creation. Reuse an existing organization-level Prospect where appropriate, and never create a duplicate to bypass Rejected or Do Not Contact state. A Rejected Prospect may be reopened when genuinely new, non-duplicate qualifying evidence is found; reuse that Prospect and the documented reopen workflow rather than creating a new Prospect. Do Not Contact Prospects must never be reopened.
 - **Evidence belongs to this Prospect:** the verified Signal evidence and organizational attribution support the candidate organization being the party experiencing the condition. Do not transfer a project-, contributor-, customer-, ecosystem-, or third-party problem onto an organization without evidence establishing that relationship.
 
 If any required eligibility point fails, **do not create the Prospect and do not promote the Draft Signal**. The research path may still describe a real condition, but it is not an acceptable prospect for this outreach workflow. Delete the Draft Signal when the path is no longer useful as an actionable research path; do not create a Prospect merely to preserve it.
@@ -57,11 +57,11 @@ Use the queue state as follows:
 
 - **Needs Research:** insufficient evidence or context; continue research before dispositioning.
 - **Research Complete:** evidence is complete enough for human review, normally because qualification is Needs Review.
-- **Rejected:** research is complete and the prospect should not continue because no qualifying outreach evidence exists.
+- **Rejected:** research is complete because no qualifying outreach evidence currently exists. If genuinely new, non-duplicate qualifying evidence is later found, reuse and reopen the existing Prospect rather than creating a duplicate.
 - **Find Contact:** prospect looks relevant but no usable contact path exists. Use [Prospect identity and contact research](identity-contact-research.md) to complete identity context, select primary contact roles, and research validated contacts.
 - **Qualified:** enough evidence exists, but CRM conversion has not been prepared.
 - **Ready for CRM Conversion:** explicit operator action marked the prospect ready.
-- **Do Not Contact:** protected suppression state.
+- **Do Not Contact:** protected suppression state. Never reopen a Do Not Contact Prospect.
 
 Do Not Contact and Rejected states are protected. Do not bypass them through API updates, duplicate Prospect creation, import fixes, or CRM conversion actions.
 
